@@ -1,0 +1,17 @@
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\isometricgame.exe.config
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\isometricgame.exe
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\isometricgame.pdb
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\OpenTK.dll
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\OpenTK.pdb
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\OpenTK.xml
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\obj\Debug\isometricgame.csprojAssemblyReference.cache
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\obj\Debug\isometricgame.csproj.CoreCompileInputs.cache
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\obj\Debug\isometricgame.csproj.CopyComplete
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\obj\Debug\isometricgame.exe
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\obj\Debug\isometricgame.pdb
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\singleblock.png
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\player.png
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\SandTiles.png
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\WaterTiles.png
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\GrassTiles.png
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\gamefont.png

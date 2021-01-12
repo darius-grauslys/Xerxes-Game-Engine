@@ -1,0 +1,73 @@
+﻿
+
+
+ GameObject layering:
+	To accomplish this the WorldRender method for tile space rendering must be altered to include for-loop-interrupts
+
+	This involves swapping maxX and maxY for interruptX and interruptY. Out side this x-y nested loop we will
+	have a while loop that checks for x < maxX and y < maxY. Prior to each embedded x-y interrupt loop will
+	be a statement to set the interruptX and interruptY. The interruptX and interruptY is the queued position
+	of the next object position the WorldRender will encounter.
+
+	This method is good because we will not be checking on every tile if we need to render an object, instead
+	we will continue "blindly" up to our end position. When we hit our end position on the X loop (or whatever is the most exernal x-y interrupt loop)
+	we will know to render an object. Pop the object off the queue, render it, then continue following the next queue interrupt position.
+
+
+Cliff orientation/detection:
+	This will utilize the Tile AdjacencyVectors for orientation discovery. This will be an additional phase following orientation determination.
+
+	Its also worth noting that with Cliffs there will be no need for Z-correction in tiles.
+
+	In adjacency matching, cliff detection will focus on the following criteria:
+	
+	- 1) Subject tile's orientation is 0, and adjacent tiles of same Z level is different orientation
+	- 2) Subject tile's z is less than adjacent tiles.
+
+	Build a cliff offset'ed by the given orientation and using the correct sprite. (Sprite count to be determined)
+
+	Cliffs will be offseted by +/- 0.5 on x and y from the subject tile. Additionally, an additional cliff will be added
+	for every exceeding Z value.
+
+	If condition 1 and 2 is false, no cliffs.
+	If condition 1 is true but 2 is false, only 1 cliff.
+	If condition 1 and 2 is true, then 1+zDiff cliffs.
+	Condition 1 should never be false if condition 2 is true. This is because tile orientation is determined by adjacent Z being higher.
+
+Hitboxes:
+	A convertion from Cartesian to Polar coordinate system will be used for hixboxes.
+
+	Hitboxes will be defined by a series of Polar arc segments.
+
+	Each segement will have a point and three arm lengths. X,Y,Z
+	Each segement will have a distance calculator from point to arm bound region faces.
+	Point of contact for hitbox and point will be determined if the angle from hitbox point is within arm angles AND
+	- distance from hitbox point to segement face is less than or equal to subject point for contact.
+
+	Hitbox vs Hitbox colisiion detection:
+	- Same principles as above for point detection, except each hitbox will check opposing box arm's for point intersection.
+	- It will step through the opposing arms to get polar positions to compare. One hitbox may return false of colision for a versing
+		box, but the versing box may return true. Consider this as a proper colision of BOTH boxes.
+
+	Greater bounding:
+	Irregular hitboxes will be "bounded" by system defined "higher" boxes called Bounding Boxes. Some hitbox segments will be parented by larger segments
+	- If the larger segment detects a collision, it will run it through the smaller child regions - which if detected will yield a proper full colision.
+	- This greater bounding is so the system doesn't have to compare EVERY child segment of irregular boxes on each frame.
+
+GameObject streamline yaml definition:
+
+gameobj:
+    attribs:
+	    CollisionBox:
+			Segments:
+				- BoxSegment(-10,-10,4,45,4,60,4,80)
+				- BoxSegment(10,10,4,45,4,60,4,80)
+		Sprite:
+			source: "GAME_DIR\Assets\Graphic\player.png"
+		Animation:
+			source: "GAME_DIR\Assets\Anim\player.yaml"
+		MovementController:
+			pY: W
+			pX: D
+			nY: S
+			nX: A
