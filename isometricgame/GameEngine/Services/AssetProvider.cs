@@ -144,43 +144,51 @@ namespace isometricgame.GameEngine.Services
         #region Sprites
 
         public Sprite FabricateSpriteArea(
-            Sprite[,] sprites, 
+            Sprite[,] sprites, //the array of little sprite I want to draw
             int subSpriteWidth, 
-            int subSpriteHeight, 
+            int subSpriteHeight, //these are the dimensions of the little sprites
             int xRange, 
-            int yRange, 
+            int yRange, //these are the increments of little sprite width and height
             int spriteWidth, 
             int spriteHeight, 
-            Func<int, int, Vector2> mappingFunction
+            Func<int, int, Vector2> mappingFunction //over engineered, I know, but this takes the x and y and maps it to an isometric layout.
             )
         {
             int newSpriteID = GL.GenTexture();
+
+            // I think I have to make a bitmap so I have a pointer to give GL?
             Bitmap bmp = new Bitmap(spriteWidth, spriteHeight);
             BitmapData bmpd = bmp.LockBits(new Rectangle(0, 0, spriteWidth, spriteHeight), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             GL.BindBuffer(BufferTarget.TextureBuffer, newSpriteID);
-            GL.BufferData(BufferTarget.TextureBuffer, spriteWidth * spriteHeight * 4, bmpd.Scan0, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.TextureBuffer, spriteWidth * spriteHeight * 4, bmpd.Scan0 /* Here I give the bmp pointer... I think this is right.*/ , BufferUsageHint.StaticDraw);
 
+            
             for (int x = 0; x < xRange; x++)
             {
-                for (int y = 0; y < yRange; y++)
+                for (int y = 0; y < yRange; y++) //Imagine I am connecting blocks in minecraft together to make an image. 16x16.
                 {
+                    //I need to get a pointer to my sub image. I think this is how I do it:
                     IntPtr textureBufferPointer = IntPtr.Zero;
                     GL.BindBuffer(BufferTarget.TextureBuffer, sprites[x,y].Texture.ID);
-                    GL.GetBufferPointer(BufferTarget.TextureBuffer, BufferPointer.BufferMapPointer, ref textureBufferPointer);
+                    GL.GetBufferPointer(BufferTarget.TextureBuffer, BufferPointer.BufferMapPointer, ref textureBufferPointer); //yeah???
 
+                    //switch back to working on my frankenstine image
                     GL.BindBuffer(BufferTarget.TextureBuffer, newSpriteID);
 
-                    Vector2 pos = mappingFunction(x, y);
+                    Vector2 pos = mappingFunction(x, y); //get coordinates on the image to draw on
 
                     for (int i = 0; i < subSpriteHeight; i++)
                     {
+                        //So from what I understand... I can't just say an X and Y to GL to write into the buffer. Its a linear thing.
                         IntPtr offset = new IntPtr((y * spriteWidth) + x);
-                        IntPtr textureBufferPointerOffset = textureBufferPointer + (i * 4 * subSpriteWidth);
-                        GL.BufferSubData(BufferTarget.TextureBuffer, offset, 4 * subSpriteWidth, textureBufferPointerOffset);
+                        IntPtr textureBufferPointerOffset = textureBufferPointer /*+ (i * 4 * subSpriteWidth)*/;
+                        GL.BufferSubData(BufferTarget.TextureBuffer, offset, 4 * subSpriteWidth, textureBufferPointerOffset); //After I find the right spot in memory, draw.
                     }
                 }
             }
+
+            //wrap everything up:
 
             GL.BindBuffer(BufferTarget.TextureBuffer, 0);
 
