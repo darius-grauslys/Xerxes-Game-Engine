@@ -6,19 +6,15 @@ using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.Services
 {
-    /// <summary>
-    /// The Attribute equivalent for the Game object. Used for ContentPipes, Audio, whatever.
-    /// </summary>
-    public class GameService
+    public class GameSystem
     {
-        public GameService(Game game)
-        {
-            Initalize(game);
-        }
+        private Game gameRef;
 
-        internal virtual void Initalize(Game game)
-        {
+        protected Game GameRef { get => gameRef; set => gameRef = value; }
 
+        public GameSystem(Game gameRef)
+        {
+            GameRef = gameRef;
         }
     }
 }

@@ -25,19 +25,19 @@ namespace isometricgame.GameEngine
         public readonly string GAME_DIRECTORY_WORLDS;
 
         //SERVICES
-        private ContentPipe contentPipe;
+        private AssetProvider contentPipe;
         private SpriteLibrary spriteLibrary;
-        private TextureLibrary textureLibrary;
+        //private TextureLibrary textureLibrary;
         private SerializationManager serializationManager;
         private RenderService renderService;
         private Services.TextWriter textWriter;
 
-        private List<GameService> services = new List<GameService>();
+        private List<GameSystem> services = new List<GameSystem>();
 
         /// <summary>
         /// Responsible for loading and unloading textures.
         /// </summary>
-        protected ContentPipe ContentPipe { get => contentPipe; private set => contentPipe = value; }
+        protected AssetProvider AssetProvider { get => contentPipe; private set => contentPipe = value; }
         /// <summary>
         /// Responsible for recording and recieving loaded sprites.
         /// </summary>
@@ -45,7 +45,7 @@ namespace isometricgame.GameEngine
         /// <summary>
         /// Responsible for recording ad recieving loaded textures.
         /// </summary>
-        protected TextureLibrary TextureLibrary { get => textureLibrary; private set => textureLibrary = value; }
+        //protected TextureLibrary TextureLibrary { get => textureLibrary; private set => textureLibrary = value; }
         /// <summary>
         /// Responsible for holding references to various services.
         /// </summary>
@@ -138,15 +138,15 @@ namespace isometricgame.GameEngine
 
         }
 
-        public T GetService<T>() where T : GameService
+        public T GetService<T>() where T : GameSystem
         {
-            foreach (GameService service in services)
+            foreach (GameSystem service in services)
                 if (service is T)
                     return service as T;
             throw new ServiceNotFoundException();
         }
 
-        internal void RegisterService<T>(T gameService) where T : GameService
+        internal void RegisterService<T>(T gameService) where T : GameSystem
         {
             if (services.Exists((s) => s is T))
                 throw new ExistingServiceException();
@@ -155,14 +155,14 @@ namespace isometricgame.GameEngine
 
         internal virtual void RegisterServices()
         {
-            ContentPipe = new ContentPipe(this);
-            TextureLibrary = new TextureLibrary(this);
+            AssetProvider = new AssetProvider(this);
+            //TextureLibrary = new TextureLibrary(this);
             SpriteLibrary = new SpriteLibrary(this);
             RenderService = new RenderService(this, gameWindow.Width, gameWindow.Height);
             TextWriter = new Services.TextWriter(this);
 
-            RegisterService(ContentPipe);
-            RegisterService(TextureLibrary);
+            RegisterService(AssetProvider);
+            //RegisterService(TextureLibrary);
             RegisterService(SpriteLibrary);
             RegisterService(RenderService);
             RegisterService(TextWriter);

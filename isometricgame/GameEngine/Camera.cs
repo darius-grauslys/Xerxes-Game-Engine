@@ -13,7 +13,7 @@ namespace isometricgame.GameEngine
     {
         private Vector3 position = new Vector3(0,0,0);
         private float velocity = 3;
-        private float zoom = 0.5f;
+        private float zoom = 2.0f;
         private Scene scene;
 
         public float Velocity { get => velocity; set => velocity = value; }

@@ -1,4 +1,4 @@
-﻿using isometricgame.GameEngine.Attributes;
+﻿using isometricgame.GameEngine.Components;
 using isometricgame.GameEngine.Events;
 using isometricgame.GameEngine.Exceptions.Attributes;
 using isometricgame.GameEngine.Rendering;
@@ -20,7 +20,7 @@ namespace isometricgame.GameEngine
         private Vector3 position;
         private Orientation orientation;
 
-        private List<GameAttribute> attributes = new List<GameAttribute>();
+        private List<GameComponent> attributes = new List<GameComponent>();
 
         //public Sprite Sprite { get => sprite; set => sprite = value; }
         public Vector3 Position
@@ -49,12 +49,12 @@ namespace isometricgame.GameEngine
             
         }
 
-        public T GetAttribute<T>() where T : GameAttribute
+        public T GetAttribute<T>() where T : GameComponent
         {
             return attributes.Find((a) => a is T) as T;
         }
 
-        protected void AddAttribute<T>(T attrib) where T : GameAttribute
+        protected void AddAttribute<T>(T attrib) where T : GameComponent
         {
             for (int i = 0; i < attributes.Count; i++)
                 if (attributes[i] is T)
@@ -65,7 +65,7 @@ namespace isometricgame.GameEngine
         public void OnUpdate(FrameEventArgs args)
         {
             HandleOnUpdate();
-            foreach (GameAttribute attrib in attributes)
+            foreach (GameComponent attrib in attributes)
                 attrib.OnUpdate(args);
         }
 

@@ -1,4 +1,4 @@
-﻿using isometricgame.GameEngine.Attributes;
+﻿using isometricgame.GameEngine.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace isometricgame.GameEngine.Scenes.SceneProperties
     /// Scene Properties are to Scenes as Game Services are to Games. The one distinict feature is that they opperate on GameAttributes. One example is for Gravity.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SceneProperty<T> where T : GameAttribute
+    public class SceneProperty<T> where T : GameComponent
     {
         private List<T> attributeSubscribers;
         protected List<T> AttributeSubscribers => attributeSubscribers;

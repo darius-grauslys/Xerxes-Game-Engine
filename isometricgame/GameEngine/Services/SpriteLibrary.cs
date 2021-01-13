@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.Services
 {
-    public class SpriteLibrary : GameService
+    public class SpriteLibrary : GameSystem
     {
         private List<Sprite> spriteByID = new List<Sprite>();
         private List<SpriteSet> spriteSetByID = new List<SpriteSet>();

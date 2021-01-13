@@ -62,9 +62,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameEngine\Attributes\Physics\MovementControllerAttribute.cs" />
-    <Compile Include="GameEngine\Attributes\Physics\PhysicsBodyAttribute.cs" />
-    <Compile Include="GameEngine\Attributes\Physics\RigidBodyAttribute.cs" />
+    <Compile Include="GameEngine\Components\Physics\MovementControllerAttribute.cs" />
+    <Compile Include="GameEngine\Components\Physics\PhysicsBodyAttribute.cs" />
+    <Compile Include="GameEngine\Components\Physics\RigidBodyAttribute.cs" />
     <Compile Include="GameEngine\Events\Broadcast.cs" />
     <Compile Include="GameEngine\Events\BroadcastNetwork.cs" />
     <Compile Include="GameEngine\Events\EventChannel.cs" />
@@ -74,10 +74,10 @@
     <Compile Include="GameEngine\Exceptions\Services\ExistingServiceException.cs" />
     <Compile Include="GameEngine\Exceptions\Services\ServiceNotFoundException.cs" />
     <Compile Include="GameEngine\Game.cs" />
-    <Compile Include="GameEngine\Attributes\Attribute.cs" />
-    <Compile Include="GameEngine\Attributes\Physics\CollisonBoxAttribute.cs" />
-    <Compile Include="GameEngine\Attributes\Rendering\AnimationAttribute.cs" />
-    <Compile Include="GameEngine\Attributes\Rendering\SpriteAttribute.cs" />
+    <Compile Include="GameEngine\Components\Attribute.cs" />
+    <Compile Include="GameEngine\Components\Physics\CollisonBoxAttribute.cs" />
+    <Compile Include="GameEngine\Rendering\Components\AnimationComponent.cs" />
+    <Compile Include="GameEngine\Rendering\Components\SpriteComponent.cs" />
     <Compile Include="GameEngine\Camera.cs" />
     <Compile Include="GameEngine\Events\GameEventArgument.cs" />
     <Compile Include="GameEngine\Exceptions\Attributes\AttributeNotFoundException.cs" />
@@ -139,12 +139,11 @@
     <Compile Include="GameEngine\Rendering\Texture2D.cs" />
     <Compile Include="GameEngine\Rendering\Vertex.cs" />
     <Compile Include="GameEngine\WorldSpace\WorldScene.cs" />
-    <Compile Include="GameEngine\Services\ContentPipe.cs" />
+    <Compile Include="GameEngine\Services\AssetProvider.cs" />
     <Compile Include="GameEngine\Services\Serializations\ChunkSerializationService.cs" />
     <Compile Include="GameEngine\Services\Serializations\BaseSerializationService.cs" />
     <Compile Include="GameEngine\Services\Serializations\SerializationService.cs" />
     <Compile Include="GameEngine\Services\SpriteLibrary.cs" />
-    <Compile Include="GameEngine\Services\TextureLibrary.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -152,8 +151,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GameEngine\Attributes\AI\" />
-    <Folder Include="GameEngine\Attributes\UI\" />
+    <Folder Include="GameEngine\Components\AI\" />
+    <Folder Include="GameEngine\Components\UI\" />
     <Folder Include="Isogame\Implemented\GameObjects\Clutter\" />
     <Folder Include="Isogame\Implemented\GameObjects\NPC\" />
   </ItemGroup>

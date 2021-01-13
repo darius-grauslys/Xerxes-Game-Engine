@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Attributes.Rendering
+namespace isometricgame.GameEngine.Components.Rendering
 {
-    public class SpriteAttribute : GameAttribute
+    public class SpriteComponent : GameComponent
     {
         private Sprite sprite;
         
-        public SpriteAttribute(GameObject parentObject) 
+        public SpriteComponent(GameObject parentObject) 
             : base(parentObject)
         {
         }

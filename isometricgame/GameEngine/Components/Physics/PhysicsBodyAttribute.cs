@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Attributes.Physics
+namespace isometricgame.GameEngine.Components.Physics
 {
     /// <summary>
     /// This attribute is given to objects that can be given force vectors and as a result - move.
     /// </summary>
-    public class PhysicsBodyAttribute : GameAttribute
+    public class PhysicsBodyAttribute : GameComponent
     {
         /// <summary>
         /// for stuff like gravity.

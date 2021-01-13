@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.Services
 {
-    public class EventService : GameService
+    public class EventService : GameSystem
     {
         /// <summary>
         /// Global Broadcasts are defined while the EventService is NOT live. The are used to cross communicate through scenes.

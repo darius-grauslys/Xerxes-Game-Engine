@@ -13,12 +13,35 @@ using isometricgame.GameEngine.WorldSpace;
 
 namespace isometricgame.GameEngine.Services
 {
-    public class ContentPipe : GameService
+    public class AssetProvider : GameSystem
     {
-        public ContentPipe(Game game) 
+        private List<Bitmap> savedBitmaps = new List<Bitmap>();
+        private List<Texture2D> savedTexture2Ds = new List<Texture2D>();
+        private List<Sprite> savedSprites = new List<Sprite>();
+        private List<SpriteSet> savedSpriteSets = new List<SpriteSet>();
+
+        public AssetProvider(Game game) 
             : base(game)
         {
         }
+
+        #region Bitmaps
+
+        public int LoadAndSaveBitmap(string filepath)
+        {
+            Bitmap bmp = new Bitmap(filepath);
+            savedBitmaps.Add(bmp);
+            return savedBitmaps.Count - 1;
+        }
+
+        public Bitmap GetSavedBitmap(int i)
+        {
+            return savedBitmaps[i];
+        }
+
+        #endregion
+
+        #region Texture2Ds
 
         public Texture2D BindTexture(BitmapData bmpd, int textureWidth, int textureHeight, bool pixelated = false)
         {
@@ -53,6 +76,12 @@ namespace isometricgame.GameEngine.Services
             return texture;
         }
 
+
+
+        
+
+
+
         public void LoadTileSet(string filePath, string assetName, SpriteLibrary library)
         {
             TileSpriteSet tileset = new TileSpriteSet(LoadTileTextureSheet(filePath, Tile.TILE_WIDTH, Tile.TILE_HEIGHT));
@@ -61,37 +90,6 @@ namespace isometricgame.GameEngine.Services
                 );
         }
 
-        public Sprite[] ExtractSpriteSheet(string filePath, string assetName, int width, int height)
-        {
-            Texture2D spriteSheet = LoadTexture(filePath);
-            Sprite[] sprites = new Sprite[spriteSheet.Area / (width * height)];
-            Vertex[] verticies;
-            float step = (float)width / (float)spriteSheet.Width;
-
-            for (int i = 0; i < sprites.Length; i++)
-            {
-                //maybe wrong
-                verticies = new Vertex[]
-                {
-                    /*
-                    new Vertex(new Vector2(0              , Tile.TILE_HEIGHT), new Vector2(step * i,     0)),
-                    new Vertex(new Vector2(Tile.TILE_WIDTH, Tile.TILE_HEIGHT), new Vector2(step * (i+1), 0)),
-                    new Vertex(new Vector2(Tile.TILE_WIDTH, 0               ), new Vector2(step * (i+1), 1)),
-                    new Vertex(new Vector2(0              , Tile.TILE_HEIGHT), new Vector2(step * i,     0)),
-                    new Vertex(new Vector2(Tile.TILE_WIDTH, 0               ), new Vector2(step * (i+1), 1)),
-                    new Vertex(new Vector2(0              , 0               ), new Vector2(step * i,     1))
-                    */
-                    
-                    new Vertex(new Vector2(0, 0), new Vector2(step * (i), 0)),
-                    new Vertex(new Vector2(0, height), new Vector2(step * (i), 1)),
-                    new Vertex(new Vector2(width, height), new Vector2(step * (i+1), 1)),
-                    new Vertex(new Vector2(width, 0), new Vector2(step * (i+1), 0))
-                };
-                sprites[i] = new Sprite(spriteSheet, verticies);
-            }
-            return sprites;
-        }
-        
         public Texture2D[] LoadTileTextureSheet(string filePath, int textureWidth, int textureHeight, bool pixelated = false)
         {
             SpriteSheetReader ssr = new SpriteSheetReader(filePath, textureWidth, textureHeight);
@@ -141,13 +139,106 @@ namespace isometricgame.GameEngine.Services
             return textures;
         }
 
+        #endregion
+
+        #region Sprites
+
+        public Sprite FabricateSpriteArea(
+            Sprite[,] sprites, 
+            int subSpriteWidth, 
+            int subSpriteHeight, 
+            int xRange, 
+            int yRange, 
+            int spriteWidth, 
+            int spriteHeight, 
+            Func<int, int, Vector2> mappingFunction
+            )
+        {
+            int newSpriteID = GL.GenTexture();
+            Bitmap bmp = new Bitmap(spriteWidth, spriteHeight);
+            BitmapData bmpd = bmp.LockBits(new Rectangle(0, 0, spriteWidth, spriteHeight), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            GL.BindBuffer(BufferTarget.TextureBuffer, newSpriteID);
+            GL.BufferData(BufferTarget.TextureBuffer, spriteWidth * spriteHeight * 4, bmpd.Scan0, BufferUsageHint.StaticDraw);
+
+            for (int x = 0; x < xRange; x++)
+            {
+                for (int y = 0; y < yRange; y++)
+                {
+                    IntPtr textureBufferPointer = IntPtr.Zero;
+                    GL.BindBuffer(BufferTarget.TextureBuffer, sprites[x,y].Texture.ID);
+                    GL.GetBufferPointer(BufferTarget.TextureBuffer, BufferPointer.BufferMapPointer, ref textureBufferPointer);
+
+                    GL.BindBuffer(BufferTarget.TextureBuffer, newSpriteID);
+
+                    Vector2 pos = mappingFunction(x, y);
+
+                    for (int i = 0; i < subSpriteHeight; i++)
+                    {
+                        IntPtr offset = new IntPtr((y * spriteWidth) + x);
+                        IntPtr textureBufferPointerOffset = textureBufferPointer + (i * 4 * subSpriteWidth);
+                        GL.BufferSubData(BufferTarget.TextureBuffer, offset, 4 * subSpriteWidth, textureBufferPointerOffset);
+                    }
+                }
+            }
+
+            GL.BindBuffer(BufferTarget.TextureBuffer, 0);
+
+            Texture2D texture = new Texture2D(newSpriteID, new Vector2(spriteWidth, spriteHeight));
+
+            Sprite ret = new Sprite(texture, new Vertex[]
+            {
+                new Vertex(new Vector2(0, 0), new Vector2(0,0)),
+                new Vertex(new Vector2(0, spriteHeight), new Vector2(0,1)),
+                new Vertex(new Vector2(spriteWidth, spriteHeight), new Vector2(1,1)),
+                new Vertex(new Vector2(spriteWidth, 0), new Vector2(1,0))
+            });
+            return ret;
+        }
+
+        public Sprite[] ExtractSpriteSheet(string filePath, string assetName, int width, int height)
+        {
+            Texture2D spriteSheet = LoadTexture(filePath);
+            Sprite[] sprites = new Sprite[spriteSheet.Area / (width * height)];
+            Vertex[] verticies;
+            float step = (float)width / (float)spriteSheet.Width;
+
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                //maybe wrong
+                verticies = new Vertex[]
+                {
+                    /*
+                    new Vertex(new Vector2(0              , Tile.TILE_HEIGHT), new Vector2(step * i,     0)),
+                    new Vertex(new Vector2(Tile.TILE_WIDTH, Tile.TILE_HEIGHT), new Vector2(step * (i+1), 0)),
+                    new Vertex(new Vector2(Tile.TILE_WIDTH, 0               ), new Vector2(step * (i+1), 1)),
+                    new Vertex(new Vector2(0              , Tile.TILE_HEIGHT), new Vector2(step * i,     0)),
+                    new Vertex(new Vector2(Tile.TILE_WIDTH, 0               ), new Vector2(step * (i+1), 1)),
+                    new Vertex(new Vector2(0              , 0               ), new Vector2(step * i,     1))
+                    */
+                    
+                    new Vertex(new Vector2(0, 0), new Vector2(step * (i), 0)),
+                    new Vertex(new Vector2(0, height), new Vector2(step * (i), 1)),
+                    new Vertex(new Vector2(width, height), new Vector2(step * (i+1), 1)),
+                    new Vertex(new Vector2(width, 0), new Vector2(step * (i+1), 0))
+                };
+                sprites[i] = new Sprite(spriteSheet, verticies);
+            }
+            return sprites;
+        }
+
+        #endregion
+
+        #region legacy
+
+        /*
         public Texture2D[] LoadTextureSheet(string filePath, int textureWidth, int textureHeight, int count = -1, bool pixelated = false)
         {
             BitmapData bmpd;
             SpriteSheetReader ssr = new SpriteSheetReader(filePath, textureWidth, textureHeight);
             Texture2D[] textures = new Texture2D[(count > 0) ? count : (ssr.SheetWidth * ssr.SheetHeight) / (textureWidth * textureHeight)];
             int rows = ssr.SheetHeight / textureHeight, columns = ssr.SheetWidth / textureWidth;
-            
+
             for (int row = 0; row < rows; row++)
             {
                 for (int column = 0; column < columns; column++)
@@ -175,7 +266,7 @@ namespace isometricgame.GameEngine.Services
                 throw new FileNotFoundException();
 
             Texture2D[] textures;
-            
+
             Bitmap bmp = new Bitmap(filePath);
 
             textures = new Texture2D[(count > 0) ? count : (bmp.Width * bmp.Height) / (textureWidth * textureHeight)];
@@ -195,40 +286,16 @@ namespace isometricgame.GameEngine.Services
                     Texture2D texture = BindTexture(bmpd, textureWidth, textureHeight, pixelated);
 
                     bmp.UnlockBits(bmpd);
-                    
+
                     textures[index] = texture;
                 }
             }
 
             return textures;
         }
+        */
 
-        //public Bitmap[] SpliceBitmap(string filePath, int width, int height)
-        //{
-        //    if (!File.Exists(filePath))
-        //        throw new FileNotFoundException();
+        #endregion
 
-        //    Bitmap[] bmps;
-
-        //    Bitmap bmp = new Bitmap(filePath);
-
-        //    bmps = new Bitmap[(bmp.Width * bmp.Height) / (width * height)];
-
-        //    for (int i = 0; i < bmp.Width / width; i++)
-        //    {
-        //        for (int j = 0; j < bmp.Height / height; j++)
-        //        {
-        //            BitmapData bmpd = bmp.LockBits(new Rectangle(width * i, height * j, width, height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-        //            Bitmap section = new Bitmap(width, height, 0, System.Drawing.Imaging.PixelFormat.Alpha, bmpd.Scan0);
-
-        //            bmp.UnlockBits(bmpd);
-
-        //            bmps[i + j] = section;
-        //        }
-        //    }
-
-        //    return bmps;
-        //}
     }
 }

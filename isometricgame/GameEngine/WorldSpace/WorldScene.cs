@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using isometricgame.GameEngine.Attributes.Rendering;
+using isometricgame.GameEngine.Components.Rendering;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.WorldSpace.Generators;
 using isometricgame.GameEngine.Rendering;
@@ -32,11 +32,12 @@ namespace isometricgame.GameEngine.WorldSpace
         private GameObject focusObject;
 
         public Camera ClientCamera { get => clientCamera; private set => clientCamera = value; }
+        public ChunkDirectory ChunkDirectory { get => chunkDirectory; set => chunkDirectory = value; }
 
         public WorldScene(Game game)
             : base(game)
         {
-            this.chunkDirectory = new ChunkDirectory(4, new WorldGenerator(1234));
+            this.ChunkDirectory = new ChunkDirectory(4, new WorldGenerator(779876));
             this.ClientCamera = new Camera(this);
 
             spriteLibrary = game.GetService<SpriteLibrary>();
@@ -67,7 +68,7 @@ namespace isometricgame.GameEngine.WorldSpace
 
         public override void RenderFrame(RenderService renderService, FrameEventArgs e)
         {
-            chunkDirectory.ChunkCleanup(ClientCamera.Position.Xy);
+            ChunkDirectory.ChunkCleanup(ClientCamera.Position.Xy);
 
             //OK so in terms of procedural ground rendering there is only the X and Y axis. The ground however can be offset by a Z value.
             //HOWEVER this does not mean there are more than one tile on a give Z axis. So we only itterate on X and Y for tile
@@ -94,10 +95,10 @@ namespace isometricgame.GameEngine.WorldSpace
 
 
             float minX, maxX, minY, maxY;
-            minX = chunkDirectory.MinimalX_ByTileLocation;
-            maxX = chunkDirectory.MaximalX_ByTileLocation;
-            minY = chunkDirectory.MinimalY_ByTileLocation;
-            maxY = chunkDirectory.MaximalY_ByTileLocation;
+            minX = ChunkDirectory.MinimalX_ByTileLocation;
+            maxX = ChunkDirectory.MaximalX_ByTileLocation;
+            minY = ChunkDirectory.MinimalY_ByTileLocation;
+            maxY = ChunkDirectory.MaximalY_ByTileLocation;
             //TODO: remove
             float zOffset = 0;
             
@@ -109,7 +110,7 @@ namespace isometricgame.GameEngine.WorldSpace
 
                     try
                     {
-                        t = chunkDirectory.DeliminateTile_ChunkSpace(new Vector2(x, y));
+                        t = ChunkDirectory.DeliminateTile_ChunkSpace(new Vector2(x, y));
                     }
                     catch (CouldNotDelimitException)
                     {
@@ -149,12 +150,12 @@ namespace isometricgame.GameEngine.WorldSpace
                 }
             }
 
-            SpriteAttribute sa;
+            SpriteComponent sa;
             foreach (GameObject obj in GameObjects)
             {
-                if ((sa = obj.GetAttribute<SpriteAttribute>()) != null)
+                if ((sa = obj.GetAttribute<SpriteComponent>()) != null)
                 {
-                    float z = chunkDirectory.DeliminateTile(obj.Position.Xy).Z;
+                    float z = ChunkDirectory.DeliminateTile(obj.Position.Xy).Z;
                     obj.SetZ(z);
 
                     Sprite[] ss = sa.GetSprites();

@@ -12,9 +12,9 @@ using OpenTK;
 
 namespace isometricgame.GameEngine.Services
 {
-    public class TextWriter : GameService
+    public class TextWriter : GameSystem
     {
-        public readonly string CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,?!/-+@#$%^&*()_ =[]{}|:;\"'<>`~";
+        public readonly string CHARS = ",gjpqyABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhiklmnorstuvwxz1234567890.?!/-+@#$%^&*()_=[]\\{}|:;\"'<>`~";
 
         private Dictionary<string, FixedSpriteSet> fonts = new Dictionary<string, FixedSpriteSet>();
 
@@ -33,7 +33,11 @@ namespace isometricgame.GameEngine.Services
         {
             float fontWidth = fonts[fontName].TextureWidth;
             float fontHeight = fonts[fontName].TextureHeight;
-            float yWrite = y, xWrite = x;
+            float descentGap = fontHeight / 2 + 1;
+            float commaDescent = 3;
+            float descentCharacter = 5;
+
+            float yWrite = y, xWrite = x, yOffset = 0;
             for (int i = 0; i < text.Length; i++)
             {
                 if (text[i] == ' ')
@@ -43,11 +47,16 @@ namespace isometricgame.GameEngine.Services
                 }
                 if (text[i] == '\n')
                 {
-                    yWrite+= fontHeight;
+                    yWrite+= fontHeight + descentGap;
                     xWrite = x;
                     continue;
                 }
-                renderService.DrawSprite(fonts[fontName].GetSprite(CHARS.IndexOf(text[i])), xWrite, yWrite);
+
+                int index = CHARS.IndexOf(text[i]);
+
+                yOffset = (index == 0) ? commaDescent : (index < 6) ? descentCharacter : 0;
+
+                renderService.DrawSprite(fonts[fontName].GetSprite(index), xWrite, yWrite + yOffset);
                 xWrite += fontWidth;
             }
         }

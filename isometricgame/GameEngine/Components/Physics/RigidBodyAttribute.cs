@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 
-namespace isometricgame.GameEngine.Attributes.Physics
+namespace isometricgame.GameEngine.Components.Physics
 {
     /// <summary>
     /// This attribute is given the GameObjects that possess both a PhysicsBody and a CollisionBox. This will allow for force vector collisions.
     /// </summary>
-    public class RigidBodyAttribute : GameAttribute
+    public class RigidBodyAttribute : GameComponent
     {
         private PhysicsBodyAttribute physicsBody;
         private CollisonBoxAttribute collisionBox;

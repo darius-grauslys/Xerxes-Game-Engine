@@ -1,4 +1,4 @@
-﻿using isometricgame.GameEngine.Attributes.Physics;
+﻿using isometricgame.GameEngine.Components.Physics;
 using System;
 using System.Collections.Generic;
 using System.Linq;

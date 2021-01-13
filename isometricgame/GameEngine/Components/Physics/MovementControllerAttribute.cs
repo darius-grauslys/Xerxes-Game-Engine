@@ -10,11 +10,13 @@ using isometricgame.GameEngine.Services.Input;
 using OpenTK;
 using OpenTK.Input;
 
-namespace isometricgame.GameEngine.Attributes.Physics
+namespace isometricgame.GameEngine.Components.Physics
 {
-    public class MovementControllerAttribute : GameAttribute
+    public class MovementControllerAttribute : GameComponent
     {
         private InputService inputService;
+
+        private float speed = 2;
 
         public MovementControllerAttribute(GameObject parentObject) 
             : base(parentObject)
@@ -42,19 +44,19 @@ namespace isometricgame.GameEngine.Attributes.Physics
 
             if (inputService.KeyUpDown.Keyboard.IsKeyDown(Key.W))
             {
-                ParentObject.SetY(ParentObject.GetY() - 0.2f);
+                ParentObject.SetY(ParentObject.GetY() - speed);
             }
             if (inputService.KeyUpDown.Keyboard.IsKeyDown(Key.A))
             {
-                ParentObject.SetX(ParentObject.GetX() - 0.2f);
+                ParentObject.SetX(ParentObject.GetX() - speed);
             }
             if (inputService.KeyUpDown.Keyboard.IsKeyDown(Key.S))
             {
-                ParentObject.SetY(ParentObject.GetY() + 0.2f);
+                ParentObject.SetY(ParentObject.GetY() + speed);
             }
             if (inputService.KeyUpDown.Keyboard.IsKeyDown(Key.D))
             {
-                ParentObject.SetX(ParentObject.GetX() + 0.2f);
+                ParentObject.SetX(ParentObject.GetX() + speed);
             }
         }
     }

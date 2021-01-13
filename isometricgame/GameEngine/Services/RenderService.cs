@@ -12,7 +12,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace isometricgame.GameEngine.Services
 {
-    public class RenderService : GameService
+    public class RenderService : GameSystem
     {
         private Matrix4 projection;
         private Matrix4 cachedWorldMatrix;

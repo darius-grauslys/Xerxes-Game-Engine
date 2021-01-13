@@ -1,6 +1,6 @@
 ﻿using isometricgame.GameEngine;
-using isometricgame.GameEngine.Attributes.Physics;
-using isometricgame.GameEngine.Attributes.Rendering;
+using isometricgame.GameEngine.Components.Physics;
+using isometricgame.GameEngine.Components.Rendering;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.Services;
 using OpenTK;
@@ -18,7 +18,7 @@ namespace isometricgame.Isogame.Implemented.GameObjects.PlayerControlled
             : base(scene, position)
         {
             AddAttribute(new MovementControllerAttribute(this));
-            SpriteAttribute sa = new SpriteAttribute(this);
+            SpriteComponent sa = new SpriteComponent(this);
             sa.SetSprite(scene.Game.GetService<SpriteLibrary>().GetSprite("player"));
             AddAttribute(sa);
         }

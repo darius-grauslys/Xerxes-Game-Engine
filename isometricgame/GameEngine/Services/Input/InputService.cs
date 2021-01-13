@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.Services.Input
 {
-    public class InputService : GameService
+    public class InputService : GameSystem
     {
         //private BroadcastNetwork inputBroadcastNetwork = new BroadcastNetwork();
         //private MouseBroadcast mouseBroadcast = new MouseBroadcast();

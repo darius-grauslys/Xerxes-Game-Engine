@@ -1,4 +1,4 @@
-﻿using isometricgame.GameEngine.Attributes.Rendering;
+﻿using isometricgame.GameEngine.Components.Rendering;
 using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Services;
 using OpenTK;
@@ -33,7 +33,7 @@ namespace isometricgame.GameEngine.Scenes
         {
             foreach (GameObject obj in GameObjects)
             {
-                SpriteAttribute sa = obj.GetAttribute<SpriteAttribute>();
+                SpriteComponent sa = obj.GetAttribute<SpriteComponent>();
                 if (sa != null)
                     foreach (Sprite s in sa.GetSprites())
                         renderService.DrawSprite(s, obj.GetX() + s.OffsetX, obj.GetY() + s.OffsetY);

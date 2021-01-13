@@ -6,19 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Attributes
+namespace isometricgame.GameEngine.Components
 {
     /// <summary>
     /// Attributes are added to GameObjects to give additional functionalities. Such as hitboxes, physics, and more.
     /// </summary>
-    public class GameAttribute
+    public class GameComponent
     {
         private readonly GameObject parentObject;
         private bool enabled = true;
         
         public GameObject ParentObject { get => parentObject; }
 
-        public GameAttribute(GameObject parentObject)
+        public GameComponent(GameObject parentObject)
         {
             this.parentObject = parentObject;
         }

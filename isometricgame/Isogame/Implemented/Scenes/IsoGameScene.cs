@@ -16,7 +16,7 @@ namespace isometricgame.Isogame.Implemented.Scenes
     {
         UI_Scene ui_scene;
         TextWriter writer;
-
+        
         public IsoGameScene(Game gameRef) 
             : base(gameRef)
         {
@@ -26,7 +26,15 @@ namespace isometricgame.Isogame.Implemented.Scenes
 
         public override void RenderFrame(RenderService renderService, FrameEventArgs e)
         {
-            //base.RenderFrame(renderService, e);
+            if (!ui_scene.set)
+                base.RenderFrame(renderService, e);
+
+
+            if (!ui_scene.set)
+            {
+                Chunk c = World.ChunkDirectory.DeliminateChunk(new Vector2(0, 0));
+                ui_scene.SetChunk(c);
+            }
 
             renderService.RenderScene(ui_scene, e);
 
@@ -47,21 +55,71 @@ namespace isometricgame.Isogame.Implemented.Scenes
         {
             TextWriter writer;
             Sprite player;
+            AssetProvider assetProvider;
+            SpriteLibrary sl;
+
+            double delta;
 
             public UI_Scene(Game game) 
                 : base(game)
             {
                 writer = game.GetService<TextWriter>();
-                player = game.GetService<SpriteLibrary>().GetSprite("player2");
+                sl = game.GetService<SpriteLibrary>();
+                player = sl.GetSprite("player");
+                assetProvider = game.GetService<AssetProvider>();
+            }
+
+            private Sprite chunkSprite;
+            public bool set = false;
+
+            public void SetChunk(Chunk c)
+            {
+                set = true;
+                Sprite[,] tileSprites = new Sprite[Chunk.CHUNK_TILE_WIDTH, Chunk.CHUNK_TILE_HEIGHT];
+
+                for (int x = 0; x < Chunk.CHUNK_TILE_WIDTH; x++)
+                {
+                    for (int y = 0; y < Chunk.CHUNK_TILE_HEIGHT; y++)
+                    {
+                        Sprite s = sl.GetSpriteSet<TileSpriteSet>(c.Tiles[x, y].Data).GetSprite(c.Tiles[x, y].Orientation);
+                        tileSprites[x, y] = s;
+                    }
+                }
+
+                int w = tileSprites[0,0].Texture.Width, h = tileSprites[0,0].Texture.Height;
+
+                chunkSprite = assetProvider.FabricateSpriteArea
+                    (
+                    tileSprites,
+                    w,
+                    h,
+                    Chunk.CHUNK_TILE_WIDTH,
+                    Chunk.CHUNK_TILE_HEIGHT,
+                    w * Chunk.CHUNK_TILE_WIDTH / 2,
+                    h * Chunk.CHUNK_TILE_HEIGHT / 2,
+                    (x,y) => 
+                    {
+                        Tile t = c.Tiles[x, y];
+                        return new Vector2
+                        (
+                            Chunk.CartesianToIsometric_X(x,y),
+                            Chunk.CartesianToIsometric_Y(x,y,t.Z)
+                            );
+                    }
+                    );
             }
 
             public override void RenderFrame(RenderService renderService, FrameEventArgs e)
             {
                 base.RenderFrame(renderService, e);
 
-                writer.DrawText(renderService, String.Format("FPS: ] {0} [", Math.Round(1/e.Time)), "font", 0, 0);
+                delta += e.Time;
+                
+                writer.DrawText(renderService, String.Format("FPS: [ {0} ]", Math.Round(1/e.Time)), "font", 0, 0);
 
-                renderService.DrawSprite(player, 100, 100);
+                writer.DrawText(renderService, "The quick brown fox jumped over the lazy dog.", "font", 300 + (float)(10 * Math.Cos(delta)), 300 + (float)( 10 * Math.Sin(delta)));
+                
+                renderService.DrawSprite(chunkSprite, 100, 100);
             }
         }
     }

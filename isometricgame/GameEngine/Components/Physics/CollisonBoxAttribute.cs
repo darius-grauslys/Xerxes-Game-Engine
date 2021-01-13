@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Attributes.Physics
+namespace isometricgame.GameEngine.Components.Physics
 {
     /// <summary>
     /// This attribute is given to GameObjects that wish to know when they collide with other collision boxes.
     /// </summary>
-    public class CollisonBoxAttribute : GameAttribute
+    public class CollisonBoxAttribute : GameComponent
     {
         private Region boxRegion;
         public Region BoxRegion => boxRegion;
