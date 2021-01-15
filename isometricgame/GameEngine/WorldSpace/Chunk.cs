@@ -13,13 +13,13 @@ namespace isometricgame.GameEngine.WorldSpace
     public class Chunk
     {
         public static readonly int CHUNK_TILE_WIDTH = 16;
-        public static readonly int CHUNK_TILE_HEIGHT = 8;
+        public static readonly int CHUNK_TILE_HEIGHT = 16;
         public static int CHUNK_PIXEL_WIDTH => CHUNK_TILE_WIDTH * 35;
         public static int CHUNK_PIXEL_HEIGHT => CHUNK_TILE_HEIGHT * 18;
 
         public static Vector2 CHUNK_TILE_OFFSET = new Vector2(CHUNK_TILE_WIDTH, CHUNK_TILE_WIDTH);
         public static Vector2 CHUNK_TILE_OFFSET_NEGATIVE = new Vector2(-CHUNK_TILE_WIDTH, -CHUNK_TILE_WIDTH);
-                
+
         public static float CartesianToIsometric_X(float x, float y)
         {
             return Tile.TILE_WIDTH * 0.5f * (x + y);
@@ -32,7 +32,7 @@ namespace isometricgame.GameEngine.WorldSpace
 
 
         private Tile[,] tiles = new Tile[CHUNK_TILE_WIDTH, CHUNK_TILE_WIDTH];
-        private Vector2 chunkIndexPosition;
+        private IntegerPosition chunkIndexPosition;
         private bool verifiedChunk = false;
 
         private Sprite chunkSprite;
@@ -44,12 +44,12 @@ namespace isometricgame.GameEngine.WorldSpace
         /// <summary>
         /// Base Location is used for positioning on the chunk level. 
         /// </summary>
-        public Vector2 ChunkIndexPosition { get => chunkIndexPosition; set => chunkIndexPosition = value; }
+        public IntegerPosition ChunkIndexPosition { get => chunkIndexPosition; set => chunkIndexPosition = value; }
 
         /// <summary>
         /// TileSpace Location is used for positioning on the tile level.
         /// </summary>
-        public Vector2 TileSpaceLocation => new Vector2(
+        public IntegerPosition TileSpaceLocation => new IntegerPosition(
             ChunkIndexPosition.X * Chunk.CHUNK_TILE_WIDTH,
             ChunkIndexPosition.Y * Chunk.CHUNK_TILE_WIDTH
             );
@@ -57,7 +57,7 @@ namespace isometricgame.GameEngine.WorldSpace
         /// <summary>
         /// This is the edge of the chunk in terms of Tile Space.
         /// </summary>
-        public Vector2 TileSpaceEdgeLocation => TileSpaceLocation + new Vector2(16, 16);
+        public IntegerPosition TileSpaceEdgeLocation => TileSpaceLocation + new IntegerPosition(16, 16);
         /// <summary>
         /// GameSpace Location is used for positioning on the pixel level.
         /// </summary>
@@ -90,6 +90,11 @@ namespace isometricgame.GameEngine.WorldSpace
                 TileSpaceEdgeLocation.X > basePos.X &&
                 TileSpaceLocation.Y <= basePos.Y &&
                 TileSpaceEdgeLocation.Y > basePos.Y;
+        }
+
+        public static IntegerPosition WorldSpace_To_ChunkSpace(Vector2 position)
+        {
+            return new Vector2(position.X / Chunk.CHUNK_TILE_WIDTH, position.Y / Chunk.CHUNK_TILE_HEIGHT);
         }
     }
 }

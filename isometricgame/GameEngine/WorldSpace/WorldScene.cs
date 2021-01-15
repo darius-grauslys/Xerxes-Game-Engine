@@ -52,6 +52,7 @@ namespace isometricgame.GameEngine.WorldSpace
             focusObject = obj;
         }
 
+        //Not responsible for fps drop.
         public override void UpdateFrame(FrameEventArgs e)
         {
             Vector3 pos;
@@ -66,6 +67,7 @@ namespace isometricgame.GameEngine.WorldSpace
             base.UpdateFrame(e);
         }
 
+        //Not responsible for fps drop.
         public override void RenderFrame(RenderService renderService, FrameEventArgs e)
         {
             ChunkDirectory.ChunkCleanup(ClientCamera.Position.Xy);
@@ -98,58 +100,28 @@ namespace isometricgame.GameEngine.WorldSpace
             minX = ChunkDirectory.MinimalX_ByTileLocation;
             maxX = ChunkDirectory.MaximalX_ByTileLocation;
             minY = ChunkDirectory.MinimalY_ByTileLocation;
-            maxY = ChunkDirectory.MaximalY_ByTileLocation;
-            //TODO: remove
-            float zOffset = 0;
+            maxY = ChunkDirectory.MaximalY_ByTileLocation; //I get the lowest X,Y coordinate out of the chunks, and the highest, then itterate between them.
+
+            Sprite tile = spriteLibrary.GetSpriteSet<TileSpriteSet>(0).GetSprite(0);
             
+            //This wrecks my fps! This loop!
             for (float y = minY; y < maxY; y++)
             {
                 for (float x = maxX; x >= minX; x--)
                 {
                     Tile t;
 
-                    try
-                    {
-                        t = ChunkDirectory.DeliminateTile_ChunkSpace(new Vector2(x, y));
-                    }
-                    catch (CouldNotDelimitException)
-                    {
-                        continue;
-                    }
+                    //Not responsible for FPS drop. (tested by commenting out)
+                    t = ChunkDirectory.DeliminateTile(new Vector2(x, y));
 
-                    /*
-                    tX = x * Tile.TILE_WIDTH + ((Math.Abs(y) % 2) * (Tile.TILE_WIDTH/2));
-                    tY = y/2 * (Tile.TILE_HEIGHT - 7) + (6 * t.Z);
-                    */
-
-                    //This is an absolute hack, work to remove this later
-
-                    /*
-                    if (t.Orientation == 5 || t.Orientation == 6 || t.Orientation == 4 || t.Orientation == 12
-                        || t.Orientation == 7 || t.Orientation == 14 || t.Orientation == 13)
-                    {
-                        zOffset = -1;
-                    }
-                    else
-                        zOffset = 0;
-                    */
-
-                    /*
-                    if (y == -1 || y == 0)
-                    {
-                        tX = x * Tile.TILE_WIDTH + (Tile.TILE_WIDTH / 2);
-                    }
-                    else
-                    {
-                        tX = x * Tile.TILE_WIDTH;
-                    }
-                    tY = y/2 * (Tile.TILE_HEIGHT - 7) + (6 * t.Z);
-                    */
                     float tx = Chunk.CartesianToIsometric_X(x, y), ty = Chunk.CartesianToIsometric_Y(x, y, t.Z);
+
+                    //Sprite acquision from library not responsible for fps drop. (same test)
                     renderService.DrawSprite(spriteLibrary.GetSpriteSet<TileSpriteSet>(t.Data).GetTile(t.Orientation), tx, ty);
                 }
             }
 
+            //GameObject drawing not responsible for fps drop.
             SpriteComponent sa;
             foreach (GameObject obj in GameObjects)
             {

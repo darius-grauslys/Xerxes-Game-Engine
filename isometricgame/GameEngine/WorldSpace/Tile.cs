@@ -14,6 +14,13 @@ namespace isometricgame.GameEngine.WorldSpace
         public static readonly int TILE_AREA = TILE_WIDTH * TILE_HEIGHT;
         public static readonly int TILE_Y_INC = TILE_HEIGHT / 2 - 3;
 
+        public static byte[,] ORIENTATIONS = new byte[,]
+        {
+            { 8, 9, 1 },
+            { 12, 0, 3 },
+            { 4, 6, 2 }
+        };
+
         private int _data;
         private int _z;
         private byte _orientation;

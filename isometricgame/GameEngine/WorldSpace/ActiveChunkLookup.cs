@@ -112,7 +112,7 @@ namespace isometricgame.GameEngine.WorldSpace
                 //relocate target chunk
                 targetChunk = cs.DeliminateChunk(basePos);
             }
-            relativeBasePosition = basePos - targetChunk.TileSpaceLocation;
+            relativeBasePosition = (IntegerPosition)basePos - targetChunk.TileSpaceLocation;
 
             if (mode == ActiveChunkLookupMode.NearbyTiles)
             {
@@ -127,18 +127,18 @@ namespace isometricgame.GameEngine.WorldSpace
                     }
 
                     //now that overflow is determined, find rel
-                    relativeNearbyPosition = relativeNearbyPosition - overflowChunk.TileSpaceLocation;
+                    relativeNearbyPosition = (IntegerPosition)relativeNearbyPosition - overflowChunk.TileSpaceLocation;
                     lookupChunk = overflowChunk;
                 }
                 else
                 {
-                    relativeNearbyPosition = relativeNearbyPosition - targetChunk.TileSpaceLocation;
+                    relativeNearbyPosition = (IntegerPosition)relativeNearbyPosition - targetChunk.TileSpaceLocation;
                     lookupChunk = targetChunk;
                 }
             }
             else
             {
-                relativeNearbyPosition = basePos - targetChunk.TileSpaceLocation;
+                relativeNearbyPosition = (IntegerPosition)basePos - targetChunk.TileSpaceLocation;
                 lookupChunk = targetChunk;
             }
 

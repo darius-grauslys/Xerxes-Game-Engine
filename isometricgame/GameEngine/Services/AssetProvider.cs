@@ -143,6 +143,30 @@ namespace isometricgame.GameEngine.Services
 
         #region Sprites
 
+
+        public Sprite CopyTest(Sprite s)
+        {
+            Console.WriteLine(GL.GetError());
+
+            int text = GL.GenTexture();
+            
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, s.Texture.Width, s.Texture.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+
+            GL.BindTextures(0, 2, new int[] { s.Texture.ID, text});
+            GL.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, s.Texture.Width, s.Texture.Height);
+
+            Console.WriteLine(GL.GetError()); 
+
+            return new Sprite(new Texture2D(text, new Vector2(s.Texture.Width, s.Texture.Height)), new Vertex[]
+            {
+                new Vertex(new Vector2(0,0), new Vector2(0,0)),
+                new Vertex(new Vector2(0,s.Texture.Height), new Vector2(0,1)),
+                new Vertex(new Vector2(s.Texture.Width,s.Texture.Height), new Vector2(1,1)),
+                new Vertex(new Vector2(s.Texture.Width,0), new Vector2(1,0)),
+            });            
+        }
+
+
         public Sprite FabricateSpriteArea(
             Sprite[,] sprites, //the array of little sprite I want to draw
             int subSpriteWidth, 
@@ -188,6 +212,7 @@ namespace isometricgame.GameEngine.Services
                 }
             }
 
+            bmp.UnlockBits(bmpd);
             //wrap everything up:
 
             GL.BindBuffer(BufferTarget.TextureBuffer, 0);

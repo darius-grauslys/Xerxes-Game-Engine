@@ -32,5 +32,10 @@ namespace isometricgame.GameEngine.WorldSpace.Generators
 
             return ret;
         }
+
+        public Chunk GetChunk(Vector2 pos)
+        {
+            return GetChunk(perlin.InterprolateNoise(pos), pos);
+        }
     }
 }

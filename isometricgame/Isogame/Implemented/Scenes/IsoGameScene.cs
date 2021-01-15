@@ -26,14 +26,13 @@ namespace isometricgame.Isogame.Implemented.Scenes
 
         public override void RenderFrame(RenderService renderService, FrameEventArgs e)
         {
-            if (!ui_scene.set)
-                base.RenderFrame(renderService, e);
+            base.RenderFrame(renderService, e);
 
 
             if (!ui_scene.set)
             {
                 Chunk c = World.ChunkDirectory.DeliminateChunk(new Vector2(0, 0));
-                ui_scene.SetChunk(c);
+                //ui_scene.Test();
             }
 
             renderService.RenderScene(ui_scene, e);
@@ -69,8 +68,15 @@ namespace isometricgame.Isogame.Implemented.Scenes
                 assetProvider = game.GetService<AssetProvider>();
             }
 
+            private Sprite test;
             private Sprite chunkSprite;
             public bool set = false;
+
+            public void Test()
+            {
+                test = assetProvider.CopyTest(player);
+                set = true;
+            }
 
             public void SetChunk(Chunk c)
             {
@@ -118,8 +124,9 @@ namespace isometricgame.Isogame.Implemented.Scenes
                 writer.DrawText(renderService, String.Format("FPS: [ {0} ]", Math.Round(1/e.Time)), "font", 0, 0);
 
                 writer.DrawText(renderService, "The quick brown fox jumped over the lazy dog.", "font", 300 + (float)(10 * Math.Cos(delta)), 300 + (float)( 10 * Math.Sin(delta)));
-                
-                renderService.DrawSprite(chunkSprite, 100, 100);
+
+                //renderService.DrawSprite(test, 100, 200);
+                //renderService.DrawSprite(chunkSprite, 100, 100);
             }
         }
     }

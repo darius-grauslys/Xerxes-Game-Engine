@@ -121,6 +121,7 @@
     <Compile Include="GameEngine\WorldSpace\Geometry\LineSegment.cs" />
     <Compile Include="GameEngine\WorldSpace\Geometry\Orientation.cs" />
     <Compile Include="GameEngine\WorldSpace\Geometry\Region.cs" />
+    <Compile Include="GameEngine\WorldSpace\IntegerPosition.cs" />
     <Compile Include="GameEngine\WorldSpace\Physics\ForceType.cs" />
     <Compile Include="GameEngine\WorldSpace\Tile.cs" />
     <Compile Include="GameEngine\WorldSpace\Chunk.cs" />
