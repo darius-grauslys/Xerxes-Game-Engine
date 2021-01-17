@@ -107,6 +107,7 @@
     <Compile Include="GameEngine\Services\Input\Mouse\MouseEventArgument.cs" />
     <Compile Include="GameEngine\Services\Input\Mouse\MouseMoveEventArgument.cs" />
     <Compile Include="GameEngine\Services\Input\Mouse\MouseMoveEventChannel.cs" />
+    <Compile Include="GameEngine\Services\Rendering\Shader.cs" />
     <Compile Include="GameEngine\Services\RenderService.cs" />
     <Compile Include="GameEngine\Services\TextWriter.cs" />
     <Compile Include="GameEngine\WorldSpace\ActiveChunkLookup.cs" />
@@ -148,6 +149,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Assets\Shaders\shader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\Shaders\shader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
   </ItemGroup>

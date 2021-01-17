@@ -77,6 +77,7 @@ namespace isometricgame.GameEngine
             gameWindow.Load += GameWindow_Load;
             gameWindow.RenderFrame += GameWindow_RenderFrame;
             gameWindow.UpdateFrame += GameWindow_UpdateFrame;
+            gameWindow.Unload += GameWindow_Unload;
             gameWindow.Closing += GameWindow_Closing;
             //gameWindow.KeyDown += (o, e) => KeyPressed?.Invoke(o, e);
             //gameWindow.KeyUp += (o, e) => KeyPressed?.Invoke(o, e);
@@ -91,7 +92,7 @@ namespace isometricgame.GameEngine
 
             LoadContent();
         }
-
+        
         public Matrix4 GetBasicView() { return Matrix4.CreateTranslation(-WindowWidth / 2, -WindowHeight / 2, 0); }
 
         private void GameWindow_Resize(object sender, EventArgs e)
@@ -131,6 +132,12 @@ namespace isometricgame.GameEngine
         private void GameWindow_Load(object sender, EventArgs e)
         {
             OnGameLoad();
+        }
+
+        private void GameWindow_Unload(object sender, EventArgs e)
+        {
+            foreach (GameSystem gamesys in services)
+                gamesys.Unload();
         }
 
         internal virtual void OnGameLoad()

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Scenes;
+using isometricgame.GameEngine.Services.Rendering;
 using isometricgame.GameEngine.WorldSpace;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -17,11 +18,20 @@ namespace isometricgame.GameEngine.Services
         private Matrix4 projection;
         private Matrix4 cachedWorldMatrix;
 
+        private Shader shader;
+
         public RenderService(Game game, int windowWidth, int windowHeight) 
             : base(game)
         {
             AdjustProjection(windowWidth, windowHeight);
             cachedWorldMatrix = Matrix4.CreateTranslation(new Vector3(0,0,0));
+
+            shader = new Shader(@"Assets\Shaders\shader.vert", @"Assets\Shaders\shader.frag");
+        }
+
+        public override void Unload()
+        {
+            shader.Dispose();
         }
 
         public void AdjustProjection(int width, int height)
@@ -87,14 +97,15 @@ namespace isometricgame.GameEngine.Services
         /// <param name="y"></param>
         public void FastDrawSprite(Sprite s, float x, float y)
         {
-            _drawSprite(s, x, y, cachedWorldMatrix);
+            newDrawSpriteFunc(s, x, y, cachedWorldMatrix);
+            //_drawSprite(s, x, y, cachedWorldMatrix);
         }
 
         private void _drawSprite(Sprite s, float x, float y, Matrix4 world)
         {
             GL.BindTexture(TextureTarget.Texture2D, s.Texture.ID);
 
-            Matrix4 translation = Matrix4.CreateTranslation(new Vector3(x, y, 0)) * Matrix4.Invert(world);
+            Matrix4 translation = Matrix4.CreateTranslation(new Vector3(x, y, 0)) * world;
 
             GL.LoadMatrix(ref translation);
 
@@ -103,6 +114,22 @@ namespace isometricgame.GameEngine.Services
             GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes));
             GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 2));
 
+            GL.DrawArrays(PrimitiveType.Quads, 0, s.Vertices.Length);
+        }
+
+        private void newDrawSpriteFunc(Sprite s, float x, float y, Matrix4 world)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, s.Texture.ID);
+
+            shader.Use();
+
+            int transform = GL.GetUniformLocation(shader.Handle, "transform");
+
+            Matrix4 translation = Matrix4.CreateTranslation(new Vector3(x, y, 0)) * world;
+
+            GL.UniformMatrix4(transform, true, ref translation);
+
+            GL.BindVertexArray(s.VertexArrayObject);
             GL.DrawArrays(PrimitiveType.Quads, 0, s.Vertices.Length);
         }
 

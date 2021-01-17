@@ -16,5 +16,10 @@ namespace isometricgame.GameEngine.Services
         {
             GameRef = gameRef;
         }
+
+        public virtual void Unload()
+        {
+
+        }
     }
 }

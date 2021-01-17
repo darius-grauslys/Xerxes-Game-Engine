@@ -94,7 +94,8 @@ namespace isometricgame.GameEngine.WorldSpace
         {
             Chunk c;
 
-            IntegerPosition chunkPosition = Chunk.WorldSpace_To_ChunkSpace(position) - center + new IntegerPosition(renderDistance, renderDistance);
+            IntegerPosition posToChunk = Chunk.WorldSpace_To_ChunkSpace(position);
+            IntegerPosition chunkPosition = posToChunk - center + new IntegerPosition(renderDistance, renderDistance);
             
             return _chunks[chunkPosition.X, chunkPosition.Y];
 
@@ -196,6 +197,7 @@ namespace isometricgame.GameEngine.WorldSpace
             }
 
             _chunks = newChunkSet;
+            center = newCenter;
 
             //verify z values and orientations
             for (int x = 1; x < DoubleDist-2; x++) //do not verify skirt chunks, only: [1, n-1]

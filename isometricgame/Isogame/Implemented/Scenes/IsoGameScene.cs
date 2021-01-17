@@ -26,7 +26,7 @@ namespace isometricgame.Isogame.Implemented.Scenes
 
         public override void RenderFrame(RenderService renderService, FrameEventArgs e)
         {
-            base.RenderFrame(renderService, e);
+            //base.RenderFrame(renderService, e);
 
 
             if (!ui_scene.set)
@@ -123,7 +123,7 @@ namespace isometricgame.Isogame.Implemented.Scenes
                 
                 writer.DrawText(renderService, String.Format("FPS: [ {0} ]", Math.Round(1/e.Time)), "font", 0, 0);
 
-                writer.DrawText(renderService, "The quick brown fox jumped over the lazy dog.", "font", 300 + (float)(10 * Math.Cos(delta)), 300 + (float)( 10 * Math.Sin(delta)));
+                writer.DrawText(renderService, "The quick brown fox jumped over the lazy dog.", "font", 300 + (float)(100 * Math.Cos(delta)), 300 + (float)( 100 * Math.Sin(delta)));
 
                 //renderService.DrawSprite(test, 100, 200);
                 //renderService.DrawSprite(chunkSprite, 100, 100);

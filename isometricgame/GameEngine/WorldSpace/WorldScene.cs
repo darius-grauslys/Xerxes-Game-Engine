@@ -37,7 +37,7 @@ namespace isometricgame.GameEngine.WorldSpace
         public WorldScene(Game game)
             : base(game)
         {
-            this.ChunkDirectory = new ChunkDirectory(4, new WorldGenerator(779876));
+            this.ChunkDirectory = new ChunkDirectory(3, new WorldGenerator(779876));
             this.ClientCamera = new Camera(this);
 
             spriteLibrary = game.GetService<SpriteLibrary>();
@@ -62,7 +62,7 @@ namespace isometricgame.GameEngine.WorldSpace
                 pos = new Vector3(0, 0, 0);
             ClientCamera.Pan_Linear((float)e.Time, pos);
 
-            SceneMatrix = ClientCamera.GetView();
+            SceneMatrix = Matrix4.Invert(ClientCamera.GetView());
 
             base.UpdateFrame(e);
         }

@@ -8,67 +8,95 @@ using OpenTK.Graphics.OpenGL;
 
 namespace isometricgame.GameEngine.Rendering
 {
-    public struct Sprite
+    public class Sprite : IDisposable
     {
-        private Vertex[] verticies;
+        private Vertex[] vertices;
+        private int vertexBufferObject;
+        private int vertexArrayObject;
         private Texture2D texture;
 
         private bool flippedX, flippedY;
 
         private float offsetX, offsetY;
 
-        public Vertex[] Vertices => verticies;
+        public Vertex[] Vertices => vertices;
         public Texture2D Texture => texture;
 
         public float OffsetX { get => offsetX; set => offsetX = value; }
         public float OffsetY { get => offsetY; set => offsetY = value; }
-        
-        public Sprite(Texture2D texture)
-        {
-            flippedX = false;
-            flippedY = false;
+        public int VertexBufferObject { get => vertexBufferObject; private set => vertexBufferObject = value; }
+        public int VertexArrayObject { get => vertexArrayObject; private set => vertexArrayObject = value; }
 
-            verticies = new Vertex[]
+        public Sprite(Texture2D texture, Vertex[] vertices = null)
+        {
+            if (vertices == null)
+            {
+                this.vertices = new Vertex[]
                 {
                     new Vertex(new Vector2(0, 0), new Vector2(1, 0)),
                     new Vertex(new Vector2(0, texture.Height), new Vector2(1, 1)),
                     new Vertex(new Vector2(texture.Width, texture.Height), new Vector2(0, 1)),
                     new Vertex(new Vector2(texture.Width, 0), new Vector2(0, 0)),
                 };
+            }
+            else
+            {
+                this.vertices = vertices;
+            }
 
-            this.texture = texture;
-
-            offsetX = 0;
-            offsetY = 0;
-        }
-
-        public Sprite(Texture2D texture, Vertex[] verticies)
-        {
             flippedX = false;
             flippedY = false;
 
-            this.verticies = verticies;
-
+            VertexBufferObject = GL.GenBuffer();
+            VertexArrayObject = GL.GenVertexArray();
+            
             this.texture = texture;
 
             offsetX = 0;
             offsetY = 0;
+
+            BindSprite();
+        }
+
+        //I think this goes here.
+        private void BindSprite()
+        {
+            GL.BindVertexArray(VertexArrayObject);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
+
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertex.SizeInBytes * vertices.Length), vertices, BufferUsageHint.StaticDraw);
+            
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 2 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
+            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, 8 * sizeof(float), 4 * sizeof(float));
+            GL.EnableVertexAttribArray(2);
+
+            GL.BindVertexArray(0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
 
         public void Flip(bool x=true, bool y=true)
         {
             if (x)
             {
-                verticies[0] = new Vertex(new Vector2(0, 0), flippedX ? new Vector2(1, 0) : new Vector2(0, 0));
-                verticies[2] = new Vertex(new Vector2(texture.Width, texture.Height), flippedX ? new Vector2(0, 1) : new Vector2(1, 1));
+                vertices[0] = new Vertex(new Vector2(0, 0), flippedX ? new Vector2(1, 0) : new Vector2(0, 0));
+                vertices[2] = new Vertex(new Vector2(texture.Width, texture.Height), flippedX ? new Vector2(0, 1) : new Vector2(1, 1));
                 flippedX = !flippedX;
             }
             if (y)
             {
-                verticies[1] = new Vertex(new Vector2(0, texture.Height), flippedY ? new Vector2(1, 1) : new Vector2(0, 1));
-                verticies[3] = new Vertex(new Vector2(texture.Width, 0), flippedY ? new Vector2(0, 0) : new Vector2(1, 0));
+                vertices[1] = new Vertex(new Vector2(0, texture.Height), flippedY ? new Vector2(1, 1) : new Vector2(0, 1));
+                vertices[3] = new Vertex(new Vector2(texture.Width, 0), flippedY ? new Vector2(0, 0) : new Vector2(1, 0));
                 flippedY = !flippedY;
             }
+        }
+
+        public void Dispose()
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.DeleteBuffer(VertexBufferObject);
         }
     }
 }
