@@ -1,8 +1,9 @@
 ﻿using isometricgame.GameEngine;
 using isometricgame.GameEngine.Rendering;
-using isometricgame.GameEngine.Services;
-using isometricgame.GameEngine.Services.Input;
+using isometricgame.GameEngine.Systems;
+using isometricgame.GameEngine.Systems.Input;
 using isometricgame.GameEngine.WorldSpace;
+using isometricgame.GameEngine.WorldSpace.ChunkSpace;
 using isometricgame.Isogame.Implemented.GameObjects.PlayerControlled;
 using isometricgame.Isogame.Implemented.Scenes;
 using OpenTK;
@@ -23,48 +24,30 @@ namespace isometricgame.Isogame
         {
         }
         
-        internal sealed override void RegisterServices()
+        internal sealed override void RegisterSystems()
         {
-            base.RegisterServices();
+            base.RegisterSystems();
 
-            RegisterService(new InputService(this, gameWindow));
+            RegisterSystem(new InputService(this, gameWindow));
         }
 
         internal sealed override void LoadContent()
         {
             base.LoadContent();
 
-            AssetProvider.LoadTileSet(@"Assets\GrassTiles.png", "grass", SpriteLibrary);
-            AssetProvider.LoadTileSet(@"Assets\SandTiles.png", "sand", SpriteLibrary);
+            SpriteLibrary.RecordSprite(AssetProvider.ExtractSpriteSheet(@"Assets\GrassTiles.png", "Grass", Tile.TILE_WIDTH, Tile.TILE_HEIGHT));
+            SpriteLibrary.RecordSprite(AssetProvider.ExtractSpriteSheet(@"Assets\SandTiles.png", "Sand", Tile.TILE_WIDTH, Tile.TILE_HEIGHT));
 
+            SpriteLibrary.RecordSprite(AssetProvider.ExtractSpriteSheet(@"Assets\player2.png", "player", 88, 88));
 
-            //Sprite[] GrassTiles = AssetProvider;
+            SpriteLibrary.RecordSprite(AssetProvider.ExtractSpriteSheet(@"Assets\gamefont.png", "font", 9, 14));
 
+            TextDisplayer.LoadFont("font", SpriteLibrary.GetSprite("font"));
 
-            //ContentPipe.LoadTileSet(@"Assets\WaterTiles.png", "water", SpriteLibrary);
-            SpriteLibrary.RecordSprite("player", new Sprite(AssetProvider.LoadTexture(@"Assets\player.png", true)));
-
-            /*
-            Sprite player = SpriteLibrary.GetSprite("player");
-            Bitmap bmp = TextureLibrary.GetBitmap(player.Texture);
-
-            BitmapData bmpd = bmp.LockBits(new Rectangle(0,0,bmp.Width,bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            Texture2D texture = ContentPipe.BindTexture(bmpd, bmp.Width, bmp.Height);
-            SpriteLibrary.RecordSprite("player2", new Sprite(texture));
-            */
-
-
-            //SpriteLibrary.RecordSpriteSet("font", ContentPipe.CreateAndBindSpriteSet(ContentPipe.LoadTextureSheet(@"Assets\gamefont.png", 9, 14, TextWriter.CHARS.Length)), (i) => TextWriter.CHARS[i].ToString());
-
-            FixedSpriteSet font = new FixedSpriteSet(AssetProvider.ExtractSpriteSheet(@"Assets\gamefont.png", "font", 9, 14));
-            SpriteLibrary.RecordSpriteSet("font", font, (i) => TextWriter.CHARS[i].ToString());
-
-            TextWriter.LoadFont("font", SpriteLibrary.GetSpriteSet<FixedSpriteSet>("font"));
-
-            GameScene world = new IsoGameScene(this);
+            WorldScene world = new IsoGameScene(this);
             Player p = new Player(world, new Vector3(0, 0, 0));
-            world.World.GameObjects.Add(p);
-            world.World.SetFocus(p);
+            world.GameObjects.Add(p);
+            world.ClientCamera.FocusObject = p;
             SetScene(world);
         }
     }

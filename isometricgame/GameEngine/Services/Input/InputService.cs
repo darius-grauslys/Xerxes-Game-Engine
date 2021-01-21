@@ -1,7 +1,4 @@
-﻿using isometricgame.GameEngine.Events;
-using isometricgame.GameEngine.Services.Input.Keyboard;
-using isometricgame.GameEngine.Services.Input.Mouse;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Input;
 using System;
 using System.Collections.Generic;
@@ -9,35 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Services.Input
+namespace isometricgame.GameEngine.Systems.Input
 {
     public class InputService : GameSystem
     {
-        //private BroadcastNetwork inputBroadcastNetwork = new BroadcastNetwork();
-        //private MouseBroadcast mouseBroadcast = new MouseBroadcast();
-        //private KeyboardBroadcast keyboardBroadcast = new KeyboardBroadcast();
+        private Dictionary<InputType, List<InputHandler>> inputDirectory = new Dictionary<InputType, List<InputHandler>>()
+        {
+            { InputType.Keyboard_Press, new List<InputHandler>() },
+            { InputType.Keyboard_UpDown, new List<InputHandler>() },
+            { InputType.Mouse_Button, new List<InputHandler>() },
+            { InputType.Mouse_Move, new List<InputHandler>() },
+            { InputType.Mouse_Wheel, new List<InputHandler>() }
+        };
 
-        //private MouseMoveEventChannel mouseMoveEventChannel;
-        //private MouseButtonEventChannel mouseButtonEventChannel;
-        //private KeyboardPressEventChannel keyboardPressEventChannel;
-        //private KeyboardKeystateEventChannel keyboardKeystateEventChannel;
-
-
-        private KeyboardKeyEventArgs keyUpDown = null;
-        private KeyPressEventArgs keyPress = null;
-
-        private MouseButtonEventArgs mouseUpDown = null;
-        private MouseMoveEventArgs mouseMove = null;
-        private MouseWheelEventArgs mouseWheel = null;
-
-        public KeyboardKeyEventArgs KeyUpDown => keyUpDown;
-        public KeyPressEventArgs KeyPress => keyPress;
-
-        public MouseButtonEventArgs MouseUpDown => mouseUpDown;
-        public MouseMoveEventArgs MouseMove => mouseMove;
-        public MouseWheelEventArgs MouseWheel => MouseWheel;
-
-        //public BroadcastNetwork InputBroadcastNetwork { get => inputBroadcastNetwork; private set => inputBroadcastNetwork = value; }
+        private Dictionary<int, List<InputHandler>> handlerID_Classes = new Dictionary<int, List<InputHandler>>();
+        private List<bool> enabled_Classes = new List<bool>();
 
         public InputService(Game game, GameWindow gameWindow) 
             : base(game)
@@ -50,53 +33,73 @@ namespace isometricgame.GameEngine.Services.Input
             gameWindow.MouseUp += GameWindow_MouseUp;
             gameWindow.MouseWheel += GameWindow_MouseWheel;
             gameWindow.MouseMove += GameWindow_MouseMove;
+        }
 
-            //InputBroadcastNetwork.RegisterBroadcast(mouseBroadcast);
-            //InputBroadcastNetwork.RegisterBroadcast(keyboardBroadcast);
+        public InputHandler Register(InputType inputType, bool enabled = true, int handlerID = -1)
+        {
+            int newID =  (handlerID > 0) ? handlerID : handlerID_Classes.Keys.Count;
+            InputHandler handler = new InputHandler(newID, inputType, enabled);
 
-            //mouseMoveEventChannel = mouseBroadcast.GetChannel<MouseMoveEventChannel>();
-            //mouseButtonEventChannel = mouseBroadcast.GetChannel<MouseButtonEventChannel>();
+            if (handlerID_Classes.ContainsKey(newID))
+                handlerID_Classes[newID].Add(handler);
+            else
+            {
+                handlerID_Classes.Add(newID, new List<InputHandler> { handler });
+                enabled_Classes.Add(true);
+            }
+            
+            for(int key = 1; key <= 16; key*=2)
+                if (0 < ((int)inputType & key))
+                    inputDirectory[(InputType)key].Add(handler);
 
-            //keyboardPressEventChannel = keyboardBroadcast.GetChannel<KeyboardPressEventChannel>();
-            //keyboardKeystateEventChannel = keyboardBroadcast.GetChannel<KeyboardKeystateEventChannel>();
+            return handler;
+        }
 
-            //mouseBroadcast.ToggleLock(false);
-            //keyboardBroadcast.ToggleLock(false);
+        public void ToggleClass(int handlerID, bool state)
+        {
+            enabled_Classes[handlerID] = state;
         }
 
         private void GameWindow_MouseMove(object sender, MouseMoveEventArgs e)
         {
-            mouseMove = e;
+            foreach (InputHandler handle in inputDirectory[InputType.Mouse_Move])
+                handle.Handle_Mouse_Move(sender, e);
         }
 
         private void GameWindow_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            mouseWheel = e;
+            foreach (InputHandler handle in inputDirectory[InputType.Mouse_Wheel])
+                handle.Handle_Mouse_Wheel(sender, e);
         }
 
         private void GameWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            mouseUpDown = e;
+            foreach (InputHandler handle in inputDirectory[InputType.Mouse_Button])
+                handle.Handle_Mouse_Button(sender, e);
         }
 
         private void GameWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            mouseUpDown = e;
+            foreach (InputHandler handle in inputDirectory[InputType.Mouse_Button])
+                handle.Handle_Mouse_Button(sender, e);
         }
 
         private void GameWindow_KeyUp(object sender, KeyboardKeyEventArgs e)
         {
-            keyUpDown = e;
+            foreach (InputHandler handle in inputDirectory[InputType.Keyboard_UpDown])
+                handle.Handle_Keyboard_UpDown(sender, e);
         }
 
         private void GameWindow_KeyPress(object sender, KeyPressEventArgs e)
         {
-            keyPress = e;
+            foreach (InputHandler handle in inputDirectory[InputType.Keyboard_Press])
+                handle.Handle_Keyboard_Press(sender, e);
         }
 
         private void GameWindow_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
-            keyUpDown = e;
+            foreach (InputHandler handle in inputDirectory[InputType.Keyboard_UpDown])
+                handle.Handle_Keyboard_UpDown(sender, e);
         }
     }
 }

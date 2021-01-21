@@ -1,7 +1,6 @@
 ﻿using isometricgame.GameEngine;
-using isometricgame.GameEngine.Exceptions.WorldSpace;
 using isometricgame.GameEngine.WorldSpace;
-using isometricgame.GameEngine.Services;
+using isometricgame.GameEngine.Systems;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
@@ -13,6 +12,9 @@ using isometricgame.GameEngine.Components.Rendering;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.WorldSpace.Generators;
 using isometricgame.GameEngine.Rendering;
+using isometricgame.GameEngine.Events.Arguments;
+using isometricgame.GameEngine.Systems.Rendering;
+using isometricgame.GameEngine.WorldSpace.ChunkSpace;
 
 namespace isometricgame.GameEngine.WorldSpace
 {
@@ -21,171 +23,96 @@ namespace isometricgame.GameEngine.WorldSpace
         private ChunkDirectory chunkDirectory;
         private Camera clientCamera;
 
-        //temp, remove later
+        private int tileRange, renderDistance;
+        
         private SpriteLibrary spriteLibrary;
-
-        private List<GameObject> unsequencedGameObjects = new List<GameObject>();
-
-        /// <summary>
-        /// To be replaced.
-        /// </summary>
-        private GameObject focusObject;
 
         public Camera ClientCamera { get => clientCamera; private set => clientCamera = value; }
         public ChunkDirectory ChunkDirectory { get => chunkDirectory; set => chunkDirectory = value; }
 
-        public WorldScene(Game game)
+        public WorldScene(Game game, int renderDistance=2, int seed=12345)
             : base(game)
         {
-            this.ChunkDirectory = new ChunkDirectory(3, new WorldGenerator(779876));
+            this.ChunkDirectory = new ChunkDirectory(renderDistance, new WorldGenerator(seed));
             this.ClientCamera = new Camera(this);
+            this.renderDistance = renderDistance;
 
-            spriteLibrary = game.GetService<SpriteLibrary>();
+            spriteLibrary = game.GetSystem<SpriteLibrary>();
         }
-
-        /// <summary>
-        /// REMOVE THIS LATER.
-        /// </summary>
-        /// <param name="obj"></param>
-        public void SetFocus(GameObject obj)
+        
+        public override void UpdateFrame(FrameArgument e)
         {
-            focusObject = obj;
-        }
+            ClientCamera.Pan_Linear((float)e.DeltaTime);
+            
+            SceneMatrix = ClientCamera.GetView();
+            ChunkDirectory.ChunkCleanup(ClientCamera.Position.Xy);
 
-        //Not responsible for fps drop.
-        public override void UpdateFrame(FrameEventArgs e)
-        {
-            Vector3 pos;
-            if (focusObject != null)
-                pos = new Vector3(focusObject.GetX(), focusObject.GetY(), focusObject.GetZ());
-            else
-                pos = new Vector3(0, 0, 0);
-            ClientCamera.Pan_Linear((float)e.Time, pos);
-
-            SceneMatrix = Matrix4.Invert(ClientCamera.GetView());
+            tileRange = (int)((2 / Math.Log(clientCamera.Zoom + 1)) * 16);
+            renderDistance = (tileRange / Chunk.CHUNK_TILE_WIDTH) + 2;
+            chunkDirectory.RenderDistance = renderDistance;
 
             base.UpdateFrame(e);
         }
-
-        //Not responsible for fps drop.
-        public override void RenderFrame(RenderService renderService, FrameEventArgs e)
+        
+        public override void RenderFrame(RenderService renderService, FrameArgument e)
         {
-            ChunkDirectory.ChunkCleanup(ClientCamera.Position.Xy);
-
-            //OK so in terms of procedural ground rendering there is only the X and Y axis. The ground however can be offset by a Z value.
-            //HOWEVER this does not mean there are more than one tile on a give Z axis. So we only itterate on X and Y for tile
-            //rendering. Now game objects on the other hand CAN be on any Z level. So to deal with this we still use Z for layering
-            //and checking collisions.
-
-            //for each x value
-            //for each y value
-            //CS.DelimiateTile(pos(x,y)) -> render
-            //Check for obj ?-> render
-
-
-            //TODO:
-            /*
-             * 
-             * I am going to work on serialization / deserialization.
-             * 
-             * Worlds will be folders, with a header file and chunkspace files.
-             * Each chunkspace file will have... 16x16 chunks? The header file will
-             * inform the game which chunkspaces have allocate chunks.
-             * 
-             * 
-             */
-
+            if (chunkDirectory.RenderDistance != renderDistance)
+                return; //prevent race condition
 
             float minX, maxX, minY, maxY;
-            minX = ChunkDirectory.MinimalX_ByTileLocation;
-            maxX = ChunkDirectory.MaximalX_ByTileLocation;
-            minY = ChunkDirectory.MinimalY_ByTileLocation;
-            maxY = ChunkDirectory.MaximalY_ByTileLocation; //I get the lowest X,Y coordinate out of the chunks, and the highest, then itterate between them.
 
-            Sprite tile = spriteLibrary.GetSpriteSet<TileSpriteSet>(0).GetSprite(0);
-            
-            //This wrecks my fps! This loop!
-            for (float y = minY; y < maxY; y++)
+            int flooredX = (int)clientCamera.TargetPosition.X;
+            int flooredY = (int)clientCamera.TargetPosition.Y;
+                        
+            minX = flooredX - tileRange;
+            minY = flooredY - tileRange;
+            maxX = flooredX + tileRange;
+            maxY = flooredY + tileRange;
+
+            float width = chunkDirectory.VisibleWidth;
+            float height = chunkDirectory.VisibleHeight;
+
+            float rot = (float)(Math.Sqrt(2) / 2);
+
+            for (float y = maxY; y >= minY; y--)
             {
-                for (float x = maxX; x >= minX; x--)
+                for (float x = minX; x < maxX; x++)
                 {
                     Tile t;
-
-                    //Not responsible for FPS drop. (tested by commenting out)
-                    t = ChunkDirectory.DeliminateTile(new Vector2(x, y));
-
+                    
+                    try
+                    {
+                        t = ChunkDirectory.DeliminateTile(new Vector2(x, y));
+                    }
+                    catch { return; } //write to error log later.
+                    
                     float tx = Chunk.CartesianToIsometric_X(x, y), ty = Chunk.CartesianToIsometric_Y(x, y, t.Z);
 
-                    //Sprite acquision from library not responsible for fps drop. (same test)
-                    renderService.DrawSprite(spriteLibrary.GetSpriteSet<TileSpriteSet>(t.Data).GetTile(t.Orientation), tx, ty);
+                    spriteLibrary.GetSprite(t.Data).Use(t.Orientation);
+                    renderService.DrawSprite(tx, ty);
                 }
             }
-
-            //GameObject drawing not responsible for fps drop.
+            
             SpriteComponent sa;
             foreach (GameObject obj in GameObjects)
             {
                 if ((sa = obj.GetAttribute<SpriteComponent>()) != null)
                 {
-                    float z = ChunkDirectory.DeliminateTile(obj.Position.Xy).Z;
-                    obj.SetZ(z);
-
-                    Sprite[] ss = sa.GetSprites();
-                    foreach (Sprite s in ss)
+                    try
                     {
-                        float x = obj.GetX() + s.OffsetX, y = obj.GetY() + s.OffsetY;
-                        float tx = Chunk.CartesianToIsometric_X(x,y), ty = Chunk.CartesianToIsometric_Y(x,y,obj.GetZ());
-                        renderService.DrawSprite(s, tx, ty);
+                        Tile t = ChunkDirectory.DeliminateTile(obj.Position.Xy);
+
+                        obj.Z = t.Z;
                     }
+                    catch { }
+
+                    Sprite s = sa.GetSprite();
+
+                    float x = obj.X, y = obj.Y;
+                    float tx = Chunk.CartesianToIsometric_X(x, y), ty = Chunk.CartesianToIsometric_Y(x, y, obj.Z);
+                    renderService.DrawSprite(s, tx, ty);
                 }
             }
         }
-
-        /*
-        private void DrawTexture(Sprite s, float x, float y, float z, Matrix4 cameraView)
-        {
-            Matrix4 world;
-
-            float tX, tY;
-
-            tX = Chunk.CartesianToIsometric_X(x,y);
-            tY = Chunk.CartesianToIsometric_Y(x,y,z);
-
-            GL.BindTexture(TextureTarget.Texture2D, s.Texture.ID);
-            world = Matrix4.CreateTranslation(tX, tY, 0);
-
-            world *= Matrix4.Invert(cameraView);
-
-            GL.LoadMatrix(ref world);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, s.Texture.ID);
-            GL.VertexPointer(2, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes));
-            GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 2));
-
-            GL.DrawArrays(PrimitiveType.Quads, 0, s.Vertices.Length);
-        }
-        */
-
-        //private void DrawGameObject<T>(T sa, Matrix4 cameraView) where T : SpriteAttribute
-        //{
-        //    Matrix4 world;
-
-        //    GL.BindTexture(TextureTarget.Texture2D, sa.Sprite.Texture.ID);
-        //    float x = sa.ParentObject.GetX();
-        //    float y = sa.ParentObject.GetY();
-        //    world = Matrix4.CreateTranslation(sa.ParentObject.GetX(), sa.ParentObject.GetY(), 0);
-
-        //    world *= Matrix4.Invert(cameraView);
-
-        //    GL.LoadMatrix(ref world);
-
-        //    GL.BindBuffer(BufferTarget.ArrayBuffer, sa.Sprite.Texture.ID);
-        //    GL.VertexPointer(2, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
-        //    GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes));
-        //    GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 2));
-
-        //    GL.DrawArrays(PrimitiveType.Quads, 0, sa.Sprite.Vertices.Length);
-        //}
     }
 }

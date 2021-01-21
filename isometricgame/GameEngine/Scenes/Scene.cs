@@ -1,6 +1,8 @@
 ﻿using isometricgame.GameEngine.Components.Rendering;
+using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Rendering;
-using isometricgame.GameEngine.Services;
+using isometricgame.GameEngine.Systems;
+using isometricgame.GameEngine.Systems.Rendering;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -26,21 +28,25 @@ namespace isometricgame.GameEngine.Scenes
             this.game = game;
             gameObjects = new List<GameObject>();
 
-            sceneMatrix = Matrix4.CreateTranslation(new Vector3(0, 0, 0));
+            //sceneMatrix = Matrix4.CreateTranslation(new Vector3(0, 0, 0));
+            //sceneMatrix = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 8, 1200 / 900, 0.01f, 30000f);
+            sceneMatrix = Matrix4.CreateOrthographic(1200,900,0.01f,30000f) * Matrix4.CreateTranslation(0,0,1);
         }
 
-        public virtual void RenderFrame(RenderService renderService, FrameEventArgs e)
+        public virtual void RenderFrame(RenderService renderService, FrameArgument e)
         {
             foreach (GameObject obj in GameObjects)
             {
                 SpriteComponent sa = obj.GetAttribute<SpriteComponent>();
                 if (sa != null)
-                    foreach (Sprite s in sa.GetSprites())
-                        renderService.DrawSprite(s, obj.GetX() + s.OffsetX, obj.GetY() + s.OffsetY);
+                {
+                    sa.GetSprite().Use();
+                    renderService.DrawSprite(obj.X, obj.Y);
+                }
             }
         }
 
-        public virtual void UpdateFrame(FrameEventArgs e)
+        public virtual void UpdateFrame(FrameArgument e)
         {
             foreach (GameObject obj in GameObjects)
                 obj.OnUpdate(e);

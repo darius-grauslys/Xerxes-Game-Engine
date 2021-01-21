@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Services
+namespace isometricgame.GameEngine.Systems
 {
     public class GameSystem
     {

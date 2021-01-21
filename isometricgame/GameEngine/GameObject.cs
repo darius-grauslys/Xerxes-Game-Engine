@@ -1,10 +1,9 @@
 ﻿using isometricgame.GameEngine.Components;
-using isometricgame.GameEngine.Events;
+using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Exceptions.Attributes;
 using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.WorldSpace;
-using isometricgame.GameEngine.WorldSpace.Geometry;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -18,7 +17,6 @@ namespace isometricgame.GameEngine
     {
         private Scene scene;
         private Vector3 position;
-        private Orientation orientation;
 
         private List<GameComponent> attributes = new List<GameComponent>();
 
@@ -26,21 +24,29 @@ namespace isometricgame.GameEngine
         public Vector3 Position
         {
             get => position;
-            protected set
-            {
+            set =>
                 position = value;
-            }
         }
+
+        public float X
+        {
+            get => position.X;
+            set => position.X = value;
+        }
+
+        public float Y
+        {
+            get => position.Y;
+            set => position.Y = value;
+        }
+
+        public float Z
+        {
+            get => position.Z;
+            set => position.Z = value;
+        }
+
         internal Scene Scene { get => scene; }
-        public Orientation Orientation { get => orientation; protected set => orientation = value; }
-
-        public virtual float GetX() { return position.X; }
-        public virtual float GetY() { return position.Y; }
-        public virtual float GetZ() { return position.Z; }
-
-        public virtual void SetX(float x) { position.X = x; }
-        public virtual void SetY(float y) { position.Y = y; }
-        public virtual void SetZ(float z) { position.Z = z; }
 
         public GameObject(Scene scene, Vector3 position)
         {
@@ -62,16 +68,10 @@ namespace isometricgame.GameEngine
             attributes.Add(attrib);
         }
 
-        public void OnUpdate(FrameEventArgs args)
+        public virtual void OnUpdate(FrameArgument args)
         {
-            HandleOnUpdate();
             foreach (GameComponent attrib in attributes)
-                attrib.OnUpdate(args);
-        }
-
-        protected virtual void HandleOnUpdate()
-        {
-
+                attrib.Update(args);
         }
     }
 }

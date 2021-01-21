@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Services
+namespace isometricgame.GameEngine.Systems
 {
     public class MathHelper
     {
@@ -67,6 +67,12 @@ namespace isometricgame.GameEngine.Services
                 return (4 * index) + 3;
             else
                 return 4 * index;
+        }
+
+        //This is simply genius. Props to wiki
+        public static float MapCoordsToUniqueFloat(int x, int y)
+        {
+            return 2920 * (float)Math.Sin(x * 21942 + y * 171324 + 8912) * (float)Math.Cos(x * 23157 * y * 217832 + 9758);
         }
 
         public static int StrideToIndex(int n, int stride)

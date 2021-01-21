@@ -17,3 +17,4 @@ C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\Gra
 C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\gamefont.png
 C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\Shaders\shader.frag
 C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\Shaders\shader.vert
+C:\Users\grauslysd\source\repos\isometricgame\isometricgame\bin\Debug\Assets\player2.png

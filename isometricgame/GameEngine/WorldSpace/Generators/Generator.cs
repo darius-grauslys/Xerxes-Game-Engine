@@ -1,4 +1,5 @@
-﻿using isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise;
+﻿using isometricgame.GameEngine.WorldSpace.ChunkSpace;
+using isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise;
 using OpenTK;
 using System;
 using System.Collections.Generic;

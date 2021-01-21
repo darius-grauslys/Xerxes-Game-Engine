@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 
-namespace isometricgame.GameEngine.Services.Rendering
+namespace isometricgame.GameEngine.Systems.Rendering
 {
     public class Shader : IDisposable
     {

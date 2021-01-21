@@ -9,23 +9,23 @@ namespace isometricgame.GameEngine.Components.Rendering
 {
     public class SpriteComponent : GameComponent
     {
-        private Sprite sprite;
-        
+        protected Sprite sprite;
+
         public SpriteComponent(GameObject parentObject) 
             : base(parentObject)
         {
         }
 
-        public virtual Sprite[] GetSprites()
+        public virtual Sprite GetSprite()
         {
-            return new Sprite[] { sprite };
+            return sprite;
         }
 
         /// <summary>
         /// might need to make this thread safe.
         /// </summary>
         /// <param name="s"></param>
-        public void SetSprite(Sprite s)
+        public virtual void SetSprite(Sprite s)
         {
             sprite = s;
         }

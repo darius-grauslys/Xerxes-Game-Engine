@@ -1,5 +1,6 @@
 ﻿using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.WorldSpace;
+using isometricgame.GameEngine.WorldSpace.ChunkSpace;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,22 @@ namespace isometricgame.GameEngine
 {
     public class Camera
     {
+        private float zNear = 0.01f, zFar = 10f;
+        private float zoom = 2f;
+        
         private Vector3 position = new Vector3(0,0,0);
         private float velocity = 3;
-        private float zoom = 1.5f;
         private Scene scene;
+
+        private GameObject focusObject;
 
         public float Velocity { get => velocity; set => velocity = value; }
         public Vector3 Position { get => position; set => position = value; }
+        public GameObject FocusObject { get => focusObject; set => focusObject = value; }
+
+        public Vector3 TargetPosition => (focusObject != null) ? focusObject.Position : position;
+
+        public float Zoom => zoom;
 
         public float Iso_X => Chunk.CartesianToIsometric_X(position.X, position.Y);
         public float Iso_Y => Chunk.CartesianToIsometric_Y(position.X, position.Y, position.Z);
@@ -26,9 +36,10 @@ namespace isometricgame.GameEngine
         {
             this.scene = scene;
         }
-
-        public void Pan_Linear(float deltaT, Vector3 pos)
+        
+        public void Pan_Linear(float deltaT)
         {
+            Vector3 pos = (focusObject != null) ? focusObject.Position : Vector3.Zero;
             Vector3 distanceVector = pos - position;
 
             position += (distanceVector * velocity) * deltaT;
@@ -46,14 +57,11 @@ namespace isometricgame.GameEngine
 
         public Matrix4 GetView()
         {
-            //return
-            //    Matrix4.CreateTranslation(position.X, position.Y + position.Z, 0) *
-            //    Matrix4.CreateTranslation(scene.Game.WindowWidth / 4, scene.Game.WindowHeight / 4, 0) *
-            //    Matrix4.CreateScale(zoom, zoom, 1);
-            return 
-                Matrix4.CreateTranslation(-scene.Game.WindowWidth/2, -scene.Game.WindowHeight/2, 0) *
-                Matrix4.CreateScale(zoom, zoom, 1) *
-                Matrix4.CreateTranslation(Iso_X, Iso_Y, 0);
+            //return Matrix4.CreateTranslation(new Vector3(-Iso_X, -Iso_Y, -1000f)) * Matrix4.CreatePerspectiveFieldOfView(fov, aspect, zNear, zFar);
+            //return Matrix4.LookAt(new Vector3(0, 0, 1), new Vector3(0, 0, 0), new Vector3(0, 1, 0))
+            //    * Matrix4.CreateScale(fov, fov, 1) *
+            //    Matrix4.CreateTranslation(Iso_X, Iso_Y, 1f);
+            return Matrix4.CreateTranslation(-Iso_X, -Iso_Y, -1f) * Matrix4.CreateScale(zoom) * Matrix4.CreateOrthographic(scene.Game.WindowWidth, scene.Game.WindowHeight, zNear, zFar);
         }
     }
 }

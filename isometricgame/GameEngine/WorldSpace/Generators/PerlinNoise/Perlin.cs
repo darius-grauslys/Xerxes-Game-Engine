@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using isometricgame.GameEngine.WorldSpace.ChunkSpace;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise
         private int seed;
         private int frequency = 2;
 
+        private int[,] seedMap = new int[16, 16];
+
         private static readonly Vector2[] OFFSETS = new Vector2[]
         {
             new Vector2(1,0),
@@ -22,6 +25,16 @@ namespace isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise
         public Perlin(int seed)
         {
             this.seed = seed;
+
+            Random rand = new Random(seed);
+
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    seedMap[i,j] = rand.Next();
+                }
+            }
         }
 
         
@@ -94,9 +107,8 @@ namespace isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise
 
         private float GetZ(int x, int y)
         {
-            int zSeed = Services.MathHelper.MapCoordsToUniqueInteger(x,y);
+            int zSeed = (int)Systems.MathHelper.MapCoordsToUniqueFloat(x,y);
             Random rand = new Random(zSeed + seed);
-            rand = new Random(rand.Next() * zSeed);
             return rand.Next(100) / 100f;
         }
     }
