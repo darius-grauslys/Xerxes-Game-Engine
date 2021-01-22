@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{04229523-E6F4-4B65-BF1E-F5E3243CA58D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>isometricgame</RootNamespace>
     <AssemblyName>isometricgame</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -47,6 +47,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=3.2.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.2\lib\net20\OpenTK.dll</HintPath>
@@ -62,7 +65,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameEngine\Components\Physics\MovementControllerAttribute.cs" />
     <Compile Include="GameEngine\Events\Arguments\FrameArgument.cs" />
     <Compile Include="GameEngine\Exceptions\Services\ExistingServiceException.cs" />
     <Compile Include="GameEngine\Exceptions\Services\ServiceNotFoundException.cs" />
@@ -75,12 +77,12 @@
     <Compile Include="GameEngine\Exceptions\Attributes\ExistingAttributeException.cs" />
     <Compile Include="GameEngine\GameObject.cs" />
     <Compile Include="GameEngine\Scenes\Scene.cs" />
-    <Compile Include="GameEngine\Services\GameService.cs" />
-    <Compile Include="GameEngine\Services\Input\InputHandler.cs" />
-    <Compile Include="GameEngine\Services\Input\InputService.cs" />
-    <Compile Include="GameEngine\Services\Rendering\Shader.cs" />
-    <Compile Include="GameEngine\Services\Rendering\RenderService.cs" />
-    <Compile Include="GameEngine\Services\Rendering\TextDisplayer.cs" />
+    <Compile Include="GameEngine\Systems\GameService.cs" />
+    <Compile Include="GameEngine\Systems\Input\InputHandler.cs" />
+    <Compile Include="GameEngine\Systems\Input\InputSystem.cs" />
+    <Compile Include="GameEngine\Systems\Rendering\Shader.cs" />
+    <Compile Include="GameEngine\Systems\Rendering\RenderService.cs" />
+    <Compile Include="GameEngine\Systems\Rendering\TextDisplayer.cs" />
     <Compile Include="GameEngine\WorldSpace\ChunkSpace\ChunkDirectory.cs" />
     <Compile Include="GameEngine\WorldSpace\Generators\Generator.cs" />
     <Compile Include="GameEngine\WorldSpace\Generators\PerlinNoise\Perlin.cs" />
@@ -88,59 +90,22 @@
     <Compile Include="GameEngine\WorldSpace\ChunkSpace\IntegerPosition.cs" />
     <Compile Include="GameEngine\WorldSpace\ChunkSpace\Tile.cs" />
     <Compile Include="GameEngine\WorldSpace\ChunkSpace\Chunk.cs" />
-    <Compile Include="GameEngine\Services\MathHelper.cs" />
-    <Compile Include="Isogame\Implemented\GameObjects\PlayerControlled\Player.cs" />
-    <Compile Include="Isogame\Implemented\Scenes\IsoGameScene.cs" />
-    <Compile Include="Isogame\IsoGame.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="GameEngine\Systems\MathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameEngine\Rendering\VertexArray.cs" />
     <Compile Include="GameEngine\Rendering\Sprite.cs" />
     <Compile Include="GameEngine\Rendering\Texture2D.cs" />
     <Compile Include="GameEngine\Rendering\Vertex.cs" />
     <Compile Include="GameEngine\WorldSpace\WorldScene.cs" />
-    <Compile Include="GameEngine\Services\Serialization\AssetProvider.cs" />
-    <Compile Include="GameEngine\Services\Rendering\SpriteLibrary.cs" />
+    <Compile Include="GameEngine\Systems\Serialization\AssetProvider.cs" />
+    <Compile Include="GameEngine\Systems\Rendering\SpriteLibrary.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Assets\Shaders\shader.frag">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Assets\Shaders\shader.vert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Isogame\Implemented\GameObjects\Clutter\" />
-    <Folder Include="Isogame\Implemented\GameObjects\NPC\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\gamefont.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\GrassTiles.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\player.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\player2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\SandTiles.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\singleblock.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\WaterTiles.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Isogame\TODO.txt" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>

@@ -55,12 +55,12 @@ namespace isometricgame.GameEngine
             
         }
 
-        public T GetAttribute<T>() where T : GameComponent
+        public T GetComponent<T>() where T : GameComponent
         {
             return attributes.Find((a) => a is T) as T;
         }
 
-        protected void AddAttribute<T>(T attrib) where T : GameComponent
+        protected void AddComponent<T>(T attrib) where T : GameComponent
         {
             for (int i = 0; i < attributes.Count; i++)
                 if (attributes[i] is T)

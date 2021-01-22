@@ -27,9 +27,7 @@ namespace isometricgame.GameEngine.Scenes
         {
             this.game = game;
             gameObjects = new List<GameObject>();
-
-            //sceneMatrix = Matrix4.CreateTranslation(new Vector3(0, 0, 0));
-            //sceneMatrix = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 8, 1200 / 900, 0.01f, 30000f);
+            
             sceneMatrix = Matrix4.CreateOrthographic(1200,900,0.01f,30000f) * Matrix4.CreateTranslation(0,0,1);
         }
 
@@ -37,7 +35,7 @@ namespace isometricgame.GameEngine.Scenes
         {
             foreach (GameObject obj in GameObjects)
             {
-                SpriteComponent sa = obj.GetAttribute<SpriteComponent>();
+                SpriteComponent sa = obj.GetComponent<SpriteComponent>();
                 if (sa != null)
                 {
                     sa.GetSprite().Use();

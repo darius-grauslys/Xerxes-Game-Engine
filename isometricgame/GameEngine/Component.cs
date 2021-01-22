@@ -15,7 +15,9 @@ namespace isometricgame.GameEngine
     {
         private readonly GameObject parentObject;
         private bool enabled = true;
-        
+
+        public event EventHandler<FrameArgument> OnPostUpdate;
+
         public GameObject ParentObject { get => parentObject; }
 
         public GameComponent(GameObject parentObject)
@@ -29,7 +31,10 @@ namespace isometricgame.GameEngine
         internal void Update(FrameArgument args)
         {
             if (enabled)
+            {
                 OnUpdate(args);
+                OnPostUpdate?.Invoke(this, args);
+            }
         }
 
         protected virtual void OnUpdate(FrameArgument args)

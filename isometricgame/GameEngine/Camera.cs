@@ -61,7 +61,7 @@ namespace isometricgame.GameEngine
             //return Matrix4.LookAt(new Vector3(0, 0, 1), new Vector3(0, 0, 0), new Vector3(0, 1, 0))
             //    * Matrix4.CreateScale(fov, fov, 1) *
             //    Matrix4.CreateTranslation(Iso_X, Iso_Y, 1f);
-            return Matrix4.CreateTranslation(-Iso_X, -Iso_Y, -1f) * Matrix4.CreateScale(zoom) * Matrix4.CreateOrthographic(scene.Game.WindowWidth, scene.Game.WindowHeight, zNear, zFar);
+            return Matrix4.CreateTranslation(-Iso_X, -Iso_Y, -1f) * Matrix4.CreateScale(zoom) * Matrix4.CreateOrthographic(scene.Game.Width, scene.Game.Height, zNear, zFar);
         }
     }
 }

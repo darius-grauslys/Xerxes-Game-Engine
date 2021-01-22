@@ -30,7 +30,7 @@ namespace isometricgame.GameEngine.WorldSpace
         public Camera ClientCamera { get => clientCamera; private set => clientCamera = value; }
         public ChunkDirectory ChunkDirectory { get => chunkDirectory; set => chunkDirectory = value; }
 
-        public WorldScene(Game game, int renderDistance=2, int seed=12345)
+        public WorldScene(Game game, int renderDistance=0, int seed=12345)
             : base(game)
         {
             this.ChunkDirectory = new ChunkDirectory(renderDistance, new WorldGenerator(seed));
@@ -96,7 +96,7 @@ namespace isometricgame.GameEngine.WorldSpace
             SpriteComponent sa;
             foreach (GameObject obj in GameObjects)
             {
-                if ((sa = obj.GetAttribute<SpriteComponent>()) != null)
+                if ((sa = obj.GetComponent<SpriteComponent>()) != null)
                 {
                     try
                     {

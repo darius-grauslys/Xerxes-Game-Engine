@@ -17,27 +17,26 @@ using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Systems.Rendering;
 using isometricgame.GameEngine.Systems.Serialization;
+using OpenTK.Graphics;
+using isometricgame.GameEngine.Systems.Input;
 
 namespace isometricgame.GameEngine
 {
-    public class Game
+    public class Game : GameWindow
     {
         //PATHS
         public readonly string GAME_DIRECTORY_BASE;
         public readonly string GAME_DIRECTORY_WORLDS;
         public readonly string GAME_DIRECTORY_ASSETS;
         public readonly string GAME_DIRECTORY_SHADERS;
-
-        protected GameWindow gameWindow;
-        public int WindowWidth => gameWindow.Width;
-        public int WindowHeight => gameWindow.Height;
-
+        
         #region Systems
         //SERVICES
         private AssetProvider contentPipe;
         private SpriteLibrary spriteLibrary;
         private RenderService renderService;
         private TextDisplayer textDisplayer;
+        private InputSystem inputSystem;
 
         private List<GameSystem> systems = new List<GameSystem>();
         /// <summary>
@@ -52,6 +51,8 @@ namespace isometricgame.GameEngine
         protected RenderService RenderService { get => renderService; private set => renderService = value; }
 
         protected TextDisplayer TextDisplayer { get => textDisplayer; private set => textDisplayer = value; }
+
+        protected InputSystem InputSystem { get => inputSystem; private set => inputSystem = value; }
         #endregion
 
         #region Time
@@ -63,21 +64,22 @@ namespace isometricgame.GameEngine
 
         private Scene scene;
 
-        public Game(GameWindow gameWindow, string GAME_DIR = "", string GAME_DIR_ASSETS = "", string GAME_DIR_WORLDS = "")
+        public Game(int width, int height, string title, string GAME_DIR = "", string GAME_DIR_ASSETS = "", string GAME_DIR_WORLDS = "")
+            : base(width, height, GraphicsMode.Default, title)
         {
-            this.gameWindow = gameWindow;
-
             GAME_DIRECTORY_BASE = (GAME_DIR == String.Empty) ? AppDomain.CurrentDomain.BaseDirectory : GAME_DIR;
             GAME_DIRECTORY_ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Assets\\") : GAME_DIR_ASSETS;
             GAME_DIRECTORY_SHADERS = Path.Combine(GAME_DIRECTORY_ASSETS, "Shaders\\");
             GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds\\") : GAME_DIR_WORLDS;
 
+            /*
             gameWindow.Load += GameWindow_Load;
             gameWindow.RenderFrame += GameWindow_RenderFrame;
             gameWindow.UpdateFrame += GameWindow_UpdateFrame;
             gameWindow.Unload += GameWindow_Unload;
             gameWindow.Closing += GameWindow_Closing;
             gameWindow.Resize += GameWindow_Resize;
+            */
 
             //SERVICES
 
@@ -88,30 +90,25 @@ namespace isometricgame.GameEngine
             LoadContent();
         }
 
-        private void GameWindow_Resize(object sender, EventArgs e)
+        protected override void OnResize(EventArgs e)
         {
-            GL.Viewport(gameWindow.ClientRectangle);
-            RenderService.AdjustProjection(gameWindow.Width, gameWindow.Height);
+            GL.Viewport(ClientRectangle);
+            RenderService.AdjustProjection(Width, Height);
         }
 
-        private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
 
         }
 
-        private void GameWindow_UpdateFrame(object sender, FrameEventArgs e)
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
             updateTime += e.Time;
 
             scene.UpdateFrame(new FrameArgument(UpdateTime, e.Time));
         }
 
-        internal virtual void OnUpdateFrame()
-        {
-
-        }
-                        
-        private void GameWindow_RenderFrame(object sender, FrameEventArgs e)
+        protected override void OnRenderFrame(FrameEventArgs e)
         {
             renderTime += e.Time;
 
@@ -121,23 +118,18 @@ namespace isometricgame.GameEngine
 
             RenderService.EndRender();
             
-            gameWindow.SwapBuffers();
+            SwapBuffers();
         }
 
-        private void GameWindow_Load(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            OnGameLoad();
+
         }
 
-        private void GameWindow_Unload(object sender, EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             foreach (GameSystem gamesys in systems)
                 gamesys.Unload();
-        }
-
-        internal virtual void OnGameLoad()
-        {
-
         }
 
         public T GetSystem<T>() where T : GameSystem
@@ -148,32 +140,34 @@ namespace isometricgame.GameEngine
             throw new ServiceNotFoundException();
         }
 
-        internal void RegisterSystem<T>(T gameService) where T : GameSystem
+        protected void RegisterSystem<T>(T gameService) where T : GameSystem
         {
             if (systems.Exists((s) => s is T))
                 throw new ExistingServiceException();
             systems.Add(gameService);
         }
 
-        internal virtual void RegisterSystems()
+        protected virtual void RegisterSystems()
         {
             AssetProvider = new AssetProvider(this);
             SpriteLibrary = new SpriteLibrary(this);
-            RenderService = new RenderService(this, gameWindow.Width, gameWindow.Height);
+            RenderService = new RenderService(this, Width, Height);
             TextDisplayer = new TextDisplayer(this);
+            InputSystem = new InputSystem(this);
 
             RegisterSystem(AssetProvider);
             RegisterSystem(SpriteLibrary);
             RegisterSystem(RenderService);
             RegisterSystem(TextDisplayer);
+            RegisterSystem(InputSystem);
         }
 
-        internal virtual void LoadContent()
+        protected virtual void LoadContent()
         {
 
         }
 
-        internal void SetScene(Scene scene)
+        protected void SetScene(Scene scene)
         {
             this.scene = scene;
         }
