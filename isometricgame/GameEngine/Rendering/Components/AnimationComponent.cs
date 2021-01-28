@@ -1,6 +1,7 @@
 ﻿using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Rendering.Animation;
+using isometricgame.GameEngine.Scenes;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -13,16 +14,19 @@ namespace isometricgame.GameEngine.Components.Rendering
     public class AnimationComponent : SpriteComponent
     {
         private AnimationSchematic schematic;
+        private int node;
 
-        public AnimationComponent(GameObject parentObject, AnimationSchematic schematic) 
+        public AnimationComponent(SceneObject parentObject, AnimationSchematic schematic = null) 
             : base(parentObject)
         {
             this.schematic = schematic;
         }
 
+        public void SetSchematic(AnimationSchematic schematic) => this.schematic = schematic;
+
         public void SetNode(int node)
         {
-            schematic.SetNode(node);
+            this.node = node;
         }
 
         public void DefineNode(int node, int[] subNodes)
@@ -31,16 +35,11 @@ namespace isometricgame.GameEngine.Components.Rendering
         }
 
         public void Pause(double time) => schematic.Pause(time);
-        public void Unpause(double time) => schematic.Unpause(time);
+        public void Unpause(double time) => schematic.Unpause(time, node);
 
         protected override void OnUpdate(FrameArgument args)
         {
-            sprite.VBO_Index = schematic.GetNode(args.Time);
-        }
-
-        public override Sprite GetSprite()
-        {
-            return base.GetSprite();
+            sprite.VBO_Index = schematic.GetVBO_Index(args.Time, node);
         }
     }
 }

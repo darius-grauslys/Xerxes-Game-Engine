@@ -77,7 +77,7 @@ namespace isometricgame.GameEngine.Systems.Rendering
         public void DrawSprite(Sprite s, float x, float y, float z = 0)
         {
             s.Use(s.VBO_Index);
-            DrawSprite(x, y, z);
+            DrawSprite(x + s.OffsetX, y + s.OffsetY, z);
         }
 
         public void DrawSprite(float x, float y, float z = 0)

@@ -21,33 +21,58 @@ namespace isometricgame.GameEngine.WorldSpace
     public class WorldScene : Scene
     {
         private ChunkDirectory chunkDirectory;
-        private Camera clientCamera;
+        private Camera camera;
 
         private int tileRange, renderDistance;
-        
+        float render_minX, render_maxX, render_minY, render_maxY;
+
         private SpriteLibrary spriteLibrary;
 
-        public Camera ClientCamera { get => clientCamera; private set => clientCamera = value; }
+        public Camera Camera { get => camera; private set => camera = value; }
         public ChunkDirectory ChunkDirectory { get => chunkDirectory; set => chunkDirectory = value; }
 
-        public WorldScene(Game game, int renderDistance=0, int seed=12345)
+        public WorldScene(Game game, Generator worldGenerator, int renderDistance=0)
             : base(game)
         {
-            this.ChunkDirectory = new ChunkDirectory(renderDistance, new WorldGenerator(seed));
-            this.ClientCamera = new Camera(this);
+            this.ChunkDirectory = new ChunkDirectory(renderDistance, worldGenerator);
+            this.Camera = new Camera(this);
             this.renderDistance = renderDistance;
 
             spriteLibrary = game.GetSystem<SpriteLibrary>();
+
+            ChunkDirectory.ChunkLoaded += ChunkDirectory_ChunkLoaded;
+            ChunkDirectory.ChunkUnloaded += ChunkDirectory_ChunkUnloaded;
         }
-        
+
+        protected virtual void ChunkDirectory_ChunkUnloaded(Chunk c)
+        {
+            for (int i = 0; i < c.ChunkStructures.Count; i++)
+                StaticSceneStructures.Remove(c.ChunkStructures[i]);
+            for (int i = 0; i < c.ChunkObjects.Count; i++)
+                StaticSceneObjects.Remove(c.ChunkObjects[i]);
+        }
+
+        protected virtual void ChunkDirectory_ChunkLoaded(Chunk c)
+        {
+            foreach (SceneStructure ss in c.ChunkStructures)
+            {
+                StaticSceneStructures.Add(ss);
+            }
+            foreach (SceneObject so in c.ChunkObjects)
+            {
+                StaticSceneObjects.Add(so);
+                so.Scene = this;
+            }
+        }
+
         public override void UpdateFrame(FrameArgument e)
         {
-            ClientCamera.Pan_Linear((float)e.DeltaTime);
+            Camera.Pan_Linear((float)e.DeltaTime);
             
-            SceneMatrix = ClientCamera.GetView();
-            ChunkDirectory.ChunkCleanup(ClientCamera.Position.Xy);
+            SceneMatrix = Camera.GetView();
+            ChunkDirectory.ChunkCleanup(Camera.Position.Xy);
 
-            tileRange = (int)((2 / Math.Log(clientCamera.Zoom + 1)) * 16);
+            tileRange = (int)((2 / Math.Log(camera.Zoom + 1)) * 16);
             renderDistance = (tileRange / Chunk.CHUNK_TILE_WIDTH) + 2;
             chunkDirectory.RenderDistance = renderDistance;
 
@@ -58,25 +83,23 @@ namespace isometricgame.GameEngine.WorldSpace
         {
             if (chunkDirectory.RenderDistance != renderDistance)
                 return; //prevent race condition
-
-            float minX, maxX, minY, maxY;
-
-            int flooredX = (int)clientCamera.TargetPosition.X;
-            int flooredY = (int)clientCamera.TargetPosition.Y;
+            
+            int flooredX = (int)camera.TargetPosition.X;
+            int flooredY = (int)camera.TargetPosition.Y;
                         
-            minX = flooredX - tileRange;
-            minY = flooredY - tileRange;
-            maxX = flooredX + tileRange;
-            maxY = flooredY + tileRange;
+            render_minX = flooredX - tileRange;
+            render_minY = flooredY - tileRange;
+            render_maxX = flooredX + tileRange;
+            render_maxY = flooredY + tileRange;
 
             float width = chunkDirectory.VisibleWidth;
             float height = chunkDirectory.VisibleHeight;
 
             float rot = (float)(Math.Sqrt(2) / 2);
 
-            for (float y = maxY; y >= minY; y--)
+            for (float y = render_maxY; y >= render_minY; y--)
             {
-                for (float x = minX; x < maxX; x++)
+                for (float x = render_minX; x < render_maxX; x++)
                 {
                     Tile t;
                     
@@ -84,7 +107,7 @@ namespace isometricgame.GameEngine.WorldSpace
                     {
                         t = ChunkDirectory.DeliminateTile(new Vector2(x, y));
                     }
-                    catch { return; } //write to error log later.
+                    catch { Console.WriteLine("error"); return; } //write to error log later.
                     
                     float tx = Chunk.CartesianToIsometric_X(x, y), ty = Chunk.CartesianToIsometric_Y(x, y, t.Z);
 
@@ -92,27 +115,18 @@ namespace isometricgame.GameEngine.WorldSpace
                     renderService.DrawSprite(tx, ty);
                 }
             }
-            
-            SpriteComponent sa;
-            foreach (GameObject obj in GameObjects)
-            {
-                if ((sa = obj.GetComponent<SpriteComponent>()) != null)
-                {
-                    try
-                    {
-                        Tile t = ChunkDirectory.DeliminateTile(obj.Position.Xy);
 
-                        obj.Z = t.Z;
-                    }
-                    catch { }
+            base.RenderFrame(renderService, e);
+        }
 
-                    Sprite s = sa.GetSprite();
+        protected override void DrawSprite(RenderService renderService, Sprite s, float x, float y, float z = 0)
+        {
+            if (x < render_minX || x > render_maxX || y < render_minY || y > render_maxY)
+                return;
 
-                    float x = obj.X, y = obj.Y;
-                    float tx = Chunk.CartesianToIsometric_X(x, y), ty = Chunk.CartesianToIsometric_Y(x, y, obj.Z);
-                    renderService.DrawSprite(s, tx, ty);
-                }
-            }
+            float cx = Chunk.CartesianToIsometric_X(x, y);
+            float cy = Chunk.CartesianToIsometric_Y(x, y, z);
+            base.DrawSprite(renderService, s, cx, cy);
         }
     }
 }

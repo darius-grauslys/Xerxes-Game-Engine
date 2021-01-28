@@ -28,11 +28,11 @@ namespace isometricgame.GameEngine.Rendering
 
         public static int SizeInBytes => Vector2.SizeInBytes * 2 + Vector4.SizeInBytes;
 
-        public Vertex(Vector2 position, Vector2 textcoord)
+        public Vertex(Vector2 position, Vector2 textcoord, float r=0, float g=0, float b=0, float a=1)
         {
             this.position = position;
             this.textcoord = textcoord;
-            this.color = new Vector4(1, 1, 1, 1);
+            this.color = new Vector4(r,g,b,a);
         }
     }
 }

@@ -22,6 +22,8 @@ namespace isometricgame.GameEngine.Rendering
 
         private int vboIndex = 0;
 
+        private float offsetX, offsetY;
+
         private int columnCount, rowCount;
 
         private int count;
@@ -37,15 +39,61 @@ namespace isometricgame.GameEngine.Rendering
         public Texture2D Texture { get => texture; private set => texture = value; }
 
         public int VBO_Index { get => vboIndex; set => vboIndex = value; }
+        public float OffsetX { get => offsetX; protected set => offsetX = value; }
+        public float OffsetY { get => offsetY; protected set => offsetY = value; }
 
-        public Sprite(Texture2D texture, int subWidth, int subHeight, string name="")
+        public Sprite(Sprite s, int vboIndex = -1)
         {
+            offsetX = s.offsetX;
+            offsetY = s.offsetY;
+            name = s.name;
+
+            texture = s.texture;
+
+            subWidth = s.subWidth;
+            subHeight = s.subHeight;
+
+            this.vboIndex = (vboIndex < 0) ? s.vboIndex : vboIndex;
+
+            columnCount = s.columnCount;
+            rowCount = s.rowCount;
+
+            count = s.count;
+
+            vertexArrays = new VertexArray[s.vertexArrays.Length];
+
+            vertexArrayObjects = new int[s.vertexArrayObjects.Length];
+
+            for (int i = 0; i < s.vertexArrayObjects.Length; i++)
+                vertexArrayObjects[i] = s.vertexArrayObjects[i];
+
+            for (int i = 0; i < count; i++)
+                vertexArrays[i] = s.vertexArrays[i];
+        }
+
+        public Sprite(
+            Texture2D texture, 
+            int subWidth, 
+            int subHeight, 
+            string name="", 
+            float offsetX = 0, 
+            float offsetY = 0, 
+            int vboIndex = 0,
+            float r = 0,
+            float g = 0,
+            float b = 0,
+            float a = 0)
+        {
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
             this.name = name;
 
             this.texture = texture;
 
-            this.SubWidth = subWidth;
-            this.SubHeight = subHeight;
+            this.subWidth = subWidth;
+            this.subHeight = subHeight;
+
+            this.vboIndex = vboIndex;
 
             columnCount = texture.Width / subWidth;
             rowCount = texture.Height / subHeight;
@@ -65,7 +113,7 @@ namespace isometricgame.GameEngine.Rendering
             {
                 for (int x = 0; x < columnCount; x++)
                 {
-                    vertices = VertexArray.VerticesFromDimensions(texture.Width, texture.Height, subWidth, subHeight, x, y);
+                    vertices = VertexArray.VerticesFromDimensions(texture.Width, texture.Height, subWidth, subHeight, x, y, r, g, b, a);
 
                     vertexArrays[x + (y * columnCount)] = new VertexArray(texture, vertices);
                 }
@@ -93,8 +141,6 @@ namespace isometricgame.GameEngine.Rendering
                 GL.EnableVertexAttribArray(1);
                 GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, 8 * sizeof(float), 4 * sizeof(float));
                 GL.EnableVertexAttribArray(2);
-
-                //vertexArrays[i].UnbindVertexBuffer();
             }
 
             GL.BindVertexArray(0);

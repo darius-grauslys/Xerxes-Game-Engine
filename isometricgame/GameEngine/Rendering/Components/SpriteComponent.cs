@@ -1,4 +1,5 @@
 ﻿using isometricgame.GameEngine.Rendering;
+using isometricgame.GameEngine.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +12,11 @@ namespace isometricgame.GameEngine.Components.Rendering
     {
         protected Sprite sprite;
 
-        public SpriteComponent(GameObject parentObject) 
+        public Sprite Sprite => sprite;
+
+        public SpriteComponent(SceneObject parentObject) 
             : base(parentObject)
         {
-        }
-
-        public virtual Sprite GetSprite()
-        {
-            return sprite;
         }
 
         /// <summary>

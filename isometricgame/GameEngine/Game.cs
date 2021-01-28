@@ -19,6 +19,7 @@ using isometricgame.GameEngine.Systems.Rendering;
 using isometricgame.GameEngine.Systems.Serialization;
 using OpenTK.Graphics;
 using isometricgame.GameEngine.Systems.Input;
+using isometricgame.GameEngine.Systems.Scenes;
 
 namespace isometricgame.GameEngine
 {
@@ -37,22 +38,28 @@ namespace isometricgame.GameEngine
         private RenderService renderService;
         private TextDisplayer textDisplayer;
         private InputSystem inputSystem;
+        private SceneObjectLibrary sceneObjectLibrary;
+        private AnimationSchematicLibrary animationSchematicLibrary;
 
         private List<GameSystem> systems = new List<GameSystem>();
         /// <summary>
         /// Responsible for loading and unloading textures.
         /// </summary>
-        protected AssetProvider AssetProvider { get => contentPipe; private set => contentPipe = value; }
+        public AssetProvider AssetProvider { get => contentPipe; private set => contentPipe = value; }
         /// <summary>
         /// Responsible for recording and recieving loaded sprites.
         /// </summary>
-        protected SpriteLibrary SpriteLibrary { get => spriteLibrary; private set => spriteLibrary = value; }
+        public SpriteLibrary SpriteLibrary { get => spriteLibrary; private set => spriteLibrary = value; }
 
-        protected RenderService RenderService { get => renderService; private set => renderService = value; }
+        public RenderService RenderService { get => renderService; private set => renderService = value; }
 
-        protected TextDisplayer TextDisplayer { get => textDisplayer; private set => textDisplayer = value; }
+        public TextDisplayer TextDisplayer { get => textDisplayer; private set => textDisplayer = value; }
 
-        protected InputSystem InputSystem { get => inputSystem; private set => inputSystem = value; }
+        public InputSystem InputSystem { get => inputSystem; private set => inputSystem = value; }
+
+        public SceneObjectLibrary SceneObjectLibrary { get => sceneObjectLibrary; private set => sceneObjectLibrary = value; }
+
+        public AnimationSchematicLibrary AnimationSchematicLibrary { get => animationSchematicLibrary; private set => animationSchematicLibrary = value; }
         #endregion
 
         #region Time
@@ -71,18 +78,7 @@ namespace isometricgame.GameEngine
             GAME_DIRECTORY_ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Assets\\") : GAME_DIR_ASSETS;
             GAME_DIRECTORY_SHADERS = Path.Combine(GAME_DIRECTORY_ASSETS, "Shaders\\");
             GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds\\") : GAME_DIR_WORLDS;
-
-            /*
-            gameWindow.Load += GameWindow_Load;
-            gameWindow.RenderFrame += GameWindow_RenderFrame;
-            gameWindow.UpdateFrame += GameWindow_UpdateFrame;
-            gameWindow.Unload += GameWindow_Unload;
-            gameWindow.Closing += GameWindow_Closing;
-            gameWindow.Resize += GameWindow_Resize;
-            */
-
-            //SERVICES
-
+            
             RegisterSystems();
 
             //END SERVICES
@@ -154,12 +150,16 @@ namespace isometricgame.GameEngine
             RenderService = new RenderService(this, Width, Height);
             TextDisplayer = new TextDisplayer(this);
             InputSystem = new InputSystem(this);
+            SceneObjectLibrary = new SceneObjectLibrary(this);
+            AnimationSchematicLibrary = new AnimationSchematicLibrary(this);
 
             RegisterSystem(AssetProvider);
             RegisterSystem(SpriteLibrary);
             RegisterSystem(RenderService);
             RegisterSystem(TextDisplayer);
             RegisterSystem(InputSystem);
+            RegisterSystem(SceneObjectLibrary);
+            RegisterSystem(AnimationSchematicLibrary);
         }
 
         protected virtual void LoadContent()

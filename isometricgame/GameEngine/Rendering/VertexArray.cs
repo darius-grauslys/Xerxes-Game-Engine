@@ -21,13 +21,17 @@ namespace isometricgame.GameEngine.Rendering
 
         public Texture2D Texture => texture;
 
-        public VertexArray(Texture2D texture, Vertex[] vertices = null)
+        public VertexArray(Texture2D texture, Vertex[] vertices = null,
+            float r = 0,
+            float g = 0,
+            float b = 0,
+            float a = 0)
         {
             vertexBufferObject = GL.GenBuffer();
 
             if (vertices == null)
             {
-                this.vertices = VerticesFromDimensions(texture.Width, texture.Height);
+                this.vertices = VerticesFromDimensions(texture.Width, texture.Height, -1, -1, 0, 0, r, g, b, a);
             }
             else
             {
@@ -90,7 +94,17 @@ namespace isometricgame.GameEngine.Rendering
         /// <param name="indexX"></param>
         /// <param name="indexY"></param>
         /// <returns></returns>
-        public static Vertex[] VerticesFromDimensions(float width, float height, float subWidth=-1, float subHeight=-1, int indexX=0, int indexY=0)
+        public static Vertex[] VerticesFromDimensions(
+            float width, 
+            float height, 
+            float subWidth=-1, 
+            float subHeight=-1, 
+            int indexX=0, 
+            int indexY=0, 
+            float r = 0,
+            float g = 0,
+            float b = 0,
+            float a = 0)
         {
             float vertX = (subWidth > 0) ? subWidth / width : 1;
             float vertY = (subHeight > 0) ? subHeight / height : 1;
@@ -102,20 +116,11 @@ namespace isometricgame.GameEngine.Rendering
 
             return new Vertex[]
                 {
-                    new Vertex(new Vector2(0, 0), new Vector2(vertXi1, vertYi2)),
-                    new Vertex(new Vector2(0, subHeight), new Vector2(vertXi1, vertYi1)),
-                    new Vertex(new Vector2(subWidth, subHeight), new Vector2(vertXi2, vertYi1)),
-                    new Vertex(new Vector2(subWidth, 0), new Vector2(vertXi2, vertYi2)),
+                    new Vertex(new Vector2(0, 0), new Vector2(vertXi1, vertYi2), r, g, b, a),
+                    new Vertex(new Vector2(0, subHeight), new Vector2(vertXi1, vertYi1), r, g, b, a),
+                    new Vertex(new Vector2(subWidth, subHeight), new Vector2(vertXi2, vertYi1), r, g, b, a),
+                    new Vertex(new Vector2(subWidth, 0), new Vector2(vertXi2, vertYi2), r, g, b, a),
                 };
-            /*
-            return new Vertex[]
-                {
-                    new Vertex(new Vector2(0, 0), new Vector2(vertXi2, vertYi1)),
-                    new Vertex(new Vector2(0, subHeight), new Vector2(vertXi2, vertYi2)),
-                    new Vertex(new Vector2(subWidth, subHeight), new Vector2(vertXi1, vertYi2)),
-                    new Vertex(new Vector2(subWidth, 0), new Vector2(vertXi1, vertYi1)),
-                };
-                */
         }
     }
 }

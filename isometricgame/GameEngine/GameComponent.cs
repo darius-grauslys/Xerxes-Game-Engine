@@ -1,4 +1,5 @@
 ﻿using isometricgame.GameEngine.Events.Arguments;
+using isometricgame.GameEngine.Scenes;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,14 @@ namespace isometricgame.GameEngine
     /// </summary>
     public class GameComponent
     {
-        private readonly GameObject parentObject;
+        private SceneObject parentObject;
         private bool enabled = true;
 
         public event EventHandler<FrameArgument> OnPostUpdate;
 
-        public GameObject ParentObject { get => parentObject; }
+        public SceneObject ParentObject { get => parentObject; internal set => parentObject = value; }
 
-        public GameComponent(GameObject parentObject)
+        public GameComponent(SceneObject parentObject)
         {
             this.parentObject = parentObject;
         }
@@ -50,6 +51,15 @@ namespace isometricgame.GameEngine
         public void Toggle(bool b)
         {
             enabled = b;
+        }
+
+        public virtual GameComponent Clone(SceneObject newParent)
+        {
+            GameComponent newComp = new GameComponent(newParent);
+            newComp.enabled = enabled;
+            newComp.OnPostUpdate += OnPostUpdate;
+
+            return newComp;
         }
     }
 }

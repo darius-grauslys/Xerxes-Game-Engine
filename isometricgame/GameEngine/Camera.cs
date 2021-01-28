@@ -19,15 +19,15 @@ namespace isometricgame.GameEngine
         private float velocity = 3;
         private Scene scene;
 
-        private GameObject focusObject;
+        private SceneObject focusObject;
 
         public float Velocity { get => velocity; set => velocity = value; }
         public Vector3 Position { get => position; set => position = value; }
-        public GameObject FocusObject { get => focusObject; set => focusObject = value; }
+        public SceneObject FocusObject { get => focusObject; set => focusObject = value; }
 
         public Vector3 TargetPosition => (focusObject != null) ? focusObject.Position : position;
 
-        public float Zoom => zoom;
+        public float Zoom { get => zoom; set => zoom = value; }
 
         public float Iso_X => Chunk.CartesianToIsometric_X(position.X, position.Y);
         public float Iso_Y => Chunk.CartesianToIsometric_Y(position.X, position.Y, position.Z);

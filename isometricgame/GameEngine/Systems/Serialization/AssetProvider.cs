@@ -39,11 +39,38 @@ namespace isometricgame.GameEngine.Systems.Serialization
 
         #region Sprites
 
-        public Sprite ExtractSpriteSheet(string filePath, string name = null, int width=-1, int height=-1)
+        public Sprite ExtractSpriteSheet(
+            string filePath, 
+            string name = null, 
+            int width=-1, 
+            int height=-1, 
+            float offsetX = 0, 
+            float offsetY = 0,
+            float r = 0,
+            float g = 0,
+            float b = 0,
+            float a = 0)
         {
             Texture2D texture = LoadTexture(filePath);
 
-            return new Sprite(texture, (width > 0) ? width : texture.Width, (height > 0) ? height : texture.Height, (name == null) ? filePath : name);
+            return new Sprite(
+                texture, 
+                (width > 0) 
+                    ? width 
+                    : texture.Width, 
+                (height > 0) 
+                    ? height 
+                    : texture.Height, 
+                (name == null) 
+                    ? filePath 
+                    : name, 
+                offsetX / texture.Width, 
+                offsetY / texture.Height,
+                0,
+                r,
+                g,
+                b,
+                a);
         }
 
         #endregion

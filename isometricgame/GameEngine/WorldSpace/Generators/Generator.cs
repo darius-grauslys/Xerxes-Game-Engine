@@ -13,6 +13,7 @@ namespace isometricgame.GameEngine.WorldSpace.Generators
         private Perlin perlin;
 
         public int Seed { get => seed; private set => seed = value; }
+        protected Perlin Perlin => perlin;
 
         public Generator(int seed)
         {
@@ -20,23 +21,6 @@ namespace isometricgame.GameEngine.WorldSpace.Generators
             perlin = new Perlin(seed);
         }
 
-        internal abstract Chunk GetChunk(float[,] noiseMap, Vector2 pos);
-
-        public Chunk[] GetChunks(Vector2 centralPosition, List<Vector2> neededActivePositions)
-        {
-            Chunk[] ret = new Chunk[neededActivePositions.Count];
-
-            for (int i = 0; i < neededActivePositions.Count; i++)
-            {
-                ret[i] = GetChunk(perlin.InterprolateNoise(neededActivePositions[i]), neededActivePositions[i]);
-            }
-
-            return ret;
-        }
-
-        public Chunk GetChunk(Vector2 pos)
-        {
-            return GetChunk(perlin.InterprolateNoise(pos), pos);
-        }
+        public abstract Chunk GetChunk(Vector2 pos);
     }
 }

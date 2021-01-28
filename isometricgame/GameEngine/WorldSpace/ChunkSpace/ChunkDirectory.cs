@@ -23,6 +23,9 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
         private IntegerPosition center = new IntegerPosition(0, 0);
         private bool firstRender = true;
 
+        public event Action<Chunk> ChunkLoaded;
+        public event Action<Chunk> ChunkUnloaded;
+
         #region locationals
 
         public float MinimalX_ByBaseLocation => _chunks[0,0].ChunkIndexPosition.X;
@@ -178,23 +181,30 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
                 {
                     c = (x < _chunks.GetLength(0) && y < _chunks.GetLength(1)) ? _chunks[x, y] : null;
 
-                    if (
-                        c != null &&
-                        c.ChunkIndexPosition.X >= minPos.X &&
-                        c.ChunkIndexPosition.Y >= minPos.Y &&
-                        c.ChunkIndexPosition.X < maxPos.X &&
-                        c.ChunkIndexPosition.Y < maxPos.Y
-                        )
+                    if (c != null)
                     {
-                        IntegerPosition index = c.ChunkIndexPosition + render_offset - newCenter;
-                        newChunkSet[index.X, index.Y] = c;
+                        if (
+                            c.ChunkIndexPosition.X >= minPos.X &&
+                            c.ChunkIndexPosition.Y >= minPos.Y &&
+                            c.ChunkIndexPosition.X < maxPos.X &&
+                            c.ChunkIndexPosition.Y < maxPos.Y
+                            )
+                        {
+                            IntegerPosition index = c.ChunkIndexPosition + render_offset - newCenter;
+                            newChunkSet[index.X, index.Y] = c;
+                        }
+                        else
+                        {
+                            ChunkUnloaded?.Invoke(c);
+                        }
                     }
 
                     if (newChunkSet[x, y] != null)
                         continue;
 
                     IntegerPosition newChunkPos = new IntegerPosition(x, y) - render_offset + newCenter;
-                    newChunkSet[x, y] = ChunkGenerator.GetChunk(newChunkPos);
+                    Chunk new_c = ChunkGenerator.GetChunk(newChunkPos);
+                    newChunkSet[x, y] = new_c;
                 }
             }
 
@@ -212,6 +222,7 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
                         //ChunkPass_VerifyOrientations();
 
                         ChunkPass_VerifyZValues(_chunks[x, y]);
+                        ChunkLoaded?.Invoke(_chunks[x, y]);
                     }
                 }
             }

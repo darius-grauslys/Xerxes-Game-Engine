@@ -11,10 +11,12 @@ namespace isometricgame.GameEngine.Rendering.Animation
         private int[][] animationNodes;
 
         private double speed;
-        private int node = 0;
         private int frame = 0;
         private int frameOffset;
         private double pauseTime;
+
+        private int lastNode = 0;
+        public int LastNode => lastNode;
 
         public AnimationSchematic(int nodeCount, double speed = 1, int startFrame = 0)
         {
@@ -23,23 +25,17 @@ namespace isometricgame.GameEngine.Rendering.Animation
             frameOffset = startFrame;
         }
 
-        public void SetNode(int node, int givenOffset=0)
-        {
-            frameOffset = givenOffset;
-            this.node = node;
-        }
-
         public void DefineNode(int node, int[] spriteIndices)
         {
             animationNodes[node] = spriteIndices;
         }
 
-        public int GetNode(double time)
+        public int GetVBO_Index(double time, int node)
         {
             if (pauseTime == 0)
                 frame = GetFrame(node, time, frameOffset);
 
-            return animationNodes[node][frame];
+            return lastNode = animationNodes[node][frame];
         }
 
         public void Pause(double pauseTime)
@@ -47,7 +43,7 @@ namespace isometricgame.GameEngine.Rendering.Animation
             this.pauseTime = pauseTime;
         }
 
-        public void Unpause(double unpauseTime)
+        public void Unpause(double unpauseTime, int node)
         {
             //Find the time skip
             int unpauseFrame = GetFrame(node, unpauseTime, 0) + animationNodes[node].Length - frame;

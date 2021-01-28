@@ -8,16 +8,17 @@ using OpenTK;
 
 namespace isometricgame.GameEngine.WorldSpace.Generators
 {
-    public class WorldGenerator : Generator
+    public class GenericGenerator : Generator
     {
-        public WorldGenerator(int seed) 
+        public GenericGenerator(int seed) 
             : base(seed)
         {
         }
 
-        internal override Chunk GetChunk(float[,] noiseMap, Vector2 pos)
+        public override Chunk GetChunk(Vector2 pos)
         {
             Chunk c = new Chunk(pos);
+            float[,] noiseMap = Perlin.InterprolateNoise(pos);
 
             for (int x = 0; x < Chunk.CHUNK_TILE_WIDTH; x++)
             {
