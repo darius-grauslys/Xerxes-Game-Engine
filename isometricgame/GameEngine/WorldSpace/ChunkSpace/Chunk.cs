@@ -11,12 +11,21 @@ using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
 {
-    public class Chunk
+    public enum ChunkStructureLayerType
+    {
+        Ground = 0,
+        Liquid = 1,
+        Flora = 2
+    }
+
+    public struct Chunk
     {
         public static readonly int CHUNK_TILE_WIDTH = 16;
         public static readonly int CHUNK_TILE_HEIGHT = 16;
         public static int CHUNK_PIXEL_WIDTH => CHUNK_TILE_WIDTH * 35;
         public static int CHUNK_PIXEL_HEIGHT => CHUNK_TILE_HEIGHT * 18;
+
+        public static int CHUNK_MAX_STRUCTURE_COUNT = 3;
 
         public static IntegerPosition WorldSpace_To_ChunkSpace(Vector2 position)
         {
@@ -40,16 +49,20 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
             return ((2 * iso_y - (12 * z)) / (Tile.TILE_HEIGHT - 7)) + cart_x;
         }
 
-        private Tile[,] tiles = new Tile[CHUNK_TILE_WIDTH, CHUNK_TILE_HEIGHT];
+        public static int Localize(int x_or_y) => (CHUNK_PIXEL_WIDTH + (x_or_y % CHUNK_TILE_WIDTH)) % CHUNK_TILE_WIDTH;
+        public static IntegerPosition Localize(IntegerPosition pos) => new IntegerPosition(Localize(pos.X), Localize(pos.Y));
+
+        //private Tile[,] tiles = new Tile[CHUNK_TILE_WIDTH, CHUNK_TILE_HEIGHT];
         private IntegerPosition chunkIndexPosition;
-        private bool verifiedChunk = false;
+        private bool isFinalized;
+        private bool isValid;
 
-        private List<SceneStructure> chunkStructures = new List<SceneStructure>();
-        private List<SceneObject> chunkObjects = new List<SceneObject>();
+        private RenderStructure[] chunkStructures;
+        private int structureCount;
 
-        private int minimumZ, maximumZ;
+        private float minimumZ, maximumZ;
 
-        public Tile[,] Tiles { get => tiles; set => tiles = value; }
+        //public Tile[,] Tiles { get => tiles; set => tiles = value; }
         /// <summary>
         /// Base Location is used for positioning on the chunk level. 
         /// </summary>
@@ -68,25 +81,38 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
         /// </summary>
         public IntegerPosition TileSpaceEdgeLocation => TileSpaceLocation + new IntegerPosition(16, 16);
 
-        public bool ZValuesVerified { get => verifiedChunk; }
-        public int MinimumZ { get => minimumZ; set => minimumZ = value; }
-        public int MaximumZ { get => maximumZ; set => maximumZ = value; }
-        public List<SceneStructure> ChunkStructures { get => chunkStructures; protected set => chunkStructures = value; }
-        public List<SceneObject> ChunkObjects { get => chunkObjects; protected set => chunkObjects = value; }
-
-        public event Action<Chunk> ZVerificated;
-
-        internal void ConfirmZValueVerfication(int minimumZ, int maximumZ)
-        {
-            verifiedChunk = true;
-            this.MinimumZ = minimumZ;
-            this.MaximumZ = maximumZ;
-            ZVerificated?.Invoke(this);
-        }
+        public bool IsFinalized { get => isFinalized; }
+        public float MinimumZ { get => minimumZ; set => minimumZ = value; }
+        public float MaximumZ { get => maximumZ; set => maximumZ = value; }
+        public RenderStructure[] ChunkStructures { get => chunkStructures; private set => chunkStructures = value; }
+        public bool IsValid { get => isValid; set => isValid = value; }
 
         public Chunk(Vector2 baseLocation)
         {
             this.chunkIndexPosition = baseLocation;
+            isFinalized = false;
+            minimumZ = 0;
+            maximumZ = 0;
+            isValid = true;
+            chunkStructures = new RenderStructure[CHUNK_MAX_STRUCTURE_COUNT];
+            structureCount = 0;
+        }
+
+        public void AddStructure(RenderStructure structure)
+        {
+            chunkStructures[structureCount] = structure;
+            structureCount++;
+        }
+
+        public void AssertZValues()
+        {
+            for (int i = 0; i < chunkStructures.Length; i++)
+            {
+                if (chunkStructures[i].minimumZ < minimumZ)
+                    minimumZ = chunkStructures[i].minimumZ;
+                if (chunkStructures[i].maximumZ > maximumZ)
+                    maximumZ = chunkStructures[i].maximumZ;
+            }
         }
 
         public bool WithinPosition(Vector2 basePos)

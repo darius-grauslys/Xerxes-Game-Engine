@@ -49,6 +49,7 @@ namespace isometricgame.GameEngine.Rendering.Animation
             int unpauseFrame = GetFrame(node, unpauseTime, 0) + animationNodes[node].Length - frame;
             //Offset the time skip so we continue on the same frame.
             frameOffset = unpauseFrame % animationNodes[node].Length;
+            pauseTime = 0;
         }
 
         private int GetFrame(int node, double time, int givenOffset)

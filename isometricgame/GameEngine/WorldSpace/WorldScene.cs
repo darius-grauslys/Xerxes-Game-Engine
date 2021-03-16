@@ -23,13 +23,14 @@ namespace isometricgame.GameEngine.WorldSpace
         private ChunkDirectory chunkDirectory;
         private Camera camera;
 
-        private int tileRange, renderDistance;
-        float render_minX, render_maxX, render_minY, render_maxY;
+        public int renderTileRange, renderDistance, tileRange;
 
         private SpriteLibrary spriteLibrary;
 
         public Camera Camera { get => camera; private set => camera = value; }
         public ChunkDirectory ChunkDirectory { get => chunkDirectory; set => chunkDirectory = value; }
+
+        public bool test_flop_REMOVE = true;
 
         public WorldScene(Game game, Generator worldGenerator, int renderDistance=0)
             : base(game)
@@ -39,30 +40,6 @@ namespace isometricgame.GameEngine.WorldSpace
             this.renderDistance = renderDistance;
 
             spriteLibrary = game.GetSystem<SpriteLibrary>();
-
-            ChunkDirectory.ChunkLoaded += ChunkDirectory_ChunkLoaded;
-            ChunkDirectory.ChunkUnloaded += ChunkDirectory_ChunkUnloaded;
-        }
-
-        protected virtual void ChunkDirectory_ChunkUnloaded(Chunk c)
-        {
-            for (int i = 0; i < c.ChunkStructures.Count; i++)
-                StaticSceneStructures.Remove(c.ChunkStructures[i]);
-            for (int i = 0; i < c.ChunkObjects.Count; i++)
-                StaticSceneObjects.Remove(c.ChunkObjects[i]);
-        }
-
-        protected virtual void ChunkDirectory_ChunkLoaded(Chunk c)
-        {
-            foreach (SceneStructure ss in c.ChunkStructures)
-            {
-                StaticSceneStructures.Add(ss);
-            }
-            foreach (SceneObject so in c.ChunkObjects)
-            {
-                StaticSceneObjects.Add(so);
-                so.Scene = this;
-            }
         }
 
         public override void UpdateFrame(FrameArgument e)
@@ -71,9 +48,13 @@ namespace isometricgame.GameEngine.WorldSpace
             
             SceneMatrix = Camera.GetView();
             ChunkDirectory.ChunkCleanup(Camera.Position.Xy);
-
-            tileRange = (int)((2 / Math.Log(camera.Zoom + 1)) * 16);
-            renderDistance = (tileRange / Chunk.CHUNK_TILE_WIDTH) + 2;
+            
+            renderTileRange = (int)((2 / Math.Log(camera.Zoom + 1)) * 16);
+            if (test_flop_REMOVE)
+                tileRange = (int)((2 / Math.Log(camera.Zoom * 1.5f + 1)) * 16);
+            else
+                tileRange = (int)((2 / Math.Log(camera.Zoom + 1)) * 16);
+            renderDistance = (renderTileRange / Chunk.CHUNK_TILE_WIDTH) + 2;
             chunkDirectory.RenderDistance = renderDistance;
 
             base.UpdateFrame(e);
@@ -86,47 +67,71 @@ namespace isometricgame.GameEngine.WorldSpace
             
             int flooredX = (int)camera.TargetPosition.X;
             int flooredY = (int)camera.TargetPosition.Y;
-                        
-            render_minX = flooredX - tileRange;
-            render_minY = flooredY - tileRange;
-            render_maxX = flooredX + tileRange;
-            render_maxY = flooredY + tileRange;
 
-            float width = chunkDirectory.VisibleWidth;
-            float height = chunkDirectory.VisibleHeight;
+            IntegerPosition cpos;
+            IntegerPosition spos;
 
-            float rot = (float)(Math.Sqrt(2) / 2);
+            RenderUnit[] renderUnits;
 
-            for (float y = render_maxY; y >= render_minY; y--)
+            float tx, ty;
+            int spriteId;
+            
+            IntegerPosition rowOffset = new IntegerPosition(1, 0);
+            IntegerPosition colOffset = new IntegerPosition(-1, -1);
+            int flip = 1, flipadd = 0;
+            int test_n = tileRange;
+            
+            int range = (int)(2.2f * test_n * test_n) + ((test_n - 1) * (test_n - 1));
+            int test_n_calc = test_n;
+
+            IntegerPosition basePos = new IntegerPosition(flooredX - test_n / 3, flooredY + (4 * test_n / 3)), yPrimeDescent = basePos;
+            int flop = test_n_calc;
+
+            for (int range_prime = 0; range_prime < range; range_prime++)
             {
-                for (float x = render_minX; x < render_maxX; x++)
-                {
-                    Tile t;
-                    
-                    try
-                    {
-                        t = ChunkDirectory.DeliminateTile(new Vector2(x, y));
-                    }
-                    catch { Console.WriteLine("error"); return; } //write to error log later.
-                    
-                    float tx = Chunk.CartesianToIsometric_X(x, y), ty = Chunk.CartesianToIsometric_Y(x, y, t.Z);
+                yPrimeDescent += colOffset;
 
-                    spriteLibrary.GetSprite(t.Data).Use(t.Orientation);
-                    renderService.DrawSprite(tx, ty);
+                cpos = ChunkDirectory.DeliminateChunkIndex(yPrimeDescent);
+                spos = ChunkDirectory.Localize(yPrimeDescent, cpos);
+
+
+                for (int structureIndex = 0; structureIndex < Chunk.CHUNK_MAX_STRUCTURE_COUNT; structureIndex++)
+                {
+                    if (ChunkDirectory.Chunks[cpos.X, cpos.Y].ChunkStructures[structureIndex].IsValid)
+                    {
+                        renderUnits = ChunkDirectory.Chunks[cpos.X, cpos.Y].ChunkStructures[structureIndex].StructuralUnits[spos.X];
+                        if (renderUnits[spos.Y].IsInitialized)
+                        {
+                            tx = Chunk.CartesianToIsometric_X(yPrimeDescent.X, yPrimeDescent.Y);
+                            ty = Chunk.CartesianToIsometric_Y(yPrimeDescent.X, yPrimeDescent.Y, renderUnits[spos.Y].Position.Z);
+
+                            spriteId = renderUnits[spos.Y].Id;
+                            renderService.DrawSprite(renderUnits[spos.Y].Id, tx, ty, renderUnits[spos.Y].VAO_Index);
+                        }
+                    }
+                }
+                flop--;
+
+                if (flop <= 0)
+                {
+                    rowOffset += colOffset * flip;
+                    basePos += rowOffset;
+                    yPrimeDescent = basePos;
+                    flip = flip * -1;
+                    flipadd += flip;
+                    flop = test_n_calc + flipadd;
                 }
             }
 
             base.RenderFrame(renderService, e);
         }
 
-        protected override void DrawSprite(RenderService renderService, Sprite s, float x, float y, float z = 0)
+        protected override void DrawSprite(RenderService renderService, ref RenderUnit renderUnit)
         {
-            if (x < render_minX || x > render_maxX || y < render_minY || y > render_maxY)
-                return;
+            float cx = Chunk.CartesianToIsometric_X(renderUnit.X, renderUnit.Y);
+            float cy = Chunk.CartesianToIsometric_Y(renderUnit.X, renderUnit.Y, renderUnit.Z);
 
-            float cx = Chunk.CartesianToIsometric_X(x, y);
-            float cy = Chunk.CartesianToIsometric_Y(x, y, z);
-            base.DrawSprite(renderService, s, cx, cy);
+            renderService.DrawSprite(ref renderUnit, cx, cy);
         }
     }
 }

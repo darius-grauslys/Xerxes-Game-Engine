@@ -20,7 +20,7 @@ namespace isometricgame.GameEngine.Rendering
         private int subWidth;
         private int subHeight;
 
-        private int vboIndex = 0;
+        private int vaoIndex = 0, vaoRow = 0;
 
         private float offsetX, offsetY;
 
@@ -38,7 +38,8 @@ namespace isometricgame.GameEngine.Rendering
         public int SubHeight { get => subHeight; private set => subHeight = value; }
         public Texture2D Texture { get => texture; private set => texture = value; }
 
-        public int VBO_Index { get => vboIndex; set => vboIndex = value; }
+        public int VAO_Index { get => vaoIndex + (VAO_Row * columnCount); set => vaoIndex = value; }
+        public int VAO_Row { get => vaoRow; set => vaoRow = value; }
         public float OffsetX { get => offsetX; protected set => offsetX = value; }
         public float OffsetY { get => offsetY; protected set => offsetY = value; }
 
@@ -53,7 +54,7 @@ namespace isometricgame.GameEngine.Rendering
             subWidth = s.subWidth;
             subHeight = s.subHeight;
 
-            this.vboIndex = (vboIndex < 0) ? s.vboIndex : vboIndex;
+            this.vaoIndex = (vboIndex < 0) ? s.vaoIndex : vboIndex;
 
             columnCount = s.columnCount;
             rowCount = s.rowCount;
@@ -93,7 +94,7 @@ namespace isometricgame.GameEngine.Rendering
             this.subWidth = subWidth;
             this.subHeight = subHeight;
 
-            this.vboIndex = vboIndex;
+            this.vaoIndex = vboIndex;
 
             columnCount = texture.Width / subWidth;
             rowCount = texture.Height / subHeight;
@@ -122,10 +123,10 @@ namespace isometricgame.GameEngine.Rendering
             BindVertexArray();
         }
 
-        public void Use(int index=0)
+        public void Use()
         {
-            vertexArrays[index].Use();
-            GL.BindVertexArray(vertexArrayObjects[index]);
+            vertexArrays[VAO_Index].Use();
+            GL.BindVertexArray(vertexArrayObjects[VAO_Index]);
         }
 
         private void BindVertexArray()

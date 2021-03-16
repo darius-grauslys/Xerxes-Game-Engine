@@ -21,6 +21,7 @@ namespace isometricgame.GameEngine.WorldSpace.Generators
             perlin = new Perlin(seed);
         }
 
-        public abstract Chunk GetChunk(Vector2 pos);
+        public abstract Chunk CreateChunk(Vector2 pos);
+        public abstract void FinalizeChunk(ChunkDirectory chunkDirectory, ref Chunk c);
     }
 }

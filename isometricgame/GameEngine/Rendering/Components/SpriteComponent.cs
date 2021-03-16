@@ -10,12 +10,8 @@ namespace isometricgame.GameEngine.Components.Rendering
 {
     public class SpriteComponent : GameComponent
     {
-        protected Sprite sprite;
-
-        public Sprite Sprite => sprite;
-
-        public SpriteComponent(SceneObject parentObject) 
-            : base(parentObject)
+        public SpriteComponent() 
+            : base()
         {
         }
 
@@ -23,9 +19,20 @@ namespace isometricgame.GameEngine.Components.Rendering
         /// might need to make this thread safe.
         /// </summary>
         /// <param name="s"></param>
-        public virtual void SetSprite(Sprite s)
+        public virtual void SetSprite(RenderUnit ru)
         {
-            sprite = s;
+            if (ParentObject != null)
+                ParentObject.renderUnit = ru;
+        }
+
+        public virtual void SetSprite(int spriteId, int vao_Index = 0)
+        {
+            if (ParentObject != null)
+            {
+                ParentObject.renderUnit.Id = spriteId;
+                ParentObject.renderUnit.VAO_Index = vao_Index;
+                ParentObject.renderUnit.IsInitialized = true;
+            }
         }
     }
 }

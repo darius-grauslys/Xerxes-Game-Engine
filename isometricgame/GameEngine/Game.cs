@@ -19,7 +19,6 @@ using isometricgame.GameEngine.Systems.Rendering;
 using isometricgame.GameEngine.Systems.Serialization;
 using OpenTK.Graphics;
 using isometricgame.GameEngine.Systems.Input;
-using isometricgame.GameEngine.Systems.Scenes;
 
 namespace isometricgame.GameEngine
 {
@@ -38,7 +37,6 @@ namespace isometricgame.GameEngine
         private RenderService renderService;
         private TextDisplayer textDisplayer;
         private InputSystem inputSystem;
-        private SceneObjectLibrary sceneObjectLibrary;
         private AnimationSchematicLibrary animationSchematicLibrary;
 
         private List<GameSystem> systems = new List<GameSystem>();
@@ -56,8 +54,6 @@ namespace isometricgame.GameEngine
         public TextDisplayer TextDisplayer { get => textDisplayer; private set => textDisplayer = value; }
 
         public InputSystem InputSystem { get => inputSystem; private set => inputSystem = value; }
-
-        public SceneObjectLibrary SceneObjectLibrary { get => sceneObjectLibrary; private set => sceneObjectLibrary = value; }
 
         public AnimationSchematicLibrary AnimationSchematicLibrary { get => animationSchematicLibrary; private set => animationSchematicLibrary = value; }
         #endregion
@@ -150,7 +146,6 @@ namespace isometricgame.GameEngine
             RenderService = new RenderService(this, Width, Height);
             TextDisplayer = new TextDisplayer(this);
             InputSystem = new InputSystem(this);
-            SceneObjectLibrary = new SceneObjectLibrary(this);
             AnimationSchematicLibrary = new AnimationSchematicLibrary(this);
 
             RegisterSystem(AssetProvider);
@@ -158,8 +153,10 @@ namespace isometricgame.GameEngine
             RegisterSystem(RenderService);
             RegisterSystem(TextDisplayer);
             RegisterSystem(InputSystem);
-            RegisterSystem(SceneObjectLibrary);
             RegisterSystem(AnimationSchematicLibrary);
+
+            foreach (GameSystem system in systems)
+                system.Load();
         }
 
         protected virtual void LoadContent()
@@ -167,7 +164,7 @@ namespace isometricgame.GameEngine
 
         }
 
-        protected void SetScene(Scene scene)
+        public void SetScene(Scene scene)
         {
             this.scene = scene;
         }

@@ -16,8 +16,8 @@ namespace isometricgame.GameEngine.Components.Rendering
         private AnimationSchematic schematic;
         private int node;
 
-        public AnimationComponent(SceneObject parentObject, AnimationSchematic schematic = null) 
-            : base(parentObject)
+        public AnimationComponent(AnimationSchematic schematic = null) 
+            : base()
         {
             this.schematic = schematic;
         }
@@ -39,7 +39,7 @@ namespace isometricgame.GameEngine.Components.Rendering
 
         protected override void OnUpdate(FrameArgument args)
         {
-            sprite.VBO_Index = schematic.GetVBO_Index(args.Time, node);
+            ParentObject.renderUnit.VAO_Index = schematic.GetVBO_Index(args.Time, node);
         }
     }
 }

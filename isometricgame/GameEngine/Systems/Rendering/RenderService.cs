@@ -17,6 +17,8 @@ namespace isometricgame.GameEngine.Systems.Rendering
 {
     public class RenderService : GameSystem
     {
+        private SpriteLibrary SpriteLibrary;
+
         private Matrix4 projection;
         private Matrix4 cachedWorldMatrix;
 
@@ -34,6 +36,11 @@ namespace isometricgame.GameEngine.Systems.Rendering
             shaderSource_Frag = Path.Combine(game.GAME_DIRECTORY_SHADERS, "shader.frag");
 
             shader = new Shader(shaderSource_Vert, shaderSource_Frag);
+        }
+
+        public override void Load()
+        {
+            SpriteLibrary = Game.GetSystem<SpriteLibrary>();
         }
 
         public override void Unload()
@@ -74,13 +81,25 @@ namespace isometricgame.GameEngine.Systems.Rendering
             GL.Flush();
         }
 
-        public void DrawSprite(Sprite s, float x, float y, float z = 0)
+        public void UseSprite(int spriteId, int vaoIndex = 0)
         {
-            s.Use(s.VBO_Index);
-            DrawSprite(x + s.OffsetX, y + s.OffsetY, z);
+            SpriteLibrary.sprites[spriteId].VAO_Index = vaoIndex;
+            SpriteLibrary.sprites[spriteId].Use();
         }
 
-        public void DrawSprite(float x, float y, float z = 0)
+        public void DrawSprite(ref RenderUnit renderUnit, float x, float y, float z = 0)
+        {
+            UseSprite(renderUnit.Id, renderUnit.VAO_Index);
+            DrawSprite(x + SpriteLibrary.sprites[renderUnit.Id].OffsetX, y + SpriteLibrary.sprites[renderUnit.Id].OffsetY, z);
+        }
+
+        public void DrawSprite(int spriteId, float x, float y, int vaoIndex = 0, float z = 0)
+        {
+            UseSprite(spriteId, vaoIndex);
+            DrawSprite(x, y, z);
+        }
+
+        private void DrawSprite(float x, float y, float z = 0)
         {
             shader.Use();
 

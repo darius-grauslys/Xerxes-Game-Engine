@@ -1,4 +1,6 @@
-﻿using isometricgame.GameEngine.WorldSpace.Generators;
+﻿using isometricgame.GameEngine.Rendering;
+using isometricgame.GameEngine.Scenes;
+using isometricgame.GameEngine.WorldSpace.Generators;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -23,15 +25,12 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
         private IntegerPosition center = new IntegerPosition(0, 0);
         private bool firstRender = true;
 
-        public event Action<Chunk> ChunkLoaded;
-        public event Action<Chunk> ChunkUnloaded;
-
         #region locationals
 
-        public float MinimalX_ByBaseLocation => _chunks[0,0].ChunkIndexPosition.X;
-        public float MinimalY_ByBaseLocation => _chunks[0,0].ChunkIndexPosition.Y;
-        public float MaximalX_ByBaseLocation => _chunks[DoubleDist-1, DoubleDist-1].ChunkIndexPosition.X;
-        public float MaximalY_ByBaseLocation => _chunks[DoubleDist-1, DoubleDist-1].ChunkIndexPosition.Y;
+        public float MinimalX_ByBaseLocation => Chunks[0,0].ChunkIndexPosition.X;
+        public float MinimalY_ByBaseLocation => Chunks[0,0].ChunkIndexPosition.Y;
+        public float MaximalX_ByBaseLocation => Chunks[DoubleDist-1, DoubleDist-1].ChunkIndexPosition.X;
+        public float MaximalY_ByBaseLocation => Chunks[DoubleDist-1, DoubleDist-1].ChunkIndexPosition.Y;
 
         public float MinimalX_ByTileLocation => MinimalX_ByBaseLocation * Chunk.CHUNK_TILE_WIDTH;
         public float MinimalY_ByTileLocation => MinimalY_ByBaseLocation * Chunk.CHUNK_TILE_HEIGHT;
@@ -52,6 +51,7 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
         public Generator ChunkGenerator { get => chunkGenerator; set => chunkGenerator = value; }
 
         public int RenderDistance { get => renderDistance; set => newRenderDistance = value; }
+        public Chunk[,] Chunks { get => _chunks; private set => _chunks = value; }
 
         public ChunkDirectory(int renderDistance, Generator chunkGenerator)
         {
@@ -59,28 +59,8 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
             this.renderDistance = renderDistance;
             this.newRenderDistance = renderDistance;
 
-            _chunks = new Chunk[DoubleDist, DoubleDist];
+            Chunks = new Chunk[DoubleDist, DoubleDist];
         }
-
-        /*
-         *     -a  x  x  x  x
-         *  
-         *      x  x  x  x  x
-         *
-         *      x  x -o  x  x
-         * 
-         *      x  x  x  x  x
-         * 
-         *      x  x  x  x -b
-         * 
-         * 
-         *    Chunk 'o' is the player chunk. The one the player stands on.
-         *    Chunk 'a' is the minimal chunk. Chunks[0]
-         *    Chunk 'b' is the maximal chunk, C
-         * 
-         *    a and b are out of render view, only o and the adjacent x.
-         *    infact there is probably more chunks loaded in memory.
-         */
 
         /// <summary>
         /// Sorts the chunks from 0 -> n by the sum of X*renderDist and Y.
@@ -96,21 +76,12 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
             center = Chunk.WorldSpace_To_ChunkSpace(position);
         }
 
-        public Chunk DeliminateChunk(Vector2 position)
+        public IntegerPosition DeliminateChunkIndex(IntegerPosition position)
         {
             IntegerPosition posToChunk = Chunk.WorldSpace_To_ChunkSpace(position);
             IntegerPosition chunkPosition = posToChunk - center + new IntegerPosition(renderDistance, renderDistance);
-            
-            return _chunks[chunkPosition.X, chunkPosition.Y];
 
-            /*
-            Chunk deliminatedChunk = activeChunks.Find((c) => c.TileSpaceLocation.X <= tilePos.X && c.TileSpaceLocation.Y <= tilePos.Y && (c.TileSpaceLocation.X + Chunk.CHUNK_TILE_WIDTH > tilePos.X) && (c.TileSpaceLocation.Y + Chunk.CHUNK_TILE_WIDTH > tilePos.Y));
-            if (deliminatedChunk == null)
-                deliminatedChunk = skirtChunks.Find((c) => c.TileSpaceLocation.X <= tilePos.X && c.TileSpaceLocation.Y <= tilePos.Y && (c.TileSpaceLocation.X + Chunk.CHUNK_TILE_WIDTH > tilePos.X) && (c.TileSpaceLocation.Y + Chunk.CHUNK_TILE_WIDTH > tilePos.Y));
-            if (deliminatedChunk == null)
-                throw new CouldNotDelimitException();
-            return deliminatedChunk;
-            */
+            return chunkPosition;
         }
 
         /// <summary>
@@ -119,37 +90,60 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public Tile DeliminateTile(IntegerPosition position)
+        public IntegerPosition Localize(IntegerPosition position, IntegerPosition cpos)
         {
-            //Chunk c = DeliminateChunk(position);
-
+            /*
             IntegerPosition posToChunk = Chunk.WorldSpace_To_ChunkSpace(position);
             IntegerPosition chunkPosition = posToChunk - center + new IntegerPosition(renderDistance, renderDistance);
 
             Chunk c = _chunks[chunkPosition.X, chunkPosition.Y];
-            IntegerPosition tilePos = position;
-            Tile tile = c.Tiles[tilePos.X - c.TileSpaceLocation.X, tilePos.Y - c.TileSpaceLocation.Y];
+            */        
 
-            return tile;
+            return position - Chunks[cpos.X, cpos.Y].TileSpaceLocation;
         }
 
-        public byte GetTileOrientation(Vector2 pos)
+        private Vector3 DeliminateRenderUnit_Position(IntegerPosition position, int structureIndex = 0)
         {
-            Tile[] tiles = new Tile[4];
+            //contemplate using unsafe {}.
+            IntegerPosition chunkPosition = DeliminateChunkIndex(position);
+            IntegerPosition pos = Localize(position, chunkPosition);
+            return Chunks[chunkPosition.X, chunkPosition.Y].ChunkStructures[structureIndex].structuralUnits[pos.X][pos.Y].Position;
+        }
 
-            tiles[0] = DeliminateTile(pos);
-            tiles[1] = DeliminateTile(new Vector2(pos.X - 1, pos.Y));
-            tiles[2] = DeliminateTile(new Vector2(pos.X, pos.Y + 1));
-            tiles[3] = DeliminateTile(new Vector2(pos.X + 1, pos.Y));
+        public byte GetTileOrientation(IntegerPosition localPos, IntegerPosition chunkTilePos, ref RenderStructure structure)
+        {
+            IntegerPosition lookupPos;
+            byte orientation = 0;
+            byte oriVal = 0;
+            Vector3 target = structure.structuralUnits[localPos.X][localPos.Y].Position;
 
-            float tZ = tiles[0].Z;
-            for (int i = 1; i < 4; i++)
+            for (int ly = -1; ly < 2; ly++)
             {
-                if (tZ < tiles[i].Z)
-                    tZ = tiles[i].Z;
+                for (int lx = -1; lx < 2; lx++)
+                {
+                    if (lx == 0 && ly == 0)
+                        continue;
+                    oriVal = Tile.ORIENTATIONS[lx + 1, ly + 1];
+                    lookupPos = new IntegerPosition(lx, ly) + localPos;
+                    Vector3 t;
+
+                    if (lookupPos.X < 0 || lookupPos.Y < 0 || lookupPos.X >= Chunk.CHUNK_TILE_WIDTH || lookupPos.Y >= Chunk.CHUNK_TILE_HEIGHT)
+                    {
+                        t = DeliminateRenderUnit_Position(lookupPos + chunkTilePos);
+                    }
+                    else
+                    {
+                        t = structure.structuralUnits[lookupPos.X][lookupPos.Y].Position;
+                    }
+
+                    if (t.Z < target.Z)
+                    {
+                        orientation = (byte)(orientation | oriVal);
+                    }
+                }
             }
-            byte ret = (byte)( (tiles[0].Z == tZ ? 1 : 0) + (tiles[1].Z == tZ ? 2 : 0) + (tiles[2].Z == tZ ? 4 : 0) + (tiles[3].Z == tZ ? 8 : 0) );
-            return ret;
+
+            return orientation;
         }
 
         //we will need a means to check live to add/drop chunks
@@ -179,9 +173,9 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
             {
                 for (int y = 0; y < DoubleDist; y++)
                 {
-                    c = (x < _chunks.GetLength(0) && y < _chunks.GetLength(1)) ? _chunks[x, y] : null;
+                    c = (x < Chunks.GetLength(0) && y < Chunks.GetLength(1)) ? Chunks[x, y] : default(Chunk);
 
-                    if (c != null)
+                    if (c.IsValid)
                     {
                         if (
                             c.ChunkIndexPosition.X >= minPos.X &&
@@ -195,20 +189,20 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
                         }
                         else
                         {
-                            ChunkUnloaded?.Invoke(c);
+
                         }
                     }
 
-                    if (newChunkSet[x, y] != null)
+                    if (newChunkSet[x, y].IsValid)
                         continue;
 
                     IntegerPosition newChunkPos = new IntegerPosition(x, y) - render_offset + newCenter;
-                    Chunk new_c = ChunkGenerator.GetChunk(newChunkPos);
+                    Chunk new_c = ChunkGenerator.CreateChunk(newChunkPos);
                     newChunkSet[x, y] = new_c;
                 }
             }
 
-            _chunks = newChunkSet;
+            Chunks = newChunkSet;
             center = newCenter;
 
             //verify z values and orientations
@@ -216,80 +210,32 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
             {
                 for (int y = 1; y < DoubleDist-1; y++)
                 {
-                    if (!_chunks[x, y].ZValuesVerified)
+                    if (!Chunks[x, y].IsFinalized)
                     {
-                        //obselete
-                        //ChunkPass_VerifyOrientations();
-
-                        ChunkPass_VerifyZValues(_chunks[x, y]);
-                        ChunkLoaded?.Invoke(_chunks[x, y]);
+                        ChunkGenerator.FinalizeChunk(this, ref Chunks[x, y]);
                     }
                 }
             }
         }
 
-        private void ChunkPass_VerifyZValues(Chunk c)
+        public void PerformTileOrientation(IntegerPosition chunkTileSpace, ref RenderStructure structure)
         {
-            int minimumZ = c.Tiles[0,0].Z, maximumZ = c.Tiles[0,0].Z;
-            IntegerPosition lookupPos, chunkPos = c.TileSpaceLocation;
-
             IntegerPosition localPos = new IntegerPosition(0,0);
 
             for(localPos.Y = 0; localPos.Y < Chunk.CHUNK_TILE_HEIGHT; localPos.Y++)
             {
                 for (localPos.X = 0; localPos.X < Chunk.CHUNK_TILE_WIDTH; localPos.X++)
                 {
-                    byte orientation = 0;
-                    byte oriVal = 0;
+                    byte orientation = GetTileOrientation(localPos, chunkTileSpace, ref structure);
 
-                    Tile target = c.Tiles[localPos.X, localPos.Y];
-
-                    if (target.Z < minimumZ)
-                        minimumZ = target.Z;
-                    if (target.Z > maximumZ)
-                        maximumZ = target.Z;
-
-                    for (int ly = -1; ly < 2; ly++)
-                    {
-                        for (int lx = -1; lx < 2; lx++)
-                        {
-                            if (lx == 0 && ly == 0)
-                                continue;
-                            oriVal = Tile.ORIENTATIONS[lx + 1, ly + 1];
-                            lookupPos = new IntegerPosition(lx, ly) + localPos;
-                            Tile t;
-
-                            if (lookupPos.X < 0 || lookupPos.Y < 0 || lookupPos.X >= Chunk.CHUNK_TILE_WIDTH || lookupPos.Y >= Chunk.CHUNK_TILE_HEIGHT)
-                            {
-                                t = DeliminateTile(lookupPos + chunkPos);
-                            }
-                            else
-                            {
-                                t = c.Tiles[lookupPos.X, lookupPos.Y];
-                            }
-
-                            if (t.Z < target.Z)
-                            {
-                                orientation = (byte)(orientation | oriVal);
-                            }
-                        }
-                    }
-                    
                     if (orientation >= 15)
                     {
                         orientation = 0;
-                        c.Tiles[localPos.X, localPos.Y].Z--;
+                        structure.structuralUnits[localPos.X][localPos.Y].Position -= new Vector3(0,0,1);
                     }
-                    c.Tiles[localPos.X, localPos.Y].Orientation = orientation;
+                    structure.structuralUnits[localPos.X][localPos.Y].VAO_Index = orientation;
                 }
             }
-
-            c.ConfirmZValueVerfication(minimumZ, maximumZ);
-        }
-
-        private void ChunkPass_VerifyOrientations(Vector2 chunkTilePos)
-        {
-
         }
     }
 }

@@ -48,7 +48,23 @@ namespace isometricgame.GameEngine.Systems.Input
         public InputSwitchType Keyboard_SwitchState(Key key) => keyboard_UpDownSwitch[key];
 
         public bool Keyboard_SwitchState_Bool(Key key) => (keyboard_UpDownSwitch[key] == InputSwitchType.InitalDown || keyboard_UpDownSwitch[key] == InputSwitchType.InitalUp) ? true : false;
+        
+        public bool Keyboard_SwitchState_BoolReset(Key key)
+        {
+            bool ret = Keyboard_SwitchState_Bool(key);
+            if (ret)
+                keyboard_UpDownSwitch[key] = InputSwitchType.RepeatDown;
+            return ret;
+        }
 
+        public bool Keyboard_SwitchState_BoolResetFree(Key key)
+        {
+            bool ret = Keyboard_SwitchState_Bool(key);
+            if (ret)
+                keyboard_UpDownSwitch[key] = InputSwitchType.RepeatUp;
+            return ret;
+        }
+        
         public void RemoveKeySwitch(Key key)
         {
             keyboard_UpDownSwitch.Remove(key);

@@ -14,16 +14,24 @@ namespace isometricgame.GameEngine
     /// </summary>
     public class GameComponent
     {
-        private SceneObject parentObject;
+        private GameObject parentObject;
         private bool enabled = true;
 
-        public event EventHandler<FrameArgument> OnPostUpdate;
+        public GameObject ParentObject { get => parentObject; internal set => parentObject = value; }
 
-        public SceneObject ParentObject { get => parentObject; internal set => parentObject = value; }
-
-        public GameComponent(SceneObject parentObject)
+        public GameComponent()
         {
-            this.parentObject = parentObject;
+
+        }
+
+        internal void _initalize()
+        {
+            Initalize();
+        }
+
+        protected void Initalize()
+        {
+
         }
 
         /// <summary>
@@ -34,7 +42,6 @@ namespace isometricgame.GameEngine
             if (enabled)
             {
                 OnUpdate(args);
-                OnPostUpdate?.Invoke(this, args);
             }
         }
 
@@ -53,11 +60,10 @@ namespace isometricgame.GameEngine
             enabled = b;
         }
 
-        public virtual GameComponent Clone(SceneObject newParent)
+        public virtual GameComponent Clone()
         {
-            GameComponent newComp = new GameComponent(newParent);
+            GameComponent newComp = new GameComponent();
             newComp.enabled = enabled;
-            newComp.OnPostUpdate += OnPostUpdate;
 
             return newComp;
         }

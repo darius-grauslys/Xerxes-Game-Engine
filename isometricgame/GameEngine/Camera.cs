@@ -13,17 +13,17 @@ namespace isometricgame.GameEngine
     public class Camera
     {
         private float zNear = 0.01f, zFar = 10f;
-        private float zoom = 2f;
+        private float zoom = 0.2f;
         
         private Vector3 position = new Vector3(0,0,0);
         private float velocity = 3;
         private Scene scene;
 
-        private SceneObject focusObject;
+        private GameObject focusObject;
 
         public float Velocity { get => velocity; set => velocity = value; }
         public Vector3 Position { get => position; set => position = value; }
-        public SceneObject FocusObject { get => focusObject; set => focusObject = value; }
+        public GameObject FocusObject { get => focusObject; set => focusObject = value; }
 
         public Vector3 TargetPosition => (focusObject != null) ? focusObject.Position : position;
 
@@ -61,7 +61,9 @@ namespace isometricgame.GameEngine
             //return Matrix4.LookAt(new Vector3(0, 0, 1), new Vector3(0, 0, 0), new Vector3(0, 1, 0))
             //    * Matrix4.CreateScale(fov, fov, 1) *
             //    Matrix4.CreateTranslation(Iso_X, Iso_Y, 1f);
-            return Matrix4.CreateTranslation(-Iso_X, -Iso_Y, -1f) * Matrix4.CreateScale(zoom) * Matrix4.CreateOrthographic(scene.Game.Width, scene.Game.Height, zNear, zFar);
+            return Matrix4.CreateTranslation(-Iso_X, -Iso_Y, -1f) 
+                * Matrix4.CreateScale(zoom) 
+                * Matrix4.CreateOrthographic(scene.Game.Width, scene.Game.Height, zNear, zFar);
         }
     }
 }

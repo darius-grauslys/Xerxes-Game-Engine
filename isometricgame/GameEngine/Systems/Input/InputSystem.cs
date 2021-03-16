@@ -19,9 +19,8 @@ namespace isometricgame.GameEngine.Systems.Input
             { InputType.Mouse_Wheel, new List<InputHandler>() }
         };
 
-        private Dictionary<int, List<InputHandler>> handlerID_Classes = new Dictionary<int, List<InputHandler>>();
-        private List<bool> enabled_Classes = new List<bool>();
-
+        private Dictionary<int, List<InputHandler>> handlerGroups = new Dictionary<int, List<InputHandler>>();
+        
         public InputSystem(Game game) 
             : base(game)
         {
@@ -37,15 +36,14 @@ namespace isometricgame.GameEngine.Systems.Input
 
         public InputHandler RegisterHandler(InputType inputType, bool enabled = true, int handlerID = -1)
         {
-            int newID =  (handlerID > 0) ? handlerID : handlerID_Classes.Keys.Count;
+            int newID =  (handlerID > 0) ? handlerID : handlerGroups.Keys.Count;
             InputHandler handler = new InputHandler(newID, inputType, enabled);
 
-            if (handlerID_Classes.ContainsKey(newID))
-                handlerID_Classes[newID].Add(handler);
+            if (handlerGroups.ContainsKey(newID))
+                handlerGroups[newID].Add(handler);
             else
             {
-                handlerID_Classes.Add(newID, new List<InputHandler> { handler });
-                enabled_Classes.Add(true);
+                handlerGroups.Add(newID, new List<InputHandler> { handler });
             }
             
             for(int key = 1; key <= 16; key*=2)
@@ -54,52 +52,54 @@ namespace isometricgame.GameEngine.Systems.Input
 
             return handler;
         }
-        
-        public void ToggleClass(int handlerID, bool state)
-        {
-            enabled_Classes[handlerID] = state;
-        }
 
         private void GameWindow_MouseMove(object sender, MouseMoveEventArgs e)
         {
             foreach (InputHandler handle in inputDirectory[InputType.Mouse_Move])
-                handle.Handle_Mouse_Move(sender, e);
+                if (handle.Enabled)
+                    handle.Handle_Mouse_Move(sender, e);
         }
 
         private void GameWindow_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             foreach (InputHandler handle in inputDirectory[InputType.Mouse_Wheel])
-                handle.Handle_Mouse_Wheel(sender, e);
+                if (handle.Enabled)
+                    handle.Handle_Mouse_Wheel(sender, e);
         }
 
         private void GameWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
             foreach (InputHandler handle in inputDirectory[InputType.Mouse_Button])
-                handle.Handle_Mouse_Button(sender, e);
+                if (handle.Enabled)
+                    handle.Handle_Mouse_Button(sender, e);
         }
 
         private void GameWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             foreach (InputHandler handle in inputDirectory[InputType.Mouse_Button])
-                handle.Handle_Mouse_Button(sender, e);
+                if (handle.Enabled)
+                    handle.Handle_Mouse_Button(sender, e);
         }
 
         private void GameWindow_KeyUp(object sender, KeyboardKeyEventArgs e)
         {
             foreach (InputHandler handle in inputDirectory[InputType.Keyboard_UpDown])
-                handle.Handle_Keyboard_UpDown(sender, e);
+                if (handle.Enabled)
+                    handle.Handle_Keyboard_UpDown(sender, e);
         }
 
         private void GameWindow_KeyPress(object sender, KeyPressEventArgs e)
         {
             foreach (InputHandler handle in inputDirectory[InputType.Keyboard_Press])
-                handle.Handle_Keyboard_Press(sender, e);
+                if (handle.Enabled)
+                    handle.Handle_Keyboard_Press(sender, e);
         }
 
         private void GameWindow_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
             foreach (InputHandler handle in inputDirectory[InputType.Keyboard_UpDown])
-                handle.Handle_Keyboard_UpDown(sender, e);
+                if (handle.Enabled)
+                    handle.Handle_Keyboard_UpDown(sender, e);
         }
     }
 }

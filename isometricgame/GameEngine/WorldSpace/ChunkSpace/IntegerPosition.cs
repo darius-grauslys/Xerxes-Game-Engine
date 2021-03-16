@@ -47,6 +47,11 @@ namespace isometricgame.GameEngine.WorldSpace.ChunkSpace
             return new IntegerPosition(pos1.x + pos2.x, pos1.y + pos2.y);
         }
 
+        public static IntegerPosition operator *(IntegerPosition pos1, int scalar)
+        {
+            return new IntegerPosition(pos1.x * scalar, pos1.y * scalar);
+        }
+
         public static implicit operator IntegerPosition(Vector2 pos) => new IntegerPosition((int)Math.Floor(pos.X), (int)Math.Floor(pos.Y));
         public static implicit operator Vector2(IntegerPosition pos) => new Vector2(pos.X, pos.Y);
     }

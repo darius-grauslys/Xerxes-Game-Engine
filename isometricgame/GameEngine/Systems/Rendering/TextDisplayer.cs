@@ -15,9 +15,11 @@ namespace isometricgame.GameEngine.Systems.Rendering
 {
     public class TextDisplayer : GameSystem
     {
-        public readonly string CHARS = ",gjpqyABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhiklmnorstuvwxz1234567890.?!/-+@#$%^&*()_=[]\\{}|:;\"'<>`~";
+        public static readonly string CHARS = ",gjpqyABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhiklmnorstuvwxz1234567890.?!/-+@#$%^&*()_=[]\\{}|:;\"'<>`~";
 
-        private Dictionary<string, Sprite> fonts = new Dictionary<string, Sprite>();
+        private SpriteLibrary SpriteLibrary;
+
+        private Dictionary<string, int> fonts = new Dictionary<string, int>();
 
         public TextDisplayer(Game game) 
             : base(game)
@@ -25,20 +27,25 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         }
 
-        public void LoadFont(string fontName, Sprite font)
+        public override void Load()
         {
-            fonts.Add(font.Name, font);
+            SpriteLibrary = Game.GetSystem<SpriteLibrary>();
+        }
+
+        public void LoadFont(string fontName, int fontSpriteId)
+        {
+            fonts.Add(fontName, fontSpriteId);
         }
 
         public void DrawText(RenderService renderService, string text, string fontName, float x, float y)
         {
-            float fontWidth = fonts[fontName].SubWidth;
-            float fontHeight = fonts[fontName].SubHeight;
+            float fontWidth = SpriteLibrary.sprites[fonts[fontName]].SubWidth;
+            float fontHeight = SpriteLibrary.sprites[fonts[fontName]].SubHeight;
             float descentGap = fontHeight / 2 + 1;
             float commaDescent = -3;
             float descentCharacter = -5;
 
-            Sprite font = fonts[fontName];
+            int font = fonts[fontName];
 
             float yWrite = y, xWrite = x, yOffset = 0;
             for (int i = 0; i < text.Length; i++)
@@ -59,8 +66,7 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
                 yOffset = (index == 0) ? commaDescent : (index < 6) ? descentCharacter : 0;
 
-                font.Use(index);
-                renderService.DrawSprite(xWrite, yWrite + yOffset);
+                renderService.DrawSprite(font, xWrite, yWrite + yOffset, index);
                 xWrite += fontWidth;
             }
         }
