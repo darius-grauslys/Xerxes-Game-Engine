@@ -12,14 +12,23 @@ namespace isometricgame.GameEngine.Rendering
     {
         public static readonly int VERTEXARRAY_INDEX_COUNT = 4;
 
-        private Vertex[] vertices;
+        public Vertex[] Vertices { get; internal set; }
         private Texture2D texture;
 
-        private int vertexBufferObject;
+        public int VertexBufferObject { get; private set; }
 
         private bool flippedX, flippedY;
 
         public Texture2D Texture => texture;
+
+        internal VertexArray(Vertex[] vertices)
+        {
+            VertexBufferObject = GL.GenBuffer();
+            flippedX = false;
+            flippedY = false;
+            texture = default(Texture2D);
+            this.Vertices = vertices;
+        }
 
         public VertexArray(Texture2D texture, Vertex[] vertices = null,
             float r = 0,
@@ -27,15 +36,15 @@ namespace isometricgame.GameEngine.Rendering
             float b = 0,
             float a = 0)
         {
-            vertexBufferObject = GL.GenBuffer();
-
+            VertexBufferObject = GL.GenBuffer();
+                
             if (vertices == null)
             {
-                this.vertices = VerticesFromDimensions(texture.Width, texture.Height, -1, -1, 0, 0, r, g, b, a);
+                this.Vertices = VerticesFromDimensions(texture.Width, texture.Height, -1, -1, 0, 0, r, g, b, a);
             }
             else
             {
-                this.vertices = vertices;
+                this.Vertices = vertices;
             }
 
             flippedX = false;
@@ -54,22 +63,27 @@ namespace isometricgame.GameEngine.Rendering
         {
             if (x)
             {
-                vertices[0] = new Vertex(new Vector2(0, 0), flippedX ? new Vector2(1, 0) : new Vector2(0, 0));
-                vertices[2] = new Vertex(new Vector2(texture.Width, texture.Height), flippedX ? new Vector2(0, 1) : new Vector2(1, 1));
+                Vertices[0] = new Vertex(new Vector2(0, 0), flippedX ? new Vector2(1, 0) : new Vector2(0, 0));
+                Vertices[2] = new Vertex(new Vector2(texture.Width, texture.Height), flippedX ? new Vector2(0, 1) : new Vector2(1, 1));
                 flippedX = !flippedX;
             }
             if (y)
             {
-                vertices[1] = new Vertex(new Vector2(0, texture.Height), flippedY ? new Vector2(1, 1) : new Vector2(0, 1));
-                vertices[3] = new Vertex(new Vector2(texture.Width, 0), flippedY ? new Vector2(0, 0) : new Vector2(1, 0));
+                Vertices[1] = new Vertex(new Vector2(0, texture.Height), flippedY ? new Vector2(1, 1) : new Vector2(0, 1));
+                Vertices[3] = new Vertex(new Vector2(texture.Width, 0), flippedY ? new Vector2(0, 0) : new Vector2(1, 0));
                 flippedY = !flippedY;
             }
         }
 
+        public void SetBufferData()
+        {
+            BindVertexBuffer();
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Vertex.SizeInBytes, Vertices, BufferUsageHint.StaticDraw);
+        }
+
         public void BindVertexBuffer()
         {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, VERTEXARRAY_INDEX_COUNT * Vertex.SizeInBytes, vertices, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
         }
 
         //remove
@@ -81,7 +95,7 @@ namespace isometricgame.GameEngine.Rendering
         public void Dispose()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.DeleteBuffer(vertexBufferObject);
+            GL.DeleteBuffer(VertexBufferObject);
         }
 
         /// <summary>

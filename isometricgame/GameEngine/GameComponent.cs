@@ -15,21 +15,21 @@ namespace isometricgame.GameEngine
     public class GameComponent
     {
         private GameObject parentObject;
-        private bool enabled = true;
+        public bool Enabled { get; set; }
 
         public GameObject ParentObject { get => parentObject; internal set => parentObject = value; }
 
         public GameComponent()
         {
-
+            Enabled = true;
         }
 
-        internal void _initalize()
+        internal void _newParent()
         {
-            Initalize();
+            Handle_NewParent();
         }
 
-        protected void Initalize()
+        protected virtual void Handle_NewParent()
         {
 
         }
@@ -39,7 +39,7 @@ namespace isometricgame.GameEngine
         /// </summary>
         internal void Update(FrameArgument args)
         {
-            if (enabled)
+            if (Enabled)
             {
                 OnUpdate(args);
             }
@@ -52,18 +52,18 @@ namespace isometricgame.GameEngine
 
         public void Toggle()
         {
-            enabled = !enabled;
+            Enabled = !Enabled;
         }
 
         public void Toggle(bool b)
         {
-            enabled = b;
+            Enabled = b;
         }
 
         public virtual GameComponent Clone()
         {
             GameComponent newComp = new GameComponent();
-            newComp.enabled = enabled;
+            newComp.Enabled = Enabled;
 
             return newComp;
         }

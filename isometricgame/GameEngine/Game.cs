@@ -38,6 +38,7 @@ namespace isometricgame.GameEngine
         private TextDisplayer textDisplayer;
         private InputSystem inputSystem;
         private AnimationSchematicLibrary animationSchematicLibrary;
+        private SceneManagementService sceneManagementService;
 
         private List<GameSystem> systems = new List<GameSystem>();
         /// <summary>
@@ -49,13 +50,15 @@ namespace isometricgame.GameEngine
         /// </summary>
         public SpriteLibrary SpriteLibrary { get => spriteLibrary; private set => spriteLibrary = value; }
 
-        public RenderService RenderService { get => renderService; private set => renderService = value; }
+        internal RenderService RenderService { get => renderService; private set => renderService = value; }
 
         public TextDisplayer TextDisplayer { get => textDisplayer; private set => textDisplayer = value; }
 
         public InputSystem InputSystem { get => inputSystem; private set => inputSystem = value; }
 
         public AnimationSchematicLibrary AnimationSchematicLibrary { get => animationSchematicLibrary; private set => animationSchematicLibrary = value; }
+
+        public SceneManagementService SceneManagementService { get => sceneManagementService; private set => sceneManagementService = value; }
         #endregion
 
         #region Time
@@ -76,6 +79,7 @@ namespace isometricgame.GameEngine
             GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds\\") : GAME_DIR_WORLDS;
             
             RegisterSystems();
+            RenderService.LoadShaders(GetShaders());
 
             //END SERVICES
 
@@ -86,6 +90,7 @@ namespace isometricgame.GameEngine
         {
             GL.Viewport(ClientRectangle);
             RenderService.AdjustProjection(Width, Height);
+            scene.RescaleScene();
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -97,13 +102,14 @@ namespace isometricgame.GameEngine
         {
             updateTime += e.Time;
 
-            scene.UpdateFrame(new FrameArgument(UpdateTime, e.Time));
+            scene.UpdateScene(new FrameArgument(UpdateTime, e.Time));
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             renderTime += e.Time;
 
+            scene.BeginRender(RenderService);
             RenderService.BeginRender();
 
             RenderService.RenderScene(scene, new FrameArgument(RenderTime, e.Time));
@@ -127,7 +133,7 @@ namespace isometricgame.GameEngine
         public T GetSystem<T>() where T : GameSystem
         {
             foreach (GameSystem system in systems)
-                if (system is T)
+                if (system is T && system.Accessable)
                     return system as T;
             throw new ServiceNotFoundException();
         }
@@ -139,7 +145,12 @@ namespace isometricgame.GameEngine
             systems.Add(gameService);
         }
 
-        protected virtual void RegisterSystems()
+        protected virtual string[] GetShaders()
+        {
+            return new string[] { "shader" };
+        }
+
+        internal virtual void RegisterSystems()
         {
             AssetProvider = new AssetProvider(this);
             SpriteLibrary = new SpriteLibrary(this);
@@ -147,6 +158,7 @@ namespace isometricgame.GameEngine
             TextDisplayer = new TextDisplayer(this);
             InputSystem = new InputSystem(this);
             AnimationSchematicLibrary = new AnimationSchematicLibrary(this);
+            SceneManagementService = new SceneManagementService(this);
 
             RegisterSystem(AssetProvider);
             RegisterSystem(SpriteLibrary);
@@ -154,9 +166,17 @@ namespace isometricgame.GameEngine
             RegisterSystem(TextDisplayer);
             RegisterSystem(InputSystem);
             RegisterSystem(AnimationSchematicLibrary);
+            RegisterSystem(SceneManagementService);
+
+            RegisterCustomSystems();
 
             foreach (GameSystem system in systems)
                 system.Load();
+        }
+
+        protected virtual void RegisterCustomSystems()
+        {
+
         }
 
         protected virtual void LoadContent()

@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -118,5 +119,17 @@ namespace isometricgame.GameEngine.Systems
         {
             return (float)(thetaRadian / Math.PI * 180f);
         }
+
+        public static Vector4 Color_To_Vec4(Color color)
+            => new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
+
+        public static float Clamp(float val, float min, float max)
+            => (val < min) ? min : ((val > max) ? max : val);
+
+        public static float ClampMin(float val, float min)
+            => val < min ? min : val;
+
+        public static float ClampMax(float val, float max)
+            => val > max ? max : val;
     }
 }

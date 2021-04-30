@@ -25,6 +25,8 @@ namespace isometricgame.GameEngine.Rendering.Animation
             frameOffset = startFrame;
         }
 
+        public void SetSpeed(double speed) => this.speed = (speed > 0) ? speed : 1;
+
         public void DefineNode(int node, int[] spriteIndices)
         {
             animationNodes[node] = spriteIndices;

@@ -17,17 +17,21 @@ namespace isometricgame.GameEngine.Systems.Rendering
 {
     public class RenderService : GameSystem
     {
+        public static readonly string EXTENSION_VERT = ".vert", EXTENSION_FRAG = ".frag";
         private SpriteLibrary SpriteLibrary;
 
         private Matrix4 projection;
         private Matrix4 cachedWorldMatrix;
 
-        private Shader shader;
+        private Shader[] Shaders { get; set; }
+        public int ShaderCount => Shaders.Length;
+        public int GetShader<T>() where T : Shader { for (int i = 0; i < Shaders.Length; i++) if (Shaders[i] is T) return i; return 0; }
+        private Shader beginDraw_DefaultShader;
 
         private string shaderSource_Vert, shaderSource_Frag;
 
         public RenderService(Game game, int windowWidth, int windowHeight) 
-            : base(game)
+            : base(game, false)
         {
             AdjustProjection(windowWidth, windowHeight);
             cachedWorldMatrix = Matrix4.CreateTranslation(new Vector3(0,0,0));
@@ -35,7 +39,20 @@ namespace isometricgame.GameEngine.Systems.Rendering
             shaderSource_Vert = Path.Combine(game.GAME_DIRECTORY_SHADERS, "shader.vert");
             shaderSource_Frag = Path.Combine(game.GAME_DIRECTORY_SHADERS, "shader.frag");
 
-            shader = new Shader(shaderSource_Vert, shaderSource_Frag);
+            beginDraw_DefaultShader = new Shader(shaderSource_Vert, shaderSource_Frag);
+        }
+
+        internal void LoadShaders(string[] paths)
+        {
+            Shaders = new Shader[paths.Length];
+
+            for(int i=0;i<paths.Length;i++)
+            {
+                shaderSource_Vert = Path.Combine(Game.GAME_DIRECTORY_SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_VERT));
+                shaderSource_Frag = Path.Combine(Game.GAME_DIRECTORY_SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_FRAG));
+
+                Shaders[i] = new Shader(shaderSource_Vert, shaderSource_Frag);
+            }
         }
 
         public override void Load()
@@ -45,12 +62,19 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         public override void Unload()
         {
-            shader.Dispose();
+            beginDraw_DefaultShader.Dispose();
         }
 
         public void AdjustProjection(int width, int height)
         {
             projection = Matrix4.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+        }
+
+        public void SetShader(int shader)
+        {
+            shader = (shader < 0) ? 0 : ((shader >= Shaders.Length) ? Shaders.Length-1 : shader);
+            beginDraw_DefaultShader = Shaders[shader];
+            beginDraw_DefaultShader.Use();
         }
 
         internal void BeginRender()
@@ -68,17 +92,20 @@ namespace isometricgame.GameEngine.Systems.Rendering
             GL.MatrixMode(MatrixMode.Modelview);
         }
 
-        public void RenderScene(Scene scene, FrameArgument e)
+        internal void RenderScene(Scene scene, FrameArgument e)
         {
-            //Matrix4 view = World.Camera.GetView();
+            scene.RenderScene(this, e);
+        }
 
-            cachedWorldMatrix = scene.SceneMatrix;
-            scene.RenderFrame(this, e);
+        internal void CacheMatrix(Matrix4 mat)
+        {
+            cachedWorldMatrix = mat;
         }
 
         internal void EndRender()
         {
             GL.Flush();
+            beginDraw_DefaultShader = Shaders[0];
         }
 
         public void UseSprite(int spriteId, int vaoIndex = 0)
@@ -87,29 +114,53 @@ namespace isometricgame.GameEngine.Systems.Rendering
             SpriteLibrary.sprites[spriteId].Use();
         }
 
+        public void DrawObj(GameObject obj)
+        {
+            beginDraw_DefaultShader.Use();
+            obj._handleDraw(this);
+        }
+
         public void DrawSprite(ref RenderUnit renderUnit, float x, float y, float z = 0)
         {
             UseSprite(renderUnit.Id, renderUnit.VAO_Index);
-            DrawSprite(x + SpriteLibrary.sprites[renderUnit.Id].OffsetX, y + SpriteLibrary.sprites[renderUnit.Id].OffsetY, z);
+            DrawSprite_DefaultShader(
+                Game.SpriteLibrary.sprites[renderUnit.Id].VertexArrays[renderUnit.VAO_Index].Vertices.  Length,
+                x + SpriteLibrary.sprites[renderUnit.Id].OffsetX, y + SpriteLibrary.sprites[renderUnit.Id].OffsetY, z);
         }
 
         public void DrawSprite(int spriteId, float x, float y, int vaoIndex = 0, float z = 0)
         {
             UseSprite(spriteId, vaoIndex);
-            DrawSprite(x, y, z);
+            DrawSprite_DefaultShader(Game.SpriteLibrary.sprites[spriteId].VertexArrays[vaoIndex].Vertices.Length, x, y, z);
         }
 
-        private void DrawSprite(float x, float y, float z = 0)
+        public int GetUniformLocation(int shader, string name)
         {
-            shader.Use();
+            return GL.GetUniformLocation(Shaders[shader].Handle, name);
+        }
 
-            int transform = GL.GetUniformLocation(shader.Handle, "transform");
+        //resolve primitive obsession.
+        public void SetUniform1(int uniformLocation, float x)
+        {
+            GL.Uniform1(uniformLocation, x);
+        }
+
+        public void SetUniform4(int uniformLocation, Vector4 vec4)
+        {
+            GL.Uniform4(uniformLocation, vec4);
+        }
+
+        private void DrawSprite_DefaultShader(int vertCount, float x, float y, float z = 0)
+        {
+            beginDraw_DefaultShader.Use();
+
+            int transform = GL.GetUniformLocation(beginDraw_DefaultShader.Handle, "transform");
 
             Matrix4 translation = Matrix4.CreateTranslation(new Vector3(x, y, z)) * cachedWorldMatrix;
 
             GL.UniformMatrix4(transform, true, ref translation);
-            
-            GL.DrawArrays(PrimitiveType.Quads, 0, VertexArray.VERTEXARRAY_INDEX_COUNT);
+
+            GL.DrawArrays(PrimitiveType.Quads, 0, vertCount);
         }
     }
 }

@@ -18,7 +18,7 @@ using isometricgame.GameEngine.WorldSpace.ChunkSpace;
 
 namespace isometricgame.GameEngine.WorldSpace
 {
-    public class WorldScene : Scene
+    public class WorldLayer : SceneLayer
     {
         private ChunkDirectory chunkDirectory;
         private Camera camera;
@@ -32,21 +32,21 @@ namespace isometricgame.GameEngine.WorldSpace
 
         public bool test_flop_REMOVE = true;
 
-        public WorldScene(Game game, Generator worldGenerator, int renderDistance=0)
-            : base(game)
+        public WorldLayer(Scene parentScene, Generator worldGenerator, int renderDistance=0)
+            : base(parentScene)
         {
             this.ChunkDirectory = new ChunkDirectory(renderDistance, worldGenerator);
             this.Camera = new Camera(this);
             this.renderDistance = renderDistance;
 
-            spriteLibrary = game.GetSystem<SpriteLibrary>();
+            spriteLibrary = Game.GetSystem<SpriteLibrary>();
         }
 
-        public override void UpdateFrame(FrameArgument e)
+        protected override void Handle_UpdateLayer(FrameArgument e)
         {
             Camera.Pan_Linear((float)e.DeltaTime);
             
-            SceneMatrix = Camera.GetView();
+            LayerMatrix = Camera.GetView();
             ChunkDirectory.ChunkCleanup(Camera.Position.Xy);
             
             renderTileRange = (int)((2 / Math.Log(camera.Zoom + 1)) * 16);
@@ -57,10 +57,10 @@ namespace isometricgame.GameEngine.WorldSpace
             renderDistance = (renderTileRange / Chunk.CHUNK_TILE_WIDTH) + 2;
             chunkDirectory.RenderDistance = renderDistance;
 
-            base.UpdateFrame(e);
+            base.Handle_UpdateLayer(e);
         }
         
-        public override void RenderFrame(RenderService renderService, FrameArgument e)
+        protected override void Handle_RenderLayer(RenderService renderService, FrameArgument e)
         {
             if (chunkDirectory.RenderDistance != renderDistance)
                 return; //prevent race condition
@@ -123,15 +123,15 @@ namespace isometricgame.GameEngine.WorldSpace
                 }
             }
 
-            base.RenderFrame(renderService, e);
+            base.Handle_RenderLayer(renderService, e);
         }
 
-        protected override void DrawSprite(RenderService renderService, ref RenderUnit renderUnit)
+        protected override void DrawSprite(RenderService renderService, GameObject gameObject)
         {
-            float cx = Chunk.CartesianToIsometric_X(renderUnit.X, renderUnit.Y);
-            float cy = Chunk.CartesianToIsometric_Y(renderUnit.X, renderUnit.Y, renderUnit.Z);
+            float cx = Chunk.CartesianToIsometric_X(gameObject.renderUnit.X, gameObject.renderUnit.Y);
+            float cy = Chunk.CartesianToIsometric_Y(gameObject.renderUnit.X, gameObject.renderUnit.Y, gameObject.renderUnit.Z);
 
-            renderService.DrawSprite(ref renderUnit, cx, cy);
+            renderService.DrawSprite(ref gameObject.renderUnit, cx, cy);
         }
     }
 }

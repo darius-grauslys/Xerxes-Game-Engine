@@ -18,6 +18,6 @@ namespace isometricgame.GameEngine.Events.Arguments
         /// </summary>
         public readonly double DeltaTime;
 
-        public FrameArgument(double time, double deltaTime) { Time = time; DeltaTime = deltaTime; }
+        internal FrameArgument(double time, double deltaTime) { Time = time; DeltaTime = deltaTime; }
     }
 }

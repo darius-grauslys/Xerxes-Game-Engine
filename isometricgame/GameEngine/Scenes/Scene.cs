@@ -14,58 +14,79 @@ namespace isometricgame.GameEngine.Scenes
 {
     public class Scene
     {
-        private Game game;
-        private List<RenderStructure> staticSceneStructures = new List<RenderStructure>();
-        private List<RenderStructure> dynamicSceneStructures = new List<RenderStructure>();
-        private List<GameObject> staticSceneObjects = new List<GameObject>();
-        private List<GameObject> dynamicSceneObjects = new List<GameObject>();
-        private Matrix4 sceneMatrix;
-        
-        public Game Game => game;
+        public Game Game { get; private set; }
 
-        public Matrix4 SceneMatrix { get => sceneMatrix; protected set => sceneMatrix = value; }
-        public List<RenderStructure> StaticSceneStructures { get => staticSceneStructures; protected set => staticSceneStructures = value; }
-        public List<RenderStructure> DynamicSceneStructures { get => dynamicSceneStructures; protected set => dynamicSceneStructures = value; }
-        public List<GameObject> StaticSceneObjects { get => staticSceneObjects; protected set => staticSceneObjects = value; }
-        public List<GameObject> DynamicSceneObjects { get => dynamicSceneObjects; protected set => dynamicSceneObjects = value; }
+        internal List<SceneLayer> disabledLayers = new List<SceneLayer>();
+        internal List<SceneLayer> sceneLayers = new List<SceneLayer>();
+        protected List<SceneLayer> SceneLayers => sceneLayers.ToList();
+        internal void DisableLayer(SceneLayer layer) { sceneLayers.Remove(layer); disabledLayers.Add(layer); }
+        internal void EnableLayer(SceneLayer layer) { disabledLayers.Remove(layer); sceneLayers.Add(layer); }
+        protected void DisableLayers<T>() where T : SceneLayer { foreach (T layer in sceneLayers.ToList().OfType<T>()) { DisableLayer(layer); } }
+        protected void EnableLayers<T>() where T : SceneLayer { foreach(T layer in disabledLayers.ToList().OfType<T>()) { EnableLayer(layer); } }
+        protected void AddLayer(SceneLayer layer) { layer.SetParent(this); }
+        protected void RemoveLayer(SceneLayer layer) { layer.SetParent(null); }
+        protected void AddLayers(params SceneLayer[] layers) { foreach (SceneLayer layer in layers) AddLayer(layer); }
+        protected void EnableOnlyLayer<T>() where T : SceneLayer { DisableLayers<SceneLayer>(); EnableLayers<T>(); }
 
         public Scene(Game game)
         {
-            this.game = game;
-            
-            sceneMatrix = Matrix4.CreateOrthographic(1200,900,0.01f,30000f) * Matrix4.CreateTranslation(0,0,1);
+            Game = game;
         }
 
-        public virtual void RenderFrame(RenderService renderService, FrameArgument e)
+        internal void RescaleScene()
         {
-            RenderSceneObjects(renderService, e, StaticSceneObjects.ToArray());
-            RenderSceneObjects(renderService, e, DynamicSceneObjects.ToArray());
+            Handle_Rescale();
+            foreach (SceneLayer layer in sceneLayers)
+                layer.Rescale();
+            foreach (SceneLayer layer in disabledLayers)
+                layer.Rescale();
         }
+        protected virtual void Handle_Rescale() { }
 
-        public virtual void UpdateFrame(FrameArgument e)
+        internal void GainFocus()
         {
-            UpdateObjects(e, StaticSceneObjects.ToArray());
-            UpdateObjects(e, DynamicSceneObjects.ToArray());
+            RescaleScene();
+            Handle_GainFocus();
+            foreach (SceneLayer layer in sceneLayers)
+                layer.SceneGainFocus();
         }
+        protected virtual void Handle_GainFocus() { }
 
-        protected virtual void RenderSceneObjects(RenderService renderService, FrameArgument e, GameObject[] sceneObjects)
+        internal void BeginRender(RenderService renderService)
+            => HandleBeginRender(renderService);
+        /// <summary>
+        /// Returns the desired shader ID.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual void HandleBeginRender(RenderService renderService) { }
+
+        internal void RenderScene(RenderService renderService, FrameArgument e) 
+            => Handle_RenderScene(renderService, e);
+        /// <summary>
+        /// Overridable functionality.
+        /// </summary>
+        /// <param name="renderService"></param>
+        /// <param name="e"></param>
+        protected virtual void Handle_RenderScene(RenderService renderService, FrameArgument e)
         {
-            foreach (GameObject so in sceneObjects)
+            foreach(SceneLayer layer in sceneLayers)
             {
-                if (so.renderUnit.IsInitialized)
-                    DrawSprite(renderService, ref so.renderUnit);
+                renderService.CacheMatrix(layer.LayerMatrix);
+                layer.BeginRender(renderService);
+                layer.RenderLayer(renderService, e);
             }
         }
 
-        protected virtual void UpdateObjects(FrameArgument e, GameObject[] gameObjects)
+        internal void UpdateScene(FrameArgument e) => Handle_UpdateScene(e);
+        /// <summary>
+        /// Overridable functionality.
+        /// </summary>
+        /// <param name="renderService"></param>
+        /// <param name="e"></param>
+        protected virtual void Handle_UpdateScene(FrameArgument e)
         {
-            foreach (GameObject obj in gameObjects)
-                obj.OnUpdate(e);
-        }
-
-        protected virtual void DrawSprite(RenderService renderService, ref RenderUnit renderUnit)
-        {
-            renderService.DrawSprite(ref renderUnit, renderUnit.Position.X, renderUnit.Position.Y, renderUnit.Position.Z);
+            for(int i=0;i<sceneLayers.Count;i++)
+                sceneLayers[i].UpdateLayer(e);
         }
     }
 }

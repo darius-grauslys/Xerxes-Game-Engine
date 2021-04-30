@@ -14,9 +14,35 @@ namespace isometricgame.GameEngine.Systems.Input
         private int handlerID;
         private InputType inputType;
 
-        private Dictionary<Key, InputSwitchType> keyboard_UpDownSwitch = new Dictionary<Key, InputSwitchType>();
-        private Dictionary<MouseButton, InputSwitchType> mouse_UpDownToggle = new Dictionary<MouseButton, InputSwitchType>();
+        //switches[0,1,2] is the "any" switches. 0:anything, 1:keyboard, 2:mouse
+        private List<InputState> switches = new List<InputState>()
+        {
+            InputState.RepeatUp,
+            InputState.RepeatUp,
+            InputState.RepeatUp
+        };
 
+        private List<InputState> pulses = new List<InputState>()
+        {
+            InputState.InitalUp,
+            InputState.InitalUp,
+            InputState.InitalUp
+        };
+
+        private Dictionary<string, int> switchCatalog = new Dictionary<string, int>()
+        {
+            { "any", 0 },
+            { "keyboard_any", 1 },
+            { "mouse_any", 2 }
+        };
+
+        private Dictionary<string, int> pulseCatalog = new Dictionary<string, int>()
+        {
+            { "any", 0 },
+            { "keyboard_any", 1 },
+            { "mouse_any", 2 }
+        };
+        
         public bool Enabled { get => enabled; set => enabled = value; }
         public int HandlerID { get => handlerID; private set => handlerID = value; }
         public InputType InputType { get => inputType; set => inputType = value; }
@@ -40,86 +66,175 @@ namespace isometricgame.GameEngine.Systems.Input
             this.inputType = inputType;
         }
 
-        public void DeclareKeySwitch(Key key)
+        private void addInterest(
+            string enumTag, 
+            InputState initalState, 
+            List<InputState> stateList, 
+            Dictionary<string, int> catalog
+            )
         {
-            keyboard_UpDownSwitch.Add(key, InputSwitchType.RepeatUp);
+            stateList.Add(initalState);
+            catalog.Add(enumTag, stateList.Count - 1);
         }
 
-        public InputSwitchType Keyboard_SwitchState(Key key) => keyboard_UpDownSwitch[key];
-
-        public bool Keyboard_SwitchState_Bool(Key key) => (keyboard_UpDownSwitch[key] == InputSwitchType.InitalDown || keyboard_UpDownSwitch[key] == InputSwitchType.InitalUp) ? true : false;
-        
-        public bool Keyboard_SwitchState_BoolReset(Key key)
+        public void DeclareSwitch(string enumTag)
         {
-            bool ret = Keyboard_SwitchState_Bool(key);
-            if (ret)
-                keyboard_UpDownSwitch[key] = InputSwitchType.RepeatDown;
+            addInterest(enumTag, InputState.RepeatUp, switches, switchCatalog);
+        }
+
+        public void DeclarePulse(string enumTag)
+        {
+            addInterest(enumTag, InputState.InitalUp, pulses, pulseCatalog);
+        }
+
+        private void removeInterest(string enumTag, List<InputState> stateList, Dictionary<string,int> catalog)
+        {
+            int switchId = catalog[enumTag];
+            for (int i = switchId; i < stateList.Count; i++)
+            {
+                stateList[i]--;
+                foreach (string tag in catalog.Keys)
+                    if (catalog[tag] > switchId)
+                        catalog[tag]--;
+            }
+            stateList.RemoveAt(switchId);
+            catalog.Remove(enumTag);
+        }
+
+        public void RemoveSwitch(string enumTag)
+        {
+            removeInterest(enumTag, switches, switchCatalog);
+        }
+
+        public void RemovePulse(string enumTag)
+        {
+            removeInterest(enumTag, pulses, pulseCatalog);
+        }
+
+        private bool evaluateSwitchState(InputState switchState) 
+            => (switchState == InputState.InitalDown || switchState == InputState.InitalUp);
+        public bool EvaluateSwitchState(string enumTag, bool peek=false, InputState resetState = InputState.RepeatDown)
+        {
+            int switchId = switchCatalog[enumTag];
+            bool ret = evaluateSwitchState(switches[switchId]);
+            if (!peek && ret)
+                switches[switchId] = resetState;
+            return ret;
+
+        }
+        public InputState GetSwitchState(string enumTag) => switches[switchCatalog[enumTag]];
+        
+        private bool evaluatePulseState(InputState pulseState)
+            => pulseState == InputState.InitalDown;
+        public bool EvaluatePulseState(string enumTag, bool peek=false, InputState resetState = InputState.RepeatDown)
+        {
+            int pulseId = pulseCatalog[enumTag];
+            bool ret = evaluatePulseState(pulses[pulseId]);
+            if (!peek && ret)
+                pulses[pulseId] = resetState;
             return ret;
         }
+        public InputState GetPulseState(string enumTag) => pulses[pulseCatalog[enumTag]];
 
-        public bool Keyboard_SwitchState_BoolResetFree(Key key)
+        private void handleInterestLogic(
+            int anyIndex, 
+            string enumTag, 
+            bool isDown,
+            List<InputState> stateList,
+            Dictionary<string, int> catalog,
+            Func<bool, InputState, InputState> logicHandler)
         {
-            bool ret = Keyboard_SwitchState_Bool(key);
-            if (ret)
-                keyboard_UpDownSwitch[key] = InputSwitchType.RepeatUp;
-            return ret;
-        }
-        
-        public void RemoveKeySwitch(Key key)
-        {
-            keyboard_UpDownSwitch.Remove(key);
+            stateList[0] = logicHandler(isDown, stateList[0]);
+            stateList[anyIndex] = logicHandler(isDown, stateList[1]);
+            if (catalog.ContainsKey(enumTag))
+            {
+                int id = catalog[enumTag];
+                stateList[id] = logicHandler(isDown, stateList[id]);
+            }
         }
 
-        public void DeclareMouseToggle(MouseButton button)
+        private void handleSwitchStates(int anyIndex, string enumTag, bool isDown)
         {
-            mouse_UpDownToggle.Add(button, InputSwitchType.RepeatUp);
+            handleInterestLogic(
+                anyIndex,
+                enumTag,
+                isDown,
+                switches,
+                switchCatalog,
+                getNextSwitchState
+                );
         }
 
-        public void RemoveMouseToggle(MouseButton button)
+        private void handlePulseStates(int anyIndex, string enumTag, bool isDown)
         {
-            mouse_UpDownToggle.Remove(button);
+            handleInterestLogic(
+                anyIndex,
+                enumTag,
+                isDown,
+                pulses,
+                pulseCatalog,
+                getNextPulseState
+                );
         }
 
         internal virtual void Handle_Keyboard_UpDown(object sender, KeyboardKeyEventArgs e)
         {
-            if (keyboard_UpDownSwitch.ContainsKey(e.Key))
-            {
-                InputSwitchType state = handleSwitch(e.Keyboard.IsKeyDown(e.Key), keyboard_UpDownSwitch[e.Key]);
-                if (state != InputSwitchType.NoRead)
-                    keyboard_UpDownSwitch[e.Key] = state;
-            }
             keyboard_UpDown = (enabled) ? e : null;
+            if (keyboard_UpDown == null)
+                return;
+            string enumTag = e.Key.ToString();
+            bool isDown = e.Keyboard.IsKeyDown(e.Key);
+            handleSwitchStates(1, enumTag, isDown);
+            handlePulseStates(1, enumTag, isDown);
         }
-        internal virtual void Handle_Keyboard_Press(object sender, KeyPressEventArgs e) => keyboard_Press = (enabled) ? e : null;
+        internal virtual void Handle_Keyboard_Press(object sender, KeyPressEventArgs e) 
+            => keyboard_Press = (enabled) ? e : null;
 
         internal virtual void Handle_Mouse_Button(object sender, MouseButtonEventArgs e)
         {
-            if (mouse_UpDownToggle.ContainsKey(e.Button))
-            {
-
-            }
             mouse_Button = (enabled) ? e : null;
+            if (mouse_Button == null)
+                return;
+            string enumTag = e.Button.ToString();
+            bool isDown = e.Mouse.IsButtonDown(e.Button);
+            handleSwitchStates(2, enumTag, isDown);
+            handlePulseStates(2, enumTag, isDown);
         }
-        internal virtual void Handle_Mouse_Move(object sender, MouseMoveEventArgs e) => mouse_Move = (enabled) ? e : null;
-        internal virtual void Handle_Mouse_Wheel(object sender, MouseWheelEventArgs e) => mouse_Wheel = (enabled) ? e : null;
+        internal virtual void Handle_Mouse_Move(object sender, MouseMoveEventArgs e) 
+            => mouse_Move = (enabled) ? e : null;
+        internal virtual void Handle_Mouse_Wheel(object sender, MouseWheelEventArgs e) 
+            => mouse_Wheel = (enabled) ? e : null;
 
-        private InputSwitchType handleSwitch(bool isDown, InputSwitchType state)
+        private InputState getNextSwitchState(bool isDown, InputState state)
         {
             if (isDown)
             {
-                if (state == InputSwitchType.InitalUp)
-                    return InputSwitchType.RepeatDown;
-                else if (state == InputSwitchType.RepeatUp)
-                    return InputSwitchType.InitalDown;
+                if (state == InputState.InitalUp)
+                    return InputState.RepeatDown;
+                else if (state == InputState.RepeatUp)
+                    return InputState.InitalDown;
             }
-            else
+
+            if (state == InputState.InitalDown)
+                return InputState.InitalUp;
+            else if (state == InputState.RepeatDown)
+                return InputState.RepeatUp;
+
+            return InputState.NoRead;
+        }
+
+        private InputState getNextPulseState(bool isDown, InputState state)
+        {
+            if (isDown)
             {
-                if (state == InputSwitchType.InitalDown)
-                    return InputSwitchType.InitalUp;
-                else if (state == InputSwitchType.RepeatDown)
-                    return InputSwitchType.RepeatUp;
+                if (state == InputState.InitalUp)
+                    return InputState.InitalDown;
+                return state;
             }
-            return InputSwitchType.NoRead;
+
+            if (state == InputState.RepeatDown)
+                return InputState.InitalUp;
+            return state;
         }
     }
 
@@ -132,7 +247,7 @@ namespace isometricgame.GameEngine.Systems.Input
         Mouse_Wheel = 16
     };
 
-    public enum InputSwitchType
+    public enum InputState
     {
         NoRead = 0,
         InitalDown = 1,

@@ -31,7 +31,12 @@ namespace isometricgame.GameEngine.Systems.Rendering
             return sprites.Count - 1;
         }
 
-        public int GetSprite(string name) => nameToIndex[name];
+        public VertexArray[] GetArrays(string name) => sprites[nameToIndex[name]].VertexArrays;
+
+        public bool HasSprite(string name) => nameToIndex.ContainsKey(name);
+        public int GetSpriteID(string name) => nameToIndex[name];
+        public Sprite GetSprite(string name) => sprites[nameToIndex[name]];
+        public Sprite GetSprite(int id) => sprites[id];
         public void SetVAO(int id, int vao) => sprites[id].VAO_Index = vao;
         public void SetVAO_Row(int id, int row) => sprites[id].VAO_Row = row;
 

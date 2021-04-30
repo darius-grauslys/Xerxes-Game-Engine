@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace isometricgame.GameEngine.Rendering
@@ -13,12 +14,12 @@ namespace isometricgame.GameEngine.Rendering
     public class Sprite
     {
         private string name;
-        private Texture2D texture;
 
         private int[] vertexArrayObjects;
 
-        private int subWidth;
-        private int subHeight;
+        private int baseSubWidth;
+        private int baseSubHeight;
+        private float scale = 1;
 
         private int vaoIndex = 0, vaoRow = 0;
 
@@ -28,15 +29,15 @@ namespace isometricgame.GameEngine.Rendering
 
         private int count;
 
-        private VertexArray[] vertexArrays;
+        public VertexArray[] VertexArrays { get; set; }
         
         public int[] VertexArrayObjects { get => vertexArrayObjects; set => vertexArrayObjects = value; }
 
         public string Name => name;
 
-        public int SubWidth { get => subWidth; private set => subWidth = value; }
-        public int SubHeight { get => subHeight; private set => subHeight = value; }
-        public Texture2D Texture { get => texture; private set => texture = value; }
+        public float SubWidth { get => baseSubWidth * scale; private set => baseSubWidth = (int)value; }
+        public float SubHeight { get => baseSubHeight * scale; private set => baseSubHeight = (int)value; }
+        public float Scale { get => scale; set => SetScale(value); }
 
         public int VAO_Index { get => vaoIndex + (VAO_Row * columnCount); set => vaoIndex = value; }
         public int VAO_Row { get => vaoRow; set => vaoRow = value; }
@@ -45,31 +46,55 @@ namespace isometricgame.GameEngine.Rendering
 
         public Sprite(Sprite s, int vboIndex = -1)
         {
-            offsetX = s.offsetX;
-            offsetY = s.offsetY;
-            name = s.name;
+            VertexArray[] vertexArrays = new VertexArray[s.VertexArrays.Length];
 
-            texture = s.texture;
-
-            subWidth = s.subWidth;
-            subHeight = s.subHeight;
-
-            this.vaoIndex = (vboIndex < 0) ? s.vaoIndex : vboIndex;
-
-            columnCount = s.columnCount;
-            rowCount = s.rowCount;
-
-            count = s.count;
-
-            vertexArrays = new VertexArray[s.vertexArrays.Length];
-
-            vertexArrayObjects = new int[s.vertexArrayObjects.Length];
+            int[] vertexArrayObjects = new int[s.vertexArrayObjects.Length];
 
             for (int i = 0; i < s.vertexArrayObjects.Length; i++)
                 vertexArrayObjects[i] = s.vertexArrayObjects[i];
 
             for (int i = 0; i < count; i++)
-                vertexArrays[i] = s.vertexArrays[i];
+                vertexArrays[i] = s.VertexArrays[i];
+
+            Init(
+                s.offsetX,
+                s.offsetY,
+                name = s.name,
+                s.baseSubWidth,
+                s.baseSubHeight,
+                s.vaoIndex,
+                s.columnCount,
+                s.rowCount,
+                vertexArrays,
+                vertexArrayObjects
+                );
+        }
+
+        public Sprite(
+            VertexArray vertArray,
+            string name = "",
+            int offsetX = 0,
+            int offsetY = 0
+            )
+        {
+            VertexArray[] vertexArrays = new VertexArray[] { vertArray };
+
+            int[] vertexArrayObjects = new int[] { vertArray.VertexBufferObject };
+
+            Init(
+                offsetX,
+                offsetY,
+                name,
+                -1,
+                -1,
+                0,
+                1,
+                1,
+                vertexArrays,
+                vertexArrayObjects
+                );
+
+            BindVertexArrayData();
         }
 
         public Sprite(
@@ -79,38 +104,20 @@ namespace isometricgame.GameEngine.Rendering
             string name="", 
             float offsetX = 0, 
             float offsetY = 0, 
-            int vboIndex = 0,
+            int vaoIndex = 0,
             float r = 0,
             float g = 0,
             float b = 0,
             float a = 0)
         {
-            this.offsetX = offsetX;
-            this.offsetY = offsetY;
-            this.name = name;
+            int columnCount = texture.Width / subWidth, rowCount = texture.Height / subHeight;
+            int count = rowCount * columnCount;
 
-            this.texture = texture;
-
-            this.subWidth = subWidth;
-            this.subHeight = subHeight;
-
-            this.vaoIndex = vboIndex;
-
-            columnCount = texture.Width / subWidth;
-            rowCount = texture.Height / subHeight;
-
-            count = columnCount * rowCount;
-
-            vertexArrays = new VertexArray[count];
-
-            vertexArrayObjects = new int[count];
-
-            for (int i = 0; i < vertexArrayObjects.Length; i++)
-                vertexArrayObjects[i] = GL.GenVertexArray();
+            VertexArray[] vertexArrays = new VertexArray[count];
 
             Vertex[] vertices;
 
-            for(int y = 0; y < rowCount; y++)
+            for (int y = 0; y < rowCount; y++)
             {
                 for (int x = 0; x < columnCount; x++)
                 {
@@ -119,22 +126,117 @@ namespace isometricgame.GameEngine.Rendering
                     vertexArrays[x + (y * columnCount)] = new VertexArray(texture, vertices);
                 }
             }
+            
+            int[] vertexArrayObjects = new int[count];
 
-            BindVertexArray();
+            for (int i = 0; i < vertexArrayObjects.Length; i++)
+                vertexArrayObjects[i] = GL.GenVertexArray();
+
+            Init(
+                offsetX,
+                offsetY,
+                name,
+                subWidth,
+                subHeight,
+                vaoIndex,
+                columnCount,
+                rowCount,
+                vertexArrays,
+                vertexArrayObjects
+                );
+
+            BindVertexArrayData();
+        }
+
+        private void Init(
+            float offsetX, 
+            float offsetY, 
+            string name, 
+            int baseSubWidth,
+            int baseSubHeight,
+            int vaoIndex,
+            int columnCount,
+            int rowCount,
+            VertexArray[] vertexArrays,
+            int[] vertexArrayObjects
+            )
+        {
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.name = name;
+
+            this.baseSubWidth = baseSubWidth;
+            this.baseSubHeight = baseSubHeight;
+
+            this.vaoIndex = vaoIndex;
+
+            this.columnCount = columnCount;
+            this.rowCount = rowCount;
+
+            count = columnCount * rowCount;
+            VertexArrays = vertexArrays;
+            this.vertexArrayObjects = vertexArrayObjects;
+        }
+        
+        private void OperateArrays(Func<Vertex, Vertex> operation)
+        {
+            for (int i = 0; i < VertexArrays.Length; i++)
+            {
+                for (int j = 0; j < VertexArrays[i].Vertices.Length; j++)
+                {
+                    VertexArrays[i].Vertices[j] = operation(VertexArrays[i].Vertices[j]);
+                }
+                VertexArrays[i].SetBufferData();
+            }
+        }
+
+        private void SetScale(float scale)
+        {
+            OperateArrays((v) => 
+            {
+                v.Position /= this.scale;
+                v.Position *= scale;
+                return v;
+            });
+            this.scale = scale;
+        }
+
+        public void SetSize(Vector2 size)
+        {
+            OperateArrays((v) =>
+            {
+                Vector2 ret = new Vector2(0, 0);
+                if (v.Position.X > 0)
+                    ret.X = size.X;
+                if (v.Position.Y > 0)
+                    ret.Y = size.Y;
+                v.Position = ret;
+                return v;
+            });
+        }
+
+        public void SetColor(Vector4 color)
+        {
+            OperateArrays((v) => 
+            {
+                v.ColorVector = color;
+                return v;
+            });
         }
 
         public void Use()
         {
-            vertexArrays[VAO_Index].Use();
+            VertexArrays[VAO_Index].Use();
             GL.BindVertexArray(vertexArrayObjects[VAO_Index]);
         }
 
-        private void BindVertexArray()
+        private void BindVertexArrayData()
         {
-            for (int i = 0; i < vertexArrays.Length; i++)
+            for (int i = 0; i < VertexArrays.Length; i++)
             {
                 GL.BindVertexArray(vertexArrayObjects[i]);
-                vertexArrays[i].BindVertexBuffer();
+                VertexArrays[i].BindVertexBuffer();
+                VertexArrays[i].SetBufferData();
 
                 GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
                 GL.EnableVertexAttribArray(0);
