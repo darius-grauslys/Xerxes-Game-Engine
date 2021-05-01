@@ -73,6 +73,7 @@
     <Compile Include="GameEngine\Rendering\Animation\AnimationSchematic.cs" />
     <Compile Include="GameEngine\Rendering\Batcher.cs" />
     <Compile Include="GameEngine\Rendering\Components\AnimationComponent.cs" />
+    <Compile Include="GameEngine\Rendering\Components\EventComponent.cs" />
     <Compile Include="GameEngine\Rendering\Components\SpriteComponent.cs" />
     <Compile Include="GameEngine\Camera.cs" />
     <Compile Include="GameEngine\Exceptions\Attributes\ExistingAttributeException.cs" />
@@ -89,6 +90,8 @@
     <Compile Include="GameEngine\Systems\Rendering\RenderService.cs" />
     <Compile Include="GameEngine\Systems\Rendering\TextDisplayer.cs" />
     <Compile Include="GameEngine\Systems\SceneManagementService.cs" />
+    <Compile Include="GameEngine\Tools\Scheduler.cs" />
+    <Compile Include="GameEngine\Tools\TimedCallback.cs" />
     <Compile Include="GameEngine\Tools\Timer.cs" />
     <Compile Include="GameEngine\WorldSpace\ChunkSpace\ChunkDirectory.cs" />
     <Compile Include="GameEngine\WorldSpace\Generators\Generator.cs" />

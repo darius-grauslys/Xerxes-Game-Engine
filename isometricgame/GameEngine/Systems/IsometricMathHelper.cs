@@ -1,14 +1,14 @@
-﻿using OpenTK;
+﻿using isometricgame.GameEngine.WorldSpace.ChunkSpace;
+using OpenTK;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.Systems
 {
-    public class MathHelper
+    public class IsometricMathHelper
     {
         public static bool IsBounded_XYZ(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
         {
@@ -36,6 +36,21 @@ namespace isometricgame.GameEngine.Systems
                 subjectVector.Y < upperBound.Y
 
                 );
+        }
+
+        public static bool Vec3_LessThan(Vector3 v1, Vector3 v2) => v1.X < v2.X && v1.Y < v2.Y && v1.Z < v2.Z;
+        public static bool Vec3_GreaterThan(Vector3 v1, Vector3 v2) => v1.X > v2.X && v1.Y > v2.Y && v1.Z > v2.Z;
+
+        public static bool IntP_LessThan(IntegerPosition pos1, IntegerPosition pos2) => pos1.X < pos2.X && pos1.Y < pos2.Y;
+        public static bool IntP_GreaterThan(IntegerPosition pos1, IntegerPosition pos2) => pos1.X > pos2.X && pos1.Y > pos2.Y;
+        public static IntegerPosition IntP_DifferenceABS(IntegerPosition pos1, IntegerPosition pos2) => new IntegerPosition(Math.Abs(pos1.X - pos2.X), Math.Abs(pos1.Y - pos2.Y));
+        public static int IntP_Area(IntegerPosition pos1, IntegerPosition pos2)
+        {
+            return IntP_Area(pos2 - pos1);
+        }
+        public static int IntP_Area(IntegerPosition vec)
+        {
+            return Math.Abs(vec.X) * Math.Abs(vec.Y);
         }
 
         public static int MapEven(int n)
@@ -119,27 +134,5 @@ namespace isometricgame.GameEngine.Systems
         {
             return (float)(thetaRadian / Math.PI * 180f);
         }
-
-        public static Vector4 Color_To_Vec4(Color color)
-            => new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
-
-        public static float Clamp(float val, float min, float max)
-            => (val < min) ? min : ((val > max) ? max : val);
-
-        public static float ClampMin(float val, float min)
-            => val < min ? min : val;
-
-        public static float ClampMax(float val, float max)
-            => val > max ? max : val;
-
-
-        public static double Clampd(double val, double min, double max)
-            => (val < min) ? min : ((val > max) ? max : val);
-
-        public static double ClampMind(double val, double min)
-            => val < min ? min : val;
-
-        public static double ClampMaxd(double val, double max)
-            => val > max ? max : val;
     }
 }
