@@ -19,6 +19,7 @@ using isometricgame.GameEngine.Systems.Rendering;
 using isometricgame.GameEngine.Systems.Serialization;
 using OpenTK.Graphics;
 using isometricgame.GameEngine.Systems.Input;
+using isometricgame.GameEngine.Tools;
 
 namespace isometricgame.GameEngine
 {
@@ -49,16 +50,13 @@ namespace isometricgame.GameEngine
         /// Responsible for recording and recieving loaded sprites.
         /// </summary>
         public SpriteLibrary SpriteLibrary { get => spriteLibrary; private set => spriteLibrary = value; }
-
         internal RenderService RenderService { get => renderService; private set => renderService = value; }
-
         public TextDisplayer TextDisplayer { get => textDisplayer; private set => textDisplayer = value; }
-
         public InputSystem InputSystem { get => inputSystem; private set => inputSystem = value; }
-
         public AnimationSchematicLibrary AnimationSchematicLibrary { get => animationSchematicLibrary; private set => animationSchematicLibrary = value; }
-
         public SceneManagementService SceneManagementService { get => sceneManagementService; private set => sceneManagementService = value; }
+        
+        public EventScheduler EventScheduler { get; private set; }
         #endregion
 
         #region Time
@@ -79,6 +77,7 @@ namespace isometricgame.GameEngine
             GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds\\") : GAME_DIR_WORLDS;
             
             RegisterSystems();
+            EventScheduler = new EventScheduler();
             RenderService.LoadShaders(GetShaders());
 
             //END SERVICES
@@ -101,7 +100,7 @@ namespace isometricgame.GameEngine
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             updateTime += e.Time;
-
+            EventScheduler.Progress_Events(e.Time);
             scene.UpdateScene(new FrameArgument(UpdateTime, e.Time));
         }
 
@@ -174,15 +173,8 @@ namespace isometricgame.GameEngine
                 system.Load();
         }
 
-        protected virtual void RegisterCustomSystems()
-        {
-
-        }
-
-        protected virtual void LoadContent()
-        {
-
-        }
+        protected virtual void RegisterCustomSystems() { }
+        protected virtual void LoadContent() { }
 
         public void SetScene(Scene scene)
         {

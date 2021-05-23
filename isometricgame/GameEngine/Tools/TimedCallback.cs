@@ -8,29 +8,46 @@ namespace isometricgame.GameEngine.Tools
 {
     public class TimedCallback
     {
+        private EventScheduler EventScheduler { get; set; }
+
+        public string EventTag { get; internal set; }
+        internal string RecurringTag { get; set; }
+
         private Timer Timer { get; set; }
         private Action TimeElapsed_Callback;
         private Action<double> TimeReset_Callback;
         private Action<Timer> TimeDelta_Callback;
         public bool Triggered { get; private set; }
 
-        public TimedCallback(Timer timer, Action<Timer> deltaTimeCallback, Action elapsedCallback = null, Action<double> resetCallback = null)
+        public TimedCallback(
+            string eventTag, 
+            double timeLimit=1, 
+            Action<Timer> deltaTimeCallback=null, 
+            Action elapsedCallback = null, 
+            Action<double> resetCallback = null,
+            EventScheduler eventScheduler = null)
         {
-            Timer = timer;
+            EventTag = eventTag;
+
+            Bind_To_Schedule(eventScheduler);
+
+            Timer = new Timer(timeLimit);
             TimeDelta_Callback = deltaTimeCallback;
             TimeElapsed_Callback = elapsedCallback;
             TimeReset_Callback = resetCallback;
         }
 
-        public TimedCallback(Action<Timer> deltaTimeCallback, float timeLimit = 1, Action callback = null, Action<double> resetCallback = null)
+        internal void Bind_To_Schedule(EventScheduler eventScheduler)
         {
-            Timer = new Timer(timeLimit);
-            TimeDelta_Callback = deltaTimeCallback;
-            TimeElapsed_Callback = callback;
-            TimeReset_Callback = resetCallback;
+            if (EventScheduler != null)
+                EventScheduler.Remove_Event(EventTag);
+
+            if (eventScheduler == null) return;
+            EventScheduler = eventScheduler;
+            EventScheduler.Register_Event(EventTag, this);
         }
 
-        public bool Progress_DeltaTime(double deltaTime)
+        internal bool Progress_DeltaTime(double deltaTime)
         {
             if (Timer.Finished)
             {
@@ -45,11 +62,16 @@ namespace isometricgame.GameEngine.Tools
             return false;
         }
 
-        public void Reset(double newTime = -1)
+        internal void Reset(double newTime = -1)
         {
             Triggered = false;
             Timer.Set(newTime);
             TimeReset_Callback?.Invoke(Timer.TimeLimit);
+        }
+
+        public void Invoke()
+        {
+            EventScheduler?.Invoke_Event(RecurringTag);
         }
     }
 }

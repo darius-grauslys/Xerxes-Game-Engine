@@ -30,7 +30,7 @@ namespace isometricgame.GameEngine.WorldSpace.Generators
                 {
                     int z = (int)noiseMap[x, y];
                     int id = (z > 3) ? 1 : 0;
-                    ground.structuralUnits[x][y] = new RenderUnit(id, 0, new Vector3(x, y, z));
+                    ground.structuralUnits[x][y] = new RenderUnit((uint)id, 0, new Vector3(x, y, z));
                 }
             }
 

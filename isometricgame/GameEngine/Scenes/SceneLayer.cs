@@ -27,6 +27,15 @@ namespace isometricgame.GameEngine.Scenes
         private List<GameObject> staticSceneObjects = new List<GameObject>();
         public List<GameObject> StaticSceneObjects
             => staticSceneObjects.ToList();
+
+        internal void SetDisable()
+            => Handle_Disabled();
+        protected virtual void Handle_Disabled() { }
+
+        internal void SetEnabled()
+            => Handle_Enabled();
+        protected virtual void Handle_Enabled() { }
+
         protected void Add_StaticObject(GameObject obj) => staticSceneObjects.Add(obj);
 
         private List<GameObject> dynamicSceneObjects = new List<GameObject>();

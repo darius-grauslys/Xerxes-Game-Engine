@@ -74,7 +74,7 @@ namespace isometricgame.GameEngine.WorldSpace
             RenderUnit[] renderUnits;
 
             float tx, ty;
-            int spriteId;
+            uint spriteId;
             
             IntegerPosition rowOffset = new IntegerPosition(1, 0);
             IntegerPosition colOffset = new IntegerPosition(-1, -1);
@@ -106,7 +106,7 @@ namespace isometricgame.GameEngine.WorldSpace
                             ty = Chunk.CartesianToIsometric_Y(yPrimeDescent.X, yPrimeDescent.Y, renderUnits[spos.Y].Position.Z);
 
                             spriteId = renderUnits[spos.Y].Id;
-                            renderService.DrawSprite(renderUnits[spos.Y].Id, tx, ty, renderUnits[spos.Y].VAO_Index);
+                            renderService.DrawSprite(renderUnits[spos.Y].id, tx, ty, renderUnits[spos.Y].vaoIndex);
                         }
                     }
                 }

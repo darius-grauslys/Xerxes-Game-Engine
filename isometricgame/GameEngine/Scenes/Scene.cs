@@ -34,8 +34,8 @@ namespace isometricgame.GameEngine.Scenes
             sceneLayers.Add(layer);
         }
 
-        internal void DisableLayer(SceneLayer layer) { sceneLayers.Remove(layer); disabledLayers.Add(layer); }
-        internal void EnableLayer(SceneLayer layer) { disabledLayers.Remove(layer); _enable_inOrder(layer); }
+        internal void DisableLayer(SceneLayer layer) { sceneLayers.Remove(layer); disabledLayers.Add(layer); layer.SetDisable(); }
+        internal void EnableLayer(SceneLayer layer) { disabledLayers.Remove(layer); _enable_inOrder(layer); layer.SetEnabled(); }
         protected void DisableLayers<T>() where T : SceneLayer { foreach (T layer in sceneLayers.ToList().OfType<T>()) { DisableLayer(layer); } }
         protected void EnableLayers<T>() where T : SceneLayer { foreach(T layer in disabledLayers.ToList().OfType<T>()) { EnableLayer(layer); } }
         protected void AddLayer(SceneLayer layer) { layer.SetParent(this); }

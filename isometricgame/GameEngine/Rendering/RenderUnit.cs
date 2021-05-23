@@ -12,8 +12,8 @@ namespace isometricgame.GameEngine.Rendering
     /// </summary>
     public struct RenderUnit
     {
-        private int id;
-        private int vaoIndex;
+        internal int id;
+        internal int vaoIndex;
         private Vector3 position;
         private bool isInitialized;
         public bool IsInitialized { get => isInitialized; internal set => isInitialized = value; }
@@ -21,11 +21,11 @@ namespace isometricgame.GameEngine.Rendering
         /// <summary>
         /// Corresponds to a Global GameObject position in a scene.
         /// </summary>
-        public int Id { get => id; set => id = value; }
+        public uint Id { get => (uint)id; set => id = (int)value; }
         /// <summary>
         /// A mutable value for relaying simple context based information quickly. Example: Water orientation.
         /// </summary>
-        public int VAO_Index { get => vaoIndex; set => vaoIndex = value; }
+        public uint VAO_Index { get => (uint)vaoIndex; set => vaoIndex = (int)value; }
         /// <summary>
         /// Isometric game position relevant for drawing.
         /// </summary>
@@ -35,10 +35,10 @@ namespace isometricgame.GameEngine.Rendering
         public float Y { get => Position.Y; set => position.Y = value; }
         public float Z { get => Position.Z; set => position.Z = value; }
 
-        public RenderUnit(int id, int vaoIndex, Vector3 position)
+        public RenderUnit(uint id, uint vaoIndex, Vector3 position)
         {
-            this.id = id;
-            this.vaoIndex = vaoIndex;
+            this.id = (int)id;
+            this.vaoIndex = (int)vaoIndex;
             this.position = position;
             isInitialized = true;
         }

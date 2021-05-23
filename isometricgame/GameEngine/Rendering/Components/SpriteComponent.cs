@@ -14,7 +14,7 @@ namespace isometricgame.GameEngine.Components.Rendering
     public class SpriteComponent : GameComponent
     {
         private SpriteLibrary spriteLibrary;
-        public Sprite Sprite => spriteLibrary?.GetSprite(ParentObject.renderUnit.Id);
+        public Sprite Sprite => spriteLibrary?.GetSprite(ParentObject.renderUnit.id);
 
         public SpriteComponent() 
             : base()
@@ -51,8 +51,8 @@ namespace isometricgame.GameEngine.Components.Rendering
         {
             if (ParentObject != null)
             {
-                ParentObject.renderUnit.Id = spriteId;
-                ParentObject.renderUnit.VAO_Index = vao_Index;
+                ParentObject.renderUnit.id = spriteId;
+                ParentObject.renderUnit.vaoIndex = vao_Index;
                 ParentObject.renderUnit.IsInitialized = true;
             }
         }

@@ -31,16 +31,16 @@ namespace isometricgame.GameEngine.Systems.Rendering
             return sprites.Count - 1;
         }
 
-        public VertexArray[] GetArrays(string name) => sprites[nameToIndex[name]].VertexArrays;
+        public VertexArray[] GetArrays(string name) => sprites[(int)nameToIndex[name]].VertexArrays;
 
         public bool HasSprite(string name) => nameToIndex.ContainsKey(name);
-        public int GetSpriteID(string name) => nameToIndex[name];
+        public uint GetSpriteID(string name) => (uint)nameToIndex[name];
         public Sprite GetSprite(string name) => sprites[nameToIndex[name]];
         public Sprite GetSprite(int id) => sprites[id];
-        public void SetVAO(int id, int vao) => sprites[id].VAO_Index = vao;
-        public void SetVAO_Row(int id, int row) => sprites[id].VAO_Row = row;
+        public void SetVAO(int id, uint vao) => sprites[id].VAO_Index = vao;
+        public void SetVAO_Row(int id, uint row) => sprites[id].VAO_Row = row;
 
-        public RenderUnit ExtractRenderUnit(string name) => ExtractRenderUnit(nameToIndex[name]);
-        public RenderUnit ExtractRenderUnit(int id) => new RenderUnit(id, 0, Vector3.Zero);
+        public RenderUnit ExtractRenderUnit(string name) => ExtractRenderUnit((uint)nameToIndex[name]);
+        public RenderUnit ExtractRenderUnit(uint id) => new RenderUnit(id, 0, Vector3.Zero);
     }
 }

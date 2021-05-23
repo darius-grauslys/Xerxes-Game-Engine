@@ -35,12 +35,12 @@ namespace isometricgame.GameEngine.Components.Rendering
             schematic.DefineNode(node, subNodes);
         }
 
-        public void Pause(double time) => schematic.Pause(time);
+        public void Pause(double time, int frame=-1) => schematic.Pause(time, frame);
         public void Unpause(double time) => schematic.Unpause(time, node);
 
         protected override void OnUpdate(FrameArgument args)
         {
-            ParentObject.renderUnit.VAO_Index = schematic.GetVBO_Index(args.Time, node);
+            ParentObject.renderUnit.vaoIndex = schematic.GetVBO_Index(args.Time, node);
         }
     }
 }

@@ -90,7 +90,7 @@
     <Compile Include="GameEngine\Systems\Rendering\RenderService.cs" />
     <Compile Include="GameEngine\Systems\Rendering\TextDisplayer.cs" />
     <Compile Include="GameEngine\Systems\SceneManagementService.cs" />
-    <Compile Include="GameEngine\Tools\Scheduler.cs" />
+    <Compile Include="GameEngine\Tools\EventScheduler.cs" />
     <Compile Include="GameEngine\Tools\TimedCallback.cs" />
     <Compile Include="GameEngine\Tools\Timer.cs" />
     <Compile Include="GameEngine\WorldSpace\ChunkSpace\ChunkDirectory.cs" />

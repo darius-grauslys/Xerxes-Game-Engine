@@ -13,11 +13,11 @@ namespace isometricgame.GameEngine.Components.Rendering
     {
         public TimedCallback EventTimer { get; private set; }
 
-        public EventComponent(double defaultTime = 1)
+        public EventComponent(string tag, double defaultTime = 1)
         {
-            Timer timer = new Timer(defaultTime);
             EventTimer = new TimedCallback(
-                timer,
+                tag,
+                defaultTime,
                 PerformFrame,
                 FinishComponent,
                 ResetComponent
@@ -37,6 +37,14 @@ namespace isometricgame.GameEngine.Components.Rendering
         protected virtual void FinishComponent()
         {
 
+        }
+
+        public void Invoke() => EventTimer.Invoke();
+
+        protected override void Handle_NewParent()
+        {
+            base.Handle_NewParent();
+            EventTimer.Bind_To_Schedule(ParentObject.SceneLayer.ParentScene.Game.EventScheduler);
         }
     }
 }

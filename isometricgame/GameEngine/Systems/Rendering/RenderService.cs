@@ -110,7 +110,7 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         public void UseSprite(int spriteId, int vaoIndex = 0)
         {
-            SpriteLibrary.sprites[spriteId].VAO_Index = vaoIndex;
+            SpriteLibrary.sprites[spriteId].vaoIndex = vaoIndex;
             SpriteLibrary.sprites[spriteId].Use();
         }
 
@@ -122,10 +122,10 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         public void DrawSprite(ref RenderUnit renderUnit, float x, float y, float z = 0)
         {
-            UseSprite(renderUnit.Id, renderUnit.VAO_Index);
+            UseSprite(renderUnit.id, renderUnit.vaoIndex);
             DrawSprite_DefaultShader(
-                Game.SpriteLibrary.sprites[renderUnit.Id].VertexArrays[renderUnit.VAO_Index].Vertices.  Length,
-                x + SpriteLibrary.sprites[renderUnit.Id].OffsetX, y + SpriteLibrary.sprites[renderUnit.Id].OffsetY, z);
+                Game.SpriteLibrary.sprites[renderUnit.id].VertexArrays[renderUnit.VAO_Index].Vertices.  Length,
+                x + SpriteLibrary.sprites[renderUnit.id].OffsetX, y + SpriteLibrary.sprites[renderUnit.id].OffsetY, z);
         }
 
         public void DrawSprite(int spriteId, float x, float y, int vaoIndex = 0, float z = 0)

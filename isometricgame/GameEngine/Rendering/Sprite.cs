@@ -21,7 +21,7 @@ namespace isometricgame.GameEngine.Rendering
         private int baseSubHeight;
         private float scale = 1;
 
-        private int vaoIndex = 0, vaoRow = 0;
+        internal int vaoIndex = 0, vaoRow = 0;
 
         private float offsetX, offsetY;
 
@@ -39,8 +39,8 @@ namespace isometricgame.GameEngine.Rendering
         public float SubHeight { get => baseSubHeight * scale; private set => baseSubHeight = (int)value; }
         public float Scale { get => scale; set => SetScale(value); }
 
-        public int VAO_Index { get => vaoIndex + (VAO_Row * columnCount); set => vaoIndex = value; }
-        public int VAO_Row { get => vaoRow; set => vaoRow = value; }
+        public uint VAO_Index { get => (uint)(vaoIndex + (VAO_Row * columnCount)); set => vaoIndex = (int)value; }
+        public uint VAO_Row { get => (uint)vaoRow; set => vaoRow = (int)value; }
         public float OffsetX { get => offsetX; protected set => offsetX = value; }
         public float OffsetY { get => offsetY; protected set => offsetY = value; }
 
@@ -85,8 +85,8 @@ namespace isometricgame.GameEngine.Rendering
                 offsetX,
                 offsetY,
                 name,
-                -1,
-                -1,
+                0,
+                0,
                 0,
                 1,
                 1,
@@ -104,7 +104,7 @@ namespace isometricgame.GameEngine.Rendering
             string name="", 
             float offsetX = 0, 
             float offsetY = 0, 
-            int vaoIndex = 0,
+            uint vaoIndex = 0,
             float r = 0,
             float g = 0,
             float b = 0,
@@ -138,7 +138,7 @@ namespace isometricgame.GameEngine.Rendering
                 name,
                 subWidth,
                 subHeight,
-                vaoIndex,
+                (int)vaoIndex,
                 columnCount,
                 rowCount,
                 vertexArrays,
