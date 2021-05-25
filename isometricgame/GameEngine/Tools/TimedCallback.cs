@@ -14,6 +14,7 @@ namespace isometricgame.GameEngine.Tools
         internal string RecurringTag { get; set; }
 
         private Timer Timer { get; set; }
+        public double Duration => Timer.TimeLimit;
         private Action TimeElapsed_Callback;
         private Action<double> TimeReset_Callback;
         private Action<Timer> TimeDelta_Callback;

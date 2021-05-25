@@ -70,6 +70,7 @@
     <Compile Include="GameEngine\Exceptions\Services\ExistingServiceException.cs" />
     <Compile Include="GameEngine\Exceptions\Services\ServiceNotFoundException.cs" />
     <Compile Include="GameEngine\Game.cs" />
+    <Compile Include="GameEngine\Rendering\Animation\AnimationNode.cs" />
     <Compile Include="GameEngine\Rendering\Animation\AnimationSchematic.cs" />
     <Compile Include="GameEngine\Rendering\Batcher.cs" />
     <Compile Include="GameEngine\Rendering\Components\AnimationComponent.cs" />

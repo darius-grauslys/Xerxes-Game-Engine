@@ -15,7 +15,6 @@ namespace isometricgame.GameEngine.Components.Rendering
     public class AnimationComponent : SpriteComponent
     {
         private AnimationSchematic schematic;
-        private int node;
 
         public AnimationComponent(AnimationSchematic schematic = null) 
             : base()
@@ -27,20 +26,41 @@ namespace isometricgame.GameEngine.Components.Rendering
 
         public void SetNode(int node)
         {
-            this.node = node;
+            schematic.Current_Node = node;
         }
 
-        public void DefineNode(int node, int[] subNodes)
+        public void DefineNode(
+            int nodeIndex, 
+            int[] vbo_indices, 
+            double speed =-1, 
+            bool pausesOnCompletion=false, 
+            double loopDelay=-1)
         {
-            schematic.DefineNode(node, subNodes);
+            schematic.DefineNode(
+                nodeIndex, 
+                vbo_indices,
+                speed,
+                pausesOnCompletion,
+                loopDelay
+                );
         }
 
-        public void Pause(double time, int frame=-1) => schematic.Pause(time, frame);
-        public void Unpause(double time) => schematic.Unpause(time, node);
+        public void DefineNode(int nodeIndex, AnimationNode node)
+        {
+            schematic.DefineNode(nodeIndex, node);
+        }
+
+        public void Pause(double time) => schematic.Pause(time);
+        public void Unpause() => schematic.Unpause();
 
         protected override void OnUpdate(FrameArgument args)
         {
-            ParentObject.renderUnit.vaoIndex = schematic.GetVBO_Index(args.Time, node);
+            ParentObject.renderUnit.vaoIndex = schematic.GetVBO_Index(args.DeltaTime);
+        }
+
+        public void Play(int node)
+        {
+            schematic.Play(node);
         }
     }
 }

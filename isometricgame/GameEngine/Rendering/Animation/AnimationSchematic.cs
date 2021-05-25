@@ -1,4 +1,5 @@
-﻿using System;
+﻿using isometricgame.GameEngine.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,59 +9,79 @@ namespace isometricgame.GameEngine.Rendering.Animation
 {
     public class AnimationSchematic
     {
-        private int[][] animationNodes;
+        private AnimationNode[] nodes;
+        public int Current_Node { get; set; }
 
-        private double speed;
+        internal double defaultSpeed;
         private int frame = 0;
         private int frameOffset;
-        private double pauseTime;
+
+        private double animationTime;
         private bool paused = false;
 
         private int lastNode = 0;
         public int LastNode => lastNode;
 
-        public AnimationSchematic(int nodeCount, double speed = 1, int startFrame = 0)
+        private Timer pauseDuration;
+        private bool pauseHasDuration;
+
+        public AnimationSchematic(int nodeCount, double defaultSpeed = 1, int startFrame = 0)
         {
-            animationNodes = new int[nodeCount][];
-            this.speed = speed;
+            nodes = new AnimationNode[nodeCount];
+            this.defaultSpeed = defaultSpeed;
             frameOffset = startFrame;
         }
 
-        public void SetSpeed(double speed) => this.speed = (speed > 0) ? speed : 1;
+        public void SetNodeSpeed(int node, double speed) => nodes[node].Speed = (speed > 0) ? speed : 1;
 
-        public void DefineNode(int node, int[] spriteIndices)
+        public void DefineNode(int node, int[] spriteIndices, double speed=-1, bool pausesOnCompletion=false, double loopDelay=-1)
         {
-            animationNodes[node] = spriteIndices;
+            DefineNode(node, new AnimationNode(this, spriteIndices, (speed > 0) ? speed : defaultSpeed, pausesOnCompletion, loopDelay));
         }
 
-        public int GetVBO_Index(double time, int node)
+        public void DefineNode(int nodeIndex, AnimationNode node)
+        {
+            nodes[nodeIndex] = node;
+        }
+
+        public int GetVBO_Index(double deltaTime)
+            => GetVBO_Index(deltaTime, Current_Node);
+
+        public int GetVBO_Index(double deltaTime, int node)
         {
             if (!paused)
-                frame = GetFrame(node, time, frameOffset);
+            {
+                animationTime += deltaTime;
+                lastNode = nodes[node].Get_VBO_Index(animationTime);
+            }
+            else if (pauseHasDuration)
+            {
+                pauseDuration.Increase_DeltaTime(deltaTime);
+                if (pauseDuration.Finished)
+                    Unpause();
+            }
 
-            return lastNode = animationNodes[node][frame];
+            return lastNode;
         }
 
-        public void Pause(double pauseTime, int frame = -1)
+        public void Pause(double duration=0)
         {
-            this.pauseTime = pauseTime;
-            this.frame = (frame >= 0) ? frame : this.frame;
             paused = true;
+            pauseHasDuration = duration > 0;
+            pauseDuration = new Timer(duration);
         }
 
-        public void Unpause(double unpauseTime, int node)
+        public void Unpause()
         {
-            //Find the time skip
-            int unpauseFrame = GetFrame(node, unpauseTime, 0) + animationNodes[node].Length - frame;
-            //Offset the time skip so we continue on the same frame.
-            frameOffset = unpauseFrame % animationNodes[node].Length;
-            pauseTime = 0;
             paused = false;
         }
 
-        private int GetFrame(int node, double time, int givenOffset)
+        public void Play(int node)
         {
-            return (int)((time / speed) + givenOffset) % animationNodes[node].Length;
+            Unpause();
+            animationTime = 0;
+
+            Current_Node = node;
         }
     }
 }
