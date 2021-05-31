@@ -128,8 +128,7 @@ namespace isometricgame.GameEngine.Scenes
         {
             foreach (GameObject so in sceneObjects)
             {
-                if (so.renderUnit.IsInitialized)
-                    DrawSprite(renderService, so);
+                DrawSprite(renderService, so);
             }
         }
 
