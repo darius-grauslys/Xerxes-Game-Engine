@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using isometricgame.GameEngine.Components.Rendering;
+﻿using System.Linq;
 using isometricgame.GameEngine.Events.Arguments;
-using isometricgame.GameEngine.Exceptions.Attributes;
 using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.Systems.Rendering;
@@ -16,103 +10,67 @@ namespace isometricgame.GameEngine
     public class GameObject
     {
         internal RenderUnit renderUnit;
-        private SceneLayer sceneLayer;
-        private SpriteComponent spriteComponent;
 
-        private List<GameComponent> components = new List<GameComponent>();
+        private readonly GameObject_Component[] COMPONENTS;
 
-        public Vector3 Position
+        internal Vector3 Position
         {
             get => renderUnit.Position;
             set => renderUnit.Position = value;
         }
 
-        public float X { get => renderUnit.X; set => renderUnit.X = value; }
-        public float Y { get => renderUnit.Y; set => renderUnit.Y = value; }
-        public float Z { get => renderUnit.Z; set => renderUnit.Z = value; }
+        public Scene_Layer GameObject__Scene_Layer { get; set; }
 
-        public SceneLayer SceneLayer { get => sceneLayer; set => sceneLayer = value; }
-        
-        /// <summary>
-        /// Setting this changes the recorded component. No call to RemoveComponent/AddComponent is required.
-        /// </summary>
-        public SpriteComponent SpriteComponent {
-            get => GetReservedField(ref spriteComponent);
-            protected set => ReplaceComponent(value);
-        }
-
-        public GameObject(SceneLayer sceneLayer, Vector3 position)
+        internal GameObject
+            (
+            Scene_Layer sceneLayer,
+            Vector3 position, 
+            params GameObject_Component[] components
+            )
         {
-            this.sceneLayer = sceneLayer;
+            GameObject__Scene_Layer = sceneLayer;
+            
             Position = position;
+
+            COMPONENTS = components?.ToArray() ?? new GameObject_Component[0];
+            
+            for(int i=0;i<COMPONENTS.Length;i++)
+                COMPONENTS[i].Attach_To__GameObject__Component(this);
         }
 
-        public GameObject(SceneLayer sceneLayer, Vector3 position, string spriteName)
+        public T Get__Component__GameObject<T>() where T : GameObject_Component
         {
-            this.sceneLayer = sceneLayer;
-            Position = position;
-            SpriteComponent = new SpriteComponent();
-            SpriteComponent.SetSprite(spriteName);
-        }
-
-        public T GetComponent<T>() where T : GameComponent
-        {
-            return components.Find((a) => a is T) as T;
-        }
-
-        public virtual void ReplaceComponent<T>(T component) where T : GameComponent
-        {
-            foreach (T c in components.ToList().OfType<T>())
-                components.Remove(c);
-            AddComponent(component);
-        }
-
-        public virtual void AddComponent<T>(T component) where T : GameComponent
-        {
-            for (int i = 0; i < components.Count; i++)
-                if (components[i] is T)
-                    throw new ExistingAttributeException();
-            components.Add(component);
-            component.ParentObject = this;
-            component._newParent();
-        }
-
-        public virtual void RemoveComponent<T>(T attrib) where T : GameComponent
-        {
-            components.Remove(attrib);
+            T[] components = COMPONENTS.OfType<T>().ToArray();
+            return (components.Length > 0) ? components[0] : null;
         }
 
         public virtual void OnUpdate(FrameArgument args)
         {
-            foreach (GameComponent attrib in components)
+            foreach (GameObject_Component attrib in COMPONENTS)
                 attrib.Update(args);
         }
 
-        protected T GetReservedField<T>(ref T field) where T : GameComponent
+        internal void Draw(RenderService renderService)
         {
-            if (field != null)
-                return field;
-            return field = GetComponent<T>();
+            Handle_Draw__GameObject(renderService);
         }
 
-        internal void _handleDraw(RenderService renderService)
+        protected virtual void Handle_Draw__GameObject(RenderService renderService)
         {
-            HandleDraw(renderService);
-        }
-
-        protected virtual void HandleDraw(RenderService renderService)
-        {
-            bool? check = SpriteComponent?.Enabled;
-            if (check != null && (bool)check)
+            if (renderUnit.IsInitialized)
                 renderService.DrawSprite(ref renderUnit, Position.X, Position.Y, Position.Z);
         }
 
-        public virtual GameObject Clone()
+        public virtual GameObject Clone__GameObject()
         {
-            GameObject newObj = new GameObject(sceneLayer, Position);
+            GameObject_Component[] clonedComponents = new GameObject_Component[COMPONENTS.Length];
 
-            foreach (GameComponent comp in components)
-                newObj.AddComponent(comp.Clone());
+            for (int i = 0; i < COMPONENTS.Length; i++)
+            {
+                clonedComponents[i] = COMPONENTS[i].Clone__Component();
+            }
+            
+            GameObject newObj = new GameObject(GameObject__Scene_Layer, Position, clonedComponents);
 
             return newObj;
         }

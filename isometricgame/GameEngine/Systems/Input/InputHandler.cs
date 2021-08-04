@@ -73,6 +73,9 @@ namespace isometricgame.GameEngine.Systems.Input
             Dictionary<string, int> catalog
             )
         {
+            if (catalog.ContainsKey(enumTag))
+                return;
+            
             stateList.Add(initalState);
             catalog.Add(enumTag, stateList.Count - 1);
         }

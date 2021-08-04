@@ -57,7 +57,7 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         public override void Load()
         {
-            SpriteLibrary = Game.GetSystem<SpriteLibrary>();
+            SpriteLibrary = Game.Get_System__Game<SpriteLibrary>();
         }
 
         public override void Unload()
@@ -117,21 +117,21 @@ namespace isometricgame.GameEngine.Systems.Rendering
         public void DrawObj(GameObject obj)
         {
             beginDraw_DefaultShader.Use();
-            obj._handleDraw(this);
+            obj.Draw(this);
         }
 
         public void DrawSprite(ref RenderUnit renderUnit, float x, float y, float z = 0)
         {
             UseSprite(renderUnit.id, renderUnit.vaoIndex);
             DrawSprite_DefaultShader(
-                Game.SpriteLibrary.sprites[renderUnit.id].VertexArrays[renderUnit.VAO_Index].Vertices.  Length,
+                Game.Game__Sprite_Library.sprites[renderUnit.id].VertexArrays[renderUnit.VAO_Index].Vertices.  Length,
                 x + SpriteLibrary.sprites[renderUnit.id].OffsetX, y + SpriteLibrary.sprites[renderUnit.id].OffsetY, z);
         }
 
         public void DrawSprite(int spriteId, float x, float y, int vaoIndex = 0, float z = 0)
         {
             UseSprite(spriteId, vaoIndex);
-            DrawSprite_DefaultShader(Game.SpriteLibrary.sprites[spriteId].VertexArrays[vaoIndex].Vertices.Length, x, y, z);
+            DrawSprite_DefaultShader(Game.Game__Sprite_Library.sprites[spriteId].VertexArrays[vaoIndex].Vertices.Length, x, y, z);
         }
 
         public int GetUniformLocation(int shader, string name)

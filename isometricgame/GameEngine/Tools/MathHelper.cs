@@ -1,16 +1,42 @@
-﻿using OpenTK;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK;
 
-namespace isometricgame.GameEngine.Systems
+namespace isometricgame.GameEngine.Tools
 {
     public class MathHelper
     {
-        public static bool IsBounded_XYZ(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
+        public static readonly Vector2 MAX_VECTOR2_SQUARED = new Vector2(1844674400000000000f, 1844674400000000000f);
+        
+        public static Vector3 Hadamard_Product(Vector3 vec1, Vector3 vec2)
+            => new Vector3(vec1.X * vec2.X, vec1.Y * vec2.Y, vec1.Z * vec2.Z);
+
+        public static Vector2 Hadamard_Product(Vector2 vec1, Vector2 vec2)
+            => new Vector2(vec1.X * vec2.X, vec1.Y * vec2.Y);
+
+        public static Vector3 Hadamard_Inverse(Vector3 toInvert)
+            => new Vector3(1 / toInvert.X, 1 / toInvert.Y, 1 / toInvert.Z);
+
+        public static Vector3 Hadamard_Invert_Safely(Vector3 toInvertSafely, float safeReturn = 0)
+            => new Vector3
+            (
+                Invert_Safely(toInvertSafely.X, safeReturn),
+                Invert_Safely(toInvertSafely.Y, safeReturn),
+                Invert_Safely(toInvertSafely.Z, safeReturn)
+            );
+
+        public static Vector2 Hadamard_Invert_Safely(Vector2 toInvertSafely, float safeReturn = 0)
+            => new Vector2
+            (
+                Invert_Safely(toInvertSafely.X, safeReturn),
+                Invert_Safely(toInvertSafely.Y, safeReturn)
+            );
+        
+        public static float Invert_Safely(float value, float safeReturn = 0)
+            => (value == 0) ? safeReturn : 1 / value;
+        
+        public static bool IsBounded_XYZ_Exclusive(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
         {
             return (
                 
@@ -25,7 +51,22 @@ namespace isometricgame.GameEngine.Systems
                 );
         }
 
-        public static bool IsBounded_XY(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
+        public static bool IsBounded_XYZ_Inclusive(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
+        {
+            return (
+                
+                subjectVector.X >= lowerBound.X &&
+                subjectVector.Y >= lowerBound.Y &&
+                subjectVector.Z >= lowerBound.Z &&
+
+                subjectVector.X <= upperBound.X &&
+                subjectVector.Y <= upperBound.Y &&
+                subjectVector.Z <= upperBound.Z
+                
+            );
+        }
+        
+        public static bool IsBounded_XY0_Exclusive(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
         {
             return (
 
@@ -110,6 +151,30 @@ namespace isometricgame.GameEngine.Systems
                 );
         }
 
+        public static float Area(Vector2 vec)
+            => vec.X * vec.Y;
+
+        /// <summary>
+        /// Returns null if either X or Y is zero.
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public static float? Area_Safe(Vector2 vec)
+        {
+            if (vec.X == 0 || vec.Y == 0)
+                return null;
+            return Area(vec);
+        }
+        
+        public static float Area_Ratio(Vector2 vec1, Vector2 vec2)
+            => Area(vec1) / Area(vec2);
+
+        public static float Area_Ratio_Safe(Vector2 vec1, Vector2 vec2)
+            => (Area(vec1) / Area_Safe(vec2)) ?? 0;
+        
+        public static bool IsGreaterArea(Vector2 isBigger, Vector2 thanThis)
+            => Area(isBigger) > Area(thanThis);
+        
         public static float Euler_To_Radian(float thetaEuler)
         {
             return (float)(thetaEuler * Math.PI / 180f);
@@ -123,9 +188,31 @@ namespace isometricgame.GameEngine.Systems
         public static Vector4 Color_To_Vec4(Color color)
             => new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
 
+        public static bool Obeys_IClamp(int val, int min, int max)
+            => (val >= min) && (val <= max);
+
+        public static bool Obeys_Clamp(float val, float min, float max)
+            //Not checking equality for precision errors.
+            => !(val < min) && !(val > max);
+        
         public static float Clamp(float val, float min, float max)
             => (val < min) ? min : ((val > max) ? max : val);
 
+        public static int Clamp_Integer(int val, int min, int max)
+            => (val < min) ? min : ((val > max) ? max : val);
+
+        public static int Clamp_UInteger(int val, int max = int.MaxValue)
+            => Clamp_Integer(val, 0, max);
+        
+        public static uint Clamp_UInteger_As_Uint(int val, int max = int.MaxValue)
+            => (uint)Clamp_UInteger(val, max);
+        
+        public static float Clamp_UFloat(float val, float max = float.MaxValue)
+            => Clamp(val, 0, max);
+
+        public static Vector2 Clamp_Vec_UFloat(Vector2 vec, float max = float.MaxValue)
+            => new Vector2(Clamp(vec.X, 0, max), Clamp(vec.Y, 0, max));
+        
         public static float ClampMin(float val, float min)
             => val < min ? min : val;
 

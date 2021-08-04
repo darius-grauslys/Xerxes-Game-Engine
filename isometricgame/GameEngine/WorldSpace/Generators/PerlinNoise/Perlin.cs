@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise
 {
@@ -107,7 +108,7 @@ namespace isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise
 
         private float GetZ(int x, int y)
         {
-            int zSeed = (int)Systems.MathHelper.MapCoordsToUniqueFloat(x,y);
+            int zSeed = (int)MathHelper.MapCoordsToUniqueFloat(x,y);
             Random rand = new Random(zSeed + seed);
             return rand.Next(100) / 100f;
         }

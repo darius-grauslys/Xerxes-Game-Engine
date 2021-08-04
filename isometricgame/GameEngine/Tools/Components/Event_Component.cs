@@ -1,19 +1,12 @@
-﻿using isometricgame.GameEngine.Components.Rendering;
-using isometricgame.GameEngine.Events.Arguments;
-using isometricgame.GameEngine.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using isometricgame.GameEngine.Tools;
 
-namespace isometricgame.GameEngine.Components.Rendering
+namespace isometricgame.GameEngine.Components
 {
-    public class EventComponent : GameComponent
+    public class Event_Component : GameObject_Component
     {
         public TimedCallback EventTimer { get; private set; }
 
-        public EventComponent(string tag, double defaultTime = 1)
+        public Event_Component(string tag, double defaultTime = 1)
         {
             EventTimer = new TimedCallback(
                 tag,
@@ -41,10 +34,10 @@ namespace isometricgame.GameEngine.Components.Rendering
 
         public void Invoke() => EventTimer.Invoke();
 
-        protected override void Handle_NewParent()
+        protected override void Handle_Attach_To__GameObject__Component()
         {
-            base.Handle_NewParent();
-            EventTimer.Bind_To_Schedule(ParentObject.SceneLayer.ParentScene.Game.EventScheduler);
+            base.Handle_Attach_To__GameObject__Component();
+            EventTimer.Bind_To_Schedule(Component__Attached_GameObject.GameObject__Scene_Layer.Scene_Layer__Parent_Scene.Game.Game__Event_Scheduler);
         }
     }
 }

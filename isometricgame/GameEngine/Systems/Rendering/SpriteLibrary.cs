@@ -10,8 +10,8 @@ namespace isometricgame.GameEngine.Systems.Rendering
 {
     public class SpriteLibrary : GameSystem
     {
-        internal List<Sprite> sprites = new List<Sprite>();
-        private Dictionary<string, int> nameToIndex = new Dictionary<string, int>();
+        internal readonly List<Sprite> sprites = new List<Sprite>();
+        private readonly Dictionary<string, int> nameToIndex = new Dictionary<string, int>();
 
         public SpriteLibrary(Game gameRef) 
             : base(gameRef)
@@ -35,7 +35,7 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         public bool HasSprite(string name) => nameToIndex.ContainsKey(name);
         public uint GetSpriteID(string name) => (uint)nameToIndex[name];
-        public Sprite GetSprite(string name) => sprites[nameToIndex[name]];
+        public Sprite GetSprite(string name) => sprites[name != null ? nameToIndex[name] : 0];
         public Sprite GetSprite(int id) => sprites[id];
         public void SetVAO(int id, uint vao) => sprites[id].VAO_Index = vao;
         public void SetVAO_Row(int id, uint row) => sprites[id].VAO_Row = row;

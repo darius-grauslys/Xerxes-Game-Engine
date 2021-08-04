@@ -1,5 +1,4 @@
-﻿using isometricgame.GameEngine.Components.Rendering;
-using isometricgame.GameEngine.Events.Arguments;
+﻿using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Systems;
 using isometricgame.GameEngine.Systems.Rendering;
@@ -15,17 +14,19 @@ namespace isometricgame.GameEngine.Scenes
     public class Scene
     {
         public Game Game { get; private set; }
+        public Vector2 Scene__Window_Size__Game
+            => Game.Game__Window_Size;
+        
+        internal List<Scene_Layer> disabledLayers = new List<Scene_Layer>();
+        internal List<Scene_Layer> sceneLayers = new List<Scene_Layer>();
+        protected List<Scene_Layer> SceneLayers => sceneLayers.ToList();
 
-        internal List<SceneLayer> disabledLayers = new List<SceneLayer>();
-        internal List<SceneLayer> sceneLayers = new List<SceneLayer>();
-        protected List<SceneLayer> SceneLayers => sceneLayers.ToList();
-
-        internal void _enable_inOrder(SceneLayer layer)
+        internal void _enable_inOrder(Scene_Layer layer)
         {
             disabledLayers.Remove(layer);
             for(int i=0;i< sceneLayers.Count;i++)
             {
-                if (sceneLayers[i].LayerLevel < layer.LayerLevel)
+                if (sceneLayers[i].SceneLayer__LayerLevel < layer.SceneLayer__LayerLevel)
                 {
                     sceneLayers.Insert(i, layer);
                     return;
@@ -34,14 +35,14 @@ namespace isometricgame.GameEngine.Scenes
             sceneLayers.Add(layer);
         }
 
-        internal void DisableLayer(SceneLayer layer) { sceneLayers.Remove(layer); disabledLayers.Add(layer); layer.SetDisable(); }
-        internal void EnableLayer(SceneLayer layer) { disabledLayers.Remove(layer); _enable_inOrder(layer); layer.SetEnabled(); }
-        protected void DisableLayers<T>() where T : SceneLayer { foreach (T layer in sceneLayers.ToList().OfType<T>()) { DisableLayer(layer); } }
-        protected void EnableLayers<T>() where T : SceneLayer { foreach(T layer in disabledLayers.ToList().OfType<T>()) { EnableLayer(layer); } }
-        protected void AddLayer(SceneLayer layer) { layer.SetParent(this); }
-        protected void RemoveLayer(SceneLayer layer) { layer.SetParent(null); }
-        protected void AddLayers(params SceneLayer[] layers) { foreach (SceneLayer layer in layers) AddLayer(layer); }
-        protected void EnableOnlyLayer<T>() where T : SceneLayer { DisableLayers<SceneLayer>(); EnableLayers<T>(); }
+        internal void DisableLayer(Scene_Layer layer) { sceneLayers.Remove(layer); disabledLayers.Add(layer); layer.Internal_Disable__Scene_Layer(); }
+        internal void EnableLayer(Scene_Layer layer) { disabledLayers.Remove(layer); _enable_inOrder(layer); layer.Internal_Enable__Scene_Layer(); }
+        protected void DisableLayers<T>() where T : Scene_Layer { foreach (T layer in sceneLayers.ToList().OfType<T>()) { DisableLayer(layer); } }
+        protected void EnableLayers<T>() where T : Scene_Layer { foreach(T layer in disabledLayers.ToList().OfType<T>()) { EnableLayer(layer); } }
+        protected void AddLayer(Scene_Layer layer) { layer.Internal_Set__Parent__Scene_Layer(this); }
+        protected void RemoveLayer(Scene_Layer layer) { layer.Internal_Set__Parent__Scene_Layer(null); }
+        protected void AddLayers(params Scene_Layer[] layers) { foreach (Scene_Layer layer in layers) AddLayer(layer); }
+        protected void EnableOnlyLayer<T>() where T : Scene_Layer { DisableLayers<Scene_Layer>(); EnableLayers<T>(); }
 
         public Scene(Game game)
         {
@@ -51,10 +52,10 @@ namespace isometricgame.GameEngine.Scenes
         internal void RescaleScene()
         {
             Handle_Rescale();
-            foreach (SceneLayer layer in sceneLayers)
-                layer.Rescale();
-            foreach (SceneLayer layer in disabledLayers)
-                layer.Rescale();
+            foreach (Scene_Layer layer in sceneLayers)
+                layer.Internal_Rescale__Scene_Layer();
+            foreach (Scene_Layer layer in disabledLayers)
+                layer.Internal_Rescale__Scene_Layer();
         }
         protected virtual void Handle_Rescale() { }
 
@@ -62,8 +63,8 @@ namespace isometricgame.GameEngine.Scenes
         {
             RescaleScene();
             Handle_GainFocus();
-            foreach (SceneLayer layer in sceneLayers)
-                layer.SceneGainFocus();
+            foreach (Scene_Layer layer in sceneLayers)
+                layer.Internal_Gain_Focus__Scene_Layer();
         }
         protected virtual void Handle_GainFocus() { }
 
@@ -84,11 +85,11 @@ namespace isometricgame.GameEngine.Scenes
         /// <param name="e"></param>
         protected virtual void Handle_RenderScene(RenderService renderService, FrameArgument e)
         {
-            foreach(SceneLayer layer in sceneLayers)
+            foreach(Scene_Layer layer in sceneLayers)
             {
-                renderService.CacheMatrix(layer.LayerMatrix);
-                layer.BeginRender(renderService);
-                layer.RenderLayer(renderService, e);
+                renderService.CacheMatrix(layer.Scene_Layer__Layer_Matrix);
+                layer.Begin_Render__Scene_Layer(renderService);
+                layer.Render__Scene_Layer(renderService, e);
             }
         }
 
@@ -101,7 +102,7 @@ namespace isometricgame.GameEngine.Scenes
         protected virtual void Handle_UpdateScene(FrameArgument e)
         {
             for(int i=0;i<sceneLayers.Count;i++)
-                sceneLayers[i].UpdateLayer(e);
+                sceneLayers[i].Internal_Update__Scene_Layer(e);
         }
     }
 }

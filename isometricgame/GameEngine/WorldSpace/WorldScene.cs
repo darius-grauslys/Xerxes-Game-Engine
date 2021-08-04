@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using isometricgame.GameEngine.Components.Rendering;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.WorldSpace.Generators;
 using isometricgame.GameEngine.Rendering;
@@ -18,7 +17,7 @@ using isometricgame.GameEngine.WorldSpace.ChunkSpace;
 
 namespace isometricgame.GameEngine.WorldSpace
 {
-    public class WorldLayer : SceneLayer
+    public class WorldLayer : Scene_Layer
     {
         private ChunkDirectory chunkDirectory;
         private Camera camera;
@@ -32,21 +31,21 @@ namespace isometricgame.GameEngine.WorldSpace
 
         public bool test_flop_REMOVE = true;
 
-        public WorldLayer(Scene parentScene, Generator worldGenerator, int renderDistance=0)
-            : base(parentScene)
+        public WorldLayer(Scene sceneLayerParentScene, Generator worldGenerator, int renderDistance=0)
+            : base(sceneLayerParentScene)
         {
             this.ChunkDirectory = new ChunkDirectory(renderDistance, worldGenerator);
             this.Camera = new Camera(this);
             this.renderDistance = renderDistance;
 
-            spriteLibrary = Game.GetSystem<SpriteLibrary>();
+            spriteLibrary = Scene_Layer__Game.Get_System__Game<SpriteLibrary>();
         }
 
-        protected override void Handle_UpdateLayer(FrameArgument e)
+        protected override void Handle_Update__Scene_Layer(FrameArgument e)
         {
             Camera.Pan_Linear((float)e.DeltaTime);
             
-            LayerMatrix = Camera.GetView();
+            Scene_Layer__Layer_Matrix = Camera.GetView();
             ChunkDirectory.ChunkCleanup(Camera.Position.Xy);
             
             renderTileRange = (int)((2 / Math.Log(camera.Zoom + 1)) * 16);
@@ -57,10 +56,10 @@ namespace isometricgame.GameEngine.WorldSpace
             renderDistance = (renderTileRange / Chunk.CHUNK_TILE_WIDTH) + 2;
             chunkDirectory.RenderDistance = renderDistance;
 
-            base.Handle_UpdateLayer(e);
+            base.Handle_Update__Scene_Layer(e);
         }
         
-        protected override void Handle_RenderLayer(RenderService renderService, FrameArgument e)
+        protected override void Handle_Render__Scene_Layer(RenderService renderService, FrameArgument e)
         {
             if (chunkDirectory.RenderDistance != renderDistance)
                 return; //prevent race condition
@@ -123,10 +122,10 @@ namespace isometricgame.GameEngine.WorldSpace
                 }
             }
 
-            base.Handle_RenderLayer(renderService, e);
+            base.Handle_Render__Scene_Layer(renderService, e);
         }
 
-        protected override void DrawSprite(RenderService renderService, GameObject gameObject)
+        protected override void Handle_Render_Object__Scene_Layer(RenderService renderService, GameObject gameObject)
         {
             float cx = Chunk.CartesianToIsometric_X(gameObject.renderUnit.X, gameObject.renderUnit.Y);
             float cy = Chunk.CartesianToIsometric_Y(gameObject.renderUnit.X, gameObject.renderUnit.Y, gameObject.renderUnit.Z);

@@ -1,22 +1,13 @@
 ﻿using isometricgame.GameEngine.Events.Arguments;
-using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Rendering.Animation;
-using isometricgame.GameEngine.Scenes;
-using isometricgame.GameEngine.Tools;
-using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace isometricgame.GameEngine.Components.Rendering
+namespace isometricgame.GameEngine.Components
 {
-    public class AnimationComponent : SpriteComponent
+    public class Animation_Render_Component : GameObject_Component
     {
         private AnimationSchematic schematic;
 
-        public AnimationComponent(AnimationSchematic schematic = null) 
+        public Animation_Render_Component(AnimationSchematic schematic = null) 
             : base()
         {
             this.schematic = schematic;
@@ -53,9 +44,9 @@ namespace isometricgame.GameEngine.Components.Rendering
         public void Pause(double time) => schematic.Pause(time);
         public void Unpause() => schematic.Unpause();
 
-        protected override void OnUpdate(FrameArgument args)
+        protected override void Handle__Update__Component(FrameArgument args)
         {
-            ParentObject.renderUnit.vaoIndex = schematic.GetVBO_Index(args.DeltaTime);
+            Component__Attached_GameObject.renderUnit.vaoIndex = schematic.GetVBO_Index(args.DeltaTime);
         }
 
         public void Play(int node)

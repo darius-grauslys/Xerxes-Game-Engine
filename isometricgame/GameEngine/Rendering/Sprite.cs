@@ -19,6 +19,7 @@ namespace isometricgame.GameEngine.Rendering
 
         private int baseSubWidth;
         private int baseSubHeight;
+        private Vector2 size;
         private float scale = 1;
 
         internal int vaoIndex = 0, vaoRow = 0;
@@ -37,6 +38,7 @@ namespace isometricgame.GameEngine.Rendering
 
         public float SubWidth { get => baseSubWidth * scale; private set => baseSubWidth = (int)value; }
         public float SubHeight { get => baseSubHeight * scale; private set => baseSubHeight = (int)value; }
+        public Vector2 Size { get => size; set => SetSize(value); }
         public float Scale { get => scale; set => SetScale(value); }
 
         public uint VAO_Index { get => (uint)(vaoIndex + (VAO_Row * columnCount)); set => vaoIndex = (int)value; }
@@ -168,6 +170,8 @@ namespace isometricgame.GameEngine.Rendering
             this.baseSubWidth = baseSubWidth;
             this.baseSubHeight = baseSubHeight;
 
+            this.size = new Vector2(baseSubWidth, baseSubHeight);
+            
             this.vaoIndex = vaoIndex;
 
             this.columnCount = columnCount;

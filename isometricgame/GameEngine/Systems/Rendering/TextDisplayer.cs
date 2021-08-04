@@ -29,7 +29,7 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         public override void Load()
         {
-            SpriteLibrary = Game.GetSystem<SpriteLibrary>();
+            SpriteLibrary = Game.Get_System__Game<SpriteLibrary>();
         }
 
         public void LoadFont(string fontName, int fontSpriteId)

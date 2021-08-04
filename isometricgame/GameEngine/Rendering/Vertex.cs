@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine.Rendering
 {
@@ -23,7 +24,7 @@ namespace isometricgame.GameEngine.Rendering
             get => Color.FromArgb((int)(color.W * 255), (int)(color.X * 255), (int)(color.Y * 255), (int)(color.Z * 255));
             set
             {
-                color = Systems.MathHelper.Color_To_Vec4(value);
+                color = MathHelper.Color_To_Vec4(value);
             }
         }
 

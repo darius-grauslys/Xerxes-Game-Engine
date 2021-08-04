@@ -18,6 +18,6 @@ namespace isometricgame.GameEngine.Systems
 
         public void AddScene(string name, Scene scene) => scenes.Add(name, scene);
         public Scene GetScene(string name) => scenes[name];
-        public void SetScene(string name) { scenes[name].GainFocus(); Game.SetScene(scenes[name]); }
+        public void SetScene(string name) { scenes[name].GainFocus(); Game.Set__Scene__Game(scenes[name]); }
     }
 }

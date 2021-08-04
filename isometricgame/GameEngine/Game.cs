@@ -32,31 +32,24 @@ namespace isometricgame.GameEngine
         public readonly string GAME_DIRECTORY_SHADERS;
         
         #region Systems
-        //SERVICES
-        private AssetProvider contentPipe;
-        private SpriteLibrary spriteLibrary;
-        private RenderService renderService;
-        private TextDisplayer textDisplayer;
-        private InputSystem inputSystem;
-        private AnimationSchematicLibrary animationSchematicLibrary;
-        private SceneManagementService sceneManagementService;
 
-        private List<GameSystem> systems = new List<GameSystem>();
+        private readonly List<GameSystem> SYSTEMS = new List<GameSystem>();
+        
         /// <summary>
         /// Responsible for loading and unloading textures.
         /// </summary>
-        public AssetProvider AssetProvider { get => contentPipe; private set => contentPipe = value; }
+        public AssetProvider Game__Asset_Provider { get; private set; }
         /// <summary>
         /// Responsible for recording and recieving loaded sprites.
         /// </summary>
-        public SpriteLibrary SpriteLibrary { get => spriteLibrary; private set => spriteLibrary = value; }
-        internal RenderService RenderService { get => renderService; private set => renderService = value; }
-        public TextDisplayer TextDisplayer { get => textDisplayer; private set => textDisplayer = value; }
-        public InputSystem InputSystem { get => inputSystem; private set => inputSystem = value; }
-        public AnimationSchematicLibrary AnimationSchematicLibrary { get => animationSchematicLibrary; private set => animationSchematicLibrary = value; }
-        public SceneManagementService SceneManagementService { get => sceneManagementService; private set => sceneManagementService = value; }
+        public SpriteLibrary Game__Sprite_Library { get; private set; }
+        internal RenderService Game__Render_Service { get; private set; }
+        public TextDisplayer Game__Text_Displayer { get; private set; }
+        public InputSystem Game__Input_System { get; private set; }
+        public AnimationSchematicLibrary Game__Animation_Schematic_Library { get; private set; }
+        public SceneManagementService Game__Scene_Management_Service { get; private set; }
         
-        public EventScheduler EventScheduler { get; private set; }
+        public EventScheduler Game__Event_Scheduler { get; private set; }
         #endregion
 
         #region Time
@@ -66,29 +59,46 @@ namespace isometricgame.GameEngine
         public double UpdateTime => updateTime;
         #endregion
 
+        public Vector2 Game__Window_Size
+            => new Vector2(Width, Height);
+        
         private Scene scene;
 
-        public Game(int width, int height, string title, string GAME_DIR = "", string GAME_DIR_ASSETS = "", string GAME_DIR_WORLDS = "")
-            : base(width, height, GraphicsMode.Default, title)
+        public Game
+            (
+            int width, 
+            int height, 
+            string title, 
+            string GAME_DIR = "", 
+            string GAME_DIR_ASSETS = "", 
+            string GAME_DIR_WORLDS = ""
+            )
+            : base
+                (
+                width, 
+                height, 
+                GraphicsMode.Default, 
+                title
+                )
         {
             GAME_DIRECTORY_BASE = (GAME_DIR == String.Empty) ? AppDomain.CurrentDomain.BaseDirectory : GAME_DIR;
-            GAME_DIRECTORY_ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Assets\\") : GAME_DIR_ASSETS;
-            GAME_DIRECTORY_SHADERS = Path.Combine(GAME_DIRECTORY_ASSETS, "Shaders\\");
-            GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds\\") : GAME_DIR_WORLDS;
+            GAME_DIRECTORY_ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Assets" + Path.DirectorySeparatorChar) : GAME_DIR_ASSETS;
+            GAME_DIRECTORY_SHADERS = Path.Combine(GAME_DIRECTORY_ASSETS, "Shaders" + Path.DirectorySeparatorChar);
+            GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds" + Path.DirectorySeparatorChar) : GAME_DIR_WORLDS;
             
-            RegisterSystems();
-            EventScheduler = new EventScheduler();
-            RenderService.LoadShaders(GetShaders());
+            Register__Base_Systems__Game();
+            Game__Event_Scheduler = new EventScheduler();
+            Game__Render_Service.LoadShaders(Get__Shaders__Game());
 
             //END SERVICES
 
-            LoadContent();
+            Handle_Load__Content__Game();
         }
 
         protected override void OnResize(EventArgs e)
         {
             GL.Viewport(ClientRectangle);
-            RenderService.AdjustProjection(Width, Height);
+            Game__Render_Service.AdjustProjection(Width, Height);
             scene.RescaleScene();
         }
 
@@ -100,7 +110,7 @@ namespace isometricgame.GameEngine
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             updateTime += e.Time;
-            EventScheduler.Progress_Events(e.Time);
+            Game__Event_Scheduler.Progress_Events(e.Time);
             scene.UpdateScene(new FrameArgument(UpdateTime, e.Time));
         }
 
@@ -108,12 +118,12 @@ namespace isometricgame.GameEngine
         {
             renderTime += e.Time;
 
-            scene.BeginRender(RenderService);
-            RenderService.BeginRender();
+            scene.BeginRender(Game__Render_Service);
+            Game__Render_Service.BeginRender();
 
-            RenderService.RenderScene(scene, new FrameArgument(RenderTime, e.Time));
+            Game__Render_Service.RenderScene(scene, new FrameArgument(RenderTime, e.Time));
 
-            RenderService.EndRender();
+            Game__Render_Service.EndRender();
             
             SwapBuffers();
         }
@@ -125,60 +135,88 @@ namespace isometricgame.GameEngine
 
         protected override void OnUnload(EventArgs e)
         {
-            foreach (GameSystem gamesys in systems)
+            foreach (GameSystem gamesys in SYSTEMS)
                 gamesys.Unload();
         }
 
-        public T GetSystem<T>() where T : GameSystem
+        public T Get_System__Game<T>() where T : GameSystem
         {
-            foreach (GameSystem system in systems)
+            foreach (GameSystem system in SYSTEMS)
                 if (system is T && system.Accessable)
                     return system as T;
             throw new ServiceNotFoundException();
         }
 
-        protected void RegisterSystem<T>(T gameService) where T : GameSystem
+        protected void Register__System__Game<T>(T gameService) where T : GameSystem
         {
-            if (systems.Exists((s) => s is T))
+            if (SYSTEMS.Exists((s) => s is T))
                 throw new ExistingServiceException();
-            systems.Add(gameService);
+            SYSTEMS.Add(gameService);
         }
 
-        protected virtual string[] GetShaders()
+        protected virtual string[] Get__Shaders__Game()
         {
             return new string[] { "shader" };
         }
 
-        internal virtual void RegisterSystems()
+        internal virtual void Register__Base_Systems__Game()
         {
-            AssetProvider = new AssetProvider(this);
-            SpriteLibrary = new SpriteLibrary(this);
-            RenderService = new RenderService(this, Width, Height);
-            TextDisplayer = new TextDisplayer(this);
-            InputSystem = new InputSystem(this);
-            AnimationSchematicLibrary = new AnimationSchematicLibrary(this);
-            SceneManagementService = new SceneManagementService(this);
+            Game__Asset_Provider = new AssetProvider(this);
+            Game__Sprite_Library = new SpriteLibrary(this);
+            Game__Render_Service = new RenderService(this, Width, Height);
+            Game__Text_Displayer = new TextDisplayer(this);
+            Game__Input_System = new InputSystem(this);
+            Game__Animation_Schematic_Library = new AnimationSchematicLibrary(this);
+            Game__Scene_Management_Service = new SceneManagementService(this);
 
-            RegisterSystem(AssetProvider);
-            RegisterSystem(SpriteLibrary);
-            RegisterSystem(RenderService);
-            RegisterSystem(TextDisplayer);
-            RegisterSystem(InputSystem);
-            RegisterSystem(AnimationSchematicLibrary);
-            RegisterSystem(SceneManagementService);
+            Register__System__Game(Game__Asset_Provider);
+            Register__System__Game(Game__Sprite_Library);
+            Register__System__Game(Game__Render_Service);
+            Register__System__Game(Game__Text_Displayer);
+            Register__System__Game(Game__Input_System);
+            Register__System__Game(Game__Animation_Schematic_Library);
+            Register__System__Game(Game__Scene_Management_Service);
 
-            RegisterCustomSystems();
+            Handle_Register__Custom_Systems__Game();
 
-            foreach (GameSystem system in systems)
+            foreach (GameSystem system in SYSTEMS)
                 system.Load();
         }
 
-        protected virtual void RegisterCustomSystems() { }
-        protected virtual void LoadContent() { }
+        protected virtual void Handle_Register__Custom_Systems__Game() { }
+        protected virtual void Handle_Load__Content__Game() { }
 
-        public void SetScene(Scene scene)
+        internal void Set__Scene__Game(Scene scene)
         {
             this.scene = scene;
+        }
+        
+        protected void LoadSprite
+            (
+            string spriteName, 
+            float scale, 
+            int width, 
+            int height, 
+            bool throwIf_NotExists = true, 
+            string savedName = null
+            )
+        {
+            string path = Path.Combine(
+                GAME_DIRECTORY_ASSETS,
+                spriteName + ".png"
+            );
+            if (!throwIf_NotExists && !File.Exists(path))
+                return;
+            Sprite s;
+            Game__Sprite_Library.RecordSprite(
+                s = Game__Asset_Provider.ExtractSpriteSheet(
+                    path,
+                    (savedName == null) ? spriteName : savedName,
+                    width,
+                    height
+                )
+            );
+            s.Scale = scale;
         }
     }
 }

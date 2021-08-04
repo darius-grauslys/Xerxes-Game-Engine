@@ -17,7 +17,7 @@ namespace isometricgame.GameEngine
         
         private Vector3 position = new Vector3(0,0,0);
         private float velocity = 3;
-        private SceneLayer sceneLayer;
+        private Scene_Layer sceneLayer;
 
         private GameObject focusObject;
 
@@ -32,7 +32,7 @@ namespace isometricgame.GameEngine
         public float Iso_X => Chunk.CartesianToIsometric_X(position.X, position.Y);
         public float Iso_Y => Chunk.CartesianToIsometric_Y(position.X, position.Y, position.Z);
 
-        public Camera(SceneLayer sceneLayer)
+        public Camera(Scene_Layer sceneLayer)
         {
             this.sceneLayer = sceneLayer;
         }
@@ -63,7 +63,7 @@ namespace isometricgame.GameEngine
             //    Matrix4.CreateTranslation(Iso_X, Iso_Y, 1f);
             return Matrix4.CreateTranslation(-Iso_X, -Iso_Y, -1f) 
                 * Matrix4.CreateScale(zoom) 
-                * Matrix4.CreateOrthographic(sceneLayer.Game.Width, sceneLayer.Game.Height, zNear, zFar);
+                * Matrix4.CreateOrthographic(sceneLayer.Scene_Layer__Game.Width, sceneLayer.Scene_Layer__Game.Height, zNear, zFar);
         }
     }
 }
