@@ -72,9 +72,9 @@ namespace isometricgame.GameEngine
             : base(width, height, GraphicsMode.Default, title)
         {
             GAME_DIRECTORY_BASE = (GAME_DIR == String.Empty) ? AppDomain.CurrentDomain.BaseDirectory : GAME_DIR;
-            GAME_DIRECTORY_ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Assets\\") : GAME_DIR_ASSETS;
-            GAME_DIRECTORY_SHADERS = Path.Combine(GAME_DIRECTORY_ASSETS, "Shaders\\");
-            GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds\\") : GAME_DIR_WORLDS;
+            GAME_DIRECTORY_ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Assets" + Path.DirectorySeparatorChar) : GAME_DIR_ASSETS;
+            GAME_DIRECTORY_SHADERS = Path.Combine(GAME_DIRECTORY_ASSETS, "Shaders" + Path.DirectorySeparatorChar);
+            GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds" + Path.DirectorySeparatorChar) : GAME_DIR_WORLDS;
             
             RegisterSystems();
             EventScheduler = new EventScheduler();

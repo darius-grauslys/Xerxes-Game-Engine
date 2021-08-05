@@ -103,7 +103,7 @@ namespace isometricgame.GameEngine
         protected virtual void HandleDraw(RenderService renderService)
         {
             bool? check = SpriteComponent?.Enabled;
-            if (check != null && (bool)check)
+            if (check ?? false)
                 renderService.DrawSprite(ref renderUnit, Position.X, Position.Y, Position.Z);
         }
 
