@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenTK;
+using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine.UI
 {
@@ -75,9 +76,9 @@ namespace isometricgame.GameEngine.UI
 
         internal void Internal_Resize__UI_Element(Vector2 newSize)
         {
-            UI_Element__BOUNDING_RECT.Internal_Resize__UI_Rect(newSize);
+            UI_Element__BOUNDING_RECT.Set__Scaling_Vector__UI_Rect(newSize);
             
-            Internal_Scale__UI_Element(UI_Element__Hypotenuse);
+            Internal_Scale__UI_Element(MathHelper.Get__Hypotenuse(newSize));
         }
         
         internal void Internal_Scale__UI_Element(float hypotenuse)

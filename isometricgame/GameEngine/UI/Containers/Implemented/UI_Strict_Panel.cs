@@ -33,13 +33,7 @@ namespace isometricgame.GameEngine.UI
         public bool Add__Element__UI_Strict_Panel(UI_Element element, UI_Anchor bindingAnchor)
             => Add__UI_Element__UI_Container(new UI_Indexed_Element(element, bindingAnchor, this));
 
-        public bool Add__UI_GameObject__UI_Strict_Panel(UI_GameObject uiGameObject, UI_Anchor bindingAnchor = null)
+        public bool Add__UI_GameObject__UI_Strict_Panel(UI_GameObject uiGameObject, UI_Anchor bindingAnchor)
             => Add__Element__UI_Strict_Panel(uiGameObject.UI_GameObject__UI_Element__Internal, bindingAnchor);
-
-        public void Add__UI_GameObjects__UI_Strict_Panel(UI_GameObject[] uiGameObjects)
-        {
-            foreach(UI_GameObject uiGameObject in uiGameObjects)
-                Add__UI_GameObject__UI_Strict_Panel(uiGameObject);
-        }
     }
 }

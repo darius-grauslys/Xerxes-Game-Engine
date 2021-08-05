@@ -12,24 +12,24 @@ namespace isometricgame.GameEngine.UI
         /// <summary>
         /// The UI_Element that indexes this element.
         /// </summary>
-        protected UI_Container UI_Indexed_Element__Parent_Container { get; private set; }
+        protected UI_Container UI_Indexed_Element__PARENT_CONTAINER { get; }
 
-        public readonly UI_Element UI_Indexed_Element__ELEMENT;
+        public UI_Element UI_Indexed_Element__ELEMENT { get; }
 
         public UI_GameObject UI_Indexed_Element__Associated_UI_GameObject
             => UI_Indexed_Element__ELEMENT.UI_Element__Associated_UI_GameObject;
         
         #region Scaling
-        private float UI_Indexed_Element__Ratio_Of_Hypotenuse_To_Parent { get; set; }
+        private float UI_Indexed_Element__RATIO_OF_HYPOTENUSE_TO_PARENT { get; }
         
         internal void Internal_Scale__Element__UI_Indexed_Element(float? newHypotenuse = null)
             => UI_Indexed_Element__ELEMENT.Internal_Scale__UI_Element
             (
                 newHypotenuse 
                 ??
-                UI_Indexed_Element__Parent_Container.UI_Element__Hypotenuse
+                UI_Indexed_Element__PARENT_CONTAINER.UI_Element__Hypotenuse
                 *
-                UI_Indexed_Element__Ratio_Of_Hypotenuse_To_Parent
+                UI_Indexed_Element__RATIO_OF_HYPOTENUSE_TO_PARENT
             );
         
         #endregion
@@ -54,10 +54,25 @@ namespace isometricgame.GameEngine.UI
         /// <summary>
         /// 
         /// </summary>
-        public Vector3 UI_Indexed_Element__Relative_Position_From_Anchor { get; private set; }
+        public Vector3 UI_Indexed_Element__Position_From_Anchor { get; private set; }
+        public float UI_Indexed_Element__Hypotenuse_Of_Position_From_Anchor { get; private set; }
+        public float UI_Indexed_Element__Ratio_Of_Hypotenuse_From_Anchor_To_Parent { get; private set; }
+        public Vector3 Get_Normalized__Position_From_Anchor__UI_Indexed_Element()
+            => MathHelper.Get__Safe_Normalized(UI_Indexed_Element__Position_From_Anchor);
+        public Vector3 Get__Current_Position_From_Anchor__UI_Indexed_Element()
+            =>
+                Get_Normalized__Position_From_Anchor__UI_Indexed_Element()
+                * UI_Indexed_Element__Ratio_Of_Hypotenuse_From_Anchor_To_Parent
+                * UI_Indexed_Element__PARENT_CONTAINER.UI_Element__Hypotenuse;
 
         internal void Set__Relative_Position_From_Anchor__UI_Indexed_Element(Vector3 offset)
-            => UI_Indexed_Element__Relative_Position_From_Anchor = offset;
+        {
+            UI_Indexed_Element__Position_From_Anchor = offset;
+            UI_Indexed_Element__Hypotenuse_Of_Position_From_Anchor = MathHelper.Get__Hypotenuse(offset.Xy);
+            UI_Indexed_Element__Ratio_Of_Hypotenuse_From_Anchor_To_Parent =
+                UI_Indexed_Element__Hypotenuse_Of_Position_From_Anchor /
+                UI_Indexed_Element__PARENT_CONTAINER.UI_Element__Hypotenuse;
+        }
 
         public UI_Indexed_Element
         (
@@ -70,11 +85,11 @@ namespace isometricgame.GameEngine.UI
 
             UI_Indexed_Element__Anchor = bindingAnchor ?? new UI_Anchor();
             
-            UI_Indexed_Element__Parent_Container = parentContainer;
+            UI_Indexed_Element__PARENT_CONTAINER = parentContainer;
 
-            UI_Indexed_Element__Ratio_Of_Hypotenuse_To_Parent =
+            UI_Indexed_Element__RATIO_OF_HYPOTENUSE_TO_PARENT =
                 UI_Indexed_Element__ELEMENT.UI_Element__Hypotenuse /
-                UI_Indexed_Element__Parent_Container.UI_Element__Hypotenuse;
+                UI_Indexed_Element__PARENT_CONTAINER.UI_Element__Hypotenuse;
         }
     }
 }

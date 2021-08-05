@@ -64,6 +64,8 @@ namespace isometricgame.GameEngine.UI
         public Vector2 UI_Rect__Size { get; private set; }
         
         public Vector2 UI_Rect__Scaling_Vector { get; private set; }
+        internal void Set__Scaling_Vector__UI_Rect(Vector2 newSize)
+            => UI_Rect__Scaling_Vector = MathHelper.Get__Safe_Normalized(newSize);
         
         public float Get__Hypotenuse__UI_Rect()
             => MathHelper.Get__Hypotenuse(UI_Rect__Size);

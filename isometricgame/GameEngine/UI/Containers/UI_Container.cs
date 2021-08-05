@@ -56,40 +56,35 @@ namespace isometricgame.GameEngine.UI
             return success;
         }
 
-        private Vector3? Private_Attempt__Sort__UI_Container(UI_Indexed_Element indexedElementToSort)
+        private Vector3? Private_Attempt__Sort__UI_Container(UI_Indexed_Element indexedElement)
         {
-            Vector3 sortedPosition =
-                Handle_Get__Initial_Position_For_Element__UI_Container(indexedElementToSort)
-                + Get__Offset_Against_Anchors__UI_Container(indexedElementToSort);
-            Vector3? potentialPosition = null;
-
-            while (Handle_Check_For__Sort_Integrity__UI_Container(indexedElementToSort, sortedPosition))
+            Vector3 initalPosition =
+                Handle_Get__Initial_Position_For_Element__UI_Container(indexedElement)
+                + Get__Offset_Against_Anchors__UI_Container(indexedElement);
+            Vector3 minorAnchorPosition = initalPosition;
+            Vector3 sortedPosition = initalPosition;
+            
+            while (Handle_Check_For__Sort_Integrity__UI_Container(indexedElement, initalPosition))
             {
-                potentialPosition =
-                    Private_Sort__UI_Element_Along_Anchor__UI_Container
+                bool wasSorted;
+                
+                sortedPosition =
+                    Private_Sort__UI_Element_On_Major_Anchor__UI_Container
                     (
-                        indexedElementToSort.UI_Indexed_Element__Major_Sort,
-                        indexedElementToSort,
-                        sortedPosition
+                        indexedElement.UI_Indexed_Element__Major_Sort,
+                        indexedElement,
+                        sortedPosition,
+                        out wasSorted
                     );
 
-                bool sortedMajor = potentialPosition != null;
-                if (sortedMajor)
-                    sortedPosition = (Vector3) potentialPosition;
-
-                potentialPosition =
-                    Private_Sort__UI_Element_Along_Anchor__UI_Container
-                    (
-                        indexedElementToSort.UI_Indexed_Element__Minor_Sort,
-                        indexedElementToSort,
-                        sortedPosition
-                    );
-
-                bool sortedLesser = potentialPosition != null;
-                if (sortedLesser)
-                    sortedPosition = (Vector3) potentialPosition;
-
-                if (!sortedMajor && !sortedLesser)
+                sortedPosition = minorAnchorPosition = Private_Verify__Major_Sort__UI_Container
+                (
+                    indexedElement,
+                    minorAnchorPosition,
+                    sortedPosition
+                );
+                
+                if (!wasSorted)
                 {
                     return sortedPosition;
                 }
@@ -98,6 +93,47 @@ namespace isometricgame.GameEngine.UI
             return null;
         }
 
+        /// <summary>
+        /// After being sorted a long an anchor in Private_Attempt__Sort__UI_Container,
+        /// check if the sort is bounded by the container, otherwise fallback to recovery.
+        /// </summary>
+        /// <param name="indexedElement"></param>
+        /// <param name="nullableSortedPosition"></param>
+        private Vector3 Private_Verify__Major_Sort__UI_Container
+        (
+            UI_Indexed_Element indexedElement, 
+            Vector3 minorAnchorPosition,
+            Vector3 sortedPosition
+        )
+        {
+            if (Handle_Check_For__Sort_Integrity__UI_Container(indexedElement, sortedPosition))
+            {
+                return sortedPosition;
+            }
+
+            return Handle_Recover__Sort__UI_Container(indexedElement, minorAnchorPosition);
+        }
+
+        protected virtual Vector3 Handle_Recover__Sort__UI_Container
+        (
+            UI_Indexed_Element indexedElement, 
+            Vector3 minorAnchorPosition
+        )
+        {
+            Vector3 minorHadamard = Vector3.One;
+
+            UI_Anchor_Sort_Type minorSort = indexedElement.UI_Indexed_Element__Minor_Sort;
+
+            Vector3? offset = Private_Sort__Offset_Step__UI_Container
+            (
+                minorSort,
+                indexedElement,
+                minorAnchorPosition
+            );
+
+            return minorAnchorPosition + (offset ?? Vector3.Zero);
+        }
+        
         /// <summary>
         /// Determines the initial position for a given element. This typically relates to the container's anchors.
         /// </summary>
@@ -181,43 +217,89 @@ namespace isometricgame.GameEngine.UI
                 sortedPosition
             );
         }
-        
-        private Vector3? Private_Sort__UI_Element_Along_Anchor__UI_Container
-            (
-            UI_Anchor_Sort_Type anchorSortType,
-            UI_Indexed_Element containedChildIndexedElement,
-            Vector3 sortedPosition
-            )
-        {
-            UI_Element elementToSort = containedChildIndexedElement.UI_Indexed_Element__ELEMENT;
-            Vector3? anchorSortedPosition = sortedPosition;
-            bool hasBeenAligned = false;
 
+        private UI_Indexed_Element Private_Find__Overlapping_Element__UI_Container
+        (
+            UI_Indexed_Element indexedElementToSort,
+            Vector3 sortedPosition
+        )
+        {
+            UI_Element elementToSort = indexedElementToSort.UI_Indexed_Element__ELEMENT;
+            
             foreach (UI_Indexed_Element indexedChildElement in _UI_Container__CHILD_ELEMENTS)
             {
                 UI_Element childElement = indexedChildElement.UI_Indexed_Element__ELEMENT;
-                
+
                 if
                 (
                     UI_Rect.CheckIf__Rects_Overlap
                     (
                         elementToSort.UI_Element__BOUNDING_RECT,
                         childElement.UI_Element__BOUNDING_RECT,
-                        anchorSortedPosition
+                        sortedPosition
                     )
                 )
-                {
-                    hasBeenAligned = true;
-                    anchorSortedPosition = Handle_Get__Alignment_Offset__UI_Container
-                        (
-                        anchorSortType,
-                        childElement.UI_Element__BOUNDING_RECT,
-                        elementToSort.UI_Element__BOUNDING_RECT
-                        );
-                }
+                    return indexedChildElement;
             }
+
+            return null;
+        }
+        
+        private Vector3 Private_Sort__UI_Element_On_Major_Anchor__UI_Container
+            (
+            UI_Anchor_Sort_Type anchorSortType,
+            UI_Indexed_Element indexedElementToSort,
+            Vector3 sortedPosition,
+            out bool possessedOverlap
+            )
+        {
+            Vector3 offsetPosition = Vector3.Zero;
+            Vector3? offsetStep = Vector3.Zero;
+
+            do
+            {
+                offsetStep = Private_Sort__Offset_Step__UI_Container
+                (
+                    anchorSortType,
+                    indexedElementToSort,
+                    sortedPosition + offsetPosition
+                );
+
+                offsetPosition += offsetStep ?? Vector3.Zero;
+            } while (offsetStep != null);
+
+            possessedOverlap = offsetPosition != Vector3.Zero;
             
-            return hasBeenAligned ? anchorSortedPosition : null;
+            return sortedPosition + offsetPosition;
+        }
+
+        private Vector3? Private_Sort__Offset_Step__UI_Container
+        (
+            UI_Anchor_Sort_Type anchorSortType,
+            UI_Indexed_Element indexedElementToSort,
+            Vector3 targetPosition
+        )
+        {
+            UI_Indexed_Element overlappingIndexedElement = Private_Find__Overlapping_Element__UI_Container
+            (
+                indexedElementToSort,
+                targetPosition
+            );
+
+            if (overlappingIndexedElement == null)
+                return null;
+
+            UI_Element elementToSort = indexedElementToSort.UI_Indexed_Element__ELEMENT;
+            UI_Element overlappingElement = overlappingIndexedElement.UI_Indexed_Element__ELEMENT;
+            
+            Vector3 offset = Handle_Get__Alignment_Offset__UI_Container
+            (
+                anchorSortType,
+                elementToSort.UI_Element__BOUNDING_RECT,
+                overlappingElement.UI_Element__BOUNDING_RECT
+            );
+
+            return offset;
         }
 
         /// <summary>
@@ -240,26 +322,23 @@ namespace isometricgame.GameEngine.UI
                 //Moves left of the compared element.
                 case UI_Anchor_Sort_Type.Left:
                     return 
-                        rect_OfOverlapping_ChildElement.UI_Rect__Position -
-                        rect_OfElement_ToSort.UI_Rect__Width__As_Vector3;
+                        -rect_OfElement_ToSort.UI_Rect__Width__As_Vector3;
                 //Moves right of the compared element.
                 case UI_Anchor_Sort_Type.Right:
                     return
-                        rect_OfOverlapping_ChildElement.UI_Rect__Position +
                         rect_OfOverlapping_ChildElement.UI_Rect__Width__As_Vector3;
                 //Moves up of the compared element.
                 case UI_Anchor_Sort_Type.Top:
                     return
-                        rect_OfOverlapping_ChildElement.UI_Rect__Position +
                         rect_OfOverlapping_ChildElement.UI_Rect__Height__As_Vector3;
                 //Moves down of the compared element.
                 case UI_Anchor_Sort_Type.Bottom:
                     return 
-                        rect_OfOverlapping_ChildElement.UI_Rect__Position - 
-                        rect_OfElement_ToSort.UI_Rect__Height__As_Vector3;
-                default:
-                    return Vector3.Zero; //The Middle anchor has no sense of direction.
+                        -rect_OfElement_ToSort.UI_Rect__Height__As_Vector3;
             }
+            
+            //critical failure has occured. This should never happen.
+            throw new InvalidOperationException();
         }
 
         private void Private_Bind__Relative_Position_To_Anchor__UI_Container(UI_Indexed_Element indexedElement)
@@ -296,13 +375,9 @@ namespace isometricgame.GameEngine.UI
             foreach (UI_Indexed_Element elementContainer in _UI_Container__CHILD_ELEMENTS)
             {
                 UI_Element element = elementContainer.UI_Indexed_Element__ELEMENT;
-                element.Internal_Set__Position__UI_Element
-                (
-                    Get__Anchor_Position__UI_Element(elementContainer.UI_Indexed_Element__Anchor_Position_Type)
-                    + elementContainer.UI_Indexed_Element__Relative_Position_From_Anchor
-                    + Get__Offset_Against_Anchors__UI_Container(elementContainer)
-                    + position
-                );
+                Vector3 childPosition = Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(elementContainer);
+                
+                element.Internal_Set__Position__UI_Element(childPosition);
             }
         }
         
@@ -319,23 +394,29 @@ namespace isometricgame.GameEngine.UI
 
         private void Private_Scale__Child_Element_Position__UI_Container(UI_Indexed_Element indexedElement)
         {
-            Vector3 position = Handle_Scale__Child_Element_Position__UI_Container(indexedElement);
+            Vector3 position = Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(indexedElement);
 
             UI_Element element = indexedElement.UI_Indexed_Element__ELEMENT;
             element.Internal_Set__Position__UI_Element(position);
         }
 
-        protected virtual Vector3 Handle_Scale__Child_Element_Position__UI_Container(
+        protected virtual Vector3 Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(
             UI_Indexed_Element indexedElement)
         {
+            Vector3 anchorPosition =
+                Get__Anchor_Position__UI_Element(indexedElement.UI_Indexed_Element__Anchor_Position_Type);
+            Vector3 scaledPositionFromAnchor = indexedElement.Get__Current_Position_From_Anchor__UI_Indexed_Element();
+            Vector3 offsetAgainstAnchor = Handle_Get__Offset_Against_Anchor__UI_Container
+            (
+                indexedElement.UI_Indexed_Element__Anchor_Position_Type,
+                indexedElement.UI_Indexed_Element__ELEMENT.UI_Element__BOUNDING_RECT
+            );
+            
             Vector3 elementPosition =
-                    Get__Anchor_Position__UI_Element(indexedElement.UI_Indexed_Element__Anchor_Position_Type)
-                    + indexedElement.UI_Indexed_Element__Relative_Position_From_Anchor
-                    + Handle_Get__Offset_Against_Anchor__UI_Container
-                    (
-                        indexedElement.UI_Indexed_Element__Anchor_Position_Type,
-                        indexedElement.UI_Indexed_Element__ELEMENT.UI_Element__BOUNDING_RECT
-                    )
+                    UI_Element__Position
+                    + anchorPosition
+                    + scaledPositionFromAnchor
+                    + offsetAgainstAnchor
                 ;
 
             return elementPosition;

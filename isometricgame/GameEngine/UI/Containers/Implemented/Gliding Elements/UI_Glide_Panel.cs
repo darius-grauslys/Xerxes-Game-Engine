@@ -27,6 +27,11 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
             _UI_Gliding_Panel__GLIDE_PATHS = new List<UI_Glide_Path>();
         }
 
+        public bool Add__Glide_Node__UI_Glide_Panel(UI_Glide_Node node, UI_Anchor bindingAnchor)
+        {
+            return Add__UI_Element__UI_Container(new UI_Indexed_Element(node, bindingAnchor, this));
+        }
+        
         public UI_Glide_Path Define__Glide_Path__UI_Glide_Panel
             (
             UI_GameObject uiGameObject,

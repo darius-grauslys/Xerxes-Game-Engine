@@ -14,6 +14,22 @@ namespace isometricgame.GameEngine.Tools
 
         public static float Get__Hypotenuse(float x, float y)
             => Get__Hypotenuse(new Vector2(x, y));
+
+        public static Vector3 Get__Safe_Normalized(Vector3 vec)
+        {
+            if (vec == Vector3.Zero)
+                return Vector3.Zero;
+
+            return vec.Normalized();
+        }
+
+        public static Vector2 Get__Safe_Normalized(Vector2 vec)
+        {
+            if (vec == Vector2.Zero)
+                return Vector2.Zero;
+
+            return vec.Normalized();
+        }
         
         public static Vector3 Get__Hadamard_Product(Vector3 vec1, Vector3 vec2)
             => new Vector3(vec1.X * vec2.X, vec1.Y * vec2.Y, vec1.Z * vec2.Z);
@@ -24,6 +40,20 @@ namespace isometricgame.GameEngine.Tools
         public static Vector3 Get__Hadamard_Inverse(Vector3 toInvert)
             => new Vector3(1 / toInvert.X, 1 / toInvert.Y, 1 / toInvert.Z);
 
+        public static Vector3 Convert__Scalar_To_X_Vector3(float scalar)
+            => new Vector3(scalar, 0, 0);
+        public static Vector3 Convert__Scalar_To_Y_Vector3(float scalar)
+            => new Vector3(0, scalar, 0);
+        public static Vector3 Convert__Scalar_To_Z_Vector3(float scalar)
+            => new Vector3(0, 0, scalar);
+
+        public static Vector3 Extract__X_From_Vector3(Vector3 vec)
+            => Convert__Scalar_To_X_Vector3(vec.X);
+        public static Vector3 Extract__Y_From_Vector3(Vector3 vec)
+            => Convert__Scalar_To_Y_Vector3(vec.Y);
+        public static Vector3 Extract__Z_From_Vector3(Vector3 vec)
+            => Convert__Scalar_To_Z_Vector3(vec.Z);
+        
         public static Vector3 Get__Safe_Hadamard_Inverse(Vector3 toInvertSafely, float safeReturn = 0)
             => new Vector3
             (
