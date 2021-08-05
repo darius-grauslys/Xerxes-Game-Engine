@@ -1,6 +1,7 @@
-﻿using OpenTK;
+﻿using isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements;
+using OpenTK;
 
-namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
+namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
 {
     public class UI_Glide_Path_Node_Wrapper
     {

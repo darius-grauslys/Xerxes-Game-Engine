@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Drawing;
 using OpenTK;
 using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
@@ -61,7 +62,12 @@ namespace isometricgame.GameEngine.UI
         #region Size
         //Size
         public Vector2 UI_Rect__Size { get; private set; }
-
+        
+        public Vector2 UI_Rect__Scaling_Vector { get; private set; }
+        
+        public float Get__Hypotenuse__UI_Rect()
+            => MathHelper.Get__Hypotenuse(UI_Rect__Size);
+        
         public float UI_Rect__Width
             => UI_Rect__Size.X;
         public float UI_Rect__Height
@@ -72,36 +78,47 @@ namespace isometricgame.GameEngine.UI
 
         public Vector3 UI_Rect__Height__As_Vector3
             => new Vector3(0, UI_Rect__Height, 0);
+
+        public Vector3 UI_Rect__Size__As_Vector3
+            => new Vector3(UI_Rect__Size);
         
         public float UI_Rect__Area => UI_Rect__Width * UI_Rect__Height;
         
         public readonly Vector2 UI_Rect__INITIAL_SIZE;
-        public Vector2 UI_Rect__Max_Size { get; private set; }
-        public void Set__Max_Size__UI_Rect(Vector2 newSize)
+
+        public float Get__Initial_Hypotenuse__UI_Rect()
+            => MathHelper.Get__Hypotenuse(UI_Rect__INITIAL_SIZE);
+        
+        public float UI_Rect__Max_Hypotenuse { get; private set; }
+        internal void Set__Max_Hypotenuse__UI_Rect(float newMaxHypotenuse)
         {
-            newSize = MathHelper.Clamp_Vec_UFloat(newSize);
+            newMaxHypotenuse = MathHelper.Clamp__UFloat(newMaxHypotenuse);
             
-            UI_Rect__Max_Size = 
-                (MathHelper.IsGreaterArea(UI_Rect__Min_Size, UI_Rect__Max_Size))
-                ? UI_Rect__Min_Size
-                : newSize;
+            UI_Rect__Max_Hypotenuse = 
+                (UI_Rect__Min_Hypotenuse > newMaxHypotenuse) 
+                    ? UI_Rect__Min_Hypotenuse
+                    : newMaxHypotenuse;
+
+            float currentHypotenuse = Get__Hypotenuse__UI_Rect();
             
-            if (MathHelper.IsGreaterArea(UI_Rect__Size, UI_Rect__Max_Size))
-                Internal_Rescale__UI_Rect(UI_Rect__Max_Size);
+            if (currentHypotenuse > newMaxHypotenuse)
+                Internal_Rescale__UI_Rect(newMaxHypotenuse);
         }
         
-        public Vector2 UI_Rect__Min_Size { get; private set; }
-        public void Set__Min_Size__UI_Rect(Vector2 newSize)
+        public float UI_Rect__Min_Hypotenuse { get; private set; }
+        internal void Set__Min_Hypotenuse__UI_Rect(float newMinHypotenuse)
         {
-            newSize = MathHelper.Clamp_Vec_UFloat(newSize);
+            newMinHypotenuse = MathHelper.Clamp__UFloat(newMinHypotenuse);
             
-            UI_Rect__Min_Size = 
-                (MathHelper.IsGreaterArea(UI_Rect__Min_Size, UI_Rect__Max_Size))
-                    ? UI_Rect__Max_Size
-                    : newSize;
+            UI_Rect__Min_Hypotenuse = 
+                (UI_Rect__Max_Hypotenuse < newMinHypotenuse)
+                    ? UI_Rect__Max_Hypotenuse
+                    : newMinHypotenuse;
+
+            float currentHypotenuse = Get__Hypotenuse__UI_Rect();
             
-            if (MathHelper.IsGreaterArea(UI_Rect__Min_Size, UI_Rect__Size))
-                Internal_Rescale__UI_Rect(UI_Rect__Min_Size);
+            if (currentHypotenuse < newMinHypotenuse)
+                Internal_Rescale__UI_Rect(newMinHypotenuse);
         }
         
         public float UI_Rect__INITIAL_WIDTH => UI_Rect__INITIAL_SIZE.X;
@@ -118,58 +135,58 @@ namespace isometricgame.GameEngine.UI
         /// element's own anchors.
         /// </summary>
         public Vector3 UI_Rect__Position { get; private set; }
+        public Vector3 UI_Rect__Position__Without_Local_Origin_Offset
+            => UI_Rect__Position + UI_Rect__Local_Origin_Offset__Internal;
         public Vector3 Get__Position_With_Offset__UI_Rect(Vector3 offset)
             => UI_Rect__Position + offset;
-        
+
+        private Vector3 UI_Rect__Bottom_Left_Bound
+            => 
+                UI_Rect__Position
+                ;
+        private Vector3 Get__Bottom_Left_Bound__With_Offset__UI_Rect(Vector3 offset)
+            => UI_Rect__Bottom_Left_Bound + offset;
+
         /// <summary>
         /// The corner vertically opposed to the origin point.
         /// </summary>
-        public Vector3 UI_Rect__Vertical_Bound
-            => UI_Rect__Position + new Vector3(0, UI_Rect__Height, 0);
-        public Vector3 Get__Vertical_Bound_With_Offset__UI_Rect(Vector3 offset)
-            => UI_Rect__Vertical_Bound + offset;
-        
+        private Vector3 UI_Rect__Top_Left_Bound
+            =>
+                UI_Rect__Position
+                + UI_Rect__Height__As_Vector3;
+        private Vector3 Get__Top_Left_Bound__With_Offset__UI_Rect(Vector3 offset)
+            => UI_Rect__Top_Left_Bound + offset;
+
         /// <summary>
         /// The corner horizontally opposed to the origin point.
         /// </summary>
-        public Vector3 UI_Rect__Horizontal_Bound
-            => UI_Rect__Position + new Vector3(UI_Rect__Width, 0, 0);
-        public Vector3 Get__Horizontal_Bound_With_Offset__UI_Rect(Vector3 offset)
-            => UI_Rect__Horizontal_Bound + offset;
+        private Vector3 UI_Rect__Bottom_Right_Bound
+            => 
+                UI_Rect__Position 
+                + UI_Rect__Width__As_Vector3;
+        private Vector3 Get__Bottom_Right_Bound__With_Offset__UI_Rect(Vector3 offset)
+            => UI_Rect__Bottom_Right_Bound + offset;
         
         /// <summary>
         /// The corner that is both vertically, and horizontally opposed to the origin point.
         /// </summary>
-        public Vector3 UI_Rect__Furthest_Bound
-            => UI_Rect__Position + new Vector3(UI_Rect__Width, UI_Rect__Height, 0);
-        public Vector3 Get__Furthest_Bound_With_Offset__UI_Rect(Vector3 offset)
-            => UI_Rect__Furthest_Bound + offset;
+        private Vector3 UI_Rect__Top_Right_Bound
+            => 
+                UI_Rect__Position
+                + UI_Rect__Size__As_Vector3;
+        private Vector3 Get__Top_Right_Bound__With_Offset__UI_Rect(Vector3 offset)
+            => UI_Rect__Top_Right_Bound + offset;
         
         /// <summary>
         /// The anchor index which is used to offset the local origin of the UI_Rect.
         /// </summary>
-        internal int UI_Rect__Local_Origin__Internal { get; private set; }
-        
+        internal UI_Anchor_Position_Type UI_Rect__Local_Origin_Type__Internal { get; set; }
+
         /// <summary>
         /// The vector quantity which offsets the UI_Rect position post scale/reposition calculations.
         /// </summary>
-        public Vector3 UI_Rect__Local_Origin_Offset__Internal { get; private set; }
-
-        /// <summary>
-        /// Changes the local origin using an anchor within this UI_Rect.
-        /// Not implemented yet.
-        /// </summary>
-        /// <param name="localOriginPosition"></param>
-        internal void Internal_Set__Local_Origin__UI_Rect
-        (
-            UI_Anchor_Position_Type localOriginPosition
-        )
-        {
-            UI_Rect__Local_Origin__Internal =
-                (int) localOriginPosition;
-
-            UI_Rect__Local_Origin_Offset__Internal = _UI_Rect__Anchor_Points[UI_Rect__Local_Origin__Internal];
-        }
+        public Vector3 UI_Rect__Local_Origin_Offset__Internal
+            => _UI_Rect__Anchor_Points[(int) UI_Rect__Local_Origin_Type__Internal];
 
         /// <summary>
         /// Sets the position of the Rect.
@@ -203,41 +220,54 @@ namespace isometricgame.GameEngine.UI
             UI_Anchor_Position_Type originOffset = UI_Anchor_Position_Type.Bottom_Left
             )
         {
-            UI_Rect__Position = new Vector3();
-            Internal_Set__Local_Origin__UI_Rect(originOffset);
+            UI_Rect__Local_Origin_Type__Internal = originOffset;
+            UI_Rect__Position = Vector3.Zero;
 
-            Vector2 usedSize = new Vector2(width, height);
+            Vector2 usedSize = MathHelper.Clamp__Vector2_UFloat(new Vector2(width, height));
 
-            UI_Rect__INITIAL_SIZE = MathHelper.Clamp_Vec_UFloat(usedSize);
+            UI_Rect__INITIAL_SIZE = usedSize;
 
-            UI_Rect__Max_Size = MathHelper.MAX_VECTOR2_SQUARED;
+            UI_Rect__Max_Hypotenuse = float.MaxValue;
 
-            Internal_Rescale__UI_Rect(usedSize);
+            Internal_Resize__UI_Rect(usedSize);
+            Internal_Set__Position__UI_Rect(Vector3.Zero);
         }
         
         internal void Internal_Rescale__UI_Rect
         (
-            Vector2 newSize
+            float hypotenuse
         )
         {
-            Vector2 clampedSize = MathHelper.Clamp_Vec_UFloat(newSize);
-
-            if (MathHelper.IsGreaterArea(clampedSize, UI_Rect__Max_Size))
-                clampedSize = UI_Rect__Max_Size;
-            if (MathHelper.IsGreaterArea(UI_Rect__Min_Size, clampedSize))
-                clampedSize = UI_Rect__Min_Size;
+            float clampedHypotenuse = MathHelper.Clamp__Float
+            (
+                hypotenuse,
+                UI_Rect__Min_Hypotenuse,
+                UI_Rect__Max_Hypotenuse
+            );
             
-            UI_Rect__Size = clampedSize;
+            UI_Rect__Size = UI_Rect__Scaling_Vector * clampedHypotenuse;
             
             Private_Scale__Anchor_Points__UI_Panel();
         }
 
+        internal void Internal_Resize__UI_Rect
+        (
+            Vector2 newSize
+        )
+        {
+            newSize = MathHelper.Clamp__Vector2_UFloat(newSize);
+
+            UI_Rect__Scaling_Vector = newSize.Normalized();
+            
+            Internal_Rescale__UI_Rect(MathHelper.Get__Hypotenuse(newSize));
+        }
+        
         #region Static Anaylsis
 
         private struct UI_Rect__Offset_Bounds_Struct
         {
             public readonly Vector3
-                Position,
+                Origin_Bound,
                 Vertical_Bound,
                 Furthest_Bound,
                 Horizontal_Bound;
@@ -246,11 +276,24 @@ namespace isometricgame.GameEngine.UI
             {
                 Vector3 offset = nullable_Offset ?? Vector3.Zero;
                 
-                Position = rect.Get__Position_With_Offset__UI_Rect(offset);
-                Vertical_Bound = rect.Get__Vertical_Bound_With_Offset__UI_Rect(offset);
-                Furthest_Bound = rect.Get__Furthest_Bound_With_Offset__UI_Rect(offset);
-                Horizontal_Bound = rect.Get__Horizontal_Bound_With_Offset__UI_Rect(offset);
+                Origin_Bound = rect.Get__Bottom_Left_Bound__With_Offset__UI_Rect(offset);
+                Vertical_Bound = rect.Get__Top_Left_Bound__With_Offset__UI_Rect(offset);
+                Furthest_Bound = rect.Get__Top_Right_Bound__With_Offset__UI_Rect(offset);
+                Horizontal_Bound = rect.Get__Bottom_Left_Bound__With_Offset__UI_Rect(offset);
             }
+        }
+
+        public static bool CheckIf__Position_Is_Within_Rect__XY0(UI_Rect rect, Vector3 position)
+        {
+            return 
+                (
+                    MathHelper.CheckIf__Bounded_XY0_Exclusive
+                        (
+                        position,
+                        rect.UI_Rect__Bottom_Left_Bound,
+                        rect.UI_Rect__Top_Right_Bound
+                        )
+                );
         }
         
         public static bool CheckIf__Rects_Overlap
@@ -265,37 +308,37 @@ namespace isometricgame.GameEngine.UI
             
             return 
                 (
-                    MathHelper.IsBounded_XYZ_Exclusive
+                    MathHelper.CheckIf__Bounded_XYZ_Exclusive
                     (
-                        rect1_Offset.Position,
-                        rect2_Offset.Position,
+                        rect1_Offset.Origin_Bound,
+                        rect2_Offset.Origin_Bound,
                         rect2_Offset.Furthest_Bound
                     )
                     ||
-                    MathHelper.IsBounded_XYZ_Exclusive
+                    MathHelper.CheckIf__Bounded_XYZ_Exclusive
                     (
                         rect1_Offset.Vertical_Bound,
-                        rect2_Offset.Position,
+                        rect2_Offset.Origin_Bound,
                         rect2_Offset.Furthest_Bound
                     )
                     ||
-                    MathHelper.IsBounded_XYZ_Exclusive
+                    MathHelper.CheckIf__Bounded_XYZ_Exclusive
                     (
                         rect1_Offset.Furthest_Bound,
-                        rect2_Offset.Position,
+                        rect2_Offset.Origin_Bound,
                         rect2_Offset.Furthest_Bound
                     )
                     ||
-                    MathHelper.IsBounded_XYZ_Exclusive
+                    MathHelper.CheckIf__Bounded_XYZ_Exclusive
                     (
                         rect1_Offset.Horizontal_Bound,
-                        rect2_Offset.Position,
+                        rect2_Offset.Origin_Bound,
                         rect2_Offset.Furthest_Bound
                     )
                 )
                 ||
                 (
-                    rect1_Offset.Position == rect2_Offset.Position
+                    rect1_Offset.Origin_Bound == rect2_Offset.Origin_Bound
                     &&
                     rect1_Offset.Vertical_Bound == rect2_Offset.Vertical_Bound
                     &&
@@ -319,90 +362,35 @@ namespace isometricgame.GameEngine.UI
             
             return 
             (
-                MathHelper.IsBounded_XYZ_Inclusive
+                MathHelper.CheckIf__Bounded_XYZ_Inclusive
                 (
-                    rect1_Offset.Position,
-                    rect2_Offset.Position,
+                    rect1_Offset.Origin_Bound,
+                    rect2_Offset.Origin_Bound,
                     rect2_Offset.Furthest_Bound
                 )
                 &&
-                MathHelper.IsBounded_XYZ_Inclusive
+                MathHelper.CheckIf__Bounded_XYZ_Inclusive
                 (
                     rect1_Offset.Vertical_Bound,
-                    rect2_Offset.Position,
+                    rect2_Offset.Origin_Bound,
                     rect2_Offset.Furthest_Bound
                 )
                 &&
-                MathHelper.IsBounded_XYZ_Inclusive
+                MathHelper.CheckIf__Bounded_XYZ_Inclusive
                 (
                     rect1_Offset.Furthest_Bound,
-                    rect2_Offset.Position,
+                    rect2_Offset.Origin_Bound,
                     rect2_Offset.Furthest_Bound
                 )
                 &&
-                MathHelper.IsBounded_XYZ_Inclusive
+                MathHelper.CheckIf__Bounded_XYZ_Inclusive
                 (
                     rect1_Offset.Horizontal_Bound,
-                    rect2_Offset.Position,
+                    rect2_Offset.Origin_Bound,
                     rect2_Offset.Furthest_Bound
                 )
             );
         }
-
-        public static bool CheckIf__Any_Bounding_Points_Exceed__UI_Rect
-            (
-            UI_Rect subjectRect,
-            Vector3 axes,
-            Vector3 subjectPoint,
-            bool checkGreaterThan
-            )
-        {
-            bool ret = false;
-            
-            For_Each__Bounding_Point__UI_Rect
-                (
-                subjectRect,
-                (p) =>
-                {
-                    Vector3 comparingValues = MathHelper.Hadamard_Product
-                    (
-                        p, axes
-                    );
-                    
-                    ret = ret || 
-                          (
-                              Private_Compare__Bounding_Point_Axis__UI_Rect(comparingValues.X, subjectPoint.X, checkGreaterThan)
-                              ||
-                              Private_Compare__Bounding_Point_Axis__UI_Rect(comparingValues.Y, subjectPoint.Y, checkGreaterThan)
-                              ||
-                              Private_Compare__Bounding_Point_Axis__UI_Rect(comparingValues.Z, subjectPoint.Z, checkGreaterThan)
-                          );
-                }
-            );
-
-            return ret;
-        }
-
-        private static bool Private_Compare__Bounding_Point_Axis__UI_Rect(float comparedAxis, float subjectPoint,
-            bool checkGreaterThan)
-        {
-            return
-                (comparedAxis != 0) &&
-                (
-                    checkGreaterThan
-                        ? comparedAxis < subjectPoint
-                        : comparedAxis > subjectPoint
-                );
-        }
-        
-        public static void For_Each__Bounding_Point__UI_Rect(UI_Rect subjectRect, Action<Vector3> operation)
-        {
-            operation?.Invoke(subjectRect.UI_Rect__Position);
-            operation?.Invoke(subjectRect.UI_Rect__Vertical_Bound);
-            operation?.Invoke(subjectRect.UI_Rect__Furthest_Bound);
-            operation?.Invoke(subjectRect.UI_Rect__Horizontal_Bound);
-        }
-        
         #endregion
     }
 }

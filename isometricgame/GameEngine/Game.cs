@@ -20,6 +20,7 @@ using isometricgame.GameEngine.Systems.Serialization;
 using OpenTK.Graphics;
 using isometricgame.GameEngine.Systems.Input;
 using isometricgame.GameEngine.Tools;
+using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine
 {
@@ -59,8 +60,11 @@ namespace isometricgame.GameEngine
         public double UpdateTime => updateTime;
         #endregion
 
-        public Vector2 Game__Window_Size
+        public Vector2 Get__Window_Size__Game()
             => new Vector2(Width, Height);
+
+        public float Get__Window_Hypotenuse__Game()
+            => MathHelper.Get__Hypotenuse(Width, Height);
         
         private Scene scene;
 

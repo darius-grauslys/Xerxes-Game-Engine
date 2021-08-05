@@ -30,16 +30,15 @@ namespace isometricgame.GameEngine.UI
         //Size
         public Vector2 UI_Element__Size => UI_Element__BOUNDING_RECT.UI_Rect__Size;
 
+        public float UI_Element__Hypotenuse => UI_Element__BOUNDING_RECT.Get__Hypotenuse__UI_Rect();
+        
         public Vector3 UI_Element__Position
-        {
-            get => UI_Element__BOUNDING_RECT.UI_Rect__Position;
-        }
+            => UI_Element__BOUNDING_RECT.UI_Rect__Position;
+        public Vector3 UI_Element__Position_Without_Local_Origin_Offset
+            => UI_Element__BOUNDING_RECT.UI_Rect__Position__Without_Local_Origin_Offset;
         
         public Vector3 Get__Anchor_Position__UI_Element(UI_Anchor_Position_Type position)
             => UI_Element__BOUNDING_RECT.Internal_Get__Anchor_Position__UI_Rect(position);
-        
-        internal readonly UI_Anchor UI_Element__MAJOR_ANCHOR;
-        internal readonly UI_Anchor UI_Element__LESSER_ANCHOR;
         
         internal virtual void Internal_Set__Position__UI_Element(Vector3 position)
         {
@@ -54,21 +53,8 @@ namespace isometricgame.GameEngine.UI
 
         internal UI_Element(Vector2? size = null) 
             : this
-                (
-                new UI_Rect(size), 
-                
-                new UI_Horizontal_Anchor
-                    (
-                    UI_Horizontal_Anchor_Sort_Type.Left,
-                    0,
-                    UI_Anchor_Padding_Type.Constrained__Pixel
-                    ),
-                new UI_Vertical_Anchor
-                    (
-                    UI_Vertical_Anchor_Sort_Type.Top,
-                    0,
-                    UI_Anchor_Padding_Type.Constrained__Pixel
-                    )
+                ( 
+                new UI_Rect(size)
                 )
         {
         }
@@ -77,28 +63,28 @@ namespace isometricgame.GameEngine.UI
         (
             UI_Rect boundingRect,
             
-            UI_Anchor majorAnchor,
-            UI_Anchor lesserAnchor,
-            
             UI_GameObject associated_UIGameObject = null
         )
         {
             UI_Element__Scales = true;
 
             UI_Element__BOUNDING_RECT = boundingRect;
-
-            UI_Element__MAJOR_ANCHOR = majorAnchor;
-
-            UI_Element__LESSER_ANCHOR = lesserAnchor;
             
             Internal_Set__Associated_UI_GameObject__UI_Element(associated_UIGameObject);
         }
+
+        internal void Internal_Resize__UI_Element(Vector2 newSize)
+        {
+            UI_Element__BOUNDING_RECT.Internal_Resize__UI_Rect(newSize);
+            
+            Internal_Scale__UI_Element(UI_Element__Hypotenuse);
+        }
         
-        internal void Internal_Scale__UI_Element(Vector2 newSize)
+        internal void Internal_Scale__UI_Element(float hypotenuse)
         {
             if (UI_Element__Scales)
             {
-                Internal_Handle_Scale__UI_Element(newSize);
+                Internal_Handle_Scale__UI_Element(hypotenuse);
             
                 Handle_Scale__UI_Element();
             
@@ -106,9 +92,9 @@ namespace isometricgame.GameEngine.UI
             }
         }
 
-        internal virtual void Internal_Handle_Scale__UI_Element(Vector2 newSize)
+        internal virtual void Internal_Handle_Scale__UI_Element(float newHypotenuse)
         {
-            UI_Element__BOUNDING_RECT.Internal_Rescale__UI_Rect(newSize);
+            UI_Element__BOUNDING_RECT.Internal_Rescale__UI_Rect(newHypotenuse);
         }
 
         protected virtual void Handle_Scale__UI_Element()
@@ -120,9 +106,7 @@ namespace isometricgame.GameEngine.UI
         {
             return String.Format
             (
-                "UI_Element {{{2}}} [MA: {0}, LA: {1}]", 
-                UI_Element__MAJOR_ANCHOR.UI_Anchor__Sort_Type__Internal,
-                UI_Element__LESSER_ANCHOR.UI_Anchor__Sort_Type__Internal,
+                "UI_Element ({0})", 
                 UI_Element__Position
             );
         }

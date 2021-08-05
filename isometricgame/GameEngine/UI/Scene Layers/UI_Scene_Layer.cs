@@ -20,9 +20,7 @@ namespace isometricgame.GameEngine.UI
         {
             UI_Scene_Layer__Strict_Panel = new UI_Strict_Panel
                 (
-                new UI_Rect(SceneLayer__Window_Size__Game),
-                new UI_Anchor(UI_Anchor_Sort_Type.Left, 0, UI_Anchor_Padding_Type.Constrained__Pixel),
-                new UI_Anchor(UI_Anchor_Sort_Type.Top, 0, UI_Anchor_Padding_Type.Constrained__Pixel)
+                new UI_Rect(SceneLayer__Window_Size__Game)
                 );
 
             UI_Scene_Layer__InputHandler__Internal = 
@@ -73,38 +71,46 @@ namespace isometricgame.GameEngine.UI
                 }
             }
         }
-        
-        protected override void Add__Scene_Object__Scene_Layer(GameObject obj)
+
+        protected virtual void Add__UI_Object__UI_Scene_Layer(UI_GameObject uiGameObject, UI_Anchor bindingAnchor)
         {
-            if (obj is UI_GameObject)
-            {
-                UI_Scene_Layer__Strict_Panel.Add__Element__UI_Strict_Panel(((UI_GameObject)obj).UI_GameObject__UI_RENDER__Internal.UI_Render__ELEMENT);
-            }
-            base.Add__Scene_Object__Scene_Layer(obj);
+            bool success = Add__UI_Element__UI_Scene_Layer
+            (
+                uiGameObject.UI_GameObject__UI_Element__Internal,
+                bindingAnchor
+            );
+            if(success)
+                Add__Scene_Object__Scene_Layer(uiGameObject);
         }
-
-        protected virtual void Add__UI_Element__UI_Scene_Layer(UI_Element element)
+        
+        protected virtual bool Add__UI_Element__UI_Scene_Layer
+        (
+            UI_Element element,
+            UI_Anchor bindingAnchor
+        )
         {
-            UI_Scene_Layer__Strict_Panel.Add__Element__UI_Strict_Panel(element);
+            bool success = UI_Scene_Layer__Strict_Panel.Add__Element__UI_Strict_Panel(element, bindingAnchor);
 
-            if (element is UI_Container)
+            if (success && element is UI_Container)
             {
                 UI_Container container = element as UI_Container;
 
                 foreach (UI_Indexed_Element indexedElement in container.Internal_Get__CHILD_ELEMENTS__UI_Container())
                 {
                     UI_GameObject uiGameObject =
-                        indexedElement.UI_Indexed_Element__Associated_UI_GameObject_Of__WRAPPED_ELEMENT;
+                        indexedElement.UI_Indexed_Element__Associated_UI_GameObject;
                     
                     if(uiGameObject != null)
                         base.Add__Scene_Object__Scene_Layer(uiGameObject);
                 }
             }
+
+            return success;
         }
 
         protected override void Handle_Rescaled__Scene_Layer()
         {
-            UI_Scene_Layer__Strict_Panel?.Internal_Scale__UI_Element(Scene_Layer__Game.Game__Window_Size);
+            UI_Scene_Layer__Strict_Panel?.Internal_Resize__UI_Element(Scene_Layer__Game.Get__Window_Size__Game());
             UI_Scene_Layer__Strict_Panel?.Internal_Set__Position__UI_Element(-0.5f * new Vector3(SceneLayer__Window_Size__Game));
         }
     }

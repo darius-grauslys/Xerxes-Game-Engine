@@ -43,10 +43,7 @@ namespace isometricgame.GameEngine.UI.Components
             UI_Render__Sprite_Alias = spriteAlias;
             UI_Render__ELEMENT = new UI_Element
             (
-                boundingRect ?? new UI_Rect(),
-                
-                majorAnchor ?? new UI_Anchor(UI_Anchor_Sort_Type.Left, 0, UI_Anchor_Padding_Type.Constrained__Pixel),
-                lesserAnchor ?? new UI_Anchor(UI_Anchor_Sort_Type.Top, 0, UI_Anchor_Padding_Type.Constrained__Pixel)
+                boundingRect ?? new UI_Rect()
             );
 
             UI_Render__ELEMENT.Event__Repositioned__UI_Element += Event_Handle__UI_Element__Repositioned;
@@ -85,7 +82,7 @@ namespace isometricgame.GameEngine.UI.Components
 
             Component__Attached_GameObject.renderUnit = UI_Render__Sprite_Library.ExtractRenderUnit(UI_Render__Sprite_Alias); 
             
-            if (MathHelper.IsGreaterArea(sprite.Size, UI_Render__ELEMENT.UI_Element__Size))
+            if (MathHelper.CheckIf__Greater_Area(sprite.Size, UI_Render__ELEMENT.UI_Element__Size))
             {
                 float lowestScale;
                 float scaleWidth = UI_Render__ELEMENT.UI_Element__Width / sprite.SubWidth;

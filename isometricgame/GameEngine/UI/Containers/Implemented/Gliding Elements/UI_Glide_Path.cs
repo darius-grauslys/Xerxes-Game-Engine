@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements;
 using OpenTK;
 using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
-namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
+namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
 {
     public class UI_Glide_Path
     {
         private readonly UI_Indexed_Element _UI_Glide_Path__BOUND_INDEXED_ELEMENT;
 
         internal void Internal_Scale__Bound_Element__UI_Glide_Path()
-            => _UI_Glide_Path__BOUND_INDEXED_ELEMENT.Internal_Scale__UI_Indexed_Element();
+            => _UI_Glide_Path__BOUND_INDEXED_ELEMENT.Internal_Scale__Element__UI_Indexed_Element();
         
         private readonly List<UI_Glide_Path_Node_Wrapper> _UI_Glide_Path__NODE_ROUTE = new List<UI_Glide_Path_Node_Wrapper>();
 
@@ -147,7 +148,7 @@ namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
 
         public void Insert__Glide_Node__UI_Glide_Path(int index, UI_Glide_Node node)
         {
-            index = MathHelper.Clamp_Integer(index, 0, _UI_Glide_Path__NODE_ROUTE.Count);
+            index = MathHelper.Clamp__Integer(index, 0, _UI_Glide_Path__NODE_ROUTE.Count);
             
             _UI_Glide_Path__NODE_ROUTE.Insert(index, new UI_Glide_Path_Node_Wrapper(node));
             Private_Update__Route_Values__UI_Glide_Path();
@@ -215,12 +216,12 @@ namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
                 nodeToGlideOffOf.UI_Glide_Path_Node_Wrapper__Node_Position
                 + (localizedPercentage * offset);
             
-            _UI_Glide_Path__BOUND_INDEXED_ELEMENT.UI_Indexed_Element__WRAPPED_ELEMENT.Internal_Set__Position__UI_Element(position);
+            _UI_Glide_Path__BOUND_INDEXED_ELEMENT.UI_Indexed_Element__ELEMENT.Internal_Set__Position__UI_Element(position);
         }
         
         private float Private_Get__Percentage__Clamped__UI_Glide_Path(float pathPercentage)
         {
-            float percentage = MathHelper.Clamp_UFloat(pathPercentage, 1);
+            float percentage = MathHelper.Clamp__UFloat(pathPercentage, 1);
 
             return percentage;
         }

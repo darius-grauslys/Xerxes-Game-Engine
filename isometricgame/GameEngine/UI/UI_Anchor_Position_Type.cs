@@ -12,8 +12,6 @@
         
         Bottom_Left = 6,
         Bottom_Middle = 7,
-        Bottom_Right = 8,
-        
-        Invalid = -1
+        Bottom_Right = 8
     }
 }

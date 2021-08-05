@@ -56,7 +56,7 @@ namespace isometricgame.GameEngine.Scenes
         
         public Game Scene_Layer__Game => Scene_Layer__Parent_Scene?.Game;
         public Vector2 SceneLayer__Window_Size__Game
-            => Scene_Layer__Game?.Game__Window_Size ?? Vector2.One;
+            => Scene_Layer__Game?.Get__Window_Size__Game() ?? Vector2.One;
         
         /// <summary>
         /// This is only invoked once.

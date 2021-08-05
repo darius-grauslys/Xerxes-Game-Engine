@@ -1,4 +1,4 @@
-﻿namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
+﻿namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
 {
     public enum UI_Glide_Style_Type
     {

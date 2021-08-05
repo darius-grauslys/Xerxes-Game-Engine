@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements;
 using OpenTK;
 using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
-namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
+namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
 {
     public class UI_Glide_Panel : UI_Container
     {
@@ -13,23 +15,13 @@ namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
             (
             UI_Rect boundingRect, 
             
-            UI_Anchor majorAnchor, 
-            UI_Anchor lesserAnchor, 
-            
-            UI_GameObject associatedGameObject = null,
-            
-            params UI_Glide_Node[] childElements
+            UI_GameObject associatedGameObject = null
             ) 
             : base
                 (
                 boundingRect, 
                 
-                majorAnchor, 
-                lesserAnchor, 
-                
-                associatedGameObject,
-                
-                childElements
+                associatedGameObject
                 )
         {
             _UI_Gliding_Panel__GLIDE_PATHS = new List<UI_Glide_Path>();
@@ -38,12 +30,14 @@ namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
         public UI_Glide_Path Define__Glide_Path__UI_Glide_Panel
             (
             UI_GameObject uiGameObject,
+            UI_Anchor bindingAnchor,
             UI_Glide_Style_Type glideStyleType,
             params int[] nodeIndices
             )
             => Define__Glide_Path__UI_Glide_Panel
                 (
                 uiGameObject.UI_GameObject__UI_Element__Internal,
+                bindingAnchor,
                 glideStyleType,
                 nodeIndices
                 );
@@ -51,11 +45,12 @@ namespace isometricgame.GameEngine.UI.Implemented.Gliding_Elements
         public UI_Glide_Path Define__Glide_Path__UI_Glide_Panel
             (
             UI_Element glidingElement, 
+            UI_Anchor bindingAnchor,
             UI_Glide_Style_Type glideStyleType,
             params int[] nodeIndices
             )
         {
-            UI_Indexed_Element indexedGlidingElement = new UI_Indexed_Element(this, glidingElement);
+            UI_Indexed_Element indexedGlidingElement = new UI_Indexed_Element(glidingElement, bindingAnchor, this);
             List<UI_Glide_Node> nodes = new List<UI_Glide_Node>();
             
             foreach(int index in nodeIndices)

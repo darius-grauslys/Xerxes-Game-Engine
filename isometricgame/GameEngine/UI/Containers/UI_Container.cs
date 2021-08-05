@@ -18,10 +18,10 @@ namespace isometricgame.GameEngine.UI
             => _UI_Container__CHILD_ELEMENTS[index];
 
         protected T Get__Element__UI_Container<T>(int index) where T : UI_Element
-            => Get__Indexed_Element__UI_Container(index).UI_Indexed_Element__WRAPPED_ELEMENT as T;
+            => Get__Indexed_Element__UI_Container(index).UI_Indexed_Element__ELEMENT as T;
         
         protected bool Check_If__Index_Within_Bounds__UI_Container(int index)
-            => MathHelper.Obeys_IClamp(index, 0, UI_Container__UI_Element_Count);
+            => MathHelper.CheckIf__Obeys_IClamp(index, 0, UI_Container__UI_Element_Count);
         
         internal List<UI_Indexed_Element> Internal_Get__CHILD_ELEMENTS__UI_Container()
             => _UI_Container__CHILD_ELEMENTS;
@@ -39,27 +39,26 @@ namespace isometricgame.GameEngine.UI
         /// Adds, sorts, and binds scaling values based on container implementation.
         /// </summary>
         /// <param name="childElement"></param>
-        protected void Add__UI_Element__UI_Container(UI_Indexed_Element indexedElement)
+        protected bool Add__UI_Element__UI_Container(UI_Indexed_Element indexedElement)
         {
-            UI_Element childElement = indexedElement.UI_Indexed_Element__WRAPPED_ELEMENT;
+            UI_Element childElement = indexedElement.UI_Indexed_Element__ELEMENT;
             Vector3? sortedPosition = Private_Attempt__Sort__UI_Container(indexedElement);
+
+            bool success = sortedPosition != null;
             
-            if (sortedPosition != null)
+            if (success)
             {
                 childElement.Internal_Set__Position__UI_Element((Vector3) sortedPosition);
                 _UI_Container__CHILD_ELEMENTS.Add(indexedElement);
                 Private_Bind__Relative_Position_To_Anchor__UI_Container(indexedElement);
             }
+
+            return success;
         }
 
         private Vector3? Private_Attempt__Sort__UI_Container(UI_Indexed_Element indexedElementToSort)
         {
-            UI_Element elementToSort = indexedElementToSort.UI_Indexed_Element__WRAPPED_ELEMENT;
-
-            UI_Anchor majorAnchor = elementToSort.UI_Element__MAJOR_ANCHOR;
-            UI_Anchor lesserAnchor = elementToSort.UI_Element__LESSER_ANCHOR; 
-
-            Vector3 sortedPosition = 
+            Vector3 sortedPosition =
                 Handle_Get__Initial_Position_For_Element__UI_Container(indexedElementToSort)
                 + Get__Offset_Against_Anchors__UI_Container(indexedElementToSort);
             Vector3? potentialPosition = null;
@@ -69,7 +68,7 @@ namespace isometricgame.GameEngine.UI
                 potentialPosition =
                     Private_Sort__UI_Element_Along_Anchor__UI_Container
                     (
-                        majorAnchor.UI_Anchor__Sort_Type__Internal,
+                        indexedElementToSort.UI_Indexed_Element__Major_Sort,
                         indexedElementToSort,
                         sortedPosition
                     );
@@ -81,7 +80,7 @@ namespace isometricgame.GameEngine.UI
                 potentialPosition =
                     Private_Sort__UI_Element_Along_Anchor__UI_Container
                     (
-                        lesserAnchor.UI_Anchor__Sort_Type__Internal,
+                        indexedElementToSort.UI_Indexed_Element__Minor_Sort,
                         indexedElementToSort,
                         sortedPosition
                     );
@@ -108,28 +107,21 @@ namespace isometricgame.GameEngine.UI
             UI_Indexed_Element indexedElementToSort)
         {
             Vector3 basePosition =
-                Get__Anchor_Position__UI_Element(indexedElementToSort.Get__Anchor_Position_Type__UI_Indexed_Element());
+                Get__Anchor_Position__UI_Element(indexedElementToSort.UI_Indexed_Element__Anchor_Position_Type);
 
             return basePosition;
         }
 
         private Vector3 Get__Offset_Against_Anchors__UI_Container(UI_Indexed_Element indexedElement)
         {
-            UI_Element element = indexedElement.UI_Indexed_Element__WRAPPED_ELEMENT;
-
-            UI_Anchor majorAnchor = element.UI_Element__MAJOR_ANCHOR;
-            UI_Anchor lesserAnchor = element.UI_Element__LESSER_ANCHOR;
-
-            Vector3 majorOffset =
-                Handle_Get__Offset_Against_Anchor__UI_Container(majorAnchor.UI_Anchor__Sort_Type__Internal,
-                    element.UI_Element__BOUNDING_RECT);
-
-            Vector3 lesserOffset =
-                Handle_Get__Offset_Against_Anchor__UI_Container(lesserAnchor.UI_Anchor__Sort_Type__Internal,
-                    element.UI_Element__BOUNDING_RECT);
-
-            Vector3 offset = majorOffset + lesserOffset +
-                             element.UI_Element__BOUNDING_RECT.UI_Rect__Local_Origin_Offset__Internal;
+            UI_Element element = indexedElement.UI_Indexed_Element__ELEMENT;
+            
+            Vector3 offset = 
+                Handle_Get__Offset_Against_Anchor__UI_Container
+                (
+                    indexedElement.UI_Indexed_Element__Anchor_Position_Type,
+                    element.UI_Element__BOUNDING_RECT
+                );
 
             return offset;
         }
@@ -141,19 +133,33 @@ namespace isometricgame.GameEngine.UI
         /// <returns></returns>
         protected virtual Vector3 Handle_Get__Offset_Against_Anchor__UI_Container
         (
-            UI_Anchor_Sort_Type anchorSortType,
+            UI_Anchor_Position_Type anchorPositionType,
             UI_Rect elementRect
         )
         {
-            switch (anchorSortType)
+            Vector3 ret = Vector3.Zero;
+            
+            switch (anchorPositionType)
             {
-                case UI_Anchor_Sort_Type.Top:
-                    return -elementRect.UI_Rect__Height__As_Vector3;
-                case UI_Anchor_Sort_Type.Right:
-                    return -elementRect.UI_Rect__Width__As_Vector3;
-                default:
-                    return Vector3.Zero;
+                case UI_Anchor_Position_Type.Top_Left:
+                case UI_Anchor_Position_Type.Top_Middle:
+                case UI_Anchor_Position_Type.Top_Right:
+                    ret = -elementRect.UI_Rect__Height__As_Vector3
+                        + new Vector3(0, elementRect.UI_Rect__Local_Origin_Offset__Internal.Y, 0);
+                    break;
             }
+
+            switch (anchorPositionType)
+            {
+                case UI_Anchor_Position_Type.Top_Right:
+                case UI_Anchor_Position_Type.Middle_Right:
+                case UI_Anchor_Position_Type.Bottom_Right:
+                    ret += -elementRect.UI_Rect__Width__As_Vector3
+                        + new Vector3(elementRect.UI_Rect__Local_Origin_Offset__Internal.X, 0, 0);
+                    break;
+            }
+
+            return ret;
         }
 
         /// <summary>
@@ -166,7 +172,7 @@ namespace isometricgame.GameEngine.UI
             Vector3 sortedPosition
         )
         {
-            UI_Element element = indexedElementToSort.UI_Indexed_Element__WRAPPED_ELEMENT;
+            UI_Element element = indexedElementToSort.UI_Indexed_Element__ELEMENT;
             
             return UI_Rect.CheckIf__Rect_Is_Bound_By_Rect
             (
@@ -183,13 +189,13 @@ namespace isometricgame.GameEngine.UI
             Vector3 sortedPosition
             )
         {
-            UI_Element elementToSort = containedChildIndexedElement.UI_Indexed_Element__WRAPPED_ELEMENT;
+            UI_Element elementToSort = containedChildIndexedElement.UI_Indexed_Element__ELEMENT;
             Vector3? anchorSortedPosition = sortedPosition;
             bool hasBeenAligned = false;
 
             foreach (UI_Indexed_Element indexedChildElement in _UI_Container__CHILD_ELEMENTS)
             {
-                UI_Element childElement = indexedChildElement.UI_Indexed_Element__WRAPPED_ELEMENT;
+                UI_Element childElement = indexedChildElement.UI_Indexed_Element__ELEMENT;
                 
                 if
                 (
@@ -231,26 +237,26 @@ namespace isometricgame.GameEngine.UI
         {
             switch (anchorSortType)
             {
-                //Moves right of the compared element.
-                case UI_Anchor_Sort_Type.Left:
-                    return
-                        rect_OfOverlapping_ChildElement.UI_Rect__Position +
-                        rect_OfOverlapping_ChildElement.UI_Rect__Width__As_Vector3;
                 //Moves left of the compared element.
-                case UI_Anchor_Sort_Type.Right:
+                case UI_Anchor_Sort_Type.Left:
                     return 
                         rect_OfOverlapping_ChildElement.UI_Rect__Position -
                         rect_OfElement_ToSort.UI_Rect__Width__As_Vector3;
-                //Moves down of the compared element.
-                case UI_Anchor_Sort_Type.Top:
-                    return 
-                        rect_OfOverlapping_ChildElement.UI_Rect__Position - 
-                        rect_OfElement_ToSort.UI_Rect__Height__As_Vector3;
+                //Moves right of the compared element.
+                case UI_Anchor_Sort_Type.Right:
+                    return
+                        rect_OfOverlapping_ChildElement.UI_Rect__Position +
+                        rect_OfOverlapping_ChildElement.UI_Rect__Width__As_Vector3;
                 //Moves up of the compared element.
-                case UI_Anchor_Sort_Type.Bottom:
+                case UI_Anchor_Sort_Type.Top:
                     return
                         rect_OfOverlapping_ChildElement.UI_Rect__Position +
                         rect_OfOverlapping_ChildElement.UI_Rect__Height__As_Vector3;
+                //Moves down of the compared element.
+                case UI_Anchor_Sort_Type.Bottom:
+                    return 
+                        rect_OfOverlapping_ChildElement.UI_Rect__Position - 
+                        rect_OfElement_ToSort.UI_Rect__Height__As_Vector3;
                 default:
                     return Vector3.Zero; //The Middle anchor has no sense of direction.
             }
@@ -260,7 +266,7 @@ namespace isometricgame.GameEngine.UI
         {
             Vector3 relativePosition = Handle_Get__Relative_Position_To_Anchor__UI_Container(indexedElement);
             
-            indexedElement.Internal_Bind__Initial_Position_Relative_To_Anchor(relativePosition);
+            indexedElement.Set__Relative_Position_From_Anchor__UI_Indexed_Element(relativePosition);
         }
 
         /// <summary>
@@ -270,12 +276,12 @@ namespace isometricgame.GameEngine.UI
         /// <returns></returns>
         protected virtual Vector3 Handle_Get__Relative_Position_To_Anchor__UI_Container(UI_Indexed_Element indexedElement)
         {
-            UI_Element element = indexedElement.UI_Indexed_Element__WRAPPED_ELEMENT;
-            UI_Anchor_Position_Type positionType = indexedElement.Get__Anchor_Position_Type__UI_Indexed_Element();
+            UI_Element element = indexedElement.UI_Indexed_Element__ELEMENT;
+            UI_Anchor_Position_Type positionType = indexedElement.UI_Indexed_Element__Anchor_Position_Type;
 
             Vector3 anchorPoint = Get__Anchor_Position__UI_Element(positionType);
 
-            Vector3 relativePosition_PriorToSizeOffset = element.UI_Element__Position - anchorPoint;
+            Vector3 relativePosition_PriorToSizeOffset = element.UI_Element__Position_Without_Local_Origin_Offset - anchorPoint;
 
             Vector3 relativePosition = relativePosition_PriorToSizeOffset - Get__Offset_Against_Anchors__UI_Container(indexedElement);
 
@@ -289,27 +295,25 @@ namespace isometricgame.GameEngine.UI
 
             foreach (UI_Indexed_Element elementContainer in _UI_Container__CHILD_ELEMENTS)
             {
-                UI_Element element = elementContainer.UI_Indexed_Element__WRAPPED_ELEMENT;
+                UI_Element element = elementContainer.UI_Indexed_Element__ELEMENT;
                 element.Internal_Set__Position__UI_Element
                 (
-                    Get__Anchor_Position__UI_Element(elementContainer.Get__Anchor_Position_Type__UI_Indexed_Element())
-                    + elementContainer.UI_Indexed_Element__Initial_Relative_Position_To_Anchor
+                    Get__Anchor_Position__UI_Element(elementContainer.UI_Indexed_Element__Anchor_Position_Type)
+                    + elementContainer.UI_Indexed_Element__Relative_Position_From_Anchor
                     + Get__Offset_Against_Anchors__UI_Container(elementContainer)
                     + position
                 );
             }
         }
-
-        internal override void Internal_Handle_Scale__UI_Element(Vector2 newSize)
+        
+        internal override void Internal_Handle_Scale__UI_Element(float newHypotenuse)
         {
-            Vector2 oldPanelSize = UI_Element__Size;
-            base.Internal_Handle_Scale__UI_Element(newSize);
+            base.Internal_Handle_Scale__UI_Element(newHypotenuse);
 
             foreach (UI_Indexed_Element elementContainer in _UI_Container__CHILD_ELEMENTS)
             {
                 Private_Scale__Child_Element_Size__UI_Container(elementContainer);
                 Private_Scale__Child_Element_Position__UI_Container(elementContainer);
-                Private_Scale__Child_Element_Anchors__UI_Container(elementContainer);
             }
         }
 
@@ -317,7 +321,7 @@ namespace isometricgame.GameEngine.UI
         {
             Vector3 position = Handle_Scale__Child_Element_Position__UI_Container(indexedElement);
 
-            UI_Element element = indexedElement.UI_Indexed_Element__WRAPPED_ELEMENT;
+            UI_Element element = indexedElement.UI_Indexed_Element__ELEMENT;
             element.Internal_Set__Position__UI_Element(position);
         }
 
@@ -325,8 +329,13 @@ namespace isometricgame.GameEngine.UI
             UI_Indexed_Element indexedElement)
         {
             Vector3 elementPosition =
-                    Get__Anchor_Position__UI_Element(indexedElement.Get__Anchor_Position_Type__UI_Indexed_Element())
-                    + indexedElement.UI_Indexed_Element__Initial_Relative_Position_To_Anchor
+                    Get__Anchor_Position__UI_Element(indexedElement.UI_Indexed_Element__Anchor_Position_Type)
+                    + indexedElement.UI_Indexed_Element__Relative_Position_From_Anchor
+                    + Handle_Get__Offset_Against_Anchor__UI_Container
+                    (
+                        indexedElement.UI_Indexed_Element__Anchor_Position_Type,
+                        indexedElement.UI_Indexed_Element__ELEMENT.UI_Element__BOUNDING_RECT
+                    )
                 ;
 
             return elementPosition;
@@ -334,9 +343,9 @@ namespace isometricgame.GameEngine.UI
         
         private void Private_Scale__Child_Element_Size__UI_Container(UI_Indexed_Element indexedElement)
         {
-            Vector2? newSize = Handle_Scale__Child_Element_Size__UI_Container(indexedElement);
+            float? newHypotenuse = Handle_Scale__Determine_Child_Hypotenuse__UI_Container(indexedElement);
             
-            indexedElement.Internal_Scale__UI_Indexed_Element(newSize);
+            indexedElement.Internal_Scale__Element__UI_Indexed_Element(newHypotenuse);
         }
         
         /// <summary>
@@ -344,54 +353,24 @@ namespace isometricgame.GameEngine.UI
         /// </summary>
         /// <param name="indexedElement"></param>
         /// <returns></returns>
-        protected virtual Vector2? Handle_Scale__Child_Element_Size__UI_Container(UI_Indexed_Element indexedElement)
+        protected virtual float? Handle_Scale__Determine_Child_Hypotenuse__UI_Container(UI_Indexed_Element indexedElement)
         {
             return null;
-        }
-
-        private void Private_Scale__Child_Element_Anchors__UI_Container(UI_Indexed_Element indexedElement)
-        {
-            Handle_Scale__Child_Element_Anchors__UI_Container(indexedElement);
-        }
-        
-        protected virtual void Handle_Scale__Child_Element_Anchors__UI_Container(
-            UI_Indexed_Element indexedElement)
-        {
-            UI_Element element = indexedElement.UI_Indexed_Element__WRAPPED_ELEMENT;
-            UI_Anchor anchorMajor = element.UI_Element__MAJOR_ANCHOR;
-            UI_Anchor anchorLesser = element.UI_Element__LESSER_ANCHOR;
-            
-            anchorMajor.UI_Anchor__Anchor_Padding__Internal.Internal_Scale__Float_Buffer__UI_Anchor_Padding(UI_Element__Size);
-            anchorLesser.UI_Anchor__Anchor_Padding__Internal.Internal_Scale__Float_Buffer__UI_Anchor_Padding(UI_Element__Size);
         }
         
         public UI_Container
             (
             UI_Rect boundingRect,
             
-            UI_Anchor majorAnchor,
-            UI_Anchor lesserAnchor,
-            
-            UI_GameObject associatedGameObject = null,
-            
-            params UI_Element[] childElements
+            UI_GameObject associatedGameObject = null
             )
         : base 
             (
             boundingRect,
             
-            majorAnchor,
-            lesserAnchor,
-            
             associatedGameObject
             )
         {
-            foreach(UI_Element element in childElements)
-            {
-                UI_Indexed_Element indexedElement = new UI_Indexed_Element(this, element);
-                
-                Add__UI_Element__UI_Container(indexedElement);
-            }
         }
     }
 }

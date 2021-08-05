@@ -24,7 +24,7 @@ namespace isometricgame.GameEngine.Rendering
             get => Color.FromArgb((int)(color.W * 255), (int)(color.X * 255), (int)(color.Y * 255), (int)(color.Z * 255));
             set
             {
-                color = MathHelper.Color_To_Vec4(value);
+                color = MathHelper.Convert__Color_To_Vec4(value);
             }
         }
 

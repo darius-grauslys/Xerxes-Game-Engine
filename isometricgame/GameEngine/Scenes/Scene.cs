@@ -15,7 +15,7 @@ namespace isometricgame.GameEngine.Scenes
     {
         public Game Game { get; private set; }
         public Vector2 Scene__Window_Size__Game
-            => Game.Game__Window_Size;
+            => Game.Get__Window_Size__Game();
         
         internal List<Scene_Layer> disabledLayers = new List<Scene_Layer>();
         internal List<Scene_Layer> sceneLayers = new List<Scene_Layer>();

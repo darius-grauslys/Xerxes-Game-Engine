@@ -108,7 +108,7 @@ namespace isometricgame.GameEngine.WorldSpace.Generators.PerlinNoise
 
         private float GetZ(int x, int y)
         {
-            int zSeed = (int)MathHelper.MapCoordsToUniqueFloat(x,y);
+            int zSeed = (int)MathHelper.Map__Coordinates_To_Unique_Float(x,y);
             Random rand = new Random(zSeed + seed);
             return rand.Next(100) / 100f;
         }

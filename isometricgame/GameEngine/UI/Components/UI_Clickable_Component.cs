@@ -24,9 +24,6 @@ namespace isometricgame.GameEngine.UI.Components
 
         private UI_Rect UI_Clickable__Bounding_Rect
             => UI_Clickable__Render_Element?.UI_Element__BOUNDING_RECT;
-        
-        private Vector3? UI_Clickable__Furthest_Bound 
-            => UI_Clickable__Bounding_Rect?.UI_Rect__Furthest_Bound;
 
         public UI_Clickable_Component(Action<FrameArgument> clickedHandler = null)
         {
@@ -49,20 +46,11 @@ namespace isometricgame.GameEngine.UI.Components
 
         private void Private_Resolve__Click__Clickable_Component(UI_MouseButton_Pulse_FrameArgument args)
         {
-            Vector3? clickablePosition = UI_Clickable__Position;
-            Vector3? furthestBound = UI_Clickable__Furthest_Bound;
-
-            if (clickablePosition == null || furthestBound == null)
-                return;
+            Vector3 clickedPosition = args.UI_MouseButton_Pulse__Mouse_Position;
             
-            //UI_Clickable__Handler_Clicked?.Invoke(args);
-            if (
-                MathHelper.IsBounded_XY0_Exclusive
-                (
-                    args.UI_MouseButton_Pulse__Mouse_Position,
-                    (Vector3) UI_Clickable__Position,
-                    (Vector3) UI_Clickable__Furthest_Bound
-                )
+            if 
+            (
+                UI_Rect.CheckIf__Position_Is_Within_Rect__XY0(UI_Clickable__Bounding_Rect, clickedPosition)
             )
             {
                 args.Consume__UI_Pulse__UI_Pulse_FrameArgument();

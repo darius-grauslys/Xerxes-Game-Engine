@@ -1,5 +1,4 @@
-﻿using System;
-using isometricgame.GameEngine.Systems;
+﻿using isometricgame.GameEngine.Systems;
 using isometricgame.GameEngine.Tools;
 using OpenTK;
 using OpenTK.Graphics.ES10;
@@ -7,108 +6,116 @@ using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine.UI
 {
+    /// <summary>
+    /// Describes a contract for Containers on how to sort an indexed element.
+    /// </summary>
     public class UI_Anchor
     {
-        internal UI_Anchor_Sort_Type UI_Anchor__Sort_Type__Internal { get; private set; }
-        internal UI_Anchor_Padding UI_Anchor__Anchor_Padding__Internal { get; private set; }
-        
-        internal void Internal_Scale__Anchor_Paddings__UI_Anchor(Vector2 containerSize)
+        public readonly UI_Anchor_Position_Type UI_Anchor__POSITION_TYPE;
+
+        public readonly UI_Anchor_Sort_Type UI_Anchor__MAJOR_SORT_TYPE;
+        public readonly UI_Anchor_Sort_Type UI_Anchor__MINOR_SORT_TYPE;
+
+        public UI_Anchor()
+            : this 
+            (
+                UI_Anchor_Position_Type.Top_Left,
+                UI_Anchor_Sort_Type.Right,
+                UI_Anchor_Sort_Type.Bottom
+            )
+        {}
+
+        public UI_Anchor
+        (
+            UI_Anchor_Position_Type positionType = UI_Anchor_Position_Type.Top_Left,
+            UI_Horizontal_Anchor_Sort_Type majorSortType = UI_Horizontal_Anchor_Sort_Type.Right,
+            UI_Vertical_Anchor_Sort_Type minorSortType = UI_Vertical_Anchor_Sort_Type.Bottom
+        )
+            : this
+            (
+                positionType,
+                Internalize__External_Sort_Type(majorSortType, positionType),
+                Internalize__External_Sort_Type(minorSortType, positionType)
+            )
         {
-            UI_Anchor__Anchor_Padding__Internal.Internal_Scale__Float_Buffer__UI_Anchor_Padding(containerSize);
+            
+        }
+        
+        public UI_Anchor
+        (
+            UI_Anchor_Position_Type positionType = UI_Anchor_Position_Type.Top_Left,
+            UI_Vertical_Anchor_Sort_Type majorSortType = UI_Vertical_Anchor_Sort_Type.Bottom,
+            UI_Horizontal_Anchor_Sort_Type minorSortType = UI_Horizontal_Anchor_Sort_Type.Right
+        )
+            : this
+            (
+                positionType,
+                Internalize__External_Sort_Type(majorSortType, positionType),
+                Internalize__External_Sort_Type(minorSortType, positionType)
+            )
+        {
+            
         }
         
         internal UI_Anchor
         (
-            UI_Anchor_Sort_Type uiAnchorSortTypeInternal,
-            float paddingValue,
-            UI_Anchor_Padding_Type paddingType
+            UI_Anchor_Position_Type positionType = UI_Anchor_Position_Type.Top_Left,
+            UI_Anchor_Sort_Type majorSortType = UI_Anchor_Sort_Type.Right,
+            UI_Anchor_Sort_Type minorSortType = UI_Anchor_Sort_Type.Bottom
         )
         {
-            UI_Anchor__Sort_Type__Internal = uiAnchorSortTypeInternal;
-            UI_Anchor__Anchor_Padding__Internal = new UI_Anchor_Padding(paddingValue, paddingType, uiAnchorSortTypeInternal);
+            UI_Anchor__POSITION_TYPE = positionType;
+            UI_Anchor__MAJOR_SORT_TYPE = majorSortType;
+            UI_Anchor__MINOR_SORT_TYPE = minorSortType;
         }
-        
-        internal static UI_Anchor_Sort_Type Get__Internal_Sort_Type
-        (
-            UI_Horizontal_Anchor_Sort_Type horizontalAnchorSortType
-        )
-            => (UI_Anchor_Sort_Type) ((int) horizontalAnchorSortType);
-        internal static UI_Anchor_Sort_Type Get__Internal_Sort_Type
-        (
-            UI_Vertical_Anchor_Sort_Type verticalAnchorSortType
-        )
-            => (UI_Anchor_Sort_Type) ((int) verticalAnchorSortType);
 
-        internal static UI_Anchor_Position_Type Get__Internal_Position__From__One_Internal_Sort
+        internal static UI_Anchor_Sort_Type Internalize__External_Sort_Type
         (
-            UI_Anchor_Sort_Type internalSort
+            UI_Horizontal_Anchor_Sort_Type sortType,
+            UI_Anchor_Position_Type positionType
         )
         {
-            switch (internalSort)
+            switch (positionType)
             {
-                case UI_Anchor_Sort_Type.Left:
-                case UI_Anchor_Sort_Type.Top:    
-                    return UI_Anchor_Position_Type.Top_Left;
+                case UI_Anchor_Position_Type.Top_Left:
+                case UI_Anchor_Position_Type.Middle_Left:
+                case UI_Anchor_Position_Type.Bottom_Left:    
+                    sortType = UI_Horizontal_Anchor_Sort_Type.Right;
                     break;
-                case UI_Anchor_Sort_Type.Right:
-                    return UI_Anchor_Position_Type.Top_Right;
+                case UI_Anchor_Position_Type.Top_Right:
+                case UI_Anchor_Position_Type.Middle_Right:
+                case UI_Anchor_Position_Type.Bottom_Right:
+                    sortType = UI_Horizontal_Anchor_Sort_Type.Left;
                     break;
-                case UI_Anchor_Sort_Type.Bottom:
-                    return UI_Anchor_Position_Type.Bottom_Left;
             }
-
-            return UI_Anchor_Position_Type.Invalid;
-        }
-        
-        internal static UI_Anchor_Position_Type Get__Internal_Position__From__Two_Internal_Sorts
-        (
-            UI_Anchor_Sort_Type internalSortMajor,
-            UI_Anchor_Sort_Type internalSortLesser
-        )
-        {
-            UI_Anchor_Position_Type position_1 = Get__Internal_Position__From__One_Internal_Sort(internalSortMajor);
-            UI_Anchor_Position_Type position_2 = Get__Internal_Position__From__One_Internal_Sort(internalSortLesser);
-
-            if (position_1 == UI_Anchor_Position_Type.Invalid ||
-                position_2 == UI_Anchor_Position_Type.Invalid)
-                return UI_Anchor_Position_Type.Invalid;
-
-            return Merge__Internal_Position_Types(position_1, position_2);
-        }
-
-        internal static UI_Anchor_Position_Type Get__Internal_Position__From__Two_External_Sorts
-        (
-            UI_Horizontal_Anchor_Sort_Type sortType_1,
-            UI_Vertical_Anchor_Sort_Type sortType_2
-        )
-        {
-            return Get__Internal_Position__From__Two_Internal_Sorts
-            (
-                Get__Internal_Sort_Type(sortType_1),
-                Get__Internal_Sort_Type(sortType_2)
-            );
-        }
-        
-        internal static UI_Anchor_Position_Type Merge__Internal_Position_Types
-        (
-            UI_Anchor_Position_Type internalPosition_1,
-            UI_Anchor_Position_Type internalPosition_2
-        )
-        {
-            int sum = (int) internalPosition_1 + (int) internalPosition_2;
-
-            if
-            (
-                !MathHelper.Obeys_IClamp
-                (
-                    sum,
-                    (int) UI_Anchor_Position_Type.Top_Left,
-                    (int) UI_Anchor_Position_Type.Bottom_Right
-                )
-            )
-                return UI_Anchor_Position_Type.Invalid;
             
-            return (UI_Anchor_Position_Type) (sum);
+            return Internalize__External_Sort_Type((int) sortType);
         }
+
+        internal static UI_Anchor_Sort_Type Internalize__External_Sort_Type
+        (
+            UI_Vertical_Anchor_Sort_Type sortType,
+            UI_Anchor_Position_Type positionType
+        )
+        {
+            switch (positionType)
+            {
+                case UI_Anchor_Position_Type.Top_Left:
+                case UI_Anchor_Position_Type.Top_Middle:
+                case UI_Anchor_Position_Type.Top_Right:
+                    sortType = UI_Vertical_Anchor_Sort_Type.Bottom;
+                    break;
+                case UI_Anchor_Position_Type.Bottom_Left:
+                case UI_Anchor_Position_Type.Bottom_Middle:
+                case UI_Anchor_Position_Type.Bottom_Right:
+                    sortType = UI_Vertical_Anchor_Sort_Type.Top;
+                    break;
+            }
+            
+            return Internalize__External_Sort_Type((int) sortType);
+        }
+
+        private static UI_Anchor_Sort_Type Internalize__External_Sort_Type(int value)
+            => (UI_Anchor_Sort_Type) value;
     }
 }

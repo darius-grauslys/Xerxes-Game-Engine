@@ -17,7 +17,7 @@ namespace isometricgame.GameEngine
             set => GameObject_World__Transform.Position = value;
         }
 
-        internal World_Space_GameObject
+        public World_Space_GameObject
             (
             Scene_Layer sceneLayer,
             Vector3 position, 
