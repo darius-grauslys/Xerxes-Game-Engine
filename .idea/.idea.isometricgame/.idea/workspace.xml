@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bd47453d-d24b-4651-91da-2a7e5bb4eeb6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/isometricgame/GameEngine/Tools/MathHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/GameEngine/Tools/MathHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/Gliding Elements/UI_Glide_Panel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/Gliding Elements/UI_Glide_Panel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/UI_Strict_Panel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/UI_Strict_Panel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/UI_Container.cs" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/UI_Container.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/UI_Indexed_Element.cs" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/UI_Indexed_Element.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Element.cs" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Element.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Rect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Rect.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/bin/Debug/isometricgame.dll" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/bin/Debug/isometricgame.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/bin/Debug/isometricgame.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/bin/Debug/isometricgame.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/obj/Debug/isometricgame.dll" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/obj/Debug/isometricgame.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isometricgame/obj/Debug/isometricgame.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/isometricgame/obj/Debug/isometricgame.pdb" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/CFCA3FE3-E2D3-4D58-8875-9FCFB1F85B70/01/5401a72c/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <changedPaths>
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Panel.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Element_Container.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Container_Indexed_Element.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/UI_Gliding_Panel.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Panel/UI_Indexed_Glide_Node.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Anchor_Padding_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Panel/UI_Glide_Style_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/GameObject_UI.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Horizontal_Anchor_Position_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Vertical_Anchor_Position_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Panel/UI_Glide_Node.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Horizontal_Anchor.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Vertical_Anchor.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Panel/UI_Glide_Path.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Panel/UI_Glide_Path_Node_Wrapper.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Panel/UI_Gliding_Panel.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Anchor_Padding.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Panel/UI_Glide_Panel.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/GameObject_UI.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/World_GameObject.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Indexed_Element.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Scene_Layer.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Container.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Strict_Panel.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Elements/UI_Glide_Panel.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/Gliding Elements/UI_Glide_Path.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Implemented/UI_Anchor_Position_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Anchor_Position_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Vertical_Anchor_Sort_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Horizontal_Anchor_Sort_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Anchor_Sort_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/Gliding Elements/UI_Glide_Path_Node_Wrapper.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/Gliding Elements/UI_Glide_Style_Type.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_GameObject.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Components/UI_Render_Component.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/Gliding Elements/UI_Glide_Node.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/Game.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/Gliding Elements/UI_Glide_Path.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/Scenes/Scene.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/Scenes/Scene_Layer.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Components/UI_Clickable_Component.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/World_Space_GameObject.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Anchor.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Scene Layers/UI_Scene_Layer.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/UI_Strict_Panel.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Rect.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/Tools/MathHelper.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/UI_Element.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/UI_Container.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/UI_Indexed_Element.cs" />
+      <option value="$PROJECT_DIR$/isometricgame/GameEngine/UI/Containers/Implemented/Gliding Elements/UI_Glide_Panel.cs" />
+    </changedPaths>
+  </component>
+  <component name="ProjectId" id="1uOmHLk3RtARg3KEttAUqw8Tpyl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bd47453d-d24b-4651-91da-2a7e5bb4eeb6" name="Default Changelist" comment="" />
+      <created>1624544921862</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1624544921862</updated>
+      <workItem from="1624544935418" duration="9465000" />
+      <workItem from="1624644779838" duration="3472000" />
+      <workItem from="1624711588626" duration="2922000" />
+      <workItem from="1624897737746" duration="13812000" />
+      <workItem from="1624973940081" duration="20173000" />
+      <workItem from="1625057065232" duration="14108000" />
+      <workItem from="1625145447979" duration="6839000" />
+      <workItem from="1625836260311" duration="9823000" />
+      <workItem from="1626013841885" duration="8726000" />
+      <workItem from="1626105814086" duration="15055000" />
+      <workItem from="1626184389830" duration="18436000" />
+      <workItem from="1626216956143" duration="4466000" />
+      <workItem from="1626272909457" duration="17385000" />
+      <workItem from="1626452901438" duration="11550000" />
+      <workItem from="1626535504808" duration="2619000" />
+      <workItem from="1626556165802" duration="5935000" />
+      <workItem from="1626579091778" duration="308000" />
+      <workItem from="1626615078626" duration="14396000" />
+      <workItem from="1626703524035" duration="7260000" />
+      <workItem from="1626790898199" duration="1766000" />
+      <workItem from="1626793123693" duration="11247000" />
+      <workItem from="1626877490448" duration="4751000" />
+      <workItem from="1627310353895" duration="601000" />
+      <workItem from="1628087976421" duration="26476000" />
+      <workItem from="1628168999454" duration="13167000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>
