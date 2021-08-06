@@ -81,7 +81,9 @@
     <Compile Include="GameEngine\UI\Containers\UI_Container.cs" />
     <Compile Include="GameEngine\UI\Containers\UI_Indexed_Element.cs" />
     <Compile Include="GameEngine\UI\Scene Layers\UI_Scene_Layer.cs" />
+    <Compile Include="GameEngine\UI\UI_Anchor_Offset_Type.cs" />
     <Compile Include="GameEngine\UI\UI_Anchor_Position_Type.cs" />
+    <Compile Include="GameEngine\UI\UI_Anchor_Sort_Style.cs" />
     <Compile Include="GameEngine\UI\UI_Anchor_Sort_Type.cs" />
     <Compile Include="GameEngine\UI\UI_Horizontal_Anchor_Sort_Type.cs" />
     <Compile Include="GameEngine\UI\UI_Vertical_Anchor_Sort_Type.cs" />

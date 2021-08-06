@@ -8,7 +8,7 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
         public readonly UI_Glide_Node UI_Glide_Path_Node_Wrapper__WRAPPED_NODE;
 
         public Vector3 UI_Glide_Path_Node_Wrapper__Node_Position
-            => UI_Glide_Path_Node_Wrapper__WRAPPED_NODE.UI_Element__Position;
+            => UI_Glide_Path_Node_Wrapper__WRAPPED_NODE.Get__Position_In_UISpace__UI_Element();
         
         public UI_Glide_Path_Node_Wrapper UI_Glide_Path_Node_Wrapper__Proceeding_Node { get; private set; }
         public bool UI_Glide_Path_Node_Wrapper__Has_Proceeding_Position

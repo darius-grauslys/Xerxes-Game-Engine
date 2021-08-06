@@ -20,7 +20,7 @@ namespace isometricgame.GameEngine.UI.Components
             => UI_Render__Sprite_Library.GetSprite(_ui_render__Sprite_Alias);
         
         public Vector3 UI_Render__Position
-            => UI_Render__ELEMENT.UI_Element__Position;
+            => UI_Render__ELEMENT.Get__Position_In_UISpace__UI_Element();
         
         private void Private_Set__Sprite_Alias__UI_Render(string spriteAlias)
         {
@@ -52,12 +52,12 @@ namespace isometricgame.GameEngine.UI.Components
 
         private void Event_Handle__UI_Element__Repositioned(UI_Element element)
         {
-            Component__Attached_GameObject.Position = element.UI_Element__Position;
+            Component__Attached_GameObject.Position = element.Get__Position_In_GameSpace__UI_Element();
         }
 
         private void Event_Handle__UI_Element__Rescaled(UI_Element element)
         {
-            Internal_Get__Sprite__UI_Render().SetSize(element.UI_Element__Size);
+            Internal_Get__Sprite__UI_Render().SetSize(element.Get__Size__UI_Element());
         }
 
         protected override void Handle_Attach_To__GameObject__Component()
@@ -82,15 +82,15 @@ namespace isometricgame.GameEngine.UI.Components
 
             Component__Attached_GameObject.renderUnit = UI_Render__Sprite_Library.ExtractRenderUnit(UI_Render__Sprite_Alias); 
             
-            if (MathHelper.CheckIf__Greater_Area(sprite.Size, UI_Render__ELEMENT.UI_Element__Size))
+            if (MathHelper.CheckIf__Greater_Area(sprite.Size, UI_Render__ELEMENT.Get__Size__UI_Element()))
             {
                 float lowestScale;
-                float scaleWidth = UI_Render__ELEMENT.UI_Element__Width / sprite.SubWidth;
-                float scaleHeight = UI_Render__ELEMENT.UI_Element__Height / sprite.SubHeight;
+                float scaleWidth = UI_Render__ELEMENT.Get__Width__UI_Element() / sprite.SubWidth;
+                float scaleHeight = UI_Render__ELEMENT.Get__Height__UI_Element() / sprite.SubHeight;
 
                 lowestScale = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
                 
-                sprite.SetSize(UI_Render__ELEMENT.UI_Element__Size);
+                sprite.SetSize(UI_Render__ELEMENT.Get__Size__UI_Element());
             }
         }
     }

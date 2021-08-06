@@ -49,13 +49,18 @@ namespace isometricgame.GameEngine.UI
             }
         }
 
+        internal Vector3 Internal_Get__Local_Anchor_Position__UI_Rect
+        (
+            UI_Anchor_Position_Type positionType
+        )
+            => _UI_Rect__Anchor_Points[(int) positionType];
+
         internal Vector3 Internal_Get__Anchor_Position__UI_Rect
         (
-            UI_Anchor_Position_Type position
+            UI_Anchor_Position_Type positionType
         )
-        {
-            return _UI_Rect__Anchor_Points[(int) position];
-        }
+            => _UI_Rect__Anchor_Points[(int) positionType]
+               + Get__Position_In_GameSpace__UI_Rect();
         
         #endregion
         
@@ -136,15 +141,29 @@ namespace isometricgame.GameEngine.UI
         /// The Local Origin can also manipulate the position, this is an offset based on the
         /// element's own anchors.
         /// </summary>
-        public Vector3 UI_Rect__Position { get; private set; }
-        public Vector3 UI_Rect__Position__Without_Local_Origin_Offset
-            => UI_Rect__Position + UI_Rect__Local_Origin_Offset__Internal;
-        public Vector3 Get__Position_With_Offset__UI_Rect(Vector3 offset)
-            => UI_Rect__Position + offset;
+        private Vector3 _UI_Rect__Position { get; set; }
+
+        /// <summary>
+        /// Returns the position of the element influenced by local origin.
+        /// Use this for proper positioning of UI_GameObjects.
+        /// [_UI_Rect__Position]
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 Get__Position_In_UISpace__UI_Rect()
+            => _UI_Rect__Position;
+        /// <summary>
+        /// Returns the position of the element without local origin influence.
+        /// Use this for rendering graphics of UI_GameObjects - NOT - for proper positioning.
+        /// Don't use this if you don't know what you're doing.
+        /// [_UI_Rect__Position - UI_Rect__Local_Origin_Offset]
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 Get__Position_In_GameSpace__UI_Rect()
+            => _UI_Rect__Position - UI_Rect__Local_Origin_Offset;
 
         private Vector3 UI_Rect__Bottom_Left_Bound
             => 
-                UI_Rect__Position
+                Get__Position_In_GameSpace__UI_Rect()
                 ;
         private Vector3 Get__Bottom_Left_Bound__With_Offset__UI_Rect(Vector3 offset)
             => UI_Rect__Bottom_Left_Bound + offset;
@@ -154,7 +173,7 @@ namespace isometricgame.GameEngine.UI
         /// </summary>
         private Vector3 UI_Rect__Top_Left_Bound
             =>
-                UI_Rect__Position
+                Get__Position_In_GameSpace__UI_Rect()
                 + UI_Rect__Height__As_Vector3;
         private Vector3 Get__Top_Left_Bound__With_Offset__UI_Rect(Vector3 offset)
             => UI_Rect__Top_Left_Bound + offset;
@@ -164,7 +183,7 @@ namespace isometricgame.GameEngine.UI
         /// </summary>
         private Vector3 UI_Rect__Bottom_Right_Bound
             => 
-                UI_Rect__Position 
+                Get__Position_In_GameSpace__UI_Rect() 
                 + UI_Rect__Width__As_Vector3;
         private Vector3 Get__Bottom_Right_Bound__With_Offset__UI_Rect(Vector3 offset)
             => UI_Rect__Bottom_Right_Bound + offset;
@@ -174,7 +193,7 @@ namespace isometricgame.GameEngine.UI
         /// </summary>
         private Vector3 UI_Rect__Top_Right_Bound
             => 
-                UI_Rect__Position
+                Get__Position_In_GameSpace__UI_Rect()
                 + UI_Rect__Size__As_Vector3;
         private Vector3 Get__Top_Right_Bound__With_Offset__UI_Rect(Vector3 offset)
             => UI_Rect__Top_Right_Bound + offset;
@@ -182,28 +201,28 @@ namespace isometricgame.GameEngine.UI
         /// <summary>
         /// The anchor index which is used to offset the local origin of the UI_Rect.
         /// </summary>
-        internal UI_Anchor_Position_Type UI_Rect__Local_Origin_Type__Internal { get; set; }
+        public UI_Anchor_Position_Type UI_Rect__Local_Origin_Type { get; internal set; }
 
         /// <summary>
         /// The vector quantity which offsets the UI_Rect position post scale/reposition calculations.
         /// </summary>
-        public Vector3 UI_Rect__Local_Origin_Offset__Internal
-            => _UI_Rect__Anchor_Points[(int) UI_Rect__Local_Origin_Type__Internal];
+        public Vector3 UI_Rect__Local_Origin_Offset
+            => _UI_Rect__Anchor_Points[(int) UI_Rect__Local_Origin_Type];
 
         /// <summary>
-        /// Sets the position of the Rect.
+        /// Sets the position of the Rect while enforcing local origin offsets.
         /// </summary>
         /// <param name="position"></param>
         internal void Internal_Set__Position__UI_Rect(Vector3 position)
         {
-            UI_Rect__Position = position - UI_Rect__Local_Origin_Offset__Internal;
+            _UI_Rect__Position = position;
         }
         #endregion
 
         public UI_Rect
             (
             Vector2? size = null,
-            UI_Anchor_Position_Type originOffset = UI_Anchor_Position_Type.Bottom_Left
+            UI_Anchor_Position_Type originOffset = UI_Anchor_Position_Type.Top_Left
             )
             :this
                 (
@@ -219,11 +238,11 @@ namespace isometricgame.GameEngine.UI
             (
             float width, 
             float height,
-            UI_Anchor_Position_Type originOffset = UI_Anchor_Position_Type.Bottom_Left
+            UI_Anchor_Position_Type originOffset = UI_Anchor_Position_Type.Top_Left
             )
         {
-            UI_Rect__Local_Origin_Type__Internal = originOffset;
-            UI_Rect__Position = Vector3.Zero;
+            UI_Rect__Local_Origin_Type = originOffset;
+            _UI_Rect__Position = Vector3.Zero;
 
             Vector2 usedSize = MathHelper.Clamp__Vector2_UFloat(new Vector2(width, height));
 
@@ -281,7 +300,7 @@ namespace isometricgame.GameEngine.UI
                 Origin_Bound = rect.Get__Bottom_Left_Bound__With_Offset__UI_Rect(offset);
                 Vertical_Bound = rect.Get__Top_Left_Bound__With_Offset__UI_Rect(offset);
                 Furthest_Bound = rect.Get__Top_Right_Bound__With_Offset__UI_Rect(offset);
-                Horizontal_Bound = rect.Get__Bottom_Left_Bound__With_Offset__UI_Rect(offset);
+                Horizontal_Bound = rect.Get__Bottom_Right_Bound__With_Offset__UI_Rect(offset);
             }
         }
 

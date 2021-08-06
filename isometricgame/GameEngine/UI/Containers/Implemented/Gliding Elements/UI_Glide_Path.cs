@@ -8,10 +8,10 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
 {
     public class UI_Glide_Path
     {
-        private readonly UI_Indexed_Element _UI_Glide_Path__BOUND_INDEXED_ELEMENT;
+        internal readonly UI_Indexed_Element UI_Glide_Path__BOUND_INDEXED_ELEMENT;
 
         internal void Internal_Scale__Bound_Element__UI_Glide_Path()
-            => _UI_Glide_Path__BOUND_INDEXED_ELEMENT.Internal_Scale__Element__UI_Indexed_Element();
+            => UI_Glide_Path__BOUND_INDEXED_ELEMENT.Internal_Scale__Element__UI_Indexed_Element();
         
         private readonly List<UI_Glide_Path_Node_Wrapper> _UI_Glide_Path__NODE_ROUTE = new List<UI_Glide_Path_Node_Wrapper>();
 
@@ -34,7 +34,7 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
             params UI_Glide_Node[] nodes
         )
         {
-            _UI_Glide_Path__BOUND_INDEXED_ELEMENT = boundIndexedGlidingElement;
+            UI_Glide_Path__BOUND_INDEXED_ELEMENT = boundIndexedGlidingElement;
 
             _ui_glide_path__Slide_Style_Type = glideStyleType;
             
@@ -216,7 +216,7 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
                 nodeToGlideOffOf.UI_Glide_Path_Node_Wrapper__Node_Position
                 + (localizedPercentage * offset);
             
-            _UI_Glide_Path__BOUND_INDEXED_ELEMENT.UI_Indexed_Element__ELEMENT.Internal_Set__Position__UI_Element(position);
+            UI_Glide_Path__BOUND_INDEXED_ELEMENT.UI_Indexed_Element__ELEMENT.Internal_Set__Position__UI_Element(position);
         }
         
         private float Private_Get__Percentage__Clamped__UI_Glide_Path(float pathPercentage)

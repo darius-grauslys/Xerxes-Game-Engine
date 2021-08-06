@@ -18,35 +18,67 @@ namespace isometricgame.GameEngine.UI
         
         public bool UI_Element__Scales { get; set; }
 
-        internal readonly UI_Rect UI_Element__BOUNDING_RECT;
+        internal UI_Rect UI_Element__BOUNDING_RECT { get; }
 
         //Width
-        public float UI_Element__Width => UI_Element__BOUNDING_RECT.UI_Rect__Width;
-        public Vector3 UI_Element__Width__As_Vector3 => UI_Element__BOUNDING_RECT.UI_Rect__Width__As_Vector3;
+        public float Get__Width__UI_Element() 
+            => UI_Element__BOUNDING_RECT.UI_Rect__Width;
+        public Vector3 Get__Width__As_Vector3__UI_Element() 
+            => UI_Element__BOUNDING_RECT.UI_Rect__Width__As_Vector3;
 
         //Height
-        public float UI_Element__Height => UI_Element__BOUNDING_RECT.UI_Rect__Height;
-        public Vector3 UI_Element__Height__As_Vector3 => UI_Element__BOUNDING_RECT.UI_Rect__Height__As_Vector3;
+        public float Get__Height__UI_Element() 
+            => UI_Element__BOUNDING_RECT.UI_Rect__Height;
+        public Vector3 Get__Height__As_Vector3__UI_Element() 
+            => UI_Element__BOUNDING_RECT.UI_Rect__Height__As_Vector3;
 
         //Size
-        public Vector2 UI_Element__Size => UI_Element__BOUNDING_RECT.UI_Rect__Size;
+        public Vector2 Get__Size__UI_Element() 
+            => UI_Element__BOUNDING_RECT.UI_Rect__Size;
+        public float Get__Hypotenuse_Of_Rect__UI_Element() 
+            => UI_Element__BOUNDING_RECT.Get__Hypotenuse__UI_Rect();
 
-        public float UI_Element__Hypotenuse => UI_Element__BOUNDING_RECT.Get__Hypotenuse__UI_Rect();
+        internal void Internal_Set__Local_Origin_Offset__UI_Element(UI_Anchor_Position_Type positionType)
+            => UI_Element__BOUNDING_RECT.UI_Rect__Local_Origin_Type = positionType;
+
+        public UI_Anchor_Position_Type Get__Local_Origin_Position_Type__UI_Element()
+            => UI_Element__BOUNDING_RECT.UI_Rect__Local_Origin_Type;
         
-        public Vector3 UI_Element__Position
-            => UI_Element__BOUNDING_RECT.UI_Rect__Position;
-        public Vector3 UI_Element__Position_Without_Local_Origin_Offset
-            => UI_Element__BOUNDING_RECT.UI_Rect__Position__Without_Local_Origin_Offset;
+        /// <summary>
+        /// This position is used for proper UI positioning.
+        /// [_UI_Rect__Position]
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 Get__Position_In_UISpace__UI_Element()
+            => UI_Element__BOUNDING_RECT.Get__Position_In_UISpace__UI_Rect();
+
+        /// <summary>
+        /// This position is used for proper graphical rendering.
+        /// [_UI_Rect__Position - UI_Rect__Local_Origin_Offset]
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 Get__Position_In_GameSpace__UI_Element()
+            => UI_Element__BOUNDING_RECT.Get__Position_In_GameSpace__UI_Rect();
+        public Vector3 Get__Local_Origin_Offset__UI_Element()
+            => UI_Element__BOUNDING_RECT.UI_Rect__Local_Origin_Offset;
         
-        public Vector3 Get__Anchor_Position__UI_Element(UI_Anchor_Position_Type position)
-            => UI_Element__BOUNDING_RECT.Internal_Get__Anchor_Position__UI_Rect(position);
+        /// <summary>
+        /// Returns the position of an anchor point without the element's position offsetting it.
+        /// </summary>
+        /// <param name="positionType"></param>
+        /// <returns></returns>
+        public Vector3 Get__Local_Anchor_Position__UI_Element(UI_Anchor_Position_Type positionType)
+            => UI_Element__BOUNDING_RECT.Internal_Get__Local_Anchor_Position__UI_Rect(positionType);
+
+        public Vector3 Get__Anchor_Position__UI_Element(UI_Anchor_Position_Type positionType)
+            => UI_Element__BOUNDING_RECT.Internal_Get__Anchor_Position__UI_Rect(positionType);
         
         internal virtual void Internal_Set__Position__UI_Element(Vector3 position)
         {
             Internal_Set__Position_Silently__UI_Element(position);
             Event__Repositioned__UI_Element?.Invoke(this);
         }
-
+        
         internal void Internal_Set__Position_Silently__UI_Element(Vector3 position)
         {
             UI_Element__BOUNDING_RECT.Internal_Set__Position__UI_Rect(position);
@@ -108,7 +140,7 @@ namespace isometricgame.GameEngine.UI
             return String.Format
             (
                 "UI_Element ({0})", 
-                UI_Element__Position
+                Get__Position_In_UISpace__UI_Element()
             );
         }
     }
