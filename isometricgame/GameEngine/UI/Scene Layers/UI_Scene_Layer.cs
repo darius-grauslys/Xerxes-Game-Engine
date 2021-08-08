@@ -11,6 +11,7 @@ namespace isometricgame.GameEngine.UI
     public class UI_Scene_Layer : Scene_Layer
     {
         public event Action<UI_MouseButton_Pulse_FrameArgument> Event__Evaluate_Mouse_Button__UI_Scene_Layer;
+        public event Action<UI_Keyboard_Pulse_Frame_Arguement> Event__Evaluate_Keyboard_Button__UI_Scene_Layer;
         
         private readonly UI_Strict_Panel UI_Scene_Layer__Strict_Panel;
         public UI_Indexed_Element[] temp_test__get__elements() => UI_Scene_Layer__Strict_Panel?.Get__Child_Elements__UI_Strict_Panel() ?? new UI_Indexed_Element[0];
@@ -31,17 +32,28 @@ namespace isometricgame.GameEngine.UI
                     |
                     InputType.Keyboard_UpDown
                     );
-            UI_Scene_Layer__InputHandler__Internal.DeclarePulse(MouseButton.Left.ToString());
+            
+            Register__Input_Pulse__UI_Scene_Layer(MouseButton.Left);
         }
 
-        protected override void Handle_Update__Scene_Layer(FrameArgument e)
+        protected void Register__Input_Pulse__UI_Scene_Layer(MouseButton mousePulse)
         {
-            Private_Evaluate__Mouse_Button_From_Input_Handler(e);
+            UI_Scene_Layer__InputHandler__Internal.DeclarePulse(mousePulse.ToString());
+        }
+
+        protected void Register__Input_Pulse__UI_Scene_Layer(Key keyPulse)
+        {
+            UI_Scene_Layer__InputHandler__Internal.DeclarePulse(keyPulse.ToString());
+        }
+        
+        protected override void Handle_Update__Scene_Layer(Frame_Argument e)
+        {
+            Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(e, MouseButton.Left);
             
             base.Handle_Update__Scene_Layer(e);
         }
 
-        private void Private_Evaluate__Mouse_Button_From_Input_Handler(FrameArgument args)
+        protected void Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(Frame_Argument args, MouseButton mouseButton)
         {
             //See if a pulse is ready to be evaluated.
             if 
@@ -73,26 +85,54 @@ namespace isometricgame.GameEngine.UI
             }
         }
 
+        protected void Handle_Update_Evaluate__Keyboard_Button__UI_Scene_Layer(Frame_Argument args, Key keyButton)
+        {
+            if
+            (
+                UI_Scene_Layer__InputHandler__Internal
+                    .EvaluatePulseState
+                    (
+                        keyButton.ToString(),
+                        true
+                    )
+            )
+            {
+                UI_Keyboard_Pulse_Frame_Arguement uiPulseArg =
+                    new UI_Keyboard_Pulse_Frame_Arguement(args, keyButton);
+                
+                Event__Evaluate_Keyboard_Button__UI_Scene_Layer?.Invoke(uiPulseArg);
+
+                if (uiPulseArg.UI_Pulse_FrameArgument__Frame_Evaluates_Pulse)
+                {
+                    UI_Scene_Layer__InputHandler__Internal
+                        .EvaluatePulseState
+                        (
+                            keyButton.ToString()
+                        );
+                }
+            }
+        }
+        
         protected virtual bool Add__UI_Object__UI_Scene_Layer
         (
             UI_GameObject uiGameObject, 
-            UI_Anchor_Sort_Style sortStyle = null
+            UI_Anchor bindingAnchor = null
         )
         {
             return Add__UI_Element__UI_Scene_Layer
             (
                 uiGameObject.UI_GameObject__UI_Element__Internal,
-                sortStyle
+                bindingAnchor
             );
         }
         
         protected virtual bool Add__UI_Element__UI_Scene_Layer
         (
             UI_Element element,
-            UI_Anchor_Sort_Style sortStyle = null
+            UI_Anchor bindingAnchor = null
         )
         {
-            bool success = UI_Scene_Layer__Strict_Panel.Add__Element__UI_Strict_Panel(element, sortStyle);
+            bool success = UI_Scene_Layer__Strict_Panel.Add__Element__UI_Strict_Panel(element, bindingAnchor);
 
             if (success)
             {

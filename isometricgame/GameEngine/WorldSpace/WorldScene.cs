@@ -41,7 +41,7 @@ namespace isometricgame.GameEngine.WorldSpace
             spriteLibrary = Scene_Layer__Game.Get_System__Game<SpriteLibrary>();
         }
 
-        protected override void Handle_Update__Scene_Layer(FrameArgument e)
+        protected override void Handle_Update__Scene_Layer(Frame_Argument e)
         {
             Camera.Pan_Linear((float)e.DeltaTime);
             
@@ -59,7 +59,7 @@ namespace isometricgame.GameEngine.WorldSpace
             base.Handle_Update__Scene_Layer(e);
         }
         
-        protected override void Handle_Render__Scene_Layer(RenderService renderService, FrameArgument e)
+        protected override void Handle_Render__Scene_Layer(RenderService renderService, Frame_Argument e)
         {
             if (chunkDirectory.RenderDistance != renderDistance)
                 return; //prevent race condition

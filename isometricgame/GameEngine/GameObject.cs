@@ -44,7 +44,7 @@ namespace isometricgame.GameEngine
             return (components.Length > 0) ? components[0] : null;
         }
 
-        public virtual void OnUpdate(FrameArgument args)
+        public virtual void OnUpdate(Frame_Argument args)
         {
             foreach (GameObject_Component attrib in COMPONENTS)
                 attrib.Update(args);

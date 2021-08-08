@@ -60,7 +60,7 @@ namespace isometricgame.GameEngine
         /// <summary>
         /// Logical update frame.
         /// </summary>
-        internal void Update(FrameArgument args)
+        internal void Update(Frame_Argument args)
         {
             if (Component__Enabled)
             {
@@ -68,7 +68,7 @@ namespace isometricgame.GameEngine
             }
         }
 
-        protected virtual void Handle__Update__Component(FrameArgument args)
+        protected virtual void Handle__Update__Component(Frame_Argument args)
         {
 
         }

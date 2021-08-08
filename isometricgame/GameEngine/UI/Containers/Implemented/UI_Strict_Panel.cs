@@ -30,10 +30,10 @@ namespace isometricgame.GameEngine.UI
         public UI_Indexed_Element[] Get__Child_Elements__UI_Strict_Panel()
             => Get__CHILD_ELEMENTS__UI_Container();
 
-        public bool Add__Element__UI_Strict_Panel(UI_Element element, UI_Anchor_Sort_Style sortStyle = null)
-            => Add__UI_Element__UI_Container(new UI_Indexed_Element(element, this, sortStyle));
+        public bool Add__Element__UI_Strict_Panel(UI_Element element, UI_Anchor bindingAnchor = null)
+            => Add__UI_Element__UI_Container(element, bindingAnchor);
 
-        public bool Add__UI_GameObject__UI_Strict_Panel(UI_GameObject uiGameObject, UI_Anchor_Sort_Style sortStyle = null)
-            => Add__Element__UI_Strict_Panel(uiGameObject.UI_GameObject__UI_Element__Internal, sortStyle);
+        public bool Add__UI_GameObject__UI_Strict_Panel(UI_GameObject uiGameObject, UI_Anchor bindingAnchor = null)
+            => Add__Element__UI_Strict_Panel(uiGameObject.UI_GameObject__UI_Element__Internal, bindingAnchor);
     }
 }

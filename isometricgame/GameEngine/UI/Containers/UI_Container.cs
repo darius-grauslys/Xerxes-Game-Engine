@@ -15,6 +15,11 @@ namespace isometricgame.GameEngine.UI
         private readonly List<UI_Indexed_Element> _UI_Container__CHILD_ELEMENTS = new List<UI_Indexed_Element>();
         public int UI_Container__UI_Element_Count => _UI_Container__CHILD_ELEMENTS.Count;
 
+        /// <summary>
+        /// Success 
+        /// </summary>
+        public bool UI_Container__Element_Addition_Success_State { get; private set; }
+
         #region Get-Elements
         protected UI_Indexed_Element Get__Indexed_Element__UI_Container(int index)
             => _UI_Container__CHILD_ELEMENTS[index];
@@ -41,42 +46,104 @@ namespace isometricgame.GameEngine.UI
         /// Adds, sorts, and binds scaling values based on container implementation.
         /// </summary>
         /// <param name="childElement"></param>
-        protected bool Add__UI_Element__UI_Container(UI_Indexed_Element indexedElement)
+        protected bool Add__UI_Element__UI_Container(UI_Element element, UI_Anchor bindingAnchor = null)
         {
-            UI_Element childElement = indexedElement.UI_Indexed_Element__ELEMENT;
+            UI_Anchor clampedAnchor = new UI_Anchor();
+            
+            clampedAnchor.UI_Anchor__Sort_Style = Private_Clamp__Sort_Style__UI_Container
+            (
+                bindingAnchor?.UI_Anchor__Target_Anchor_Point ?? UI_Anchor_Position_Type.Top_Left,
+                bindingAnchor?.Get__Major_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Right,
+                bindingAnchor?.Get__Minor_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Bottom
+            );
+            
+            element.Internal_Set__Local_Origin_Position_Type__UI_Element
+            (
+                Handle_Clamp__Added_Element_Local_Origin__UI_Container
+                (
+                    element.Get__Local_Origin_Position_Type__UI_Element(),
+                    clampedAnchor.UI_Anchor__Target_Anchor_Point
+                )
+            );
+
+            UI_Indexed_Element indexedElement = new UI_Indexed_Element
+            (
+                element,
+                clampedAnchor,
+                this
+            );
+            
             Vector3? sortedPosition = Private_Attempt__Sort__UI_Container(indexedElement);
 
-            bool success = sortedPosition != null;
+            UI_Container__Element_Addition_Success_State = sortedPosition != null;
             
-            if (success)
+            if (UI_Container__Element_Addition_Success_State)
             {
-                childElement.Internal_Set__Position__UI_Element((Vector3) sortedPosition);
+                element.Internal_Set__Position__UI_Element((Vector3) sortedPosition);
                 _UI_Container__CHILD_ELEMENTS.Add(indexedElement);
                 Private_Bind__Relative_Position_To_Anchor__UI_Container(indexedElement);
             }
 
-            return success;
+            return UI_Container__Element_Addition_Success_State;
         }
 
         #region Pre--Add-Element
 
-        private UI_Anchor_Sort_Style Clamp__Sort_Style__UI_Container
+        protected virtual UI_Anchor_Position_Type Handle_Clamp__Added_Element_Local_Origin__UI_Container
+        (
+            UI_Anchor_Position_Type localOrigin,
+            UI_Anchor_Position_Type targetAnchor
+        )
+        {
+            return targetAnchor;
+        }
+        
+        private UI_Anchor_Sort_Style Private_Clamp__Sort_Style__UI_Container
         (
             UI_Anchor_Position_Type elementPositionType,
             UI_Anchor_Sort_Type major,
             UI_Anchor_Sort_Type minor
         )
         {
-            
+            UI_Anchor_Sort_Type clampedMajor =
+                Private_Clamp__Sort_Type__UI_Container(elementPositionType, major);
+            UI_Anchor_Sort_Type clampedMinor =
+                Private_Clamp__Sort_Type__UI_Container(elementPositionType, minor);
+
+            return new UI_Anchor_Sort_Style(clampedMajor, clampedMinor);
         }
 
+        private UI_Anchor_Sort_Type Private_Clamp__Sort_Type__UI_Container
+        (
+            UI_Anchor_Position_Type elementPositionType,
+            UI_Anchor_Sort_Type sortType
+        )
+        {
+            switch (sortType)
+            {
+                case UI_Anchor_Sort_Type.Left:
+                case UI_Anchor_Sort_Type.Right:
+                    return Handle_Clamp__Horizontal_Sort_Type__UI_Container(elementPositionType, sortType);
+                default:
+                    return Handle_Clamp__Vertical_Sort_Type__UI_Container(elementPositionType, sortType);
+            }
+        }
+        
         protected virtual UI_Anchor_Sort_Type Handle_Clamp__Horizontal_Sort_Type__UI_Container
         (
             UI_Anchor_Position_Type elementPositionType,
             UI_Anchor_Sort_Type horizontalSortType
         )
         {
-            
+            switch (elementPositionType)
+            {
+                case UI_Anchor_Position_Type.Top_Left:
+                case UI_Anchor_Position_Type.Middle_Left:
+                case UI_Anchor_Position_Type.Bottom_Left:
+                    return UI_Anchor_Sort_Type.Right;
+                default:
+                    return UI_Anchor_Sort_Type.Left;
+            }
         }
 
         protected virtual UI_Anchor_Sort_Type Handle_Clamp__Vertical_Sort_Type__UI_Container
@@ -85,7 +152,15 @@ namespace isometricgame.GameEngine.UI
             UI_Anchor_Sort_Type verticalSortType
             )
         {
-            
+            switch (elementPositionType)
+            {
+                case UI_Anchor_Position_Type.Top_Left:
+                case UI_Anchor_Position_Type.Top_Middle:
+                case UI_Anchor_Position_Type.Top_Right:
+                    return UI_Anchor_Sort_Type.Bottom;
+                default:
+                    return UI_Anchor_Sort_Type.Top;
+            }
         }
 
         #endregion

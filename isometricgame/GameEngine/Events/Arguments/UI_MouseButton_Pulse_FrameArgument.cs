@@ -3,21 +3,21 @@ using OpenTK.Input;
 
 namespace isometricgame.GameEngine.Events.Arguments
 {
-    public class UI_MouseButton_Pulse_FrameArgument : UI_Pulse_FrameArgument
+    public class UI_MouseButton_Pulse_FrameArgument : UI_Pulse_Frame_Argument
     {
-        public readonly Vector3 UI_MouseButton_Pulse__Mouse_Position;
-        public readonly MouseButton UI_MouseButton_Pulse__Button;
+        public Vector3 UI_MouseButton_Pulse__MOUSE_POSITION { get; }
+        public MouseButton UI_MouseButton_Pulse__BUTTON { get; }
         
         internal UI_MouseButton_Pulse_FrameArgument
             (
-            FrameArgument frameArgument,
+            Frame_Argument frameArgument,
             Vector3 mouseButtonPosition,
             MouseButton mouseButton
             ) 
             : base(frameArgument)
         {
-            UI_MouseButton_Pulse__Mouse_Position = mouseButtonPosition;
-            UI_MouseButton_Pulse__Button = mouseButton;
+            UI_MouseButton_Pulse__MOUSE_POSITION = mouseButtonPosition;
+            UI_MouseButton_Pulse__BUTTON = mouseButton;
         }
     }
 }

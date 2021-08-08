@@ -115,7 +115,7 @@ namespace isometricgame.GameEngine
         {
             updateTime += e.Time;
             Game__Event_Scheduler.Progress_Events(e.Time);
-            scene.UpdateScene(new FrameArgument(UpdateTime, e.Time));
+            scene.UpdateScene(new Frame_Argument(UpdateTime, e.Time));
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -125,7 +125,7 @@ namespace isometricgame.GameEngine
             scene.BeginRender(Game__Render_Service);
             Game__Render_Service.BeginRender();
 
-            Game__Render_Service.RenderScene(scene, new FrameArgument(RenderTime, e.Time));
+            Game__Render_Service.RenderScene(scene, new Frame_Argument(RenderTime, e.Time));
 
             Game__Render_Service.EndRender();
             
@@ -195,7 +195,7 @@ namespace isometricgame.GameEngine
             this.scene = scene;
         }
         
-        protected void LoadSprite
+        protected void Load__Sprite__Game
             (
             string spriteName, 
             float scale, 
@@ -209,7 +209,7 @@ namespace isometricgame.GameEngine
                 GAME_DIRECTORY_ASSETS,
                 spriteName + ".png"
             );
-            if (!throwIf_NotExists && !File.Exists(path))
+            if (throwIf_NotExists && !File.Exists(path))
                 return;
             Sprite s;
             Game__Sprite_Library.RecordSprite(

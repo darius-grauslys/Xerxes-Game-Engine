@@ -282,7 +282,17 @@ namespace isometricgame.GameEngine.UI
             
             Internal_Rescale__UI_Rect(MathHelper.Get__Hypotenuse(newSize));
         }
-        
+
+        public override string ToString()
+        {
+            return String.Format
+            (
+                "Rect: [P:{0} S:{1}]",
+                _UI_Rect__Position,
+                UI_Rect__Size
+            );
+        }
+
         #region Static Anaylsis
 
         private struct UI_Rect__Offset_Bounds_Struct

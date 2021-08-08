@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using isometricgame.GameEngine.UI.Components;
 using OpenTK;
 
@@ -30,7 +31,7 @@ namespace isometricgame.GameEngine.UI
                         new GameObject_Component[]
                         {
                             new UI_Render_Component
-                                (
+                            (
                                 spriteAlias,
                                 
                                 boundingRect
@@ -42,6 +43,11 @@ namespace isometricgame.GameEngine.UI
                 )
         {
             UI_GameObject__UI_RENDER__Internal = Get__Component__GameObject<UI_Render_Component>();
+        }
+
+        public override string ToString()
+        {
+            return String.Format("[UI_GameObject] {1} : {0}", base.ToString(), UI_GameObject__UI_Element__Internal);
         }
     }
 }

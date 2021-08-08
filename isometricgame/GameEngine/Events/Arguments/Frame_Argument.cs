@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.Events.Arguments
 {
-    public class FrameArgument
+    public class Frame_Argument
     {
         /// <summary>
         /// Total elapsed time since game launch.
@@ -18,6 +18,6 @@ namespace isometricgame.GameEngine.Events.Arguments
         /// </summary>
         public readonly double DeltaTime;
 
-        internal FrameArgument(double time, double deltaTime) { Time = time; DeltaTime = deltaTime; }
+        internal Frame_Argument(double time, double deltaTime) { Time = time; DeltaTime = deltaTime; }
     }
 }

@@ -34,10 +34,7 @@ namespace isometricgame.GameEngine.UI.Components
             (
             string spriteAlias = null,
             
-            UI_Rect boundingRect = null,
-            
-            UI_Anchor majorAnchor = null,
-            UI_Anchor lesserAnchor = null
+            UI_Rect boundingRect = null
             )
         {
             UI_Render__Sprite_Alias = spriteAlias;
@@ -75,12 +72,14 @@ namespace isometricgame.GameEngine.UI.Components
             if (Component__Attached_GameObject == null)
                 return;
 
-            UI_Render__Sprite_Library = Component__Attached_GameObject.GameObject__Scene_Layer.Scene_Layer__Game
+            UI_Render__Sprite_Library = Component__Attached_GameObject.GameObject__Scene_Layer
+                .Scene_Layer__Game
                 .Game__Sprite_Library;
 
             Sprite sprite = Internal_Get__Sprite__UI_Render();
 
-            Component__Attached_GameObject.renderUnit = UI_Render__Sprite_Library.ExtractRenderUnit(UI_Render__Sprite_Alias); 
+            Component__Attached_GameObject.renderUnit = UI_Render__Sprite_Library
+                .ExtractRenderUnit(UI_Render__Sprite_Alias); 
             
             if (MathHelper.CheckIf__Greater_Area(sprite.Size, UI_Render__ELEMENT.Get__Size__UI_Element()))
             {

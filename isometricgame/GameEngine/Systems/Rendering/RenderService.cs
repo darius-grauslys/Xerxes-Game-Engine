@@ -92,7 +92,7 @@ namespace isometricgame.GameEngine.Systems.Rendering
             GL.MatrixMode(MatrixMode.Modelview);
         }
 
-        internal void RenderScene(Scene scene, FrameArgument e)
+        internal void RenderScene(Scene scene, Frame_Argument e)
         {
             scene.RenderScene(this, e);
         }

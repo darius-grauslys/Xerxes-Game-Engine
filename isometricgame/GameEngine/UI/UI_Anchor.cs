@@ -1,4 +1,5 @@
-﻿using isometricgame.GameEngine.Systems;
+﻿using System;
+using isometricgame.GameEngine.Systems;
 using isometricgame.GameEngine.Tools;
 using OpenTK;
 using OpenTK.Graphics.ES10;
@@ -11,23 +12,38 @@ namespace isometricgame.GameEngine.UI
     /// </summary>
     public class UI_Anchor
     {
-        public UI_Anchor_Position_Type UI_Anchor__POSITION_TYPE { get; }
+        public UI_Anchor_Position_Type UI_Anchor__Target_Anchor_Point { get; internal set; }
 
-        private UI_Anchor_Sort_Style UiAnchorSortStyle { get; }
+        internal UI_Anchor_Sort_Style UI_Anchor__Sort_Style { get; set; }
+        
+        public UI_Anchor_Offset_Type UI_Anchor__Offset_Type__UI_Anchor { get; internal set; }
+        
+        public Vector3 UI_Anchor__Offset_Vector__UI_Anchor { get; internal set; }
         
         public UI_Anchor_Sort_Type Get__Major_Sort_Type__UI_Anchor()
-            => UiAnchorSortStyle.UI_Anchor_Style__MAJOR;
+            => UI_Anchor__Sort_Style.UI_Anchor_Style__MAJOR;
         public UI_Anchor_Sort_Type Get__Minor_Sort_Type__UI_Anchor()
-            => UiAnchorSortStyle.UI_Anchor_Style__MINOR;
+            => UI_Anchor__Sort_Style.UI_Anchor_Style__MINOR;
         
         internal UI_Anchor
         (
-            UI_Anchor_Position_Type positionType,
-            UI_Anchor_Sort_Style sortStyle
+            UI_Anchor_Position_Type targetAnchorPoint = UI_Anchor_Position_Type.Top_Left,
+            UI_Anchor_Sort_Style sortStyle = null
         )
         {
-            UI_Anchor__POSITION_TYPE = positionType;
-            UiAnchorSortStyle = sortStyle;
+            UI_Anchor__Target_Anchor_Point = targetAnchorPoint;
+            UI_Anchor__Sort_Style = sortStyle;
+        }
+
+        public override string ToString()
+        {
+            return String.Format
+                (
+                "Anchor [Mj:{0}, Mi:{1}, T:{2}]",
+                Get__Major_Sort_Type__UI_Anchor(),
+                Get__Minor_Sort_Type__UI_Anchor(),
+                UI_Anchor__Target_Anchor_Point
+                );
         }
     }
 }

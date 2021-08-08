@@ -44,7 +44,7 @@ namespace isometricgame.GameEngine.UI
         public UI_Anchor UI_Indexed_Element__Anchor { get; private set; }
 
         public UI_Anchor_Position_Type UI_Indexed_Element__Anchor_Position_Type
-            => UI_Indexed_Element__Anchor.UI_Anchor__POSITION_TYPE;
+            => UI_Indexed_Element__Anchor.UI_Anchor__Target_Anchor_Point;
 
         public UI_Anchor_Sort_Type Get__Major_Sort_Type__UI_Indexed_Element
             => UI_Indexed_Element__Anchor.Get__Major_Sort_Type__UI_Anchor();
@@ -80,35 +80,15 @@ namespace isometricgame.GameEngine.UI
         public UI_Indexed_Element
         (
             UI_Element indexedElement,
-            UI_Container parentContainer,
-            UI_Anchor_Sort_Style sortStyle = null
+            UI_Anchor bindingAnchor,
+            UI_Container parentContainer
         )
         {
             UI_Anchor_Position_Type localOrigin = indexedElement.Get__Local_Origin_Position_Type__UI_Element();
             
-            UI_Anchor_Sort_Style clampedSortStyle
-                = new UI_Anchor_Sort_Style
-                (
-                    Clamp__Sort_Type
-                        (
-                        sortStyle?.UI_Anchor_Style__MAJOR ?? UI_Anchor_Sort_Type.Right,
-                        localOrigin
-                        ),
-                    Clamp__Sort_Type
-                        (
-                        sortStyle?.UI_Anchor_Style__MINOR ?? UI_Anchor_Sort_Type.Bottom,
-                        localOrigin
-                        )
-                );
-            
             UI_Indexed_Element__ELEMENT = indexedElement;
 
-            UI_Indexed_Element__Anchor =
-                new UI_Anchor
-                (
-                    localOrigin,
-                    clampedSortStyle
-                );
+            UI_Indexed_Element__Anchor = bindingAnchor;
             
             UI_Indexed_Element__PARENT_CONTAINER = parentContainer;
 
@@ -119,69 +99,7 @@ namespace isometricgame.GameEngine.UI
 
         public override string ToString()
         {
-            return String.Format("Indexed_Element: [{0}]", UI_Indexed_Element__ELEMENT);
-        }
-
-        private static UI_Anchor_Sort_Type Clamp__Sort_Type
-        (
-            UI_Anchor_Sort_Type sortType,
-            UI_Anchor_Position_Type positionType
-        )
-        {
-            switch (sortType)
-            {
-                case UI_Anchor_Sort_Type.Left:
-                case UI_Anchor_Sort_Type.Right:
-                    return Clamp__Sort_Type__Horizontal(sortType, positionType);
-                default:
-                    return Clamp__Sort_Type__Vertical(sortType, positionType);
-            }
-        }
-        
-        private static UI_Anchor_Sort_Type Clamp__Sort_Type__Horizontal
-        (
-            UI_Anchor_Sort_Type sortType,
-            UI_Anchor_Position_Type positionType
-        )
-        {
-            switch (positionType)
-            {
-                case UI_Anchor_Position_Type.Top_Left:
-                case UI_Anchor_Position_Type.Middle_Left:
-                case UI_Anchor_Position_Type.Bottom_Left:    
-                    sortType = UI_Anchor_Sort_Type.Right;
-                    break;
-                case UI_Anchor_Position_Type.Top_Right:
-                case UI_Anchor_Position_Type.Middle_Right:
-                case UI_Anchor_Position_Type.Bottom_Right:
-                    sortType = UI_Anchor_Sort_Type.Left;
-                    break;
-            }
-            
-            return sortType;
-        }
-
-        private static UI_Anchor_Sort_Type Clamp__Sort_Type__Vertical
-        (
-            UI_Anchor_Sort_Type sortType,
-            UI_Anchor_Position_Type positionType
-        )
-        {
-            switch (positionType)
-            {
-                case UI_Anchor_Position_Type.Top_Left:
-                case UI_Anchor_Position_Type.Top_Middle:
-                case UI_Anchor_Position_Type.Top_Right:
-                    sortType = UI_Anchor_Sort_Type.Bottom;
-                    break;
-                case UI_Anchor_Position_Type.Bottom_Left:
-                case UI_Anchor_Position_Type.Bottom_Middle:
-                case UI_Anchor_Position_Type.Bottom_Right:
-                    sortType = UI_Anchor_Sort_Type.Top;
-                    break;
-            }
-            
-            return sortType;
+            return String.Format("Indexed_Element: [E: {0} A: {1}]", UI_Indexed_Element__ELEMENT, UI_Indexed_Element__Anchor);
         }
     }
 }

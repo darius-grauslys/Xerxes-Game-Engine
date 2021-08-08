@@ -105,9 +105,9 @@ namespace isometricgame.GameEngine.Scenes
             => Handle_Gained_Focus__Scene_Layer();
         protected virtual void Handle_Gained_Focus__Scene_Layer() { }
 
-        internal void Internal_Update__Scene_Layer(FrameArgument e)
+        internal void Internal_Update__Scene_Layer(Frame_Argument e)
             => Handle_Update__Scene_Layer(e);
-        protected virtual void Handle_Update__Scene_Layer(FrameArgument e)
+        protected virtual void Handle_Update__Scene_Layer(Frame_Argument e)
         {
             Private_Update__Layer_Objects__Scene_Layer(e);
         }
@@ -120,13 +120,13 @@ namespace isometricgame.GameEngine.Scenes
         /// <returns></returns>
         protected virtual void Handle_Begin_Render__Scene_Layer(RenderService renderService) { }
 
-        internal void Render__Scene_Layer(RenderService renderService, FrameArgument e)
+        internal void Render__Scene_Layer(RenderService renderService, Frame_Argument e)
         {
             if(Scene_Layer__Enabled)
                 Handle_Render__Scene_Layer(renderService, e);
         }
 
-        protected virtual void Handle_Render__Scene_Layer(RenderService renderService, FrameArgument e)
+        protected virtual void Handle_Render__Scene_Layer(RenderService renderService, Frame_Argument e)
         {
             foreach (GameObject so in Scene_Layer__Scene_Objects)
             {
@@ -134,7 +134,7 @@ namespace isometricgame.GameEngine.Scenes
             }
         }
 
-        private void Private_Update__Layer_Objects__Scene_Layer(FrameArgument e)
+        private void Private_Update__Layer_Objects__Scene_Layer(Frame_Argument e)
         {
             if (!Scene_Layer__Enabled)
                 return;
@@ -145,7 +145,7 @@ namespace isometricgame.GameEngine.Scenes
             Handle_Objects_Updated__Scene_Layer(e);
         }
         
-        protected virtual void Handle_Objects_Updated__Scene_Layer(FrameArgument e)
+        protected virtual void Handle_Objects_Updated__Scene_Layer(Frame_Argument e)
         {
             
         }

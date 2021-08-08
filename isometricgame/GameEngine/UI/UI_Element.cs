@@ -38,7 +38,7 @@ namespace isometricgame.GameEngine.UI
         public float Get__Hypotenuse_Of_Rect__UI_Element() 
             => UI_Element__BOUNDING_RECT.Get__Hypotenuse__UI_Rect();
 
-        internal void Internal_Set__Local_Origin_Offset__UI_Element(UI_Anchor_Position_Type positionType)
+        internal void Internal_Set__Local_Origin_Position_Type__UI_Element(UI_Anchor_Position_Type positionType)
             => UI_Element__BOUNDING_RECT.UI_Rect__Local_Origin_Type = positionType;
 
         public UI_Anchor_Position_Type Get__Local_Origin_Position_Type__UI_Element()
@@ -139,8 +139,8 @@ namespace isometricgame.GameEngine.UI
         {
             return String.Format
             (
-                "UI_Element ({0})", 
-                Get__Position_In_UISpace__UI_Element()
+                "UI_Element [{0}]", 
+                UI_Element__BOUNDING_RECT
             );
         }
     }

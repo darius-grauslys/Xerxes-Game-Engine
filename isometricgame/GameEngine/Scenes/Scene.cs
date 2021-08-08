@@ -76,14 +76,14 @@ namespace isometricgame.GameEngine.Scenes
         /// <returns></returns>
         protected virtual void HandleBeginRender(RenderService renderService) { }
 
-        internal void RenderScene(RenderService renderService, FrameArgument e) 
+        internal void RenderScene(RenderService renderService, Frame_Argument e) 
             => Handle_RenderScene(renderService, e);
         /// <summary>
         /// Overridable functionality.
         /// </summary>
         /// <param name="renderService"></param>
         /// <param name="e"></param>
-        protected virtual void Handle_RenderScene(RenderService renderService, FrameArgument e)
+        protected virtual void Handle_RenderScene(RenderService renderService, Frame_Argument e)
         {
             foreach(Scene_Layer layer in sceneLayers)
             {
@@ -93,13 +93,13 @@ namespace isometricgame.GameEngine.Scenes
             }
         }
 
-        internal void UpdateScene(FrameArgument e) => Handle_UpdateScene(e);
+        internal void UpdateScene(Frame_Argument e) => Handle_UpdateScene(e);
         /// <summary>
         /// Overridable functionality.
         /// </summary>
         /// <param name="renderService"></param>
         /// <param name="e"></param>
-        protected virtual void Handle_UpdateScene(FrameArgument e)
+        protected virtual void Handle_UpdateScene(Frame_Argument e)
         {
             for(int i=0;i<sceneLayers.Count;i++)
                 sceneLayers[i].Internal_Update__Scene_Layer(e);

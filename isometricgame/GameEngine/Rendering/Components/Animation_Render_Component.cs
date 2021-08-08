@@ -44,7 +44,7 @@ namespace isometricgame.GameEngine.Components
         public void Pause(double time) => schematic.Pause(time);
         public void Unpause() => schematic.Unpause();
 
-        protected override void Handle__Update__Component(FrameArgument args)
+        protected override void Handle__Update__Component(Frame_Argument args)
         {
             Component__Attached_GameObject.renderUnit.vaoIndex = schematic.GetVBO_Index(args.DeltaTime);
         }

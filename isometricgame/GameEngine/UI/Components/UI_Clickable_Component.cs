@@ -25,7 +25,7 @@ namespace isometricgame.GameEngine.UI.Components
         private UI_Rect UI_Clickable__Bounding_Rect
             => UI_Clickable__Render_Element?.UI_Element__BOUNDING_RECT;
 
-        public UI_Clickable_Component(Action<FrameArgument> clickedHandler = null)
+        public UI_Clickable_Component(Action<Frame_Argument> clickedHandler = null)
         {
             UI_Clickable__Clicked_Handler = clickedHandler;
         }
@@ -46,7 +46,7 @@ namespace isometricgame.GameEngine.UI.Components
 
         private void Private_Resolve__Click__Clickable_Component(UI_MouseButton_Pulse_FrameArgument args)
         {
-            Vector3 clickedPosition = args.UI_MouseButton_Pulse__Mouse_Position;
+            Vector3 clickedPosition = args.UI_MouseButton_Pulse__MOUSE_POSITION;
             
             if 
             (
