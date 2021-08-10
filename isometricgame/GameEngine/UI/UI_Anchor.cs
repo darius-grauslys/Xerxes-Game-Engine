@@ -24,6 +24,46 @@ namespace isometricgame.GameEngine.UI
             => UI_Anchor__Sort_Style.UI_Anchor_Style__MAJOR;
         public UI_Anchor_Sort_Type Get__Minor_Sort_Type__UI_Anchor()
             => UI_Anchor__Sort_Style.UI_Anchor_Style__MINOR;
+
+        public UI_Anchor(UI_Anchor_Position_Type targetAnchorPoint)
+            : this
+                (
+                targetAnchorPoint,
+                new UI_Anchor_Sort_Style()
+                )
+        {
+            
+        }
+        
+        public UI_Anchor
+            (
+            UI_Anchor_Position_Type targetAnchorPoint,
+            UI_Horizontal_Anchor_Sort_Type majorSort,
+            UI_Vertical_Anchor_Sort_Type minorSort
+            )
+            : this
+                (
+                targetAnchorPoint,
+                new UI_Anchor_Sort_Style((int)majorSort, (int)minorSort)
+                )
+        {
+            
+        }
+        
+        public UI_Anchor
+        (
+            UI_Anchor_Position_Type targetAnchorPoint,
+            UI_Vertical_Anchor_Sort_Type majorSort,
+            UI_Horizontal_Anchor_Sort_Type minorSort
+        )
+            : this
+            (
+                targetAnchorPoint,
+                new UI_Anchor_Sort_Style((int)minorSort, (int)majorSort)
+            )
+        {
+            
+        }
         
         internal UI_Anchor
         (

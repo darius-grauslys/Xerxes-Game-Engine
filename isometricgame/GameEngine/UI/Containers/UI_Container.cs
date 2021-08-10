@@ -49,10 +49,13 @@ namespace isometricgame.GameEngine.UI
         protected bool Add__UI_Element__UI_Container(UI_Element element, UI_Anchor bindingAnchor = null)
         {
             UI_Anchor clampedAnchor = new UI_Anchor();
+
+            clampedAnchor.UI_Anchor__Target_Anchor_Point = bindingAnchor?.UI_Anchor__Target_Anchor_Point ??
+                                                           UI_Anchor_Position_Type.Top_Left;
             
             clampedAnchor.UI_Anchor__Sort_Style = Private_Clamp__Sort_Style__UI_Container
             (
-                bindingAnchor?.UI_Anchor__Target_Anchor_Point ?? UI_Anchor_Position_Type.Top_Left,
+                clampedAnchor.UI_Anchor__Target_Anchor_Point,
                 bindingAnchor?.Get__Major_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Right,
                 bindingAnchor?.Get__Minor_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Bottom
             );
@@ -141,8 +144,12 @@ namespace isometricgame.GameEngine.UI
                 case UI_Anchor_Position_Type.Middle_Left:
                 case UI_Anchor_Position_Type.Bottom_Left:
                     return UI_Anchor_Sort_Type.Right;
-                default:
+                case UI_Anchor_Position_Type.Top_Right:
+                case UI_Anchor_Position_Type.Middle_Right:
+                case UI_Anchor_Position_Type.Bottom_Right:    
                     return UI_Anchor_Sort_Type.Left;
+                default:
+                    return horizontalSortType;
             }
         }
 
@@ -158,8 +165,12 @@ namespace isometricgame.GameEngine.UI
                 case UI_Anchor_Position_Type.Top_Middle:
                 case UI_Anchor_Position_Type.Top_Right:
                     return UI_Anchor_Sort_Type.Bottom;
+                case UI_Anchor_Position_Type.Bottom_Left:
+                case UI_Anchor_Position_Type.Bottom_Middle:
+                case UI_Anchor_Position_Type.Bottom_Right:
+                    return UI_Anchor_Sort_Type.Top;    
                 default:
-                    return UI_Anchor_Sort_Type.Top;
+                    return verticalSortType;
             }
         }
 
@@ -258,7 +269,7 @@ namespace isometricgame.GameEngine.UI
         {
             UI_Element element = indexedElementToSort.UI_Indexed_Element__ELEMENT;
             
-            return UI_Rect.CheckIf__Rect_Is_Bound_By_Rect
+            return UI_Rect.CheckIf__Within_Rect
             (
                 element.UI_Element__BOUNDING_RECT,
                 UI_Element__BOUNDING_RECT,
@@ -378,11 +389,13 @@ namespace isometricgame.GameEngine.UI
 
                 if
                 (
-                    UI_Rect.CheckIf__Rects_Overlap
+                    UI_Rect.CheckIf__Within_Rect
                     (
                         elementToSort.UI_Element__BOUNDING_RECT,
                         childElement.UI_Element__BOUNDING_RECT,
-                        sortedPosition
+                        sortedPosition,
+                        false,
+                        false
                     )
                 )
                     return indexedChildElement;

@@ -71,49 +71,6 @@ namespace isometricgame.GameEngine.Tools
         
         public static float Get__Safe_Inverse(float value, float safeReturn = 0)
             => (value == 0) ? safeReturn : 1 / value;
-        
-        public static bool CheckIf__Bounded_XYZ_Exclusive(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
-        {
-            return (
-                
-                subjectVector.X > lowerBound.X &&
-                subjectVector.Y > lowerBound.Y &&
-                subjectVector.Z > lowerBound.Z &&
-
-                subjectVector.X < upperBound.X &&
-                subjectVector.Y < upperBound.Y &&
-                subjectVector.Z < upperBound.Z
-                
-                );
-        }
-
-        public static bool CheckIf__Bounded_XYZ_Inclusive(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
-        {
-            return (
-                
-                subjectVector.X >= lowerBound.X &&
-                subjectVector.Y >= lowerBound.Y &&
-                subjectVector.Z >= lowerBound.Z &&
-
-                subjectVector.X <= upperBound.X &&
-                subjectVector.Y <= upperBound.Y &&
-                subjectVector.Z <= upperBound.Z
-                
-            );
-        }
-        
-        public static bool CheckIf__Bounded_XY0_Exclusive(Vector3 subjectVector, Vector3 lowerBound, Vector3 upperBound)
-        {
-            return (
-
-                subjectVector.X > lowerBound.X &&
-                subjectVector.Y > lowerBound.Y &&
-
-                subjectVector.X < upperBound.X &&
-                subjectVector.Y < upperBound.Y
-
-                );
-        }
 
         public static int Map__Even(int n)
         {
