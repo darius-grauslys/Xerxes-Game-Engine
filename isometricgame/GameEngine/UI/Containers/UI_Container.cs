@@ -10,7 +10,7 @@ namespace isometricgame.GameEngine.UI
     /// <summary>
     /// The abstract foundation for Container UI_Elements. Offers base functionality for scaling and repositioning.
     /// </summary>
-    public abstract class UI_Container : UI_Element
+    public class UI_Container : UI_Element
     {
         private readonly List<UI_Indexed_Element> _UI_Container__CHILD_ELEMENTS = new List<UI_Indexed_Element>();
         public int UI_Container__UI_Element_Count => _UI_Container__CHILD_ELEMENTS.Count;
@@ -48,10 +48,12 @@ namespace isometricgame.GameEngine.UI
         /// <param name="childElement"></param>
         protected bool Add__UI_Element__UI_Container(UI_Element element, UI_Anchor bindingAnchor = null)
         {
-            UI_Anchor clampedAnchor = new UI_Anchor();
-
-            clampedAnchor.UI_Anchor__Target_Anchor_Point = bindingAnchor?.UI_Anchor__Target_Anchor_Point ??
-                                                           UI_Anchor_Position_Type.Top_Left;
+            UI_Anchor clampedAnchor = new UI_Anchor
+            (
+                bindingAnchor?.UI_Anchor__Target_Anchor_Point ?? UI_Anchor_Position_Type.Top_Left,
+                bindingAnchor?.UI_Anchor__Offset_Type__UI_Anchor ?? UI_Anchor_Offset_Type.Pixel,
+                bindingAnchor?.UI_Anchor__Offset_Vector__UI_Anchor ?? Vector3.Zero
+            );
             
             clampedAnchor.UI_Anchor__Sort_Style = Private_Clamp__Sort_Style__UI_Container
             (
@@ -244,17 +246,38 @@ namespace isometricgame.GameEngine.UI
         /// <summary>
         /// Determines the initial position for a given element. This typically relates to the container's anchors.
         /// </summary>
-        /// <param name="indexedElementToSort"></param>
+        /// <param name="indexedElement"></param>
         /// <returns></returns>
         protected virtual Vector3 Handle_Get__Initial_Position_For_Element__UI_Container
         (
-            UI_Indexed_Element indexedElementToSort
+            UI_Indexed_Element indexedElement
         )
         {
             Vector3 basePosition =
-                Get__Anchor_Position__UI_Element(indexedElementToSort.UI_Indexed_Element__Anchor_Position_Type);
+                Get__Anchor_Position__UI_Element(indexedElement.UI_Indexed_Element__Anchor_Position_Type)
+                + Private_Get__Offset_From_Anchor__UI_Container(indexedElement);
 
             return basePosition;
+        }
+
+        private Vector3 Private_Get__Offset_From_Anchor__UI_Container
+        (
+            UI_Indexed_Element indexedElement
+        )
+        {
+            UI_Anchor anchor = indexedElement.UI_Indexed_Element__Anchor;
+
+            switch (anchor.UI_Anchor__Offset_Type__UI_Anchor)
+            {
+                case UI_Anchor_Offset_Type.Percentage:
+                    return MathHelper.Get__Hadamard_Product
+                    (
+                        anchor.UI_Anchor__Offset_Vector__UI_Anchor,
+                        UI_Element__BOUNDING_RECT.UI_Rect__Size__As_Vector3
+                    );
+                default:
+                    return anchor.UI_Anchor__Offset_Vector__UI_Anchor;
+            }
         }
         
         /// <summary>
@@ -353,7 +376,7 @@ namespace isometricgame.GameEngine.UI
             Vector3 targetPosition
         )
         {
-            UI_Indexed_Element overlappingIndexedElement = Private_Find__Overlapping_Element__UI_Container
+            UI_Indexed_Element overlappingIndexedElement = Protected_Find__Overlapping_Element__UI_Container
             (
                 indexedElementToSort,
                 targetPosition
@@ -375,7 +398,7 @@ namespace isometricgame.GameEngine.UI
             return offset;
         }
 
-        private UI_Indexed_Element Private_Find__Overlapping_Element__UI_Container
+        protected UI_Indexed_Element Protected_Find__Overlapping_Element__UI_Container
         (
             UI_Indexed_Element indexedElementToSort,
             Vector3 sortedPosition
@@ -528,7 +551,7 @@ namespace isometricgame.GameEngine.UI
         
         #endregion
 
-        public UI_Container
+        protected UI_Container
             (
             UI_Rect boundingRect,
             

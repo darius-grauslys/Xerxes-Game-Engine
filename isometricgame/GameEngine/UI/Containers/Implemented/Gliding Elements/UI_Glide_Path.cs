@@ -111,6 +111,9 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
 
         private void Private_Update__Percentages_Of_Total_Path__Core__UI_Glide_Path(float totalPathDistance)
         {
+            if (totalPathDistance == 0)
+                return;
+            
             float totalPercentage = 0;
             
             for (int i = 0; i < _UI_Glide_Path__NODE_ROUTE.Count; i++)

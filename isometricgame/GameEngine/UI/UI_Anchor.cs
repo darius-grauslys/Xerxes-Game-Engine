@@ -1,16 +1,12 @@
 ﻿using System;
-using isometricgame.GameEngine.Systems;
-using isometricgame.GameEngine.Tools;
 using OpenTK;
-using OpenTK.Graphics.ES10;
-using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine.UI
 {
     /// <summary>
     /// Describes a contract for Containers on how to sort an indexed element.
     /// </summary>
-    public class UI_Anchor
+    public sealed class UI_Anchor
     {
         public UI_Anchor_Position_Type UI_Anchor__Target_Anchor_Point { get; internal set; }
 
@@ -25,11 +21,18 @@ namespace isometricgame.GameEngine.UI
         public UI_Anchor_Sort_Type Get__Minor_Sort_Type__UI_Anchor()
             => UI_Anchor__Sort_Style.UI_Anchor_Style__MINOR;
 
-        public UI_Anchor(UI_Anchor_Position_Type targetAnchorPoint)
+        public UI_Anchor
+            (
+            UI_Anchor_Position_Type targetAnchorPoint,
+            UI_Anchor_Offset_Type offsetType = UI_Anchor_Offset_Type.Pixel,
+            Vector3? offsetVector = null
+            )
             : this
                 (
                 targetAnchorPoint,
-                new UI_Anchor_Sort_Style()
+                new UI_Anchor_Sort_Style(),
+                offsetType,
+                offsetVector
                 )
         {
             
@@ -39,12 +42,16 @@ namespace isometricgame.GameEngine.UI
             (
             UI_Anchor_Position_Type targetAnchorPoint,
             UI_Horizontal_Anchor_Sort_Type majorSort,
-            UI_Vertical_Anchor_Sort_Type minorSort
+            UI_Vertical_Anchor_Sort_Type minorSort,
+            UI_Anchor_Offset_Type offsetType = UI_Anchor_Offset_Type.Pixel,
+            Vector3? offsetVector = null
             )
             : this
                 (
                 targetAnchorPoint,
-                new UI_Anchor_Sort_Style((int)majorSort, (int)minorSort)
+                new UI_Anchor_Sort_Style((int)majorSort, (int)minorSort),
+                offsetType,
+                offsetVector
                 )
         {
             
@@ -54,12 +61,16 @@ namespace isometricgame.GameEngine.UI
         (
             UI_Anchor_Position_Type targetAnchorPoint,
             UI_Vertical_Anchor_Sort_Type majorSort,
-            UI_Horizontal_Anchor_Sort_Type minorSort
+            UI_Horizontal_Anchor_Sort_Type minorSort,
+            UI_Anchor_Offset_Type offsetType = UI_Anchor_Offset_Type.Pixel,
+            Vector3? offsetVector = null
         )
             : this
             (
                 targetAnchorPoint,
-                new UI_Anchor_Sort_Style((int)minorSort, (int)majorSort)
+                new UI_Anchor_Sort_Style((int)minorSort, (int)majorSort),
+                offsetType,
+                offsetVector
             )
         {
             
@@ -68,11 +79,15 @@ namespace isometricgame.GameEngine.UI
         internal UI_Anchor
         (
             UI_Anchor_Position_Type targetAnchorPoint = UI_Anchor_Position_Type.Top_Left,
-            UI_Anchor_Sort_Style sortStyle = null
+            UI_Anchor_Sort_Style sortStyle = null,
+            UI_Anchor_Offset_Type offsetType = UI_Anchor_Offset_Type.Pixel,
+            Vector3? offsetVector = null
         )
         {
             UI_Anchor__Target_Anchor_Point = targetAnchorPoint;
             UI_Anchor__Sort_Style = sortStyle;
+            UI_Anchor__Offset_Type__UI_Anchor = offsetType;
+            UI_Anchor__Offset_Vector__UI_Anchor = offsetVector ?? Vector3.Zero;
         }
 
         public override string ToString()

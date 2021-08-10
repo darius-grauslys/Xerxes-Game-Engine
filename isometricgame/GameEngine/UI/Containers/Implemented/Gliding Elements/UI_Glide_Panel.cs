@@ -8,7 +8,7 @@ using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine.UI.Containers.Implemented.Gliding_Elements
 {
-    public class UI_Glide_Panel : UI_Container
+    public class UI_Glide_Panel : UI_Vague_Panel
     {
         private readonly List<UI_Glide_Path> _UI_Gliding_Panel__GLIDE_PATHS;
 
