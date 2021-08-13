@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace isometricgame.GameEngine.UI
+namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers
 {
     /// <summary>
     /// A container that has open overrides on UI_Container that allow
@@ -10,18 +10,17 @@ namespace isometricgame.GameEngine.UI
     /// </summary>
     public class UI_Vague_Panel : UI_Container
     {
-        public UI_Vague_Panel(UI_Rect boundingRect, UI_GameObject associatedGameObject = null) 
+        public UI_Vague_Panel(UI_Rect boundingRect) 
             : base
                 (
-                boundingRect, 
-                associatedGameObject
+                boundingRect
                 )
         {
         }
 
         protected override bool Handle_Check_For__Sort_Integrity__UI_Container
         (
-            UI_Indexed_Element indexedElementToSort, 
+            UI_Anchored_Wrapper anchoredWrapperToSort, 
             Vector3 sortedPosition
         )
         {

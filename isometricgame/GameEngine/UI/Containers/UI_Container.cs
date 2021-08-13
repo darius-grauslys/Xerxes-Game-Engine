@@ -12,7 +12,7 @@ namespace isometricgame.GameEngine.UI
     /// </summary>
     public class UI_Container : UI_Element
     {
-        private readonly List<UI_Indexed_Element> _UI_Container__CHILD_ELEMENTS = new List<UI_Indexed_Element>();
+        private readonly List<UI_Anchored_Wrapper> _UI_Container__CHILD_ELEMENTS = new List<UI_Anchored_Wrapper>();
         public int UI_Container__UI_Element_Count => _UI_Container__CHILD_ELEMENTS.Count;
 
         /// <summary>
@@ -21,19 +21,19 @@ namespace isometricgame.GameEngine.UI
         public bool UI_Container__Element_Addition_Success_State { get; private set; }
 
         #region Get-Elements
-        protected UI_Indexed_Element Get__Indexed_Element__UI_Container(int index)
+        protected UI_Anchored_Wrapper Get__Indexed_Element__UI_Container(int index)
             => _UI_Container__CHILD_ELEMENTS[index];
 
         protected T Get__Element__UI_Container<T>(int index) where T : UI_Element
-            => Get__Indexed_Element__UI_Container(index).UI_Indexed_Element__ELEMENT as T;
+            => Get__Indexed_Element__UI_Container(index).UI_Wrapper__WRAPPED_ELEMENT as T;
 
-        internal List<UI_Indexed_Element> Internal_Get__CHILD_ELEMENTS__UI_Container()
+        internal List<UI_Wrapper> Internal_Get__CHILD_ELEMENTS__UI_Container()
             => Handle_Internal_Get__CHILD_ELEMENTS__UI_Container();
 
-        protected virtual List<UI_Indexed_Element> Handle_Internal_Get__CHILD_ELEMENTS__UI_Container()
-            => _UI_Container__CHILD_ELEMENTS.ToList();
+        protected virtual List<UI_Wrapper> Handle_Internal_Get__CHILD_ELEMENTS__UI_Container()
+            => _UI_Container__CHILD_ELEMENTS.ToList<UI_Wrapper>();
 
-        protected UI_Indexed_Element[] Get__CHILD_ELEMENTS__UI_Container()
+        protected UI_Anchored_Wrapper[] Get__CHILD_ELEMENTS__UI_Container()
             => _UI_Container__CHILD_ELEMENTS.ToArray();
         
         protected bool Check_If__Index_Within_Bounds__UI_Container(int index)
@@ -71,22 +71,22 @@ namespace isometricgame.GameEngine.UI
                 )
             );
 
-            UI_Indexed_Element indexedElement = new UI_Indexed_Element
+            UI_Anchored_Wrapper anchoredWrapper = new UI_Anchored_Wrapper
             (
                 element,
-                clampedAnchor,
-                this
+                this,
+                clampedAnchor
             );
             
-            Vector3? sortedPosition = Private_Attempt__Sort__UI_Container(indexedElement);
+            Vector3? sortedPosition = Private_Attempt__Sort__UI_Container(anchoredWrapper);
 
             UI_Container__Element_Addition_Success_State = sortedPosition != null;
             
             if (UI_Container__Element_Addition_Success_State)
             {
                 element.Internal_Set__Position__UI_Element((Vector3) sortedPosition);
-                _UI_Container__CHILD_ELEMENTS.Add(indexedElement);
-                Private_Bind__Relative_Position_To_Anchor__UI_Container(indexedElement);
+                _UI_Container__CHILD_ELEMENTS.Add(anchoredWrapper);
+                Private_Bind__Relative_Position_To_Anchor__UI_Container(anchoredWrapper);
             }
 
             return UI_Container__Element_Addition_Success_State;
@@ -180,21 +180,21 @@ namespace isometricgame.GameEngine.UI
         
         #region Post--Add-Element
         
-        private void Private_Bind__Relative_Position_To_Anchor__UI_Container(UI_Indexed_Element indexedElement)
+        private void Private_Bind__Relative_Position_To_Anchor__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            Vector3 relativePosition = Handle_Get__Relative_Position_To_Anchor__UI_Container(indexedElement);
+            Vector3 relativePosition = Handle_Get__Relative_Position_To_Anchor__UI_Container(anchoredWrapper);
             
-            indexedElement.Set__Relative_Position_From_Anchor__UI_Indexed_Element(relativePosition);
+            anchoredWrapper.Set__Relative_Position_From_Anchor__UI_Indexed_Element(relativePosition);
         }
         /// <summary>
         /// Virtualized for base functionality. Finds the distance to the associated anchor minus the offset in element size.
         /// </summary>
-        /// <param name="indexedElement"></param>
+        /// <param name="anchoredWrapper"></param>
         /// <returns></returns>
-        protected virtual Vector3 Handle_Get__Relative_Position_To_Anchor__UI_Container(UI_Indexed_Element indexedElement)
+        protected virtual Vector3 Handle_Get__Relative_Position_To_Anchor__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            UI_Element element = indexedElement.UI_Indexed_Element__ELEMENT;
-            UI_Anchor_Position_Type positionType = indexedElement.UI_Indexed_Element__Anchor_Position_Type;
+            UI_Element element = anchoredWrapper.UI_Wrapper__WRAPPED_ELEMENT;
+            UI_Anchor_Position_Type positionType = anchoredWrapper.UI_Indexed_Element__Anchor_Position_Type;
 
             Vector3 anchorPoint = Get__Anchor_Position__UI_Element(positionType);
 
@@ -209,27 +209,27 @@ namespace isometricgame.GameEngine.UI
         
         #region Add-Element--Sort
         
-        private Vector3? Private_Attempt__Sort__UI_Container(UI_Indexed_Element indexedElement)
+        private Vector3? Private_Attempt__Sort__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            Vector3 minorAnchorPosition = Handle_Get__Initial_Position_For_Element__UI_Container(indexedElement);
-            Vector3 sortedPosition = Handle_Get__Initial_Position_For_Element__UI_Container(indexedElement);
+            Vector3 minorAnchorPosition = Handle_Get__Initial_Position_For_Element__UI_Container(anchoredWrapper);
+            Vector3 sortedPosition = Handle_Get__Initial_Position_For_Element__UI_Container(anchoredWrapper);
             
-            while (Handle_Check_For__Sort_Integrity__UI_Container(indexedElement, sortedPosition))
+            while (Handle_Check_For__Sort_Integrity__UI_Container(anchoredWrapper, sortedPosition))
             {
                 bool wasSorted;
                 
                 sortedPosition =
                     Private_Sort__UI_Element_On_Major_Anchor__UI_Container
                     (
-                        indexedElement.Get__Major_Sort_Type__UI_Indexed_Element,
-                        indexedElement,
+                        anchoredWrapper.Get__Major_Sort_Type__UI_Indexed_Element,
+                        anchoredWrapper,
                         sortedPosition,
                         out wasSorted
                     );
 
                 sortedPosition = minorAnchorPosition = Private_Verify__Major_Sort__UI_Container
                 (
-                    indexedElement,
+                    anchoredWrapper,
                     minorAnchorPosition,
                     sortedPosition
                 );
@@ -246,26 +246,26 @@ namespace isometricgame.GameEngine.UI
         /// <summary>
         /// Determines the initial position for a given element. This typically relates to the container's anchors.
         /// </summary>
-        /// <param name="indexedElement"></param>
+        /// <param name="anchoredWrapper"></param>
         /// <returns></returns>
         protected virtual Vector3 Handle_Get__Initial_Position_For_Element__UI_Container
         (
-            UI_Indexed_Element indexedElement
+            UI_Anchored_Wrapper anchoredWrapper
         )
         {
             Vector3 basePosition =
-                Get__Anchor_Position__UI_Element(indexedElement.UI_Indexed_Element__Anchor_Position_Type)
-                + Private_Get__Offset_From_Anchor__UI_Container(indexedElement);
+                Get__Anchor_Position__UI_Element(anchoredWrapper.UI_Indexed_Element__Anchor_Position_Type)
+                + Private_Get__Offset_From_Anchor__UI_Container(anchoredWrapper);
 
             return basePosition;
         }
 
         private Vector3 Private_Get__Offset_From_Anchor__UI_Container
         (
-            UI_Indexed_Element indexedElement
+            UI_Anchored_Wrapper anchoredWrapper
         )
         {
-            UI_Anchor anchor = indexedElement.UI_Indexed_Element__Anchor;
+            UI_Anchor anchor = anchoredWrapper.UI_Indexed_Element__Anchor;
 
             switch (anchor.UI_Anchor__Offset_Type__UI_Anchor)
             {
@@ -286,11 +286,11 @@ namespace isometricgame.GameEngine.UI
         /// <returns></returns>
         protected virtual bool Handle_Check_For__Sort_Integrity__UI_Container
         (
-            UI_Indexed_Element indexedElementToSort,
+            UI_Anchored_Wrapper anchoredWrapperToSort,
             Vector3 sortedPosition
         )
         {
-            UI_Element element = indexedElementToSort.UI_Indexed_Element__ELEMENT;
+            UI_Element element = anchoredWrapperToSort.UI_Wrapper__WRAPPED_ELEMENT;
             
             return UI_Rect.CheckIf__Within_Rect
             (
@@ -303,7 +303,7 @@ namespace isometricgame.GameEngine.UI
         private Vector3 Private_Sort__UI_Element_On_Major_Anchor__UI_Container
         (
             UI_Anchor_Sort_Type anchorSortType,
-            UI_Indexed_Element indexedElementToSort,
+            UI_Anchored_Wrapper anchoredWrapperToSort,
             Vector3 sortedPosition,
             out bool possessedOverlap
         )
@@ -316,7 +316,7 @@ namespace isometricgame.GameEngine.UI
                 offsetStep = Private_Sort__Offset_Step__UI_Container
                 (
                     anchorSortType,
-                    indexedElementToSort,
+                    anchoredWrapperToSort,
                     sortedPosition + offsetPosition
                 );
 
@@ -332,37 +332,37 @@ namespace isometricgame.GameEngine.UI
         /// After being sorted a long an anchor in Private_Attempt__Sort__UI_Container,
         /// check if the sort is bounded by the container, otherwise fallback to recovery.
         /// </summary>
-        /// <param name="indexedElement"></param>
+        /// <param name="anchoredWrapper"></param>
         /// <param name="nullableSortedPosition"></param>
         private Vector3 Private_Verify__Major_Sort__UI_Container
         (
-            UI_Indexed_Element indexedElement, 
+            UI_Anchored_Wrapper anchoredWrapper, 
             Vector3 minorAnchorPosition,
             Vector3 sortedPosition
         )
         {
-            if (Handle_Check_For__Sort_Integrity__UI_Container(indexedElement, sortedPosition))
+            if (Handle_Check_For__Sort_Integrity__UI_Container(anchoredWrapper, sortedPosition))
             {
                 return sortedPosition;
             }
 
-            return Handle_Recover__Sort__UI_Container(indexedElement, minorAnchorPosition);
+            return Handle_Recover__Sort__UI_Container(anchoredWrapper, minorAnchorPosition);
         }
 
         protected virtual Vector3 Handle_Recover__Sort__UI_Container
         (
-            UI_Indexed_Element indexedElement, 
+            UI_Anchored_Wrapper anchoredWrapper, 
             Vector3 minorAnchorPosition
         )
         {
             Vector3 minorHadamard = Vector3.One;
 
-            UI_Anchor_Sort_Type minorSort = indexedElement.Get__Minor_Sort_Type__UI_Indexed_Element;
+            UI_Anchor_Sort_Type minorSort = anchoredWrapper.Get__Minor_Sort_Type__UI_Indexed_Element;
 
             Vector3? offset = Private_Sort__Offset_Step__UI_Container
             (
                 minorSort,
-                indexedElement,
+                anchoredWrapper,
                 minorAnchorPosition
             );
 
@@ -372,21 +372,21 @@ namespace isometricgame.GameEngine.UI
         private Vector3? Private_Sort__Offset_Step__UI_Container
         (
             UI_Anchor_Sort_Type anchorSortType,
-            UI_Indexed_Element indexedElementToSort,
+            UI_Anchored_Wrapper anchoredWrapperToSort,
             Vector3 targetPosition
         )
         {
-            UI_Indexed_Element overlappingIndexedElement = Protected_Find__Overlapping_Element__UI_Container
+            UI_Anchored_Wrapper overlappingAnchoredWrapper = Protected_Find__Overlapping_Element__UI_Container
             (
-                indexedElementToSort,
+                anchoredWrapperToSort,
                 targetPosition
             );
 
-            if (overlappingIndexedElement == null)
+            if (overlappingAnchoredWrapper == null)
                 return null;
 
-            UI_Element elementToSort = indexedElementToSort.UI_Indexed_Element__ELEMENT;
-            UI_Element overlappingElement = overlappingIndexedElement.UI_Indexed_Element__ELEMENT;
+            UI_Element elementToSort = anchoredWrapperToSort.UI_Wrapper__WRAPPED_ELEMENT;
+            UI_Element overlappingElement = overlappingAnchoredWrapper.UI_Wrapper__WRAPPED_ELEMENT;
             
             Vector3 offset = Handle_Get__Alignment_Offset__UI_Container
             (
@@ -398,17 +398,17 @@ namespace isometricgame.GameEngine.UI
             return offset;
         }
 
-        protected UI_Indexed_Element Protected_Find__Overlapping_Element__UI_Container
+        protected UI_Anchored_Wrapper Protected_Find__Overlapping_Element__UI_Container
         (
-            UI_Indexed_Element indexedElementToSort,
+            UI_Anchored_Wrapper anchoredWrapperToSort,
             Vector3 sortedPosition
         )
         {
-            UI_Element elementToSort = indexedElementToSort.UI_Indexed_Element__ELEMENT;
+            UI_Element elementToSort = anchoredWrapperToSort.UI_Wrapper__WRAPPED_ELEMENT;
             
-            foreach (UI_Indexed_Element indexedChildElement in _UI_Container__CHILD_ELEMENTS)
+            foreach (UI_Anchored_Wrapper indexedChildElement in _UI_Container__CHILD_ELEMENTS)
             {
-                UI_Element childElement = indexedChildElement.UI_Indexed_Element__ELEMENT;
+                UI_Element childElement = indexedChildElement.UI_Wrapper__WRAPPED_ELEMENT;
 
                 if
                 (
@@ -478,7 +478,7 @@ namespace isometricgame.GameEngine.UI
         {
             base.Internal_Handle_Scale__UI_Element(newHypotenuse);
 
-            foreach (UI_Indexed_Element elementContainer in _UI_Container__CHILD_ELEMENTS)
+            foreach (UI_Anchored_Wrapper elementContainer in _UI_Container__CHILD_ELEMENTS)
             {
                 Private_Scale__Child_Element_Size__UI_Container(elementContainer);
                 Private_Scale__Child_Element_Position__UI_Container(elementContainer);
@@ -487,28 +487,28 @@ namespace isometricgame.GameEngine.UI
 
         #region Handle-Scale-Mutation--Of-Container
         
-        private void Private_Scale__Child_Element_Size__UI_Container(UI_Indexed_Element indexedElement)
+        private void Private_Scale__Child_Element_Size__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            float? newHypotenuse = Handle_Scale__Determine_Child_Hypotenuse__UI_Container(indexedElement);
+            float? newHypotenuse = Handle_Scale__Determine_Child_Hypotenuse__UI_Container(anchoredWrapper);
             
-            indexedElement.Internal_Scale__Element__UI_Indexed_Element(newHypotenuse);
+            anchoredWrapper.Internal_Scale__Element__UI_Indexed_Element(newHypotenuse);
         }
         
         /// <summary>
         /// Returns null if to resort to internal default size scaling.
         /// </summary>
-        /// <param name="indexedElement"></param>
+        /// <param name="anchoredWrapper"></param>
         /// <returns></returns>
-        protected virtual float? Handle_Scale__Determine_Child_Hypotenuse__UI_Container(UI_Indexed_Element indexedElement)
+        protected virtual float? Handle_Scale__Determine_Child_Hypotenuse__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
             return null;
         }
 
-        private void Private_Scale__Child_Element_Position__UI_Container(UI_Indexed_Element indexedElement)
+        private void Private_Scale__Child_Element_Position__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            Vector3 position = Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(indexedElement);
+            Vector3 position = Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(anchoredWrapper);
 
-            UI_Element element = indexedElement.UI_Indexed_Element__ELEMENT;
+            UI_Element element = anchoredWrapper.UI_Wrapper__WRAPPED_ELEMENT;
             element.Internal_Set__Position__UI_Element(position);
         }
 
@@ -520,24 +520,23 @@ namespace isometricgame.GameEngine.UI
 
         internal override void Internal_Set__Position__UI_Element(Vector3 position)
         {
-            //TODO: make the position clamped to possible parent element.
-            UI_Element__BOUNDING_RECT.Internal_Set__Position__UI_Rect(position);
+            base.Internal_Set__Position__UI_Element(position);
 
-            foreach (UI_Indexed_Element elementContainer in _UI_Container__CHILD_ELEMENTS)
+            foreach (UI_Anchored_Wrapper elementContainer in _UI_Container__CHILD_ELEMENTS)
             {
-                UI_Element element = elementContainer.UI_Indexed_Element__ELEMENT;
+                UI_Element element = elementContainer.UI_Wrapper__WRAPPED_ELEMENT;
                 Vector3 childPosition = Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(elementContainer);
                 
                 element.Internal_Set__Position__UI_Element(childPosition);
             }
         }
-
+        
         protected virtual Vector3 Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(
-            UI_Indexed_Element indexedElement)
+            UI_Anchored_Wrapper anchoredWrapper)
         {
             Vector3 anchorPosition =
-                Get__Anchor_Position__UI_Element(indexedElement.UI_Indexed_Element__Anchor_Position_Type);
-            Vector3 scaledPositionFromAnchor = indexedElement.Get__Current_Position_From_Anchor__UI_Indexed_Element();
+                Get__Anchor_Position__UI_Element(anchoredWrapper.UI_Indexed_Element__Anchor_Position_Type);
+            Vector3 scaledPositionFromAnchor = anchoredWrapper.Get__Current_Position_From_Anchor__UI_Indexed_Element();
             
             Vector3 elementPosition =
                     anchorPosition
@@ -553,15 +552,11 @@ namespace isometricgame.GameEngine.UI
 
         protected UI_Container
             (
-            UI_Rect boundingRect,
-            
-            UI_GameObject associatedGameObject = null
+            UI_Rect boundingRect
             )
         : base 
             (
-            boundingRect,
-            
-            associatedGameObject
+            boundingRect
             )
         {
         }

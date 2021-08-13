@@ -20,12 +20,12 @@ namespace isometricgame.GameEngine.UI.Components
             => UI_Clickable__UI_Render_Of_Attached_UI_GameObject?.UI_Render__Position;
 
         private UI_Element UI_Clickable__Render_Element
-            => UI_Clickable__UI_Render_Of_Attached_UI_GameObject?.UI_Render__ELEMENT;
+            => UI_Clickable__UI_Render_Of_Attached_UI_GameObject?.UI_Render__Element;
 
         private UI_Rect UI_Clickable__Bounding_Rect
             => UI_Clickable__Render_Element?.UI_Element__BOUNDING_RECT;
 
-        public UI_Clickable_Component(Action<Frame_Argument> clickedHandler = null)
+        public UI_Clickable_Component(Action<UI_MouseButton_Pulse_FrameArgument> clickedHandler = null)
         {
             UI_Clickable__Clicked_Handler = clickedHandler;
         }

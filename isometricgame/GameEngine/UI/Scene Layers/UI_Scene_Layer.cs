@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.Systems.Input;
-using isometricgame.GameEngine.UI.Containers.Implemented;
+using isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers;
 using OpenTK;
 using OpenTK.Input;
 
@@ -15,7 +15,7 @@ namespace isometricgame.GameEngine.UI
         public event Action<UI_Keyboard_Pulse_Frame_Arguement> Event__Evaluate_Keyboard_Button__UI_Scene_Layer;
         
         private readonly UI_Strict_Panel UI_Scene_Layer__Strict_Panel;
-        public UI_Indexed_Element[] temp_test__get__elements() => UI_Scene_Layer__Strict_Panel?.Get__Child_Elements__UI_Strict_Panel() ?? new UI_Indexed_Element[0];
+        public UI_Anchored_Wrapper[] temp_test__get__elements() => UI_Scene_Layer__Strict_Panel?.Get__Child_Elements__UI_Strict_Panel() ?? new UI_Anchored_Wrapper[0];
         private readonly InputHandler UI_Scene_Layer__InputHandler__Internal;
         
         public UI_Scene_Layer(Scene sceneLayerParentScene, int sceneLayerLayerLevel = 0) 
@@ -33,8 +33,6 @@ namespace isometricgame.GameEngine.UI
                     |
                     InputType.Keyboard_UpDown
                     );
-            
-            Register__Input_Pulse__UI_Scene_Layer(MouseButton.Left);
         }
 
         protected void Register__Input_Pulse__UI_Scene_Layer(MouseButton mousePulse)
@@ -45,13 +43,6 @@ namespace isometricgame.GameEngine.UI
         protected void Register__Input_Pulse__UI_Scene_Layer(Key keyPulse)
         {
             UI_Scene_Layer__InputHandler__Internal.DeclarePulse(keyPulse.ToString());
-        }
-        
-        protected override void Handle_Update__Scene_Layer(Frame_Argument e)
-        {
-            Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(e, MouseButton.Left);
-            
-            base.Handle_Update__Scene_Layer(e);
         }
 
         protected void Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(Frame_Argument args, MouseButton mouseButton)
@@ -75,14 +66,11 @@ namespace isometricgame.GameEngine.UI
                     new UI_MouseButton_Pulse_FrameArgument(args, mousePosition, margs.Button);
                 Event__Evaluate_Mouse_Button__UI_Scene_Layer?.Invoke(uiPulseArg);
 
-                if (uiPulseArg.UI_Pulse_FrameArgument__Frame_Evaluates_Pulse)
-                {
-                    UI_Scene_Layer__InputHandler__Internal
-                        .EvaluatePulseState
-                        (
-                            MouseButton.Left.ToString()
-                        );
-                }
+                UI_Scene_Layer__InputHandler__Internal
+                    .EvaluatePulseState
+                    (
+                        MouseButton.Left.ToString()
+                    );
             }
         }
 
@@ -103,14 +91,11 @@ namespace isometricgame.GameEngine.UI
                 
                 Event__Evaluate_Keyboard_Button__UI_Scene_Layer?.Invoke(uiPulseArg);
 
-                if (uiPulseArg.UI_Pulse_FrameArgument__Frame_Evaluates_Pulse)
-                {
-                    UI_Scene_Layer__InputHandler__Internal
-                        .EvaluatePulseState
-                        (
-                            keyButton.ToString()
-                        );
-                }
+                UI_Scene_Layer__InputHandler__Internal
+                    .EvaluatePulseState
+                    (
+                        keyButton.ToString()
+                    );
             }
         }
         
@@ -122,7 +107,7 @@ namespace isometricgame.GameEngine.UI
         {
             return Add__UI_Element__UI_Scene_Layer
             (
-                uiGameObject.UI_GameObject__UI_Element__Internal,
+                uiGameObject.Internal_UI_GameObject__UI_Element,
                 bindingAnchor
             );
         }
@@ -160,11 +145,11 @@ namespace isometricgame.GameEngine.UI
             UI_Container container
         )
         {
-            List<UI_Indexed_Element> indexedElements = container.Internal_Get__CHILD_ELEMENTS__UI_Container();
+            List<UI_Wrapper> indexedElements = container.Internal_Get__CHILD_ELEMENTS__UI_Container();
             
-            foreach (UI_Indexed_Element indexedElement in indexedElements)
+            foreach (UI_Wrapper indexedElement in indexedElements)
             {
-                UI_Element element = indexedElement.UI_Indexed_Element__ELEMENT;
+                UI_Element element = indexedElement.UI_Wrapper__WRAPPED_ELEMENT;
 
                 Private_Check__For_Special_Conditions_Of_Child__UI_Scene_Layer(element);
             }

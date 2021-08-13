@@ -11,7 +11,6 @@ namespace isometricgame.GameEngine.Tools
         private EventScheduler EventScheduler { get; set; }
 
         public string EventTag { get; internal set; }
-        internal string RecurringTag { get; set; }
 
         private Timer Timer { get; set; }
         public double Duration => Timer.TimeLimit;
@@ -21,31 +20,21 @@ namespace isometricgame.GameEngine.Tools
         public bool Triggered { get; private set; }
 
         public TimedCallback(
-            string eventTag, 
             double timeLimit=1, 
             Action<Timer> deltaTimeCallback=null, 
             Action elapsedCallback = null, 
-            Action<double> resetCallback = null,
-            EventScheduler eventScheduler = null)
+            Action<double> resetCallback = null)
         {
-            EventTag = eventTag;
-
-            Bind_To_Schedule(eventScheduler);
-
             Timer = new Timer(timeLimit);
             TimeDelta_Callback = deltaTimeCallback;
             TimeElapsed_Callback = elapsedCallback;
             TimeReset_Callback = resetCallback;
         }
 
-        internal void Bind_To_Schedule(EventScheduler eventScheduler)
+        internal void Bind_To_Schedule(EventScheduler eventScheduler, string givenTag)
         {
-            if (EventScheduler != null)
-                EventScheduler.Remove_Event(EventTag);
-
-            if (eventScheduler == null) return;
+            EventTag = givenTag;
             EventScheduler = eventScheduler;
-            EventScheduler.Register_Event(EventTag, this);
         }
 
         internal bool Progress_DeltaTime(double deltaTime)
@@ -72,7 +61,7 @@ namespace isometricgame.GameEngine.Tools
 
         public void Invoke()
         {
-            EventScheduler?.Invoke_Event(RecurringTag);
+            EventScheduler?.Invoke_Event(EventTag);
         }
     }
 }

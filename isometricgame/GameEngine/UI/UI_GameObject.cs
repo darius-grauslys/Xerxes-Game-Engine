@@ -7,17 +7,23 @@ namespace isometricgame.GameEngine.UI
 {
     public class UI_GameObject : GameObject
     {
-        internal readonly UI_Render_Component UI_GameObject__UI_RENDER__Internal;
-        protected UI_Render_Component UI_GameObject__UI_Render => UI_GameObject__UI_RENDER__Internal;
-        internal UI_Element UI_GameObject__UI_Element__Internal
-            => UI_GameObject__UI_RENDER__Internal.UI_Render__ELEMENT;
+        internal UI_Render_Component Internal_UI_GameObject__UI_RENDER { get; }
+        protected UI_Render_Component UI_GameObject__UI_Render => Internal_UI_GameObject__UI_RENDER;
+        internal UI_Element Internal_UI_GameObject__UI_Element
+            => Internal_UI_GameObject__UI_RENDER.UI_Render__Element;
 
+        protected Vector3 Get__Game_Space_Position__UI_GameObject()
+            => Internal_UI_GameObject__UI_Element.Get__Position_In_GameSpace__UI_Element();
+
+        protected Vector3 Get__UI_Space_Position__UI_GameObject()
+            => Internal_UI_GameObject__UI_Element.Get__Position_In_UISpace__UI_Element();
+        
         public UI_GameObject
             (
             UI_Scene_Layer sceneLayer,
             string spriteAlias, 
             
-            UI_Rect boundingRect,
+            UI_Element uiElement,
             
             params GameObject_Component[] components
             ) 
@@ -34,7 +40,7 @@ namespace isometricgame.GameEngine.UI
                             (
                                 spriteAlias,
                                 
-                                boundingRect
+                                uiElement
                             )
                         },
                         components
@@ -42,12 +48,12 @@ namespace isometricgame.GameEngine.UI
                     .ToArray()
                 )
         {
-            UI_GameObject__UI_RENDER__Internal = Get__Component__GameObject<UI_Render_Component>();
+            Internal_UI_GameObject__UI_RENDER = Get__Component__GameObject<UI_Render_Component>();
         }
 
         public override string ToString()
         {
-            return String.Format("[UI_GameObject] {1} : {0}", base.ToString(), UI_GameObject__UI_Element__Internal);
+            return String.Format("[UI_GameObject] {1} : {0}", base.ToString(), Internal_UI_GameObject__UI_Element);
         }
     }
 }

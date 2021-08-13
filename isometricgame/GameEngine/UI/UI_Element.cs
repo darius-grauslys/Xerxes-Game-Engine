@@ -82,9 +82,15 @@ namespace isometricgame.GameEngine.UI
         internal void Internal_Set__Position_Silently__UI_Element(Vector3 position)
         {
             UI_Element__BOUNDING_RECT.Internal_Set__Position__UI_Rect(position);
+            Handle_Reposition__UI_Element();
         }
 
-        internal UI_Element(Vector2? size = null) 
+        protected virtual void Handle_Reposition__UI_Element()
+        {
+            
+        }
+
+        public UI_Element(Vector2? size = null) 
             : this
                 ( 
                 new UI_Rect(size)
@@ -92,18 +98,13 @@ namespace isometricgame.GameEngine.UI
         {
         }
         
-        internal UI_Element
+        public UI_Element
         (
-            UI_Rect boundingRect,
-            
-            UI_GameObject associated_UIGameObject = null
+            UI_Rect boundingRect
         )
         {
             UI_Element__Scales = true;
-
             UI_Element__BOUNDING_RECT = boundingRect;
-            
-            Internal_Set__Associated_UI_GameObject__UI_Element(associated_UIGameObject);
         }
 
         internal void Internal_Resize__UI_Element(Vector2 newSize)
@@ -124,7 +125,7 @@ namespace isometricgame.GameEngine.UI
                 Event__Scaled__UI_Element?.Invoke(this);
             }
         }
-
+        
         internal virtual void Internal_Handle_Scale__UI_Element(float newHypotenuse)
         {
             UI_Element__BOUNDING_RECT.Internal_Rescale__UI_Rect(newHypotenuse);

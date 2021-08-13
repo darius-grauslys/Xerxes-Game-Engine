@@ -144,6 +144,48 @@ namespace isometricgame.GameEngine.Tools
                 );
         }
 
+        /// <summary>
+        /// Returns 0 if the param is null.
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <param name="nullableVec"></param>
+        /// <returns></returns>
+        public static float Get__Safe_Distance
+        (
+            Vector2 vec,
+            Vector2? nullableVec
+        )
+        {
+            if (nullableVec == null)
+                return 0;
+            return Vector2.Distance
+            (
+                vec,
+                (Vector2) nullableVec
+            );
+        }
+
+        /// <summary>
+        /// Returns 0 if the param is null.
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <param name="nullableVec"></param>
+        /// <returns></returns>
+        public static float Get__Safe_Distance
+        (
+            Vector3 vec,
+            Vector3? nullableVec
+        )
+        {
+            if (nullableVec == null)
+                return 0;
+            return Vector3.Distance
+            (
+                vec,
+                (Vector3) nullableVec
+            );
+        }
+        
         public static float Calculate__Area(Vector2 vec)
             => vec.X * vec.Y;
 
@@ -187,6 +229,9 @@ namespace isometricgame.GameEngine.Tools
         public static bool CheckIf__Obeys_Clamp(float val, float min, float max)
             //Not checking equality for precision errors.
             => !(val < min) && !(val > max);
+
+        public static float Divide__Safely(float numerator, float denominator, float undefinedReturn = 0)
+            => (denominator == 0) ? undefinedReturn : numerator / denominator;
         
         public static float Clamp__Float(float val, float min, float max)
             => (val < min) ? min : ((val > max) ? max : val);

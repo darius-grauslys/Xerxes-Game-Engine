@@ -14,16 +14,29 @@ namespace isometricgame.GameEngine.Tools
         private bool isActive = false;
         public bool IsActive => isActive;
 
-        internal void Register_Event(string tag, TimedCallback timedEvent)
+        public bool CheckIf__Event_Is_Active__Event_Scheduler(TimedCallback @event)
         {
-            if (!EventCatalog.ContainsKey(tag))
-            {
-                RecurringNames.Add(tag, 0);
-            }
-            timedEvent.RecurringTag = tag + "_" + RecurringNames[tag];
-            EventCatalog.Add(tag, timedEvent);
+            return (ActiveEvents.Contains(@event));
         }
-        internal bool Remove_Event(string tag)
+
+        public string Register_Event(string tag, TimedCallback timedEvent)
+        {
+            if (RecurringNames.ContainsKey(tag))
+            {
+                RecurringNames[tag]++;
+            }
+            else
+            {
+                RecurringNames.Add(tag, -1);
+            }
+
+            string bindingTag = tag + "_" + RecurringNames[tag];
+            EventCatalog.Add(bindingTag, timedEvent);
+            timedEvent.Bind_To_Schedule(this, bindingTag);
+
+            return bindingTag;
+        }
+        public bool Remove_Event(string tag)
         {
             bool ret = EventCatalog.ContainsKey(tag);
 

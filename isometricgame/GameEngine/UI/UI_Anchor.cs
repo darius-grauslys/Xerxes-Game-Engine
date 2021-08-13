@@ -21,6 +21,16 @@ namespace isometricgame.GameEngine.UI
         public UI_Anchor_Sort_Type Get__Minor_Sort_Type__UI_Anchor()
             => UI_Anchor__Sort_Style.UI_Anchor_Style__MINOR;
 
+        public UI_Anchor(UI_Anchor_Position_Type targetAnchorPoint)
+            : this
+                (
+                targetAnchorPoint,
+                UI_Anchor_Offset_Type.Pixel
+                )
+        {
+            
+        }
+        
         public UI_Anchor
             (
             UI_Anchor_Position_Type targetAnchorPoint,

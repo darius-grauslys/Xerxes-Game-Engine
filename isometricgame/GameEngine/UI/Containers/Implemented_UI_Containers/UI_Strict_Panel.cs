@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace isometricgame.GameEngine.UI.Containers.Implemented
+namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers
 {
     /// <summary>
     /// A UI_Container that has sealed the base overrides for UI_Container.
@@ -10,36 +10,32 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented
     {
         public UI_Strict_Panel
             (
-            UI_Rect boundingRect,
-            
-            UI_GameObject associatedGameObject = null
+            UI_Rect boundingRect
             )
         : base
             (
-                boundingRect,
-                
-                associatedGameObject
+                boundingRect
             )
         {
         }
 
-        public UI_Indexed_Element[] Get__Child_Elements__UI_Strict_Panel()
+        public UI_Anchored_Wrapper[] Get__Child_Elements__UI_Strict_Panel()
             => Get__CHILD_ELEMENTS__UI_Container();
 
         public bool Add__Element__UI_Strict_Panel(UI_Element element, UI_Anchor bindingAnchor = null)
             => Add__UI_Element__UI_Container(element, bindingAnchor);
 
         public bool Add__UI_GameObject__UI_Strict_Panel(UI_GameObject uiGameObject, UI_Anchor bindingAnchor = null)
-            => Add__Element__UI_Strict_Panel(uiGameObject.UI_GameObject__UI_Element__Internal, bindingAnchor);
+            => Add__Element__UI_Strict_Panel(uiGameObject.Internal_UI_GameObject__UI_Element, bindingAnchor);
 
         protected sealed override void Handle_Scale__UI_Element()
         {
             base.Handle_Scale__UI_Element();
         }
 
-        protected sealed override Vector3 Handle_Recover__Sort__UI_Container(UI_Indexed_Element indexedElement, Vector3 minorAnchorPosition)
+        protected sealed override Vector3 Handle_Recover__Sort__UI_Container(UI_Anchored_Wrapper anchoredWrapper, Vector3 minorAnchorPosition)
         {
-            return base.Handle_Recover__Sort__UI_Container(indexedElement, minorAnchorPosition);
+            return base.Handle_Recover__Sort__UI_Container(anchoredWrapper, minorAnchorPosition);
         }
 
         protected sealed override Vector3 Handle_Get__Alignment_Offset__UI_Container(UI_Anchor_Sort_Type anchorSortType, UI_Rect rect_OfElement_ToSort,
@@ -48,9 +44,9 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented
             return base.Handle_Get__Alignment_Offset__UI_Container(anchorSortType, rect_OfElement_ToSort, rect_OfOverlapping_ChildElement);
         }
 
-        protected sealed override bool Handle_Check_For__Sort_Integrity__UI_Container(UI_Indexed_Element indexedElementToSort, Vector3 sortedPosition)
+        protected sealed override bool Handle_Check_For__Sort_Integrity__UI_Container(UI_Anchored_Wrapper anchoredWrapperToSort, Vector3 sortedPosition)
         {
-            return base.Handle_Check_For__Sort_Integrity__UI_Container(indexedElementToSort, sortedPosition);
+            return base.Handle_Check_For__Sort_Integrity__UI_Container(anchoredWrapperToSort, sortedPosition);
         }
 
         protected sealed override UI_Anchor_Sort_Type Handle_Clamp__Horizontal_Sort_Type__UI_Container(UI_Anchor_Position_Type elementPositionType,
@@ -65,9 +61,9 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented
             return base.Handle_Clamp__Vertical_Sort_Type__UI_Container(elementPositionType, verticalSortType);
         }
 
-        protected sealed override float? Handle_Scale__Determine_Child_Hypotenuse__UI_Container(UI_Indexed_Element indexedElement)
+        protected sealed override float? Handle_Scale__Determine_Child_Hypotenuse__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            return base.Handle_Scale__Determine_Child_Hypotenuse__UI_Container(indexedElement);
+            return base.Handle_Scale__Determine_Child_Hypotenuse__UI_Container(anchoredWrapper);
         }
 
         protected sealed override UI_Anchor_Position_Type Handle_Clamp__Added_Element_Local_Origin__UI_Container(UI_Anchor_Position_Type localOrigin,
@@ -76,19 +72,19 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented
             return base.Handle_Clamp__Added_Element_Local_Origin__UI_Container(localOrigin, targetAnchor);
         }
 
-        protected sealed override Vector3 Handle_Get__Initial_Position_For_Element__UI_Container(UI_Indexed_Element indexedElement)
+        protected sealed override Vector3 Handle_Get__Initial_Position_For_Element__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            return base.Handle_Get__Initial_Position_For_Element__UI_Container(indexedElement);
+            return base.Handle_Get__Initial_Position_For_Element__UI_Container(anchoredWrapper);
         }
 
-        protected sealed override Vector3 Handle_Get__Relative_Position_To_Anchor__UI_Container(UI_Indexed_Element indexedElement)
+        protected sealed override Vector3 Handle_Get__Relative_Position_To_Anchor__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            return base.Handle_Get__Relative_Position_To_Anchor__UI_Container(indexedElement);
+            return base.Handle_Get__Relative_Position_To_Anchor__UI_Container(anchoredWrapper);
         }
 
-        protected sealed override Vector3 Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(UI_Indexed_Element indexedElement)
+        protected sealed override Vector3 Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(UI_Anchored_Wrapper anchoredWrapper)
         {
-            return base.Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(indexedElement);
+            return base.Handle_Post_Sort_Reposition__Of_Child_Element__UI_Container(anchoredWrapper);
         }
     }
 }
