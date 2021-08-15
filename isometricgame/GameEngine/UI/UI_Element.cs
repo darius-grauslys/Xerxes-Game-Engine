@@ -68,7 +68,7 @@ namespace isometricgame.GameEngine.UI
         /// <param name="positionType"></param>
         /// <returns></returns>
         public Vector3 Get__Local_Anchor_Position__UI_Element(UI_Anchor_Position_Type positionType)
-            => UI_Element__BOUNDING_RECT.Internal_Get__Local_Anchor_Position__UI_Rect(positionType);
+            => UI_Element__BOUNDING_RECT.Internal_Get__Anchor_Point__UI_Rect(positionType);
 
         public Vector3 Get__Anchor_Position__UI_Element(UI_Anchor_Position_Type positionType)
             => UI_Element__BOUNDING_RECT.Internal_Get__Anchor_Position__UI_Rect(positionType);

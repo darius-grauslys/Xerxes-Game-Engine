@@ -392,7 +392,8 @@ namespace isometricgame.GameEngine.UI
             (
                 anchorSortType,
                 elementToSort.UI_Element__BOUNDING_RECT,
-                overlappingElement.UI_Element__BOUNDING_RECT
+                overlappingElement.UI_Element__BOUNDING_RECT,
+                targetPosition
             );
 
             return offset;
@@ -412,7 +413,7 @@ namespace isometricgame.GameEngine.UI
 
                 if
                 (
-                    UI_Rect.CheckIf__Within_Rect
+                    UI_Rect.CheckIf__Rects_Overlap
                     (
                         elementToSort.UI_Element__BOUNDING_RECT,
                         childElement.UI_Element__BOUNDING_RECT,
@@ -439,31 +440,79 @@ namespace isometricgame.GameEngine.UI
         (
             UI_Anchor_Sort_Type anchorSortType,
             UI_Rect rect_OfElement_ToSort,
-            UI_Rect rect_OfOverlapping_ChildElement
+            UI_Rect rect_OfOverlapping_ChildElement,
+            Vector3 targetPosition
         )
         {
+            UI_Anchor_Position_Type localOrigin_PointType_SortingElement = rect_OfElement_ToSort.UI_Rect__Local_Origin_Type;
+
+            UI_Anchor_Position_Type clamped_LocalOrigin_PointType_SortingElement
+                = UI_Anchor.Clamp_To_Direction__If_Is_Middle
+                (
+                    localOrigin_PointType_SortingElement,
+                    anchorSortType
+                );
+
+            UI_Anchor_Position_Type opposingLocalOrigin = UI_Anchor.Get__Opposite
+            (
+                clamped_LocalOrigin_PointType_SortingElement,
+                anchorSortType
+            );
+
+            Vector3 clamped_LocalOrigin_Position_SortingElement =
+                rect_OfElement_ToSort.Internal_Get__Anchor_Position__UI_Rect
+                (
+                    clamped_LocalOrigin_PointType_SortingElement
+                )
+                + 
+                targetPosition
+                ;
+
+            Vector3 opposing_LocalOrigin_Position =
+                rect_OfOverlapping_ChildElement.Internal_Get__Anchor_Position__UI_Rect
+                (
+                    opposingLocalOrigin
+                );
+
+            Vector3 leftHand = new Vector3(Single.NaN, Single.NaN, Single.NaN), rightHand = leftHand;
+
             switch (anchorSortType)
             {
-                //Moves left of the compared element.
                 case UI_Anchor_Sort_Type.Left:
-                    return 
-                        -rect_OfElement_ToSort.UI_Rect__Width__As_Vector3;
-                //Moves right of the compared element.
-                case UI_Anchor_Sort_Type.Right:
-                    return
-                        rect_OfOverlapping_ChildElement.UI_Rect__Width__As_Vector3;
-                //Moves up of the compared element.
                 case UI_Anchor_Sort_Type.Top:
-                    return
-                        rect_OfOverlapping_ChildElement.UI_Rect__Height__As_Vector3;
-                //Moves down of the compared element.
+                    leftHand = clamped_LocalOrigin_Position_SortingElement;
+                    rightHand = opposing_LocalOrigin_Position;
+                    break;
+                case UI_Anchor_Sort_Type.Right:
                 case UI_Anchor_Sort_Type.Bottom:
-                    return 
-                        -rect_OfElement_ToSort.UI_Rect__Height__As_Vector3;
+                    leftHand = opposing_LocalOrigin_Position;
+                    rightHand = clamped_LocalOrigin_Position_SortingElement;
+                    break;
             }
+
+            Vector3 allAxisOffset = leftHand - rightHand;
             
-            //critical failure has occured. This should never happen.
-            throw new InvalidOperationException();
+            Vector3 offset_Hadamard_Vector = Vector3.One;
+            
+            switch (anchorSortType)
+            {
+                case UI_Anchor_Sort_Type.Left:
+                case UI_Anchor_Sort_Type.Right:
+                    offset_Hadamard_Vector = new Vector3(1, 0, 0);
+                    break;
+                case UI_Anchor_Sort_Type.Top:
+                case UI_Anchor_Sort_Type.Bottom:
+                    offset_Hadamard_Vector = new Vector3(0, 1, 0);
+                    break;
+            }
+
+            Vector3 offset = MathHelper.Get__Hadamard_Product
+            (
+                allAxisOffset,
+                offset_Hadamard_Vector
+            );
+
+            return offset;
         }
         
         #endregion

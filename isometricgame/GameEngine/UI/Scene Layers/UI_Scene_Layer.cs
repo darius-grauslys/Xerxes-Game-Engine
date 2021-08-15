@@ -107,7 +107,7 @@ namespace isometricgame.GameEngine.UI
         {
             return Add__UI_Element__UI_Scene_Layer
             (
-                uiGameObject.Internal_UI_GameObject__UI_Element,
+                uiGameObject.Get__UI_Element__UI_GameObject(),
                 bindingAnchor
             );
         }

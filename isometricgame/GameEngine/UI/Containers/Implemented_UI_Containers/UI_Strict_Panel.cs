@@ -26,7 +26,7 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers
             => Add__UI_Element__UI_Container(element, bindingAnchor);
 
         public bool Add__UI_GameObject__UI_Strict_Panel(UI_GameObject uiGameObject, UI_Anchor bindingAnchor = null)
-            => Add__Element__UI_Strict_Panel(uiGameObject.Internal_UI_GameObject__UI_Element, bindingAnchor);
+            => Add__Element__UI_Strict_Panel(uiGameObject.Get__UI_Element__UI_GameObject(), bindingAnchor);
 
         protected sealed override void Handle_Scale__UI_Element()
         {
@@ -39,9 +39,9 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers
         }
 
         protected sealed override Vector3 Handle_Get__Alignment_Offset__UI_Container(UI_Anchor_Sort_Type anchorSortType, UI_Rect rect_OfElement_ToSort,
-            UI_Rect rect_OfOverlapping_ChildElement)
+            UI_Rect rect_OfOverlapping_ChildElement, Vector3 targetPosition)
         {
-            return base.Handle_Get__Alignment_Offset__UI_Container(anchorSortType, rect_OfElement_ToSort, rect_OfOverlapping_ChildElement);
+            return base.Handle_Get__Alignment_Offset__UI_Container(anchorSortType, rect_OfElement_ToSort, rect_OfOverlapping_ChildElement, targetPosition);
         }
 
         protected sealed override bool Handle_Check_For__Sort_Integrity__UI_Container(UI_Anchored_Wrapper anchoredWrapperToSort, Vector3 sortedPosition)

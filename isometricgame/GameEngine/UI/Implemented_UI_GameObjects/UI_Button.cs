@@ -36,7 +36,7 @@ namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects
                     ).ToArray()
                 )
         {
-            _UI_Button__STRICT_PANEL = Internal_UI_GameObject__UI_Element as UI_Strict_Panel;
+            _UI_Button__STRICT_PANEL = Get__UI_Element__UI_GameObject() as UI_Strict_Panel;
             UI_Button__Text = new UI_Text
             (
                 sceneLayer.Scene_Layer__Game.Game__Text_Displayer,
