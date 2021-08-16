@@ -50,7 +50,12 @@ namespace isometricgame.GameEngine.UI.Components
             
             if 
             (
-                UI_Rect.CheckIf__Position_Is_Bounded_By_Rect(clickedPosition, UI_Clickable__Bounding_Rect)
+                UI_Rect.CheckIf__Position_Is_Bounded_By_Rect
+                    (
+                    clickedPosition, 
+                    UI_Clickable__Bounding_Rect,
+                    Vector3.Zero
+                    )
             )
             {
                 args.Consume__UI_Pulse__UI_Pulse_FrameArgument();

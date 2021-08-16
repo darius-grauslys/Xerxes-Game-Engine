@@ -33,6 +33,24 @@ namespace isometricgame.GameEngine.UI
             new Vector3(0.5f,0,0),
             new Vector3(1,0,0),
         };
+
+        private static readonly UI_Anchor_Position_Type[] _UI_Rect__EXTERIOR_POSITIONS = new UI_Anchor_Position_Type[]
+        {
+            UI_Anchor_Position_Type.Top_Left,    UI_Anchor_Position_Type.Top_Middle,    UI_Anchor_Position_Type.Top_Right,
+            
+            UI_Anchor_Position_Type.Middle_Left,                                        UI_Anchor_Position_Type.Middle_Right,
+            
+            UI_Anchor_Position_Type.Bottom_Left, UI_Anchor_Position_Type.Bottom_Middle, UI_Anchor_Position_Type.Bottom_Right
+        };
+
+        private static readonly UI_Anchor_Position_Type[] _UI_Rect__CORNERS = new UI_Anchor_Position_Type[]
+        {
+            UI_Anchor_Position_Type.Top_Left,                                           UI_Anchor_Position_Type.Top_Right,
+            
+            
+            
+            UI_Anchor_Position_Type.Bottom_Left,                                        UI_Anchor_Position_Type.Bottom_Right
+        };
         
         private readonly Vector3[] _UI_Rect__ANCHOR_POINTS = new Vector3[9];
         
@@ -349,109 +367,123 @@ namespace isometricgame.GameEngine.UI
             (
             UI_Rect isThis, 
             UI_Rect withinThis,
-            Vector3? nullableOffset = null,
-            bool allPoints_MustBe_Within = true,
-            bool edgeInclusive = true
+            Vector3? nullable_SubjectOffset = null,
+            Vector3? nullable_TargetOffset = null
             )
         {
-            Vector3 offset = nullableOffset ?? Vector3.Zero;
+            Vector3 subjectOffset = nullable_SubjectOffset ?? Vector3.Zero;
+            Vector3 targetOffset = nullable_TargetOffset ?? Vector3.Zero;
 
-            bool isSubjectWithin = CheckFor__Bounds_Within
+            bool isSubjectWithin = Private_CheckFor__Anchor_Positions_Within
             (
                 isThis,
                 withinThis,
-                offset,
-                Vector3.Zero,
-                allPoints_MustBe_Within,
-                edgeInclusive,
-                true
+                subjectOffset,
+                targetOffset
             );
 
             return isSubjectWithin;
         }
 
+        private static bool Private_CheckFor__Anchor_Positions_Within
+        (
+            UI_Rect isThis,
+            UI_Rect withinThis,
+            Vector3 subjectOffset,
+            Vector3 targetOffset
+        )
+        {
+            bool ret = false;
+
+            foreach (Vector3 anchorPosition in isThis.Internal_Get__Exterior_Anchor_Positions__UI_Rect())
+            {
+                Vector3 offset_AnchorPosition = anchorPosition + subjectOffset;
+
+                ret = CheckIf__Position_Is_Bounded_By_Rect
+                (
+                    offset_AnchorPosition,
+                    withinThis,
+                    targetOffset
+                );
+
+                if (!ret)
+                    return false;
+            }
+            
+            return ret;
+        }
+        
         public static bool CheckIf__Rects_Overlap
             (
             UI_Rect isThis, 
             UI_Rect withinThis,
-            Vector3? nullableOffset = null,
-            bool allPoints_MustBe_Within = true,
-            bool edgeInclusive = true
+            Vector3? nullableOffset = null
         )
         {
             Vector3 offset = nullableOffset ?? Vector3.Zero;
 
-            bool isSubjectWithin = CheckFor__Bounds_Within
+            bool isSubjectWithin = Private_CheckFor__Bounds_Overlap
             (
                 isThis,
                 withinThis,
                 offset,
-                Vector3.Zero,
-                allPoints_MustBe_Within,
-                edgeInclusive
+                Vector3.Zero
             );
 
-            bool isTargetWithin = CheckFor__Bounds_Within
+            bool isTargetWithin = Private_CheckFor__Bounds_Overlap
             (
                 withinThis,
                 isThis,
                 Vector3.Zero,
-                offset,
-                allPoints_MustBe_Within,
-                edgeInclusive
+                offset
             );
 
             return isSubjectWithin || isTargetWithin;
         }
         
-        private static bool CheckFor__Bounds_Within
+        private static bool Private_CheckFor__Bounds_Overlap
         (
             UI_Rect subject,
             UI_Rect target,
             Vector3 subjectOffset,
-            Vector3 targetOffset,
-            bool allPoints_MustBe_Within = true,
-            bool edgeInclusive = true,
-            bool treatInteriorInclusively = false
+            Vector3 targetOffset
         )
         {
-            Vector3 target_BoundingPosition =
+            Vector3 target_Middle =
                 target.Internal_Get__Anchor_Position__UI_Rect(UI_Anchor_Position_Type.Middle);
 
-            Vector3 interiorBound = subject.Internal_Get__Anchor_Position__UI_Rect(UI_Anchor_Position_Type.Middle);
-
-            bool isInteriorBounded = Private_CheckIf__Position_Is_Bounded_By_Rect
-            (
-                interiorBound + subjectOffset,
-                target_BoundingPosition + targetOffset,
-                target.UI_Rect__Width,
-                target.UI_Rect__Height,
-                (!subject.Is__Any_Length_Zero__UI_Rect) || treatInteriorInclusively
-            );
-
-            bool isAnyWithin = isInteriorBounded;
-
-            if (!isInteriorBounded && allPoints_MustBe_Within)
-                return false;
+            // Vector3 subject_Middle =
+            //     subject.Internal_Get__Anchor_Position__UI_Rect(UI_Anchor_Position_Type.Middle);
+            //
+            // bool isInternallyBound = CheckIf__Position_Is_Bounded_By_Rect
+            // (
+            //     subject_Middle + subjectOffset,
+            //     target,
+            //     targetOffset
+            // );
+            //
+            // if (isInternallyBound)
+            //     return true;
             
-            foreach (Vector3 bound in subject.Internal_Get__Exterior_Anchor_Positions__UI_Rect())
+            float failSum = 0;
+            
+            foreach (UI_Anchor_Position_Type position in _UI_Rect__CORNERS)
             {
-                bool isBounded = Private_CheckIf__Position_Is_Bounded_By_Rect
+                Vector3 subjectBound = subject.Internal_Get__Anchor_Position__UI_Rect(position);
+                Vector3 complementaryBound = target.Internal_Get__Anchor_Position__UI_Rect(position);
+                
+                failSum += Private_CheckIf__Bound_Overlaps_Rect
                 (
-                    bound + subjectOffset,
-                    target_BoundingPosition + targetOffset,
-                    target.UI_Rect__Width,
-                    target.UI_Rect__Height,
-                    edgeInclusive
+                    subjectBound + subjectOffset,
+                    complementaryBound + targetOffset,
+                    target_Middle + targetOffset
                 );
 
-                if (!isBounded && allPoints_MustBe_Within)
-                    return false;
-
-                isAnyWithin = isAnyWithin || isBounded;
+                if (failSum > 0.9f)
+                    return true;
             }
 
-            return isAnyWithin;
+            return false;
         }
         
         
@@ -459,45 +491,93 @@ namespace isometricgame.GameEngine.UI
         (
             Vector3 position,
             UI_Rect rect,
+            Vector3 rectOffset,
             bool inclusive = true
         )
         {
-            return Private_CheckIf__Position_Is_Bounded_By_Rect
+            float inclusiveBuffer = (inclusive) ? -0.0001f : 0.0001f;
+            
+            Vector3 middle = 
+                rect.Internal_Get__Anchor_Position__UI_Rect(UI_Anchor_Position_Type.Middle)
+                + rectOffset
+                ;
+
+            Vector3 dist = position - middle;
+            
+            float hyp_d = MathHelper.Get__Hypotenuse
             (
-                position,
-                rect.Internal_Get__Anchor_Position__UI_Rect(UI_Anchor_Position_Type.Middle),
-                rect.UI_Rect__Width,
-                rect.UI_Rect__Height,
-                inclusive
+                dist
+            ) + inclusiveBuffer;
+
+            float hyp_dh = MathHelper.Get__Hypotenuse
+            (
+                new Vector2(dist.X, rect.UI_Rect__Height/2)
             );
+
+            float hyp_wd = MathHelper.Get__Hypotenuse
+            (
+                new Vector2(rect.UI_Rect__Width/2, dist.Y)
+            );
+
+            bool isWithin =
+                hyp_d < hyp_dh
+                &&
+                hyp_d < hyp_wd;
+
+            return isWithin;
         }
         
-        private static bool Private_CheckIf__Position_Is_Bounded_By_Rect
+        /// <summary>
+        /// 0: Pass, 1: fail, 0.25, soft-fail.
+        /// </summary>
+        /// <param name="subjectBound"></param>
+        /// <param name="complementaryBound"></param>
+        /// <param name="rectMiddle"></param>
+        /// <param name="edgeInclusive"></param>
+        /// <returns></returns>
+        private static float Private_CheckIf__Bound_Overlaps_Rect
             (
-            Vector3 targetPosition,
-            Vector3 boundingPosition,
-            float width,
-            float height,
-            bool edgeInclusive = true
+            Vector3 subjectBound,
+            Vector3 complementaryBound,
+            Vector3 rectMiddle
             )
         {
-            float inclusiveBuffer = (edgeInclusive) ? 0.0001f : -0.0001f;
+            Vector3 distToComplementary = complementaryBound - rectMiddle;
             
-            Vector3 distVector =
-                targetPosition - boundingPosition;
-            
-            float limit_x_hypotenuse =
-                MathHelper.Get__Hypotenuse(distVector.X, height/2) + inclusiveBuffer;
+            Vector3 ab = new Vector3
+            (
+                subjectBound.X,
+                complementaryBound.Y,
+                0
+            ) - rectMiddle;
 
-            float limit_y_hypotenuse =
-                MathHelper.Get__Hypotenuse(width/2, distVector.Y) + inclusiveBuffer;
+            Vector3 ba = new Vector3
+            (
+                complementaryBound.X,
+                subjectBound.Y,
+                0
+            ) - rectMiddle;
 
-            float hypotenuseToTarget = MathHelper.Get__Hypotenuse(distVector.X, distVector.Y);
+            float hyp_b = MathHelper.Get__Hypotenuse
+            (
+                distToComplementary
+            );
 
-            bool isBoundedX = hypotenuseToTarget < limit_x_hypotenuse;
-            bool isBoundedY = hypotenuseToTarget < limit_y_hypotenuse;
+            float hyp_ab = MathHelper.Get__Hypotenuse(ab);
+            float hyp_ba = MathHelper.Get__Hypotenuse(ba);
 
-            return isBoundedX && isBoundedY;
+            bool fail_ab_b = hyp_ab < hyp_b;
+            bool fail_ba_b = hyp_ba < hyp_b;
+            bool fail_overlap = hyp_ab == hyp_b && hyp_ba == hyp_b;
+
+            if (fail_ab_b || fail_ba_b || fail_overlap)
+            {
+                if (fail_ab_b && fail_ba_b)
+                    return 1;
+                return 0.25f;
+            }
+
+            return 0;
         }
         
         #endregion

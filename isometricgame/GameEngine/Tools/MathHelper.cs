@@ -9,6 +9,9 @@ namespace isometricgame.GameEngine.Tools
     {
         public static readonly Vector2 MAX_VECTOR2_SQUARED = new Vector2(1844674400000000000f, 1844674400000000000f);
 
+        public static float Get__Hypotenuse(Vector3 vec3)
+            => Vector2.Distance(vec3.Xy, Vector2.Zero);
+        
         public static float Get__Hypotenuse(Vector2 vec2)
             => Vector2.Distance(vec2, Vector2.Zero);
 

@@ -417,9 +417,7 @@ namespace isometricgame.GameEngine.UI
                     (
                         elementToSort.UI_Element__BOUNDING_RECT,
                         childElement.UI_Element__BOUNDING_RECT,
-                        sortedPosition,
-                        false,
-                        false
+                        sortedPosition
                     )
                 )
                     return indexedChildElement;
