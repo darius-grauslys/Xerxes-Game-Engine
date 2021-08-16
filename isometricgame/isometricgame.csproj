@@ -79,6 +79,7 @@
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\Gliding Elements\UI_Glide_Panel.cs" />
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\Gliding Elements\UI_Glide_Path.cs" />
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\Gliding Elements\UI_Glide_Type.cs" />
+    <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\UI_Element_Buffer.cs" />
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\UI_Strict_Panel.cs" />
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\UI_Vague_Panel.cs" />
     <Compile Include="GameEngine\UI\Containers\UI_Container.cs" />
