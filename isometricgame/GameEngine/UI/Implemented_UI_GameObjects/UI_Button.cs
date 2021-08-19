@@ -9,7 +9,7 @@ namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects
 {
     public class UI_Button : UI_GameObject
     {
-        private UI_Strict_Panel _UI_Button__STRICT_PANEL { get; }
+        private UI_Strict_Container UiButtonStrictContainer { get; }
         public UI_Text UI_Button__Text { get; }
         
         public UI_Button
@@ -28,7 +28,7 @@ namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects
                 (
                 sceneLayer, 
                 spriteAlias, 
-                new UI_Strict_Panel(uiRect), 
+                new UI_Strict_Container(uiRect), 
                 Enumerable.Concat
                     (
                     new GameObject_Component[] { new UI_Clickable_Component(clickHandler) },
@@ -36,19 +36,18 @@ namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects
                     ).ToArray()
                 )
         {
-            _UI_Button__STRICT_PANEL = Get__UI_Element__UI_GameObject() as UI_Strict_Panel;
+            UiButtonStrictContainer = Get__UI_Element__UI_GameObject() as UI_Strict_Container;
             UI_Button__Text = new UI_Text
             (
-                sceneLayer.Scene_Layer__Game.Game__Text_Displayer,
                 sceneLayer,
                 defaultText,
                 defaultFont,
                 textFieldSprite,
-                null,
+                UI_Anchor_Position_Type.Middle_Right,
                 textSize
             );
 
-            _UI_Button__STRICT_PANEL.Add__UI_GameObject__UI_Strict_Panel
+            UiButtonStrictContainer.Add__UI_GameObject__UI_Strict_Panel
                 (
                 UI_Button__Text,
                 new UI_Anchor

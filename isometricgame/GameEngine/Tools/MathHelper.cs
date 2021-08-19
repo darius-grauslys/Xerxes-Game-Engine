@@ -7,6 +7,8 @@ namespace isometricgame.GameEngine.Tools
 {
     public class MathHelper
     {
+        public const float FLOAT__MINIMUM__PERCISION = 0.0001f;
+        
         public static readonly Vector2 MAX_VECTOR2_SQUARED = new Vector2(1844674400000000000f, 1844674400000000000f);
 
         public static float Get__Hypotenuse(Vector3 vec3)
@@ -71,6 +73,23 @@ namespace isometricgame.GameEngine.Tools
                 Get__Safe_Inverse(toInvertSafely.X, safeReturn),
                 Get__Safe_Inverse(toInvertSafely.Y, safeReturn)
             );
+
+        public static Vector3 Get__VecAB__As__VecAxByZ0(Vector3 a, Vector3 b)
+            => new Vector3(a.X, b.Y, 0);
+        public static Vector3 Get__VecAB__As__VecBxAyZ0(Vector3 a, Vector3 b)
+            => new Vector3(b.X, a.Y, 0);
+        
+        public static bool CheckIf__Vec_Is_Bounded__Forth_Quadrant(Vector3 vec, Vector3 v1, Vector3 v2)
+        {
+            bool xBounded = Tolerable__LessThanEqual__Float(v1.X, vec.X) 
+                            && 
+                            Tolerable__GreaterThanEqual__Float(v2.X, vec.X);
+            bool yBounded = Tolerable__LessThanEqual__Float(v2.Y, vec.Y) 
+                            && 
+                            Tolerable__GreaterThanEqual__Float(v1.Y, vec.Y);
+
+            return xBounded && yBounded;
+        }
         
         public static float Get__Safe_Inverse(float value, float safeReturn = 0)
             => (value == 0) ? safeReturn : 1 / value;
@@ -226,6 +245,41 @@ namespace isometricgame.GameEngine.Tools
         public static Vector4 Convert__Color_To_Vec4(Color color)
             => new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
 
+        public static bool Tolerable__Equality__Float(float f1, float f2)
+        {
+            float diff = f1 - f2;
+
+            return diff <= FLOAT__MINIMUM__PERCISION && diff >= -FLOAT__MINIMUM__PERCISION;
+        }
+
+        public static bool Tolerable__LessThan__Float(float f1, float f2)
+        {
+            float diff = f1 - f2;
+
+            return diff <= -FLOAT__MINIMUM__PERCISION;
+        }
+
+        public static bool Tolerable__GreaterThan__Float(float f1, float f2)
+        {
+            float diff = f1 - f2;
+
+            return diff >= FLOAT__MINIMUM__PERCISION;
+        }
+
+        public static bool Tolerable__LessThanEqual__Float(float f1, float f2)
+        {
+            float diff = f1 - f2;
+
+            return diff <= FLOAT__MINIMUM__PERCISION;
+        }
+
+        public static bool Tolerable__GreaterThanEqual__Float(float f1, float f2)
+        {
+            float diff = f1 - f2;
+
+            return diff >= -FLOAT__MINIMUM__PERCISION;
+        }
+        
         public static bool CheckIf__Obeys_IClamp(int val, int min, int max)
             => (val >= min) && (val <= max);
 

@@ -48,33 +48,10 @@ namespace isometricgame.GameEngine.UI
         /// <param name="childElement"></param>
         protected bool Add__UI_Element__UI_Container(UI_Element element, UI_Anchor bindingAnchor = null)
         {
-            UI_Anchor clampedAnchor = new UI_Anchor
-            (
-                bindingAnchor?.UI_Anchor__Target_Anchor_Point ?? UI_Anchor_Position_Type.Top_Left,
-                bindingAnchor?.UI_Anchor__Offset_Type__UI_Anchor ?? UI_Anchor_Offset_Type.Pixel,
-                bindingAnchor?.UI_Anchor__Offset_Vector__UI_Anchor ?? Vector3.Zero
-            );
-            
-            clampedAnchor.UI_Anchor__Sort_Style = Private_Clamp__Sort_Style__UI_Container
-            (
-                clampedAnchor.UI_Anchor__Target_Anchor_Point,
-                bindingAnchor?.Get__Major_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Right,
-                bindingAnchor?.Get__Minor_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Bottom
-            );
-            
-            element.Internal_Set__Local_Origin_Position_Type__UI_Element
-            (
-                Handle_Clamp__Added_Element_Local_Origin__UI_Container
-                (
-                    element.Get__Local_Origin_Position_Type__UI_Element(),
-                    clampedAnchor.UI_Anchor__Target_Anchor_Point
-                )
-            );
-
-            UI_Anchored_Wrapper anchoredWrapper = new UI_Anchored_Wrapper
+            UI_Anchor clampedAnchor = Private_Get__Clamped_Anchor__UI_Container(bindingAnchor);
+            UI_Anchored_Wrapper anchoredWrapper = Private_Clamp__Element_Into_Anchored_Wrapper__UI_Container
             (
                 element,
-                this,
                 clampedAnchor
             );
             
@@ -94,6 +71,46 @@ namespace isometricgame.GameEngine.UI
 
         #region Pre--Add-Element
 
+        private UI_Anchored_Wrapper Private_Clamp__Element_Into_Anchored_Wrapper__UI_Container(UI_Element element, UI_Anchor clampedAnchor)
+        {
+            element.Internal_Set__Local_Origin_Position_Type__UI_Element
+            (
+                Handle_Clamp__Added_Element_Local_Origin__UI_Container
+                (
+                    element.Get__Local_Origin_Position_Type__UI_Element(),
+                    clampedAnchor.UI_Anchor__Target_Anchor_Point
+                )
+            );
+
+            UI_Anchored_Wrapper anchoredWrapper = new UI_Anchored_Wrapper
+            (
+                element,
+                this,
+                clampedAnchor
+            );
+
+            return anchoredWrapper;
+        }
+        
+        private UI_Anchor Private_Get__Clamped_Anchor__UI_Container(UI_Anchor bindingAnchor)
+        {
+            UI_Anchor clampedAnchor = new UI_Anchor
+            (
+                bindingAnchor?.UI_Anchor__Target_Anchor_Point ?? UI_Anchor_Position_Type.Top_Left,
+                bindingAnchor?.UI_Anchor__Offset_Type__UI_Anchor ?? UI_Anchor_Offset_Type.Pixel,
+                bindingAnchor?.UI_Anchor__Offset_Vector__UI_Anchor ?? Vector3.Zero
+            );
+            
+            clampedAnchor.UI_Anchor__Sort_Style = Private_Clamp__Sort_Style__UI_Container
+            (
+                clampedAnchor.UI_Anchor__Target_Anchor_Point,
+                bindingAnchor?.Get__Major_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Right,
+                bindingAnchor?.Get__Minor_Sort_Type__UI_Anchor() ?? UI_Anchor_Sort_Type.Bottom
+            );
+
+            return clampedAnchor;
+        }
+        
         protected virtual UI_Anchor_Position_Type Handle_Clamp__Added_Element_Local_Origin__UI_Container
         (
             UI_Anchor_Position_Type localOrigin,
@@ -292,12 +309,14 @@ namespace isometricgame.GameEngine.UI
         {
             UI_Element element = anchoredWrapperToSort.UI_Wrapper__WRAPPED_ELEMENT;
             
-            return UI_Rect.CheckIf__Within_Rect
+            bool isWithin = UI_Rect.CheckIf__Rect_Is_Within_Rect
             (
                 element.UI_Element__BOUNDING_RECT,
                 UI_Element__BOUNDING_RECT,
                 sortedPosition
             );
+
+            return isWithin;
         }
         
         private Vector3 Private_Sort__UI_Element_On_Major_Anchor__UI_Container
@@ -399,7 +418,7 @@ namespace isometricgame.GameEngine.UI
             return offset;
         }
 
-        protected UI_Anchored_Wrapper Protected_Find__Overlapping_Element__UI_Container
+        protected virtual UI_Anchored_Wrapper Protected_Find__Overlapping_Element__UI_Container
         (
             UI_Anchored_Wrapper anchoredWrapperToSort,
             Vector3 sortedPosition
@@ -413,7 +432,7 @@ namespace isometricgame.GameEngine.UI
 
                 if
                 (
-                    UI_Rect.CheckIf__Rects_Overlap
+                    UI_Rect.CheckIf__Rect_Overlaps_Rect
                     (
                         elementToSort.UI_Element__BOUNDING_RECT,
                         childElement.UI_Element__BOUNDING_RECT,

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using isometricgame.GameEngine.Events;
 
 namespace isometricgame.GameEngine.Rendering.Animation
 {
@@ -56,8 +57,8 @@ namespace isometricgame.GameEngine.Rendering.Animation
             }
             else if (pauseHasDuration)
             {
-                pauseDuration.Increase_DeltaTime(deltaTime);
-                if (pauseDuration.Finished)
+                pauseDuration.Progress__Timer(deltaTime);
+                if (pauseDuration.Timer__IsFinished)
                     Unpause();
             }
 

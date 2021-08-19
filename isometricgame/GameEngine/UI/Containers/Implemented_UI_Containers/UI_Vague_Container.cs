@@ -8,9 +8,9 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers
     /// unclamped anchor sorting styles. Use these containers to do
     /// whatever you want - but at the cost of predictability.
     /// </summary>
-    public class UI_Vague_Panel : UI_Container
+    public class UI_Vague_Container : UI_Inclusive_Container
     {
-        public UI_Vague_Panel(UI_Rect boundingRect) 
+        public UI_Vague_Container(UI_Rect boundingRect) 
             : base
                 (
                 boundingRect
@@ -52,6 +52,15 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers
         )
         {
             return verticalSortType;
+        }
+
+        protected override UI_Anchored_Wrapper Protected_Find__Overlapping_Element__UI_Container
+        (
+            UI_Anchored_Wrapper anchoredWrapperToSort,
+            Vector3 sortedPosition
+        )
+        {
+            return null;
         }
     }
 }

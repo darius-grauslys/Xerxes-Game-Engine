@@ -44,13 +44,13 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers.Glidi
         
         internal UI_Glide_Path
         (
-            UI_Glide_Panel glidePanel,
+            UI_Glide_Container glideContainer,
             UI_Element boundElement,
             List<UI_Glide_Node> pathNodes,
             UI_Glide_Type glideType = UI_Glide_Type.Clamped
         )
         {
-            _UI_Glide_Path__GLIDED_WRAPPER = new UI_Gliding_Wrapper(boundElement, glidePanel);
+            _UI_Glide_Path__GLIDED_WRAPPER = new UI_Gliding_Wrapper(boundElement, glideContainer);
             _UI_Glide_Path__WRAPPER_NODES = new UI_Glide_Path_Point[pathNodes.Count];
 
             UI_Glide_Path__Glide_Type = glideType;

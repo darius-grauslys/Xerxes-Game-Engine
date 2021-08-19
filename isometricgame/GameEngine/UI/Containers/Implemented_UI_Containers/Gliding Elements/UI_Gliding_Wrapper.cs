@@ -13,9 +13,9 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers.Glidi
         public UI_Gliding_Wrapper
             (
             UI_Element element,
-            UI_Glide_Panel glidePanel
+            UI_Glide_Container glideContainer
             )
-            : base (element, glidePanel)
+            : base (element, glideContainer)
         {
         }
     }

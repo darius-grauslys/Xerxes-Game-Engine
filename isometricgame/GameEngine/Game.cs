@@ -1,25 +1,17 @@
-﻿using isometricgame.GameEngine;
-using isometricgame.GameEngine.WorldSpace;
-using isometricgame.GameEngine.Rendering;
+﻿using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Systems;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using isometricgame.GameEngine.Exceptions.Services;
+using isometricgame.GameEngine.Events;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Systems.Rendering;
 using isometricgame.GameEngine.Systems.Serialization;
 using OpenTK.Graphics;
 using isometricgame.GameEngine.Systems.Input;
-using isometricgame.GameEngine.Tools;
 using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
 
 namespace isometricgame.GameEngine
@@ -27,14 +19,13 @@ namespace isometricgame.GameEngine
     public class Game : GameWindow
     {
         //PATHS
-        public readonly string GAME_DIRECTORY_BASE;
-        public readonly string GAME_DIRECTORY_WORLDS;
-        public readonly string GAME_DIRECTORY_ASSETS;
-        public readonly string GAME_DIRECTORY_SHADERS;
+        public string GAME__DIRECTORY__BASE { get; }
+        public string GAME__DIRECTORY__ASSETS { get; }
+        public string GAME__DIRECTORY__SHADERS { get; }
         
         #region Systems
 
-        private readonly List<GameSystem> SYSTEMS = new List<GameSystem>();
+        private List<GameSystem> GAME__SYSTEMS { get; }
         
         /// <summary>
         /// Responsible for loading and unloading textures.
@@ -50,7 +41,7 @@ namespace isometricgame.GameEngine
         public AnimationSchematicLibrary Game__Animation_Schematic_Library { get; private set; }
         public SceneManagementService Game__Scene_Management_Service { get; private set; }
         
-        public EventScheduler Game__Event_Scheduler { get; private set; }
+        public Event_Scheduler Game__Event_Scheduler { get; private set; }
         #endregion
 
         #region Time
@@ -74,8 +65,7 @@ namespace isometricgame.GameEngine
             int height, 
             string title, 
             string GAME_DIR = "", 
-            string GAME_DIR_ASSETS = "", 
-            string GAME_DIR_WORLDS = ""
+            string GAME_DIR_ASSETS = ""
             )
             : base
                 (
@@ -85,13 +75,14 @@ namespace isometricgame.GameEngine
                 title
                 )
         {
-            GAME_DIRECTORY_BASE = (GAME_DIR == String.Empty) ? AppDomain.CurrentDomain.BaseDirectory : GAME_DIR;
-            GAME_DIRECTORY_ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Assets" + Path.DirectorySeparatorChar) : GAME_DIR_ASSETS;
-            GAME_DIRECTORY_SHADERS = Path.Combine(GAME_DIRECTORY_ASSETS, "Shaders" + Path.DirectorySeparatorChar);
-            GAME_DIRECTORY_WORLDS = (GAME_DIR_WORLDS == String.Empty) ? Path.Combine(GAME_DIRECTORY_BASE, "Worlds" + Path.DirectorySeparatorChar) : GAME_DIR_WORLDS;
+            GAME__SYSTEMS = new List<GameSystem>();
+            
+            GAME__DIRECTORY__BASE = (GAME_DIR == String.Empty) ? AppDomain.CurrentDomain.BaseDirectory : GAME_DIR;
+            GAME__DIRECTORY__ASSETS = (GAME_DIR_ASSETS == String.Empty) ? Path.Combine(GAME__DIRECTORY__BASE, "Assets" + Path.DirectorySeparatorChar) : GAME_DIR_ASSETS;
+            GAME__DIRECTORY__SHADERS = Path.Combine(GAME__DIRECTORY__ASSETS, "Shaders" + Path.DirectorySeparatorChar);
             
             Register__Base_Systems__Game();
-            Game__Event_Scheduler = new EventScheduler();
+            Game__Event_Scheduler = new Event_Scheduler();
             Game__Render_Service.LoadShaders(Get__Shaders__Game());
 
             //END SERVICES
@@ -114,7 +105,7 @@ namespace isometricgame.GameEngine
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             updateTime += e.Time;
-            Game__Event_Scheduler.Progress_Events(e.Time);
+            Game__Event_Scheduler.Internal_Progress__Events__Event_Scheduler(e.Time);
             scene.UpdateScene(new Frame_Argument(UpdateTime, e.Time));
         }
 
@@ -139,23 +130,26 @@ namespace isometricgame.GameEngine
 
         protected override void OnUnload(EventArgs e)
         {
-            foreach (GameSystem gamesys in SYSTEMS)
+            foreach (GameSystem gamesys in GAME__SYSTEMS)
                 gamesys.Unload();
         }
 
         public T Get_System__Game<T>() where T : GameSystem
         {
-            foreach (GameSystem system in SYSTEMS)
+            foreach (GameSystem system in GAME__SYSTEMS)
                 if (system is T && system.Accessable)
                     return system as T;
-            throw new ServiceNotFoundException();
+            return null;
         }
 
-        protected void Register__System__Game<T>(T gameService) where T : GameSystem
+        protected bool Register__System__Game<T>(T gameService) where T : GameSystem
         {
-            if (SYSTEMS.Exists((s) => s is T))
-                throw new ExistingServiceException();
-            SYSTEMS.Add(gameService);
+            if (GAME__SYSTEMS.Exists((s) => s is T))
+                return false;
+            
+            GAME__SYSTEMS.Add(gameService);
+
+            return true;
         }
 
         protected virtual string[] Get__Shaders__Game()
@@ -183,19 +177,19 @@ namespace isometricgame.GameEngine
 
             Handle_Register__Custom_Systems__Game();
 
-            foreach (GameSystem system in SYSTEMS)
+            foreach (GameSystem system in GAME__SYSTEMS)
                 system.Load();
         }
 
         protected virtual void Handle_Register__Custom_Systems__Game() { }
         protected virtual void Handle_Load__Content__Game() { }
 
-        internal void Set__Scene__Game(Scene scene)
+        internal void Internal_Set__Scene__Game(Scene scene)
         {
             this.scene = scene;
         }
         
-        protected void Load__Sprite__Game
+        protected void Protected_Load__Sprite__Game
             (
             string spriteName, 
             float scale, 
@@ -206,7 +200,7 @@ namespace isometricgame.GameEngine
             )
         {
             string path = Path.Combine(
-                GAME_DIRECTORY_ASSETS,
+                GAME__DIRECTORY__ASSETS,
                 spriteName + ".png"
             );
             if (throwIf_NotExists && !File.Exists(path))

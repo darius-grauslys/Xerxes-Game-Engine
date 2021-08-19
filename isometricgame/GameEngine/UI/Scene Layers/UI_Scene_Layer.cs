@@ -14,16 +14,30 @@ namespace isometricgame.GameEngine.UI
         public event Action<UI_MouseButton_Pulse_FrameArgument> Event__Evaluate_Mouse_Button__UI_Scene_Layer;
         public event Action<UI_Keyboard_Pulse_Frame_Arguement> Event__Evaluate_Keyboard_Button__UI_Scene_Layer;
         
-        private readonly UI_Strict_Panel UI_Scene_Layer__Strict_Panel;
-        public UI_Anchored_Wrapper[] temp_test__get__elements() => UI_Scene_Layer__Strict_Panel?.Get__Child_Elements__UI_Strict_Panel() ?? new UI_Anchored_Wrapper[0];
+        private readonly UI_Inclusive_Container UI_Scene_Layer__Strict_Panel;
         private readonly InputHandler UI_Scene_Layer__InputHandler__Internal;
         
-        public UI_Scene_Layer(Scene sceneLayerParentScene, int sceneLayerLayerLevel = 0) 
+        public UI_Scene_Layer
+        (
+            Scene sceneLayerParentScene, 
+            UI_Inclusive_Container container = null, 
+            int sceneLayerLayerLevel = 0
+        ) 
             : base(sceneLayerParentScene, sceneLayerLayerLevel)
         {
-            UI_Scene_Layer__Strict_Panel = new UI_Strict_Panel
+            container?.Internal_Set__Local_Origin_Position_Type__UI_Element(UI_Anchor_Position_Type.Bottom_Left);
+            container?.Internal_Resize__UI_Element(SceneLayer__Window_Size__Game);
+
+            UI_Scene_Layer__Strict_Panel = 
+                container 
+                ?? 
+                new UI_Inclusive_Container
                 (
-                new UI_Rect(SceneLayer__Window_Size__Game, UI_Anchor_Position_Type.Bottom_Left)
+                new UI_Rect
+                    (
+                    SceneLayer__Window_Size__Game, 
+                    UI_Anchor_Position_Type.Bottom_Left
+                    )
                 );
 
             UI_Scene_Layer__InputHandler__Internal = 
@@ -118,7 +132,7 @@ namespace isometricgame.GameEngine.UI
             UI_Anchor bindingAnchor = null
         )
         {
-            bool success = UI_Scene_Layer__Strict_Panel.Add__Element__UI_Strict_Panel(element, bindingAnchor);
+            bool success = UI_Scene_Layer__Strict_Panel.Add__UI_Element__UI_Inclusive_Container(element, bindingAnchor);
 
             if (success)
             {

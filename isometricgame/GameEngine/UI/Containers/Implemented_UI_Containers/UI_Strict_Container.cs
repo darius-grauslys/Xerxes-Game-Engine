@@ -6,9 +6,9 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers
     /// A UI_Container that has sealed the base overrides for UI_Container.
     /// Containers that derive from UI_Strict_Panel have predictable sort behaviors.
     /// </summary>
-    public class UI_Strict_Panel : UI_Container
+    public class UI_Strict_Container : UI_Inclusive_Container
     {
-        public UI_Strict_Panel
+        public UI_Strict_Container
             (
             UI_Rect boundingRect
             )

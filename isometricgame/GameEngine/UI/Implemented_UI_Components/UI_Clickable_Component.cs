@@ -53,6 +53,7 @@ namespace isometricgame.GameEngine.UI.Components
                 UI_Rect.CheckIf__Position_Is_Bounded_By_Rect
                     (
                     clickedPosition, 
+                    Vector3.Zero,
                     UI_Clickable__Bounding_Rect,
                     Vector3.Zero
                     )

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using OpenTK;
 
 namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers.Gliding_Elements
 {
-    public class UI_Glide_Panel : UI_Vague_Panel
+    public class UI_Glide_Container : UI_Vague_Container
     {
         private readonly List<UI_Glide_Path> _UI_Glide_Panel__GLIDE_PATHS = new List<UI_Glide_Path>();
 
@@ -20,7 +21,7 @@ namespace isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers.Glidi
             return allWrappers;
         }
 
-        public UI_Glide_Panel(UI_Rect boundingRect) 
+        public UI_Glide_Container(UI_Rect boundingRect) 
             : base(boundingRect)
         {
         }

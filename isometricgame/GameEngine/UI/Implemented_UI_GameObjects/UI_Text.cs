@@ -15,12 +15,11 @@ namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects
         
         public UI_Text
             (
-            TextDisplayer textDisplayer,
             UI_Scene_Layer sceneLayer, 
             string defaultText = "",
             string defaultFont = "font",
             string spriteAlias = null, 
-            UI_Rect uiRect = null,
+            UI_Anchor_Position_Type localOrigin = UI_Anchor_Position_Type.Bottom_Left,
             Vector2? textSize = null,
             params GameObject_Component[] components
             ) 
@@ -30,8 +29,6 @@ namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects
                 spriteAlias, 
                 new UI_Element
                     (
-                    uiRect 
-                    ?? 
                     new UI_Rect
                         (
                         textSize 
@@ -40,13 +37,14 @@ namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects
                             (
                             DEFAULT_TEXT_SIZE,
                             new Vector2(defaultText.Length, 1)
-                            )
+                            ),
+                        localOrigin
                         )
                     ), 
                 components
                 )
         {
-            UI_Text__TEXTDISPLAYER__Reference = textDisplayer;
+            UI_Text__TEXTDISPLAYER__Reference = sceneLayer.Scene_Layer__Game.Game__Text_Displayer;
             UI_Text__String = defaultText;
             UiTextDefaultFont = defaultFont;
         }

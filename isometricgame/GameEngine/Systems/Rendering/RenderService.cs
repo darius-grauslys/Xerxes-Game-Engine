@@ -36,8 +36,8 @@ namespace isometricgame.GameEngine.Systems.Rendering
             AdjustProjection(windowWidth, windowHeight);
             cachedWorldMatrix = Matrix4.CreateTranslation(new Vector3(0,0,0));
 
-            shaderSource_Vert = Path.Combine(game.GAME_DIRECTORY_SHADERS, "shader.vert");
-            shaderSource_Frag = Path.Combine(game.GAME_DIRECTORY_SHADERS, "shader.frag");
+            shaderSource_Vert = Path.Combine(game.GAME__DIRECTORY__SHADERS, "shader.vert");
+            shaderSource_Frag = Path.Combine(game.GAME__DIRECTORY__SHADERS, "shader.frag");
 
             beginDraw_DefaultShader = new Shader(shaderSource_Vert, shaderSource_Frag);
         }
@@ -48,8 +48,8 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
             for(int i=0;i<paths.Length;i++)
             {
-                shaderSource_Vert = Path.Combine(Game.GAME_DIRECTORY_SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_VERT));
-                shaderSource_Frag = Path.Combine(Game.GAME_DIRECTORY_SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_FRAG));
+                shaderSource_Vert = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_VERT));
+                shaderSource_Frag = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_FRAG));
 
                 Shaders[i] = new Shader(shaderSource_Vert, shaderSource_Frag);
             }
