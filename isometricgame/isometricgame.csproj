@@ -79,6 +79,14 @@
     <Compile Include="GameEngine\Frame Arguments\UI_Pulse_Frame_Argument.cs" />
     <Compile Include="GameEngine\GameObject_Component.cs" />
     <Compile Include="GameEngine\Game.cs" />
+    <Compile Include="GameEngine\State Management\State_Handle.cs" />
+    <Compile Include="GameEngine\State Management\State_Machine.cs" />
+    <Compile Include="GameEngine\State Management\State.cs" />
+    <Compile Include="GameEngine\State Management\State_Phase.cs" />
+    <Compile Include="GameEngine\State Management\State_Phase_Transition_Success.cs" />
+    <Compile Include="GameEngine\State Management\State_Phase_Update_Response.cs" />
+    <Compile Include="GameEngine\Tools\Collections\Recurring Dictionary\Recurring_Handle_Catalog.cs" />
+    <Compile Include="GameEngine\Tools\Collections\Recurring Dictionary\Recurring_Handle.cs" />
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\Gliding Elements\UI_Gliding_Wrapper.cs" />
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\Gliding Elements\UI_Glide_Node.cs" />
     <Compile Include="GameEngine\UI\Containers\Implemented_UI_Containers\Gliding Elements\UI_Glide_Path_Point.cs" />
