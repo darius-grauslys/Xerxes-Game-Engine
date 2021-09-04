@@ -1,7 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Input;
 
-namespace isometricgame.GameEngine.Events.Arguments
+namespace isometricgame.GameEngine.UI.Frame_Arguments
 {
     public class UI_MouseButton_Pulse_FrameArgument : UI_Pulse_Frame_Argument
     {

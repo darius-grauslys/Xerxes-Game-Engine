@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace isometricgame.GameEngine.Systems
+﻿namespace isometricgame.GameEngine.Systems
 {
     public class GameSystem
     {
@@ -19,12 +13,13 @@ namespace isometricgame.GameEngine.Systems
 
         public virtual void Load()
         {
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__SYSTEM__LOAD, this);
 
         }
 
         public virtual void Unload()
         {
-
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__SYSTEM__UNLOAD, this);
         }
     }
 }

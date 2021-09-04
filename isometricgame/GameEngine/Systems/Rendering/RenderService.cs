@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Rendering;
 using isometricgame.GameEngine.Scenes;
-using isometricgame.GameEngine.Systems.Rendering;
-using isometricgame.GameEngine.WorldSpace;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -42,14 +34,17 @@ namespace isometricgame.GameEngine.Systems.Rendering
             beginDraw_DefaultShader = new Shader(shaderSource_Vert, shaderSource_Frag);
         }
 
-        internal void LoadShaders(string[] paths)
+        internal void Internal_Load__Shaders__Render_Service(string[] shaders)
         {
-            Shaders = new Shader[paths.Length];
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__RENDER_SERVICE__LOAD_SHADERS, this);
+            Shaders = new Shader[shaders.Length];
 
-            for(int i=0;i<paths.Length;i++)
+            for(int i=0;i<shaders.Length;i++)
             {
-                shaderSource_Vert = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_VERT));
-                shaderSource_Frag = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", paths[i], EXTENSION_FRAG));
+                Log.Internal_Write__Verbose__Log(Log.VERBOSE__RENDER_SERVICE__LOAD_SHADER_1, this, 0, shaders[i]);
+
+                shaderSource_Vert = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", shaders[i], EXTENSION_VERT));
+                shaderSource_Frag = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", shaders[i], EXTENSION_FRAG));
 
                 Shaders[i] = new Shader(shaderSource_Vert, shaderSource_Frag);
             }
@@ -57,11 +52,13 @@ namespace isometricgame.GameEngine.Systems.Rendering
 
         public override void Load()
         {
+            base.Load();
             SpriteLibrary = Game.Get_System__Game<SpriteLibrary>();
         }
 
         public override void Unload()
         {
+            base.Unload();
             beginDraw_DefaultShader.Dispose();
         }
 

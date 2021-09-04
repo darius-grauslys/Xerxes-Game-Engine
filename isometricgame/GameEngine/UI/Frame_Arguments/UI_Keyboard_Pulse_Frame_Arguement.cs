@@ -1,6 +1,6 @@
 using OpenTK.Input;
 
-namespace isometricgame.GameEngine.Events.Arguments
+namespace isometricgame.GameEngine.UI.Frame_Arguments
 {
     public class UI_Keyboard_Pulse_Frame_Arguement : UI_Pulse_Frame_Argument
     {

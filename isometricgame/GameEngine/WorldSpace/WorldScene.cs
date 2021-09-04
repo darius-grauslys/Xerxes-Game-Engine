@@ -1,17 +1,7 @@
-﻿using isometricgame.GameEngine;
-using isometricgame.GameEngine.WorldSpace;
-using isometricgame.GameEngine.Systems;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.WorldSpace.Generators;
 using isometricgame.GameEngine.Rendering;
-using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Systems.Rendering;
 using isometricgame.GameEngine.WorldSpace.ChunkSpace;
 

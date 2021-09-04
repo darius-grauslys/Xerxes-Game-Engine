@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.Scenes;
 using isometricgame.GameEngine.Systems.Input;
-using isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers;
+using isometricgame.GameEngine.UI.Frame_Arguments;
 using OpenTK;
 using OpenTK.Input;
 

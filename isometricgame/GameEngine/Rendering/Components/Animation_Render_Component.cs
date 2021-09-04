@@ -1,5 +1,4 @@
-﻿using isometricgame.GameEngine.Events.Arguments;
-using isometricgame.GameEngine.Rendering.Animation;
+﻿using isometricgame.GameEngine.Rendering.Animation;
 
 namespace isometricgame.GameEngine.Components
 {

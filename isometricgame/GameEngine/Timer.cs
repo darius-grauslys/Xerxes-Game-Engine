@@ -1,4 +1,4 @@
-﻿namespace isometricgame.GameEngine.Events
+﻿namespace isometricgame.GameEngine
 {
     public class Timer
     {

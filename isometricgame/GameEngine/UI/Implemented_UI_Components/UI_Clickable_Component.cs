@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using isometricgame.GameEngine.Events.Arguments;
-using isometricgame.GameEngine.Systems.Input;
 using OpenTK;
-using OpenTK.Input;
-using MathHelper = isometricgame.GameEngine.Tools.MathHelper;
+using isometricgame.GameEngine.UI.Frame_Arguments;
 
 namespace isometricgame.GameEngine.UI.Components
 {

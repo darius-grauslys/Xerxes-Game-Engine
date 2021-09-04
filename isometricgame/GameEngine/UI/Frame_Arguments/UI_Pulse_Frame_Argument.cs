@@ -1,4 +1,4 @@
-﻿namespace isometricgame.GameEngine.Events.Arguments
+﻿namespace isometricgame.GameEngine.UI.Frame_Arguments
 {
     public class UI_Pulse_Frame_Argument : Frame_Argument
     {

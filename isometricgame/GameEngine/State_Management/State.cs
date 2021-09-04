@@ -1,31 +1,27 @@
-﻿using isometricgame.GameEngine.Events.Arguments;
-
-namespace isometricgame.GameEngine.State_Management
+﻿namespace isometricgame.GameEngine.State_Management
 {
     public class State
     {
         public State_Phase State__State_Phase { get; private set; }
-        public State_Handle State__Progressing_State_Handle { get; protected set; }
 
         public State()
         {
             State__State_Phase = State_Phase.Concluded;
-            State__Progressing_State_Handle = State_Handle.DEFAULT_HANDLE;
         }
         
-        internal State_Phase_Transition_Success Internal_Enter__State()
+        internal State_Phase_Transition_Response Internal_Enter__State()
         {
             if (State__State_Phase != State_Phase.Concluded)
-                return State_Phase_Transition_Success.Invalid_Transition;
+                return State_Phase_Transition_Response.Invalid_Transition;
 
             bool wasTransitionAccepted = Handle_Enter__State();
 
             if (!wasTransitionAccepted)
-                return State_Phase_Transition_Success.Rejected_Transition;
+                return State_Phase_Transition_Response.Rejected_Transition;
             
             State__State_Phase = State_Phase.Begun;
 
-            return State_Phase_Transition_Success.Accepted_Transition;
+            return State_Phase_Transition_Response.Accepted_Transition;
         }
 
         internal State_Phase_Update_Response Internal_Update__State(Frame_Argument frameArgument)
@@ -36,19 +32,19 @@ namespace isometricgame.GameEngine.State_Management
             return Handle_Update__State(frameArgument);
         }
 
-        internal State_Phase_Transition_Success Internal_Conclude__State()
+        internal State_Phase_Transition_Response Internal_Conclude__State()
         {
             if (State__State_Phase != State_Phase.Operating)
-                return State_Phase_Transition_Success.Invalid_Transition;
+                return State_Phase_Transition_Response.Invalid_Transition;
 
             bool wasTransitionAccept = Handle_Conclude__State();
 
             if (!wasTransitionAccept)
-                return State_Phase_Transition_Success.Rejected_Transition;
+                return State_Phase_Transition_Response.Rejected_Transition;
 
             State__State_Phase = State_Phase.Concluded;
             
-            return State_Phase_Transition_Success.Accepted_Transition;
+            return State_Phase_Transition_Response.Accepted_Transition;
         }
         
         /// <summary>

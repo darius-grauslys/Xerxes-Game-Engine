@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using isometricgame.GameEngine.Events.Arguments;
 using isometricgame.GameEngine.UI.Components;
 using isometricgame.GameEngine.UI.Containers.Implemented_UI_Containers;
+using isometricgame.GameEngine.UI.Frame_Arguments;
 using OpenTK;
 
 namespace isometricgame.GameEngine.UI.Implemented_UI_GameObjects

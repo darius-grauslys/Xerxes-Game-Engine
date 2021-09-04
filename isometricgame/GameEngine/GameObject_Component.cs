@@ -1,13 +1,4 @@
-﻿using isometricgame.GameEngine.Events.Arguments;
-using isometricgame.GameEngine.Scenes;
-using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace isometricgame.GameEngine
+﻿namespace isometricgame.GameEngine
 {
     /// <summary>
     /// Attributes are added to GameObjects to give additional functionalities. Such as hitboxes, physics, and more.

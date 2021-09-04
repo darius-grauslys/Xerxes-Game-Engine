@@ -1,13 +1,7 @@
-﻿using isometricgame.GameEngine.Events.Arguments;
-using isometricgame.GameEngine.Rendering;
-using isometricgame.GameEngine.Systems;
-using isometricgame.GameEngine.Systems.Rendering;
+﻿using isometricgame.GameEngine.Systems.Rendering;
 using OpenTK;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace isometricgame.GameEngine.Scenes
 {
