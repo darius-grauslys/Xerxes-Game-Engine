@@ -4,9 +4,16 @@ namespace XerxesEngine
 {
     public struct Log_Message
     {
+        public const string Log_Message__PREFIX_VERBOSE         = "Verbose";
+        public const string Log_Message__PREFIX_INFO            = "Info";
+        public const string Log_Message__PREFIX_WARNING         = "Warning";
+        public const string Log_Message__PREFIX_ERROR           = "Error";
+        public const string Log_Message__PREFIX_EXTERNAL        = "External";
+        public const string Log_Message__PREFIX_EXTERNAL_DASH   = "External-";
+
         public Log_Message_Type Log_Message__TYPE           { get; }
         public bool             Log_Message__Is_INTERNAL    { get; }
-        private string          Log_Message__SOURCE         { get; }
+        public Type             Log_Message__SOURCE         { get; }
         public double           Log_Message__TIME           { get; }
         public string           Log_Message__MESSAGE        { get; }
         internal Log_Verbosity  Log_Message__VERBOSITY      { get; }
@@ -21,7 +28,7 @@ namespace XerxesEngine
         {
             Log_Message__TYPE = messageType;
             Log_Message__Is_INTERNAL = true;
-            Log_Message__SOURCE = source?.ToString() ?? "";
+            Log_Message__SOURCE = source?.GetType() ?? typeof(object);
             Log_Message__TIME = time;
             Log_Message__MESSAGE = message;
             Log_Message__VERBOSITY = Determine__Verbosity(messageType);
@@ -37,7 +44,7 @@ namespace XerxesEngine
         {
             Log_Message__TYPE = messageType;
             Log_Message__Is_INTERNAL = false;
-            Log_Message__SOURCE = source?.ToString() ?? "";
+            Log_Message__SOURCE = source?.GetType() ?? typeof(object);
             Log_Message__TIME = time;
             Log_Message__MESSAGE = message;
             Log_Message__VERBOSITY = Determine__Verbosity(messageType);
@@ -48,7 +55,7 @@ namespace XerxesEngine
             return String.Format
             (
                 "[{0}{1}::{2}::({3})]{4}{5}",
-                (Log_Message__Is_INTERNAL) ? "" : "External-",
+                (Log_Message__Is_INTERNAL) ? "" : Log_Message__PREFIX_EXTERNAL_DASH,
                 Log_Message__TYPE,
                 Log_Message__SOURCE,
                 Log_Message__TIME,

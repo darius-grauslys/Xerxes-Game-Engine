@@ -38,6 +38,7 @@ namespace XerxesEngine
 
         internal const string VERBOSE__GAME__CONTENT_LOADING                    = "LOADING CONTENT";
         internal const string VERBOSE__GAME__SPRITE_LOAD_1                      = "Loading Sprite   - {0}";
+        internal const string VERBOSE__GAME__CONTENT_LOADED                     = "FINISHED LOADING CONTENT";
 #endregion
 #region CONST INTERNAL WARNING MESSAGES
         internal const string WARNING__GAME__SYSTEM__ALREADY_LOADED_1           = "Similar Typed System already loaded - {0}";
@@ -95,7 +96,7 @@ namespace XerxesEngine
             Private_Write__Log(message);
         }
 
-        public static void Write__Verbose__Log(string verbose, object source, double time=0)
+        public static void Write__Verbose__Log(string format, object source, double time=0, params string[] args)
         {
             Private_Write__Log
             (
@@ -104,7 +105,7 @@ namespace XerxesEngine
                     Log_Message_Type.Message__Verbose,
                     source,
                     time,
-                    verbose
+                    String.Format(format, args)
                 )
             );
         }
@@ -221,6 +222,7 @@ namespace XerxesEngine
         private static void Private_Write__To_Out__Log(Log_Message message)
         {
             Log__Out?.WriteLine(message);            
+            Log__Out?.WriteLine();
         }
     }
 }

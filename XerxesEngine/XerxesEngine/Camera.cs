@@ -1,12 +1,6 @@
 ﻿using XerxesEngine.Scenes;
-using XerxesEngine.WorldSpace;
 using XerxesEngine.WorldSpace.ChunkSpace;
 using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace XerxesEngine
 {

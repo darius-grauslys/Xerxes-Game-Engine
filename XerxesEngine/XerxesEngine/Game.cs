@@ -113,6 +113,7 @@ namespace XerxesEngine
 
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADING, this);
             Handle_Load__Content__Game();
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADED, this);
         }
 
         private string Private_Validate__Directory__Game
