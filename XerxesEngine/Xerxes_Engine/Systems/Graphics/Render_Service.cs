@@ -6,7 +6,7 @@ using Xerxes_Engine.Systems.Graphics.R2;
 
 namespace Xerxes_Engine.Systems.Graphics
 {
-    public class Render_Service : Game_System
+    public sealed class Render_Service : Game_System
     {
         public static readonly string EXTENSION_VERT = ".vert", EXTENSION_FRAG = ".frag";
         private Sprite_Library SpriteLibrary;
@@ -21,7 +21,7 @@ namespace Xerxes_Engine.Systems.Graphics
 
         private string shaderSource_Vert, shaderSource_Frag;
 
-        public Render_Service(Game game, int windowWidth, int windowHeight) 
+        internal Render_Service(Game game, int windowWidth, int windowHeight) 
             : base(game, false)
         {
             AdjustProjection(windowWidth, windowHeight);
@@ -90,7 +90,7 @@ namespace Xerxes_Engine.Systems.Graphics
 
         internal void RenderScene(Scene scene, Frame_Argument e)
         {
-            scene.RenderScene(this, e);
+            scene.Internal_Render__Scene(this, e);
         }
 
         internal void CacheMatrix(Matrix4 mat)

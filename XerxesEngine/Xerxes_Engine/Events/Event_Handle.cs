@@ -1,20 +1,10 @@
 ﻿namespace Xerxes_Engine.Events
 {
-    public sealed class Event_Handle
+    public sealed class Event_Handle : Distinct_Handle
     {
-        private string _Event_Handle__HANDLE { get; }
-
-        internal Event_Handle(string recurringEventHandle)
+        internal Event_Handle(string internalEventHandle, object source)
+            : base(internalEventHandle, source)
         {
-            _Event_Handle__HANDLE = recurringEventHandle;
         }
-
-        public override string ToString()
-        {
-            return _Event_Handle__HANDLE;
-        }
-
-        public static implicit operator string(Event_Handle eventHandle)
-            => eventHandle._Event_Handle__HANDLE;
     }
 }

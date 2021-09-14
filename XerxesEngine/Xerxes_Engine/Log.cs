@@ -8,70 +8,90 @@ namespace Xerxes_Engine
     {
 #region CONST INTERNAL INFO MESSAGES
         internal const string 
-        INFO__LOG_INITALIZE_4                                     = "XERXES-ENGINE LOGGER INITALIZED - {0}, {1}, {2}, {3}",
+        INFO__LOG_INITALIZE_4                                       = "XERXES-ENGINE LOGGER INITALIZED - {0}, {1}, {2}, {3}",
 
-        INFO__EVENT_HANDLER__RECURRING_NAME_2                     = "An event handle by the name of:\"{0}\" already exists. Using:\"{1}\" instead.",
+        INFO__EVENT_HANDLER__RECURRING_NAME_2                       = "An event handle by the name of:\"{0}\" already exists. Using:\"{1}\" instead.",
 
-        INFO__COMPONENT__ENABLED_ON_PARENT_BIND                   = "Component was enabled when bounded to a non-null parent.",
+        INFO__COMPONENT__ENABLED_ON_PARENT_BIND                     = "Component was enabled when bounded to a non-null parent.",
 #endregion
 #region CONST INTERNAL VERBOSE MESSAGES
-        VERBOSE__GAME__SYSTEMS__INITALIZING                       = "INITALIZING BASE SYSTEMS.",
-        VERBOSE__GAME__SYSTEMS__INITALIZED                        = "FINISHED INITALIZING BASE SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS__INITALIZING                         = "INITALIZING BASE SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS__INITALIZED                          = "FINISHED INITALIZING BASE SYSTEMS.",
 
-        VERBOSE__GAME__SYSTEMS__REGISTERING                       = "REGISTERING BASE SYSTEMS.",
-        VERBOSE__GAME__SYSTEMS__REGISTERED                        = "FINISHED REGISTERING BASE SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS__REGISTERING                         = "REGISTERING BASE SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS__REGISTERED                          = "FINISHED REGISTERING BASE SYSTEMS.",
 
-        VERBOSE__GAME__SYSTEMS_CUSTOM__REGISTERING                = "REGISTERING CUSTOM SYSTEMS.",
-        VERBOSE__GAME__SYSTEMS_CUSTOM__REGISTERED                 = "FINISHED REGISTERING CUSTOM SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS_CUSTOM__REGISTERING                  = "REGISTERING CUSTOM SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS_CUSTOM__REGISTERED                   = "FINISHED REGISTERING CUSTOM SYSTEMS.",
 
-        VERBOSE__GAME__SYSTEMS__LOADING                           = "LOADING SYSTEMS.",
-        VERBOSE__SYSTEM__LOAD                                     = "Loading System.",
-        VERBOSE__GAME__SYSTEM__LOADED_1                           = "System Loaded    - {0}.",
-        VERBOSE__GAME__ALL_SYSTEMS__LOADED                        = "FINISHED LOADING SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS__LOADING                             = "LOADING SYSTEMS.",
+        VERBOSE__SYSTEM__LOAD                                       = "Loading System.",
+        VERBOSE__GAME__SYSTEM__LOADED_1                             = "System Loaded    - {0}.",
+        VERBOSE__GAME__ALL_SYSTEMS__LOADED                          = "FINISHED LOADING SYSTEMS.",
         
-        VERBOSE__GAME__SYSTEMS__UNLOADING                         = "UNLOADING SYSTEMS.",
-        VERBOSE__SYSTEM__UNLOAD                                   = "Unloading System.",
-        VERBOSE__GAME__SYSTEM__UNLOADED_1                         = "System Unloaded  - {0}.",
-        VERBOSE__GAME__SYSTEMS__UNLOADED                          = "FINISHED UNLOADING SYSTEMS.",
+        VERBOSE__GAME__SYSTEMS__UNLOADING                           = "UNLOADING SYSTEMS.",
+        VERBOSE__SYSTEM__UNLOAD                                     = "Unloading System.",
+        VERBOSE__GAME__SYSTEM__UNLOADED_1                           = "System Unloaded  - {0}.",
+        VERBOSE__GAME__SYSTEMS__UNLOADED                            = "FINISHED UNLOADING SYSTEMS.",
         
-        VERBOSE__GAME__BASE_EVENT_SCHEDULER__LOADING              = "LOADING BASE EVENT SCHEDULER.",
+        VERBOSE__GAME__BASE_EVENT_SCHEDULER__LOADING                = "LOADING BASE EVENT SCHEDULER.",
         
-        VERBOSE__RENDER_SERVICE__LOAD_SHADERS                     = "LOADING SHADERS.",
-        VERBOSE__RENDER_SERVICE__LOAD_SHADER_1                    = "Loading Shader   - {0}.",
+        VERBOSE__RENDER_SERVICE__LOAD_SHADERS                       = "LOADING SHADERS.",
+        VERBOSE__RENDER_SERVICE__LOAD_SHADER_1                      = "Loading Shader   - {0}.",
 
-        VERBOSE__GAME__CONTENT_LOADING                            = "LOADING CONTENT.",
-        VERBOSE__GAME__SPRITE_LOAD_1                              = "Loading Sprite   - {0}.",
-        VERBOSE__GAME__CONTENT_LOADED                             = "FINISHED LOADING CONTENT.",
+        VERBOSE__GAME__CONTENT_LOADING                              = "LOADING CONTENT.",
+        VERBOSE__GAME__SPRITE_LOAD_1                                = "Loading Sprite   - {0}.",
+        VERBOSE__GAME__CONTENT_LOADED                               = "FINISHED LOADING CONTENT.",
+
+        VERBOSE__SCENE_MANAGER__LOUSY_LOOKUP_1                      = "Lousy scene lookup:\"{0}\". Not loop friendly. Consider using Distinct_Handle over string?",
 #endregion
 #region CONST INTERNAL WARNING MESSAGES
-        WARNING__RECOVERY__ASSET_DIRECTORY_NOT_FOUND              = "Asset Directory not found, attempting to use default directory.",
+        WARNING__RECOVERY__ASSET_DIRECTORY_NOT_FOUND                = "Asset Directory not found, attempting to use default directory.",
 
-        WARNING__FLAGGED_TO_THROW                                 = "Logger is flagged to throw in this state.",
-        WARNING__GAME__SYSTEM__ALREADY_LOADED_1                   = "Similar Typed System already loaded - {0}.", 
+        WARNING__FLAGGED_TO_THROW                                   = "Logger is flagged to throw in this state.",
+        WARNING__GAME__SYSTEM__ALREADY_LOADED_1                     = "Similar Typed System already loaded - {0}.", 
 
-        WARNING__EVENT_SCHEDULER__CHECK__EVENT_NOT_FOUND_1        = "Event handle:\"{0}\" was not found when seeing if it was active.",
-        WARNING__EVENT_SCHEDULER__REMOVE__EVENT_NOT_FOUND_1       = "Event handle:\"{0}\" was not found when trying to remove it.",
-        WARNING__EVENT_SCHEDULER__INVOKE__EVENT_NOT_FOUND_1       = "Event handle:\"{0}\" was not found when tyring to invoke it.",
+        WARNING__EVENT_SCHEDULER__CHECK__EVENT_NOT_FOUND_1          = "Event handle:\"{0}\" was not found when seeing if it was active.",
+        WARNING__EVENT_SCHEDULER__REMOVE__EVENT_NOT_FOUND_1         = "Event handle:\"{0}\" was not found when trying to remove it.",
+        WARNING__EVENT_SCHEDULER__INVOKE__EVENT_NOT_FOUND_1         = "Event handle:\"{0}\" was not found when tyring to invoke it.",
 
-        WARNING__SYSTEM__SPRITE_LIBRARY__RECOVERING_TO_DEFAULT    = "Sprite Library resorted to returning the sprite at index 0.",
+        WARNING__SCENE_MANAGER__LOUSY_LOOKUP_FAILED_1               = "Lousy lookup failed:\"{0}\". Consider using Distinct_Handle over string?",
+        WARNING__SCENE_MANAGER__ADDING_SCENE_UNDER_NULL_ALIAS_1     = "Adding scene:\"{0}\" under a null alias! Is this intentional? Use String.Empty instead.",
 
-        WARNING__COMPONENT__PARENT_IS_NULL                        = "Component was disabled when attached to a null parent.",
+        WARNING__SPRITE_LIBRARY__RECOVERING_TO_DEFAULT              = "Sprite Library resorted to returning the sprite at index 0.",
 
-        WARNING__ANIMATION_RENDER_COMPONENT__BAD_NEGATIVE_SPEED_1 = "An animation node speed of non-default negative value:\"{0}\" was given. Using default.",
+        WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING            = "This engine object has already been sealed. Ignoring sealing invokation.",
+        
+        WARNING__COMPONENT__PARENT_IS_NULL                          = "Component was disabled when attached to a null parent.",
+        WARNING__COMPONENT__UTILIZED_WHILE_DISABLED_1               = "Component was not intended to be used while disabled. May cause problems. Action:\"{0}\".",
+
+        WARNING__ANIMATION_RENDER_COMPONENT__BAD_NEGATIVE_SPEED_1   = "An animation node speed of non-default negative value:\"{0}\" was given. Using default.",
 #endregion
 #region CONST INTERNAL ERROR MESSAGES
-        ERROR__GAME__DIRECTORY_NOT_FOUND_1                        = "The Directory:\"{0}\" was not found!",
-        ERROR__GAME__RECOVERY_DIRECTORY_NOT_FOUND_1               = "The Recovery Directory:\"{0}\" was not found!",
+        ERROR__GAME__DIRECTORY_NOT_FOUND_1                          = "The Directory:\"{0}\" was not found!",
+        ERROR__GAME__RECOVERY_DIRECTORY_NOT_FOUND_1                 = "The Recovery Directory:\"{0}\" was not found!",
 
-        ERROR__SYSTEM__NOT_FOUND_1                                = "The System:\"{0}\" is not loaded!",
+        ERROR__SYSTEM__NOT_FOUND_1                                  = "The System:\"{0}\" is not loaded!",
 
-        ERROR__GAME__CONTENT_SPRITE_NOT_FOUND_2                   = "The Sprite:\"{0}\" was not found under path:\"{1}\"!",
-        ERROR__SYSTEM__SPRITE_LIBRARY__SPRITE_NOT_FOUND_1         = "The Sprite:\"{0}\" was not found in the library.",
-        ERROR__SYSTEM__SPRITE_LIBRARY__SPRITE_ID_NOT_FOUND_1      = "The Sprite ID:\"{0}\" is out of bounds.",
+        ERROR__GAME__CONTENT_SPRITE_NOT_FOUND_2                     = "The Sprite:\"{0}\" was not found under path:\"{1}\"!",
 
-        ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2        = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"",
+        ERROR__SCENE_MANAGER__SWITCHED_TO_NULL_SCENE_1              = "Attemped to switch to null scene under lousy alias:\"{0}\". Not switching scenes!",
+        ERROR__SCENE_MANAGER__CANNOT_ADD_NULL_SCENE_1               = "Attempted to add a null scene under alias:\"{0}\". Returning error scene handle!",
 
-        ERROR__PANIC                                              = "An unrecoverable error has occured.";
+        ERROR__SPRITE_LIBRARY__SPRITE_NOT_FOUND_1                   = "The Sprite:\"{0}\" was not found in the library!",
+        ERROR__SPRITE_LIBRARY__SPRITE_ID_NOT_FOUND_1                = "The Sprite ID:\"{0}\" is out of bounds!",
+
+        ERROR__XERXES_ENGINE_OBJECT__INVALID_PARENT_ASSOCIATION_2   = "This engine object already has a parental association!" 
+                                                                    + "Tried to associate to:{0} - is already associated to {1}!",
+        ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION_1           = "Engine object:{0} tried to associate to this logging sealed object!"
+                                                                    + "Sealed objects cannot be associated to!",
+        ERROR__XERXES_ENGINE_OBJECT__INVALID_ASSOCIATION_4          = "Engine object:{0} tried to associate to object:{1} which is lower in hierarchy!"
+                                                                    + "Target object's hierarchy score:{2} - Associating object's score:{3}!",
+        ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2           = "Engine objects {0} -> {1} failed to associate!",
+
+        ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2          = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"!",
+
+        ERROR__PANIC                                                = "An unrecoverable error has occured.";
 #endregion
         private static readonly Queue<Log_Message> _Log__MESSAGES = new Queue<Log_Message>(); 
         private static readonly Queue<Log_Message> _Log__WARNINGS = new Queue<Log_Message>();

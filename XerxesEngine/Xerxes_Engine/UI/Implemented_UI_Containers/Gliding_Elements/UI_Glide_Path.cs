@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OpenTK;
 
 namespace Xerxes_Engine.UI.Implemented_UI_Containers.Gliding_Elements
@@ -22,25 +21,26 @@ namespace Xerxes_Engine.UI.Implemented_UI_Containers.Gliding_Elements
             Private_Update__Element_Position__UI_Glide_Path();
         }
 
-        private float Private_Get__Clamped_Percentage__UI_Glide_Path()
+        private float Private_Get__Clamped_Percentage__UI_Glide_Path(float percentageToClamp)
         {
             switch (UI_Glide_Path__Glide_Type)
             {
                 case UI_Glide_Type.Clamped:
                 case UI_Glide_Type.Wrapped:    
-                    return Private_Get__Default_Clamped_Percentage__UI_Glide_Path();
+                    return Private_Get__Default_Clamped_Percentage__UI_Glide_Path(percentageToClamp);
                 default:
-                    int index = (int) (UI_Glide_Path__Element_Path_Percentage) - 1;
-                    float flip = (float) Math.Pow(-1, index);
-
-                    float offset = (1 + flip) / 4;
-
-                    return (UI_Glide_Path__Element_Path_Percentage + offset) % 1;
+                    float basicPercentage = 2 * Private_Get__Default_Clamped_Percentage__UI_Glide_Path(percentageToClamp);
+                    float offset = 
+                        (basicPercentage > 1f)
+                        ? 1 - (basicPercentage - 1)
+                        : basicPercentage;
+                    offset = Private_Get__Default_Clamped_Percentage__UI_Glide_Path(offset);
+                    return offset;
             }
         }
 
-        private float Private_Get__Default_Clamped_Percentage__UI_Glide_Path()
-            => Tools.Math_Helper.Clamp__Float(UI_Glide_Path__Element_Path_Percentage, 0, 1);
+        private float Private_Get__Default_Clamped_Percentage__UI_Glide_Path(float percentageToClamp)
+            => Tools.Math_Helper.Clamp__Float(percentageToClamp, 0, 1);
         
         internal UI_Glide_Path
         (
@@ -125,7 +125,7 @@ namespace Xerxes_Engine.UI.Implemented_UI_Containers.Gliding_Elements
         )
         {
             float totalPercentage = anchorPoint_PathPercentage = 0;
-            clampedPercentage = Private_Get__Clamped_Percentage__UI_Glide_Path();
+            clampedPercentage = Private_Get__Clamped_Percentage__UI_Glide_Path(UI_Glide_Path__Element_Path_Percentage);
 
             foreach (UI_Glide_Path_Point node in _UI_Glide_Path__WRAPPER_NODES)
             {

@@ -1,6 +1,6 @@
 ﻿namespace Xerxes_Engine.State_Management
 {
-    public enum State_Phase_Transition_Response
+    public enum State_Transition_Response
     {
         Invalid_Transition,
         

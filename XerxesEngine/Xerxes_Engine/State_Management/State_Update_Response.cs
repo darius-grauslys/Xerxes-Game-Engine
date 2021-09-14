@@ -1,6 +1,6 @@
 ﻿namespace Xerxes_Engine.State_Management
 {
-    public enum State_Phase_Update_Response
+    public enum State_Update_Response
     {
         /// <summary>
         /// Continue to reside on this state.

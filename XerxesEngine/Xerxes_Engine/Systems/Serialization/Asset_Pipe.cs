@@ -4,10 +4,10 @@ using Xerxes_Engine.Systems.Graphics;
 
 namespace Xerxes_Engine.Systems.Serialization
 {
-    public class Asset_Pipe : Game_System
+    public sealed class Asset_Pipe : Game_System
     {
 
-        public Asset_Pipe(Game game) 
+        internal Asset_Pipe(Game game) 
             : base(game)
         {
         }

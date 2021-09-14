@@ -3,9 +3,9 @@ namespace Xerxes_Engine.State_Management
     internal class State_Flow
     {
         internal State State_Flow__STATE {get;}
-        internal State_Flow State_Flow__Target_State_Flow { get; private set; }
-        internal void Internal_Set__Target_State_Flow__State_Flow(State_Flow targetStateFlow)
-            => State_Flow__Target_State_Flow = targetStateFlow;
+        internal State_Handle State_Flow__Target_State_Handle { get; private set; }
+        internal void Internal_Set__Target_State_Handle__State_Flow(State_Handle targetStateHandle)
+            => State_Flow__Target_State_Handle = targetStateHandle;
 
         internal State_Flow
         (

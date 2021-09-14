@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Xerxes_Engine.Systems.Graphics.R2
 {
-    public class Sprite_Library : Game_System
+    public sealed class Sprite_Library : Game_System
     {
         private readonly List<Sprite> _Sprite_Library__Sprites = new List<Sprite>();
         private readonly Dictionary<string, uint> _Sprite_Library__Name_To_Index__Table = new Dictionary<string, uint>();
 
-        public Sprite_Library(Game gameRef) 
+        internal Sprite_Library(Game gameRef) 
             : base(gameRef)
         {
         }
@@ -59,7 +59,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
             Log.Internal_Write__Log
             (
                 Log_Message_Type.Error__System,
-                Log.ERROR__SYSTEM__SPRITE_LIBRARY__SPRITE_ID_NOT_FOUND_1,
+                Log.ERROR__SPRITE_LIBRARY__SPRITE_ID_NOT_FOUND_1,
                 this,
                 id
             );
@@ -80,7 +80,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
             Log.Internal_Write__Log
             (
                 Log_Message_Type.Error__System,
-                Log.ERROR__SYSTEM__SPRITE_LIBRARY__SPRITE_NOT_FOUND_1,
+                Log.ERROR__SPRITE_LIBRARY__SPRITE_NOT_FOUND_1,
                 this,
                 name
             );
@@ -92,7 +92,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         {
             Log.Internal_Write__Warning__Log
             (
-                Log.WARNING__SYSTEM__SPRITE_LIBRARY__RECOVERING_TO_DEFAULT,
+                Log.WARNING__SPRITE_LIBRARY__RECOVERING_TO_DEFAULT,
                 this
             );
 

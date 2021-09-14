@@ -128,7 +128,6 @@ namespace Xerxes_Engine
                     Log_Message_Type.Error__IO,
                     Log.ERROR__GAME__DIRECTORY_NOT_FOUND_1,
                     this,
-                    0,
                     baseDirectory
                 );
 
@@ -140,7 +139,7 @@ namespace Xerxes_Engine
                 if (baseDirectory != null)
                     return baseDirectory;
 
-                Log.Internal_Panic__Log(Log.ERROR__GAME__RECOVERY_DIRECTORY_NOT_FOUND_1, this, 0, recoveryDirectory);
+                Log.Internal_Panic__Log(Log.ERROR__GAME__RECOVERY_DIRECTORY_NOT_FOUND_1, this, recoveryDirectory);
 
                 Close();
             }
@@ -157,7 +156,6 @@ namespace Xerxes_Engine
                     Log_Message_Type.Error__IO,
                     Log.ERROR__GAME__RECOVERY_DIRECTORY_NOT_FOUND_1,
                     this,
-                    0,
                     defaultDirectory
                 );
 
@@ -171,7 +169,7 @@ namespace Xerxes_Engine
         {
             GL.Viewport(ClientRectangle);
             Game__Render_Service.AdjustProjection(Width, Height);
-            scene.RescaleScene();
+            scene.Internal_Rescale__Scene();
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -183,14 +181,14 @@ namespace Xerxes_Engine
         {
             Game__Update_Time += e.Time;
             Game__Event_Scheduler.Internal_Progress__Events__Event_Scheduler(e.Time);
-            scene.UpdateScene(new Frame_Argument(Game__Update_Time, e.Time));
+            scene.Internal_Update__Scene(new Frame_Argument(Game__Update_Time, e.Time));
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             Game__Render_Time += e.Time;
 
-            scene.BeginRender(Game__Render_Service);
+            scene.Internal_Begin__Render__Scene(Game__Render_Service);
             Game__Render_Service.BeginRender();
 
             Game__Render_Service.RenderScene(scene, new Frame_Argument(Game__Render_Time, e.Time));
@@ -252,7 +250,7 @@ namespace Xerxes_Engine
                 return false;
             }
             
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEM__LOADED_1, this, 0, gameService?.ToString());
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEM__LOADED_1, this, gameService?.ToString());
             
             GAME__SYSTEMS.Add(gameService);
 
@@ -337,7 +335,7 @@ namespace Xerxes_Engine
             string savedName = null
             )
         {
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SPRITE_LOAD_1, this, 0, spriteName);
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SPRITE_LOAD_1, this, spriteName);
             string path = Path.Combine(
                 GAME__DIRECTORY__ASSETS,
                 spriteName + ".png"
@@ -349,7 +347,6 @@ namespace Xerxes_Engine
                     Log_Message_Type.Error__IO, 
                     Log.ERROR__GAME__CONTENT_SPRITE_NOT_FOUND_2, 
                     this, 
-                    0, 
                     spriteName, 
                     path
                 );

@@ -2,7 +2,7 @@
 
 namespace Xerxes_Engine.UI.Implemented_UI_Containers.Gliding_Elements
 {
-    public class UI_Glide_Container : UI_Vague_Container
+    public class UI_Glide_Container : UI_Unbound_Container
     {
         private readonly List<UI_Glide_Path> _UI_Glide_Panel__GLIDE_PATHS = new List<UI_Glide_Path>();
 

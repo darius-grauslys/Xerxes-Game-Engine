@@ -21,8 +21,9 @@ namespace Xerxes_Engine
 
         Error__IO = -5,
 
-        Error__System = -7,
+        Error__Engine_Object = -7,
+        Error__System = -9,
 
-        Error__Animation = -9
+        Error__Animation = -11
     }
 }

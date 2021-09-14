@@ -292,7 +292,7 @@ namespace Xerxes_Engine.Tools
         public static float Clamp__Float(float val, float min, float max)
             => (val < min) ? min : ((val > max) ? max : val);
 
-        public static int Clamp__Integer(int val, int min, int max)
+        public static int Clamp__Integer(int val, int min=int.MinValue, int max=int.MaxValue)
             => (val < min) ? min : ((val > max) ? max : val);
 
         public static int Clamp__UInteger(int val, int max = int.MaxValue)

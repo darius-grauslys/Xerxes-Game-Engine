@@ -6,11 +6,11 @@ using Xerxes_Engine.Systems.Graphics.R2.Animation;
 
 namespace Xerxes_Engine.Systems.Graphics.R2
 {
-    public class Sprite_Animation_Library : Game_System
+    public sealed class Sprite_Animation_Library : Game_System
     {
         private Dictionary<string, Animation_Schematic> animationSchematics = new Dictionary<string, Animation_Schematic>();
 
-        public Sprite_Animation_Library(Game gameRef) 
+        internal Sprite_Animation_Library(Game gameRef) 
             : base(gameRef)
         {
         }

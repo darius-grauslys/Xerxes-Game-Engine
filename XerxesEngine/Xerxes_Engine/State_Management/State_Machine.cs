@@ -1,87 +1,183 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Xerxes_Engine.State_Management
+﻿namespace Xerxes_Engine.State_Management
 {
-    public class State_Machine_Distinct 
+    /// <summary>
+    /// Manages defined states using State_Flows to
+    /// establish a relation between each state. 
+    /// The State_Machine is designed to operate off
+    /// of Scene_Layer Update loops.
+    /// <summary/>
+    public class State_Machine 
     {
-        private State _State_Machine_Distinct__DEFAULT_STATE { get; }
+        public State_Handle State_Machine__DEFAULT_STATE { get; }
 
-        private Dictionary<Type,State_Flow> _State_Machine_Distinct__REGISTERED_STATES { get; }
-        public bool State_Machine_Distinct__IsDefined_All_States
-            => _State_Machine_Distinct__Undefined_State_Count > 0;
-        private uint _State_Machine_Distinct__Undefined_State_Count { get; set; }
+        private State_Dictionary _State_Machine__STATE_DICTIONARY { get; }
+        public bool State_Machine__Is_Defined_For_All_States
+            => _State_Machine__Undefined_State_Count == 0;
+        private uint _State_Machine__Undefined_State_Count { get; set; }
 
         private State_Flow _State_Machine__Current_State_Flow { get; set; }
 
-        private State_Flow Private_Get__State_Flow__State_Machine<T>()
+        public State_Machine(State nullable_DefaultState = null)
         {
-            Type tStateType = typeof(T);
-            if(_State_Machine_Distinct__REGISTERED_STATES.ContainsKey(tStateType))
-                return _State_Machine_Distinct__REGISTERED_STATES[tStateType];
-            return null;
-        }
+            State defaultState = nullable_DefaultState ?? new State();
 
-        public State_Machine_Distinct(State defaultState = null)
-        {
-            _State_Machine_Distinct__DEFAULT_STATE = defaultState ?? new State();
-
-            _State_Machine_Distinct__REGISTERED_STATES = new Dictionary<Type,State_Flow>();
+            _State_Machine__STATE_DICTIONARY = new State_Dictionary();
             
-            Register__State__State_Machine_Distinct<State>(_State_Machine_Distinct__DEFAULT_STATE);
 
             //Define Default State_Flow.
-            Define__State_Flow__State_Machine_Distinct<State,State>();
-            
+            State_Machine__DEFAULT_STATE =
+                _State_Machine__STATE_DICTIONARY
+                .Internal_Declare__State__State_Dictionary
+                (
+                    defaultState
+                );
+            _State_Machine__STATE_DICTIONARY[State_Machine__DEFAULT_STATE]
+                .Internal_Set__Target_State_Handle__State_Flow
+                (
+                    State_Machine__DEFAULT_STATE
+                );
 
-            _State_Machine_Distinct__Undefined_State_Count = 0;
+            _State_Machine__Undefined_State_Count = 0;
+
+            //TODO: Remove this.
+            _State_Machine__STATE_DICTIONARY[State_Machine__DEFAULT_STATE]
+                .State_Flow__STATE
+                .Internal_Enter__State();
         }
 
 #region State Management
-        
-        public bool Request__State_Transition__State_Machine_Distinct<T>() where T : State
+        //TODO: Make Xerxes_Object, which has functionality to hook onto scene Update/Render/etc.
+        //      Just so developers cannot call Update__State_Machine and similar functions
+        //      multiple times per loop.
+        public State_Update_Response Update__State_Machine(Frame_Argument e)
         {
-            State_Flow tStateFlow = Private_Get__State_Flow__State_Machine<T>();
+            State_Update_Response response =
+                _State_Machine__Current_State_Flow
+                .State_Flow__STATE
+                .Internal_Update__State(e);
 
-            if(tStateFlow == null)
-                return false;
+            switch(response)
+            {
+                case State_Update_Response.Idle:
+                    break;
+                case State_Update_Response.Break:
+                    Private_Panic__State_Machine();
+                    break;
+                case State_Update_Response.Progress:
+                    Private_Transition__State_Flow__State_Machine
+                        (
+                            _State_Machine__Current_State_Flow
+                                .State_Flow__Target_State_Handle
+                        );
+                    break;
+            }
 
-            State_Phase_Transition_Response stateTransitionResponse = 
-                Private_Set__Current_State_Flow__State_Machine_Distinct(tStateFlow);
-
-            return true;
+            return response;
         }
 
-        private void Private_Panic__State_Machine_Distinct()
+        /// <summary>
+        /// Returns null if an invalid handle was used. Otherwises true if
+        /// the transition was successful and false if it otherwise failed. 
+        /// For more information on invalid handles, see Distinct_Handle.cs .
+        ///
+        /// It is almost always better to rely on State_Flows for transitioning
+        /// as opposed to manual transitions.
+        /// <summary/>
+        public State_Transition_Response? Request__State_Transition__State_Machine
+        (
+            State_Handle stateHandle
+        )
         {
-            Handle_Panicked__State_Machine_Distinct();
+            if
+            (
+                !stateHandle
+                .Internal__Is_From_Source__Distinct_Handle(_State_Machine__STATE_DICTIONARY)
+            )
+            {
+                return null;
+            }
+
+            return Internal_Request__State_Transition__State_Machine(stateHandle);
+        }
+
+        private void Private_Transition__State_Flow__State_Machine
+        (
+            State_Handle nextState
+        )
+        {
+            State_Transition_Response response = 
+                Internal_Request__State_Transition__State_Machine
+                (
+                    nextState
+                );
+
+            switch(response)
+            {
+                case State_Transition_Response.Accepted_Transition:
+                    break;
+                case State_Transition_Response.Rejected_Transition:
+                case State_Transition_Response.Invalid_Transition:
+                    Private_Panic__State_Machine();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// It is internal's responsibility to make sure Distinct_Handles are
+        /// always valid.
+        /// <summary/>
+        internal State_Transition_Response Internal_Request__State_Transition__State_Machine
+        (
+            State_Handle stateHandle
+        )
+        {
+            State_Flow stateFlow = _State_Machine__STATE_DICTIONARY[stateHandle];
+
+            State_Transition_Response stateTransitionResponse = 
+                Private_Set__Current_State_Flow__State_Machine(stateFlow);
+
+            return stateTransitionResponse;
+        }
+
+        protected virtual void Handle_Invalid__State_Handle__State_Machine()
+        {
+            Protected_Panic__State_Machine();    
+        }
+
+        protected void Protected_Panic__State_Machine()
+            => Private_Panic__State_Machine();
+
+        private void Private_Panic__State_Machine()
+        {
+            Handle_Panicked__State_Machine();
         }
 
         //Implementation control for responding to a state machine panic.
-        protected virtual void Handle_Panicked__State_Machine_Distinct()
+        protected virtual void Handle_Panicked__State_Machine()
         {
-
         }
 
-        private State_Phase_Transition_Response Private_Set__Current_State_Flow__State_Machine_Distinct
+        private State_Transition_Response Private_Set__Current_State_Flow__State_Machine
         (
             State_Flow newStateFlow
         )
         {
-            State_Phase_Transition_Response stateTransitionResponse = 
+            State state =
                 _State_Machine__Current_State_Flow?
-                .State_Flow__STATE
+                .State_Flow__STATE;
+            State_Transition_Response stateTransitionResponse = 
+                state?
                 .Internal_Conclude__State()
                 ??
-                State_Phase_Transition_Response.Accepted_Transition;
+                State_Transition_Response.Accepted_Transition;
 
             switch(stateTransitionResponse)
             {
-                case State_Phase_Transition_Response.Rejected_Transition:
-                case State_Phase_Transition_Response.Invalid_Transition:
+                case State_Transition_Response.Rejected_Transition:
+                case State_Transition_Response.Invalid_Transition:
                     break;
                 default:
-                case State_Phase_Transition_Response.Accepted_Transition:
+                case State_Transition_Response.Accepted_Transition:
                     _State_Machine__Current_State_Flow = newStateFlow;
                     break;
             }
@@ -92,42 +188,40 @@ namespace Xerxes_Engine.State_Management
 #endregion
 
 #region State Declarations
-        public bool Register__State__State_Machine_Distinct<T>
+        public State_Handle Register__State__State_Machine_Distinct
         (
-            T state
-        ) where T : State
+            State state,
+            string stringHandle = null
+        )
         {
-            Type stateType = typeof(T);
-            if(_State_Machine_Distinct__REGISTERED_STATES.ContainsKey(stateType))
-                return false;
+            State_Handle stateHandle = 
+                _State_Machine__STATE_DICTIONARY
+                .Internal_Declare__State__State_Dictionary
+                (
+                    state,
+                    stringHandle
+                );
 
-            _State_Machine_Distinct__REGISTERED_STATES.Add
-            (
-                typeof(T),
-                new State_Flow(state)
-            );
+            _State_Machine__Undefined_State_Count++;
 
-            _State_Machine_Distinct__Undefined_State_Count++;
-
-            return true;
+            return stateHandle;
         }
 
-        public bool Define__State_Flow__State_Machine_Distinct<T,Y>()
-            where T : State
-            where Y : State
+        public void Define__State_Flow__State_Machine_Distinct
+        (
+            State_Handle stateHandle_From,
+            State_Handle stateHandle_To
+        )
         {
-            State_Flow tState = Private_Get__State_Flow__State_Machine<T>();
-            State_Flow yState = Private_Get__State_Flow__State_Machine<Y>();
+            State_Flow flow_From = _State_Machine__STATE_DICTIONARY[stateHandle_From];
 
-            if(tState == null || yState == null)
-                return false;
+            if (flow_From.State_Flow__Target_State_Handle == null)
+                _State_Machine__Undefined_State_Count--;
 
-            if(tState.State_Flow__Target_State_Flow == null)
-                _State_Machine_Distinct__Undefined_State_Count--;
-
-            tState.Internal_Set__Target_State_Flow__State_Flow(yState);
-
-            return true;
+            flow_From.Internal_Set__Target_State_Handle__State_Flow
+            (
+                stateHandle_To
+            );
         }
 #endregion
     }

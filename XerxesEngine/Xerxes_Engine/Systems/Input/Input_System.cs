@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Xerxes_Engine.Systems.Input
 {
-    public class Input_System : Game_System
+    public sealed class Input_System : Game_System
     {
         private Dictionary<InputType, List<Input_Handler>> inputDirectory = new Dictionary<InputType, List<Input_Handler>>()
         {
@@ -17,7 +17,7 @@ namespace Xerxes_Engine.Systems.Input
 
         private Dictionary<int, List<Input_Handler>> handlerGroups = new Dictionary<int, List<Input_Handler>>();
         
-        public Input_System(Game game) 
+        internal Input_System(Game game) 
             : base(game)
         {
             game.KeyDown += GameWindow_KeyDown;

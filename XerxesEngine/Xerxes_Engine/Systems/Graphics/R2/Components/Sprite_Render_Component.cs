@@ -8,7 +8,8 @@ namespace Xerxes_Engine.Systems.Graphics.R2
     public class Sprite_Render_Component : Game_Object_Component
     {
         private const string 
-            Sprite_Render_Component__ACTION__SPRITE_SET = "Set__Sprite__Sprite_Render";
+            Sprite_Render_Component__ACTION__SPRITE_SET = "Set__Sprite__Sprite_Render_Component",
+            Sprite_Render_Component__ACTION__SPRITE_GET = "Get__Sprite__Sprite_Render_Component";
 
 
         private Sprite_Library Game__Sprite_Library__REFERENCE { get; set; } 
@@ -17,13 +18,16 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         {
             if(!Component__Enabled)
             {
-                Private_Log__Used_When_Disabled__Sprite_Component();
+                Private_Log__Used_When_Disabled__Sprite_Component
+                (
+                    Sprite_Render_Component__ACTION__SPRITE_GET
+                );
 
                 return null;
             }
 
             return Game__Sprite_Library__REFERENCE
-                .Get__Sprite_ID_From_Name__Sprite_Library
+                .Get__Sprite_From_ID__Sprite_Library
             (
                 Component__Attached_Game_Object.renderUnit.id
             );

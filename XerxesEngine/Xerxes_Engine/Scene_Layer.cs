@@ -6,7 +6,8 @@ namespace Xerxes_Engine
 {
     public class Scene_Layer
     {
-        public int SceneLayer__LayerLevel { get; internal set; }
+        public int Scene_Layer__LayerLevel { get; internal set; }
+        public bool Scene_Layer__Is_Enabled { get; private set; }
 
         private readonly List<Render_Structure_R2> _Scene_Layer__SCENE_STRUCTURES = new List<Render_Structure_R2>();
         public Render_Structure_R2[] Scene_Layer__Scene_Structures
@@ -24,11 +25,19 @@ namespace Xerxes_Engine
         }
 
         internal void Internal_Disable__Scene_Layer()
-            => Handle_Disabled__Scene_Layer();
+        {
+            Scene_Layer__Is_Enabled = false;
+            Handle_Disabled__Scene_Layer();
+        }
+    
         protected virtual void Handle_Disabled__Scene_Layer() { }
 
         internal void Internal_Enable__Scene_Layer()
-            => Handle_Enabled__Scene_Layer();
+        {
+            Scene_Layer__Is_Enabled = true;
+            Handle_Enabled__Scene_Layer();
+        }
+
         protected virtual void Handle_Enabled__Scene_Layer() { }
 
         public Matrix4 Scene_Layer__Layer_Matrix { get; protected set; }
@@ -49,7 +58,7 @@ namespace Xerxes_Engine
         
         public Scene Scene_Layer__Parent_Scene { get; private set; }
         
-        public Game Scene_Layer__Game => Scene_Layer__Parent_Scene?.Game;
+        public Game Scene_Layer__Game => Scene_Layer__Parent_Scene?.Game__REFERENCE;
         public Vector2 SceneLayer__Window_Size__Game
             => Scene_Layer__Game?.Get__Window_Size__Game() ?? Vector2.One;
         
@@ -61,11 +70,6 @@ namespace Xerxes_Engine
         {
             Scene_Layer__Parent_Scene = parent;
             
-            if (Scene_Layer__Enabled)
-                parent.sceneLayers.Add(this);
-            else
-                parent.disabledLayers.Add(this);
-            
             Handle_Enter__Scene_Environment(parent);
         }
         /// <summary>
@@ -74,23 +78,11 @@ namespace Xerxes_Engine
         /// <param name="parent"></param>
         protected virtual void Handle_Enter__Scene_Environment(Scene parent) { }
 
-        private bool _scene_layer__Enabled = true;
-        public bool Scene_Layer__Enabled 
-        { 
-            get => _scene_layer__Enabled; 
-            set 
-            {
-                _scene_layer__Enabled = value;
-                if (_scene_layer__Enabled) 
-                    Scene_Layer__Parent_Scene.EnableLayer(this);
-                else 
-                    Scene_Layer__Parent_Scene.DisableLayer(this);
-            } 
-        }
+        private bool Scene_Layer__Enabled { get; set; }
 
         public Scene_Layer(Scene sceneLayerParentScene, int sceneLayerLayerLevel = 0)
         {
-            SceneLayer__LayerLevel = sceneLayerLayerLevel;
+            Scene_Layer__LayerLevel = sceneLayerLayerLevel;
             Scene_Layer__Parent_Scene = sceneLayerParentScene;
 
             Internal_Rescale__Scene_Layer();

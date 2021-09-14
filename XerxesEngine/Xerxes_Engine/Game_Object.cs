@@ -18,7 +18,7 @@ namespace Xerxes_Engine
 
         public Scene_Layer Game_Object__Scene_Layer { get; set; }
 
-        internal Game_Object
+        public Game_Object
             (
             Scene_Layer sceneLayer,
             Vector3 position, 
