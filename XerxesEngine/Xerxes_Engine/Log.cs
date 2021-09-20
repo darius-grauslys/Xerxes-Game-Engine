@@ -83,11 +83,18 @@ namespace Xerxes_Engine
 
         ERROR__XERXES_ENGINE_OBJECT__INVALID_PARENT_ASSOCIATION_2   = "This engine object already has a parental association!" 
                                                                     + "Tried to associate to:{0} - is already associated to {1}!",
-        ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION_1           = "Engine object:{0} tried to associate to this logging sealed object!"
-                                                                    + "Sealed objects cannot be associated to!",
+        ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION_1           = "Engine object:{0} cannot be associated to! It is sealed!",
         ERROR__XERXES_ENGINE_OBJECT__INVALID_ASSOCIATION_4          = "Engine object:{0} tried to associate to object:{1} which is lower in hierarchy!"
                                                                     + "Target object's hierarchy score:{2} - Associating object's score:{3}!",
         ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2           = "Engine objects {0} -> {1} failed to associate!",
+
+
+        ERROR__STATE_MACHINE__PANIC_ON_STATE_ENTRY_1                = "State Machine Panicked! Current state:{0}",
+        ERROR__STATE_MACHINE__FAILED_TO_DEFINE_FLOW_1               = "Failed to define State Flow! Contextual Message:{0}!",
+        ERROR__STATE_MACHINE__FAILED_TO_REQUEST_STATE_1             = "Failed to request State Transition! Contextual Message:{0}!",
+
+        ERROR__TYPED_STATE_MACHINE__REPETATIVE_KEY_1                = "Another state of an equivalent type has already been registered! Tried to register:{0}!",
+        ERROR__TYPED_STATE_MACHINE__TYPE_NOT_PRESENT_1              = "The given type:{0} is not present!",
 
         ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2          = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"!",
 
@@ -152,8 +159,8 @@ namespace Xerxes_Engine
                 new Log_Message
                 (
                     messageType,
-                    source,
-                    String.Format(format, args)
+                    String.Format(format, args),
+                    source
                 )
             );
         }
@@ -170,8 +177,8 @@ namespace Xerxes_Engine
                 new Log_Message
                 (
                     Log_Message_Type.Message__Verbose,
-                    source,
-                    String.Format(format, args)
+                    String.Format(format, args),
+                    source
                 )
             );
         }

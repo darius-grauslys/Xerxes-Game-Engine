@@ -2,8 +2,20 @@ using System;
 
 namespace Xerxes_Engine
 {
+    /// <summary>
+    /// Represents a type in Xerxes_Engine that depends on the
+    /// Update/Render control flow. All internalized logging messages
+    /// are related to such objects - or systems.
+    ///
+    /// Calls to Update and Render are internalized. Exposure to
+    /// handling these calls are given via protected virtual definitions.
+    /// </summary>
     public class Xerxes_Engine_Object
     {
+        /// <summary>
+        /// Games cannot associate to anything. They are the thing
+        /// which objects associate to.
+        /// </summary>
         internal const int Xerxes_Engine_Object__ASSOCIATION_PRIORITY__GAME = 0;
 
         internal bool Xerxes_Engine_Object__Is_Disabled__Internal { get; set; }
@@ -69,27 +81,11 @@ namespace Xerxes_Engine
             return true;
         }
 
-        internal bool Internal_Associate__Xerxes_Engine_Object
+        internal bool Internal_Handle_Associate__As_Ancestor__Xerxes_Engine_Object
         (
             Xerxes_Engine_Object association
         )
-        {
-            if (Xerxes_Engine_Object__PARENT__Internal != null)
-            {
-                Log.Internal_Write__Log
-                (
-                    Log_Message_Type.Error__Engine_Object,
-                    Log.ERROR__XERXES_ENGINE_OBJECT__INVALID_PARENT_ASSOCIATION_2,
-                    this,
-                    association,
-                    Xerxes_Engine_Object__PARENT__Internal
-                );
-
-                return false;
-            }
-
-            return Handle_Association__Xerxes_Engine_Object();
-        }
+            => Handle_Associate__As_Ancestor__Xerxes_Engine_Object();
 
         /// <summary>
         /// Implementation control for rejecting outgoing associations.
@@ -97,34 +93,21 @@ namespace Xerxes_Engine
         /// Instead, this is meant to reject associations for cases beyond
         /// being already associated or violating hierarchy.
         /// </summary>
-        protected virtual bool Handle_Association__Xerxes_Engine_Object()
+        protected virtual bool Handle_Associate__As_Ancestor__Xerxes_Engine_Object()
             => true;
 
-        internal bool Internal_Validate__Association__Xerxes_Engine_Object
+        internal bool Internal_Handle_Associate__As_Descendant__Xerxes_Engine_Object
         (
             Xerxes_Engine_Object objectThatAssociated
         )
-        {
-            if (Xerxes_Engine_Object__Is_Sealed__Internal)
-            {
-                Log.Internal_Write__Log
-                (
-                    Log_Message_Type.Error__Engine_Object,
-                    Log.ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION_1,
-                    this,
-                    objectThatAssociated
-                );
-                return false;
-            }
-            return true;
-        }
+            => Handle_Associate__As_Descendant__Xerxes_Engine_Object();
 
         /// <summary>
         /// Implementation control for rejecting incoming associations.
         /// This is not to check what you are being associated with but rather
         /// to reject assocations made to you on cases beyond being sealed.
         /// </summary>
-        protected virtual bool Handle_Associated__Xerxes_Engine_Object()
+        protected virtual bool Handle_Associate__As_Descendant__Xerxes_Engine_Object()
             => true;
 
         internal static void Internal_Associate
@@ -154,25 +137,36 @@ namespace Xerxes_Engine
                 return;
             }
 
-            bool acceptsChild_To_Parent_Association
+            if (thisObject.Xerxes_Engine_Object__Is_Sealed__Internal)
+            {
+                Private_Log_Error__Is_Sealed(thisObject);
+                return;
+            }
+            if (toThisObject.Xerxes_Engine_Object__Is_Sealed__Internal)
+            {
+                Private_Log_Error__Is_Sealed(toThisObject);
+                return;
+            }
+
+            bool accepts_Association_As_Ancestor
                 = thisObject
-                .Internal_Associate__Xerxes_Engine_Object
+                .Internal_Handle_Associate__As_Ancestor__Xerxes_Engine_Object
                 (
                     toThisObject
                 );
 
-            bool acceptsParent_To_Child_Association
+            bool accepts_Association_As_Descendant
                 = toThisObject
-                .Internal_Validate__Association__Xerxes_Engine_Object
+                .Internal_Handle_Associate__As_Descendant__Xerxes_Engine_Object
                 (
                     thisObject
                 );
 
             if
             (
-                acceptsChild_To_Parent_Association
+                accepts_Association_As_Ancestor
                 &&
-                acceptsParent_To_Child_Association
+                accepts_Association_As_Descendant
             )
             {
                 toThisObject
@@ -191,6 +185,17 @@ namespace Xerxes_Engine
                 null,
                 thisObject,
                 toThisObject
+            );
+        }
+
+        private static void Private_Log_Error__Is_Sealed(Xerxes_Engine_Object obj)
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION_1,
+                null,
+                obj
             );
         }
     }

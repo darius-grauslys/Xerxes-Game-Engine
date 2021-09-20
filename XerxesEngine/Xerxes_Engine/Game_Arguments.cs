@@ -37,7 +37,7 @@ namespace Xerxes_Engine
                 Game_Arguments__WINDOW_WIDTH = Game_Arguments__DEFAULT_WINDOW_WIDTH,
                 Game_Arguments__WINDOW_HEIGHT = Game_Arguments__DEFAULT_WINDOW_HEIGHT,
 
-                Game_Arguments__LOG_VERBOSITY = Log_Verbosity.Normal,
+                Game_Arguments__LOG_VERBOSITY = Log_Verbosity.Verbose,
                 Game_Arguments__LOG__THROW_ON_WARNINGS = false,
                 Game_Arguments__LOG__THROW_ON_ERRORS = true,
                 Game_Arguments__LOG__OUT = Console.Out

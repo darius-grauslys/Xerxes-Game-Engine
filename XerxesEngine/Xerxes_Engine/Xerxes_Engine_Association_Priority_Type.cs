@@ -1,17 +1,17 @@
 namespace Xerxes_Engine
 {
-    public enum Xerxes_Engine_Object_Association_Type
+    internal enum Xerxes_Engine_Object_Association_Type
     {
         GAME = 0,
 
-        GAME__SYSTEM = 10000,
+        GAME__STATE_MACHINE = 1
 
-        GAME__SCENE = 20000,
+        GAME__SCENE = 2,
 
-        GAME__SCENE_LAYER = 30000,
+        GAME__SCENE_LAYER = 3,
 
-        GAME__OBJECT = 40000,
+        GAME__OBJECT = 4,
 
-        GAME__COMPONENT = 50000
+        GAME__COMPONENT = 5
     }
 }

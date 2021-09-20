@@ -8,7 +8,7 @@
     /// <summary/>
     public class State_Machine 
     {
-        public State_Handle State_Machine__DEFAULT_STATE { get; }
+        public State_Handle State_Machine__DEFAULT_STATE_HANDLE { get; }
 
         private State_Dictionary _State_Machine__STATE_DICTIONARY { get; }
         public bool State_Machine__Is_Defined_For_All_States
@@ -17,7 +17,7 @@
 
         private State_Flow _State_Machine__Current_State_Flow { get; set; }
 
-        public State_Machine(State nullable_DefaultState = null)
+        protected State_Machine(State nullable_DefaultState = null)
         {
             State defaultState = nullable_DefaultState ?? new State();
 
@@ -25,22 +25,27 @@
             
 
             //Define Default State_Flow.
-            State_Machine__DEFAULT_STATE =
+            State_Machine__DEFAULT_STATE_HANDLE =
                 _State_Machine__STATE_DICTIONARY
                 .Internal_Declare__State__State_Dictionary
                 (
                     defaultState
                 );
-            _State_Machine__STATE_DICTIONARY[State_Machine__DEFAULT_STATE]
+            _State_Machine__STATE_DICTIONARY[State_Machine__DEFAULT_STATE_HANDLE]
                 .Internal_Set__Target_State_Handle__State_Flow
                 (
-                    State_Machine__DEFAULT_STATE
+                    State_Machine__DEFAULT_STATE_HANDLE
                 );
 
             _State_Machine__Undefined_State_Count = 0;
+            _State_Machine__Current_State_Flow = 
+                _State_Machine__STATE_DICTIONARY[State_Machine__DEFAULT_STATE_HANDLE];
 
-            //TODO: Remove this.
-            _State_Machine__STATE_DICTIONARY[State_Machine__DEFAULT_STATE]
+            // You'd think we'd want to remove this perhaps since we don't 
+            // want to start any states in the constructor but this is
+            // actually okay since the DEFAULT state will not progress until
+            // the update calls begin.
+            _State_Machine__Current_State_Flow
                 .State_Flow__STATE
                 .Internal_Enter__State();
         }
@@ -64,11 +69,7 @@
                     Private_Panic__State_Machine();
                     break;
                 case State_Update_Response.Progress:
-                    Private_Transition__State_Flow__State_Machine
-                        (
-                            _State_Machine__Current_State_Flow
-                                .State_Flow__Target_State_Handle
-                        );
+                    Protected_Progress__Current_State_Flow__State_Machine();
                     break;
             }
 
@@ -83,7 +84,7 @@
         /// It is almost always better to rely on State_Flows for transitioning
         /// as opposed to manual transitions.
         /// <summary/>
-        public State_Transition_Response? Request__State_Transition__State_Machine
+        protected State_Transition_Response? Protected_Request__State_Transition__State_Machine
         (
             State_Handle stateHandle
         )
@@ -97,46 +98,16 @@
                 return null;
             }
 
-            return Internal_Request__State_Transition__State_Machine(stateHandle);
-        }
+            State_Transition_Response concludeResponse = 
+                Private_Conclude__Current_State_Flow__State_Machine();
+            
+            if(concludeResponse != State_Transition_Response.Accepted_Transition)
+                return concludeResponse;
 
-        private void Private_Transition__State_Flow__State_Machine
-        (
-            State_Handle nextState
-        )
-        {
-            State_Transition_Response response = 
-                Internal_Request__State_Transition__State_Machine
-                (
-                    nextState
-                );
+            State_Transition_Response enterResponse =
+                Private_Set__Current_State_Flow__State_Machine(stateHandle);
 
-            switch(response)
-            {
-                case State_Transition_Response.Accepted_Transition:
-                    break;
-                case State_Transition_Response.Rejected_Transition:
-                case State_Transition_Response.Invalid_Transition:
-                    Private_Panic__State_Machine();
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// It is internal's responsibility to make sure Distinct_Handles are
-        /// always valid.
-        /// <summary/>
-        internal State_Transition_Response Internal_Request__State_Transition__State_Machine
-        (
-            State_Handle stateHandle
-        )
-        {
-            State_Flow stateFlow = _State_Machine__STATE_DICTIONARY[stateHandle];
-
-            State_Transition_Response stateTransitionResponse = 
-                Private_Set__Current_State_Flow__State_Machine(stateFlow);
-
-            return stateTransitionResponse;
+            return enterResponse;
         }
 
         protected virtual void Handle_Invalid__State_Handle__State_Machine()
@@ -155,12 +126,45 @@
         //Implementation control for responding to a state machine panic.
         protected virtual void Handle_Panicked__State_Machine()
         {
+            Log.Internal_Write__Verbose__Log("Panic! State:{0}", this, _State_Machine__Current_State_Flow.State_Flow__STATE);
         }
 
-        private State_Transition_Response Private_Set__Current_State_Flow__State_Machine
-        (
-            State_Flow newStateFlow
-        )
+        protected State_Transition_Response Protected_Progress__Current_State_Flow__State_Machine()
+        {
+            State_Transition_Response response = Private_Progress__Current_State_Flow__State_Machine();
+
+            switch(response)
+            {
+                case State_Transition_Response.Invalid_Transition:
+                case State_Transition_Response.Rejected_Transition:
+                    Private_Panic__State_Machine();
+                    break;
+                case State_Transition_Response.Accepted_Transition:
+                    break;
+            }
+
+            return response;
+        }
+
+        private State_Transition_Response Private_Progress__Current_State_Flow__State_Machine()
+        {
+            State_Transition_Response concludedResponse = 
+                Private_Conclude__Current_State_Flow__State_Machine();
+
+            if (concludedResponse != State_Transition_Response.Accepted_Transition)
+                return concludedResponse;
+
+            State_Transition_Response enterResponse =
+                Private_Set__Current_State_Flow__State_Machine
+                (
+                    _State_Machine__Current_State_Flow
+                    .State_Flow__Target_State_Handle
+                );
+
+            return enterResponse;
+        }
+
+        private State_Transition_Response Private_Conclude__Current_State_Flow__State_Machine()
         {
             State state =
                 _State_Machine__Current_State_Flow?
@@ -171,24 +175,40 @@
                 ??
                 State_Transition_Response.Accepted_Transition;
 
-            switch(stateTransitionResponse)
+            return stateTransitionResponse;
+        }
+
+        private State_Transition_Response Private_Set__Current_State_Flow__State_Machine
+        (
+            State_Handle stateHandle
+        )
+        {
+            State_Flow stateFlow = _State_Machine__STATE_DICTIONARY[stateHandle];
+
+            State_Transition_Response response =
+                stateFlow
+                .State_Flow__STATE?
+                .Internal_Enter__State()
+                ?? State_Transition_Response.Invalid_Transition;
+
+            switch(response)
             {
-                case State_Transition_Response.Rejected_Transition:
                 case State_Transition_Response.Invalid_Transition:
+                case State_Transition_Response.Rejected_Transition:
+                    Private_Panic__State_Machine();
                     break;
-                default:
                 case State_Transition_Response.Accepted_Transition:
-                    _State_Machine__Current_State_Flow = newStateFlow;
+                    _State_Machine__Current_State_Flow = stateFlow;
                     break;
             }
-
-            return stateTransitionResponse;
+            
+            return response;
         }
 
 #endregion
 
 #region State Declarations
-        public State_Handle Register__State__State_Machine_Distinct
+        protected State_Handle Protected_Register__State__State_Machine
         (
             State state,
             string stringHandle = null
@@ -207,7 +227,7 @@
             return stateHandle;
         }
 
-        public void Define__State_Flow__State_Machine_Distinct
+        protected void Protected_Define__State_Flow__State_Machine
         (
             State_Handle stateHandle_From,
             State_Handle stateHandle_To
@@ -221,6 +241,21 @@
             flow_From.Internal_Set__Target_State_Handle__State_Flow
             (
                 stateHandle_To
+            );
+        }
+#endregion
+#region Protected Logging
+        protected void Protected_Log_Error__FAILED_TO_DEFINE_FLOW__State_Machine
+        (
+            string contextualMessage = ""
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__STATE_MACHINE__FAILED_TO_DEFINE_FLOW_1,
+                this,
+                contextualMessage
             );
         }
 #endregion

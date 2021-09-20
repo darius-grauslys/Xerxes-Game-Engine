@@ -27,6 +27,7 @@ namespace Xerxes_Engine
         protected void Protected_Enable__Layer__Scene(Scene_Layer_Handle layerHandle) 
         { 
             Scene_Layer layer = _Scene__LAYER_DICTIONARY[layerHandle];
+            _Scene__ENABLED_LAYERS.Add(layer);
             layer.Internal_Rescale__Scene_Layer();
             layer.Internal_Enable__Scene_Layer(); 
         }
