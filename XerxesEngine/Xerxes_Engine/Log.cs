@@ -34,7 +34,7 @@ namespace Xerxes_Engine
         VERBOSE__GAME__SYSTEM__UNLOADED_1                           = "System Unloaded  - {0}.",
         VERBOSE__GAME__SYSTEMS__UNLOADED                            = "FINISHED UNLOADING SYSTEMS.",
         
-        VERBOSE__GAME__BASE_EVENT_SCHEDULER__LOADING                = "LOADING BASE EVENT SCHEDULER.",
+        //VERBOSE__GAME__BASE_EVENT_SCHEDULER__LOADING                = "LOADING BASE EVENT SCHEDULER.",
         
         VERBOSE__RENDER_SERVICE__LOAD_SHADERS                       = "LOADING SHADERS.",
         VERBOSE__RENDER_SERVICE__LOAD_SHADER_1                      = "Loading Shader   - {0}.",
@@ -63,7 +63,7 @@ namespace Xerxes_Engine
         WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING            = "This engine object has already been sealed. Ignoring sealing invokation.",
         
         WARNING__COMPONENT__PARENT_IS_NULL                          = "Component was disabled when attached to a null parent.",
-        WARNING__COMPONENT__UTILIZED_WHILE_DISABLED_1               = "Component was not intended to be used while disabled. May cause problems. Action:\"{0}\".",
+        WARNING__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C  = "Component was not intended to be used while disabled. May cause problems. Action:\"{0}\".",
 
         WARNING__ANIMATION_RENDER_COMPONENT__BAD_NEGATIVE_SPEED_1   = "An animation node speed of non-default negative value:\"{0}\" was given. Using default.",
 #endregion
@@ -83,15 +83,26 @@ namespace Xerxes_Engine
 
         ERROR__XERXES_ENGINE_OBJECT__INVALID_PARENT_ASSOCIATION_2   = "This engine object already has a parental association!" 
                                                                     + "Tried to associate to:{0} - is already associated to {1}!",
-        ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION_1           = "Engine object:{0} cannot be associated to! It is sealed!",
+        ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION             = "Cannot be associated to! I am sealed!",
+        ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED_TO_ROOT      = "Tried to access root object prior to being rooted!",
+        ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED              = "Tried to access associated parent, but is not associated!",
         ERROR__XERXES_ENGINE_OBJECT__INVALID_ASSOCIATION_4          = "Engine object:{0} tried to associate to object:{1} which is lower in hierarchy!"
                                                                     + "Target object's hierarchy score:{2} - Associating object's score:{3}!",
         ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2           = "Engine objects {0} -> {1} failed to associate!",
 
+        ERROR__GAME_OBJECT__FAILED_TO_ASSOCIATE_COMPONENT_2C        = "Failed to associate component:{0}! Contextual Message:{1}!",
+        ERROR__GAME_OBJECT__ASSOCIATED_ANCESTOR_IS_INVALID_1        = "Tried to associate with:{0}, but it is not a Scene Layer! Games Objects can "
+                                                                    + "only associate with Scene Layers!",
+        
+        ERROR__GAME_OBJECT_COMPONENT__FAILED_TO_ASSOCIATE_1         = "Failed to associate to engine object:{0}! Components can only associate to Game Objects!",
+        ERROR__GAME_OBJECT_COMPONENT__NOT_ASSOCIATED_TO_ROOT_1C     = "This component was utilized while not rooted, and depends on a rooted enviroment!"
+                                                                    + "Contextual Message:{0}!",
+        ERROR__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C    = "This component was utilized while disabled, and only functions while enabled!"
+                                                                    + "Contextual Message:{0}!",
 
-        ERROR__STATE_MACHINE__PANIC_ON_STATE_ENTRY_1                = "State Machine Panicked! Current state:{0}",
-        ERROR__STATE_MACHINE__FAILED_TO_DEFINE_FLOW_1               = "Failed to define State Flow! Contextual Message:{0}!",
-        ERROR__STATE_MACHINE__FAILED_TO_REQUEST_STATE_1             = "Failed to request State Transition! Contextual Message:{0}!",
+        ERROR__STATE_MACHINE__PANIC_ON_STATE_ENTRY_1                = "State Machine Panicked! Current state:{0}!",
+        ERROR__STATE_MACHINE__FAILED_TO_DEFINE_FLOW_1C              = "Failed to define State Flow! Contextual Message:{0}!",
+        ERROR__STATE_MACHINE__FAILED_TO_REQUEST_STATE_1C            = "Failed to request State Transition! Contextual Message:{0}!",
 
         ERROR__TYPED_STATE_MACHINE__REPETATIVE_KEY_1                = "Another state of an equivalent type has already been registered! Tried to register:{0}!",
         ERROR__TYPED_STATE_MACHINE__TYPE_NOT_PRESENT_1              = "The given type:{0} is not present!",

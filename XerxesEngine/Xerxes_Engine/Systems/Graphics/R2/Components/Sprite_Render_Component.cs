@@ -16,10 +16,11 @@ namespace Xerxes_Engine.Systems.Graphics.R2
 
         public Sprite Get__Sprite__Sprite_Render_Component()
         {
-            if(!Component__Enabled)
+            if(Protected_Check_If__Rooted__Game_Object_Component())
             {
-                Private_Log__Used_When_Disabled__Sprite_Component
+                Internal_Log_Error__Used_When_Not_Associated_To_Root
                 (
+                    this,
                     Sprite_Render_Component__ACTION__SPRITE_GET
                 );
 
@@ -29,7 +30,8 @@ namespace Xerxes_Engine.Systems.Graphics.R2
             return Game__Sprite_Library__REFERENCE
                 .Get__Sprite_From_ID__Sprite_Library
             (
-                Component__Attached_Game_Object.renderUnit.id
+                Game_Object_Component__Attached_Object__Protected
+                ._game_Object__Render_Unit.id
             );
         }
 
@@ -38,34 +40,35 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         {
         }
 
-        protected override void Handle_Attach_To__Game_Object__Component()
+        protected override void Handle_Associate__To_Game__Xerxes_Engine_Object(Event_Argument_Associate_Game e)
         {
-            base.Handle_Attach_To__Game_Object__Component();
-            if(Component__Has_Been_Attached_Once)
-                return;
-
             Game__Sprite_Library__REFERENCE = 
-                Component__Attached_Game_Object
-                .Game_Object__Scene_Layer
-                .Scene_Layer__Game
+                Protected_Get__Root__Xerxes_Engine_Object()?
                 .Game__Sprite_Library;
         }
         
         public virtual bool Set__Sprite__Sprite_Render(string name)
         {
-            if (!Component__Enabled)
+            if (Xerxes_Engine_Object__Is_Disabled__Internal)
             {
-                Private_Log__Used_When_Disabled__Sprite_Component
+                Internal_Log_Warning__Used_When_Disabled
                 (
+                    this,
                     Sprite_Render_Component__ACTION__SPRITE_SET
                 );
 
                 return false;
             }
 
-            Vector3 pos = Component__Attached_Game_Object.renderUnit.Position;
-            Game__Sprite_Library__REFERENCE.Extract__Render_Unit__Sprite_Library(name, out Component__Attached_Game_Object.renderUnit);
-            Component__Attached_Game_Object.renderUnit.Position = pos;
+            Vector3 pos = Game_Object_Component__Attached_Object__Protected._game_Object__Render_Unit.Position;
+            Game__Sprite_Library__REFERENCE.Extract__Render_Unit__Sprite_Library
+            (
+                name, 
+                out Game_Object_Component__Attached_Object__Protected
+                    ._game_Object__Render_Unit
+            );
+            Game_Object_Component__Attached_Object__Protected
+                ._game_Object__Render_Unit.Position = pos;
 
             return true;
         }
@@ -76,10 +79,11 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         /// <param name="s"></param>
         public virtual bool Set__Sprite__Sprite_Render(Render_Unit_R2 ru, bool copyPosition = false)
         {
-            if (!Component__Enabled)
+            if (Xerxes_Engine_Object__Is_Disabled__Internal)
             {
-                Private_Log__Used_When_Disabled__Sprite_Component
+                Internal_Log_Warning__Used_When_Disabled
                 (
+                    this,
                     Sprite_Render_Component__ACTION__SPRITE_SET
                 );
 
@@ -87,39 +91,34 @@ namespace Xerxes_Engine.Systems.Graphics.R2
             }
 
             if (copyPosition)
-                ru.Position = Component__Attached_Game_Object.Position;
-            Component__Attached_Game_Object.renderUnit = ru;
+                ru.Position = 
+                    Game_Object_Component__Attached_Object__Protected
+                    .Game_Object__Render_Unit_Position__Internal;
+            Game_Object_Component__Attached_Object__Protected
+                ._game_Object__Render_Unit = ru;
 
             return true;
         }
 
         public virtual bool Set__Sprite__Sprite_Render(int spriteId, int vao_Index = 0)
         {
-            if (!Component__Enabled)
+            if (Game_Object_Component__Is_Disabled__Protected)
             {
-                Private_Log__Used_When_Disabled__Sprite_Component
+                Internal_Log_Warning__Used_When_Disabled
                 (
+                    this,
                     Sprite_Render_Component__ACTION__SPRITE_SET
                 );
 
                 return false;
             }
 
-            Component__Attached_Game_Object.renderUnit.id = spriteId;
-            Component__Attached_Game_Object.renderUnit.vaoIndex = vao_Index;
-            Component__Attached_Game_Object.renderUnit.IsInitialized = true;
+            Game_Object_Component__Attached_Object__Protected._game_Object__Render_Unit.id = spriteId;
+            Game_Object_Component__Attached_Object__Protected._game_Object__Render_Unit.vaoIndex = vao_Index;
+            Game_Object_Component__Attached_Object__Protected._game_Object__Render_Unit.IsInitialized = true;
 
             return true;
         }
 
-        private void Private_Log__Used_When_Disabled__Sprite_Component(string action)
-        {
-            Log.Internal_Write__Warning__Log
-            (
-                Log.WARNING__COMPONENT__UTILIZED_WHILE_DISABLED_1,
-                this,
-                action
-            );
-        }
     }
 }

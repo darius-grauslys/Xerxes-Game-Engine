@@ -6,10 +6,20 @@ namespace Xerxes_Engine
     {
         public Vector3 Position
         {
-            get => Component__Attached_Game_Object?.Position ?? Vector3.Zero;
+            get => 
+                Game_Object_Component__Attached_Object__Protected?
+                .Game_Object__Render_Unit_Position__Internal 
+                ?? Vector3.Zero;
             set
             {
-                if (Component__Attached) Component__Attached_Game_Object.Position = value;
+                if (Game_Object_Component__Is_Disabled__Protected)
+                {
+                    
+                    return;
+                }
+
+                Game_Object_Component__Attached_Object__Protected
+                    .Game_Object__Render_Unit_Position__Internal = value;
             }
         }
     }

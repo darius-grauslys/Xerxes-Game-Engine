@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenTK;
-using Xerxes_Engine.UI.UI_Frame_Arguments;
+using Xerxes_Engine.UI.UI_Event_Argument_Frames;
 
 namespace Xerxes_Engine.UI.Implemented_UI_Components
 {
@@ -25,12 +25,12 @@ namespace Xerxes_Engine.UI.Implemented_UI_Components
         {
             UI_Clickable__Clicked_Handler = clickedHandler;
         }
-        
+
         protected override void Handle_Attach_To__Game_Object__Component()
         {
-            UI_Scene_Layer uiSceneLayer = Component__Attached_Game_Object.Game_Object__Scene_Layer as UI_Scene_Layer;
+            UI_Scene_Layer uiSceneLayer = Protected_Get__Attached_Object__Game_Object_Component().Game_Object__Scene_Layer__Protected as UI_Scene_Layer;
             UI_Clickable__UI_Render_Of_Attached_UI_Game_Object =
-                Component__Attached_Game_Object.Get__Component__Game_Object<UI_Render_Component>();
+                Protected_Get__Attached_Object__Game_Object_Component().Protected_Get__Component__Game_Object<UI_Render_Component>();
             
             Set__Hardlocked_Status__Component(uiSceneLayer == null || UI_Clickable__UI_Render_Of_Attached_UI_Game_Object == null);
 

@@ -27,8 +27,8 @@ namespace Xerxes_Engine.Systems.Graphics
             AdjustProjection(windowWidth, windowHeight);
             cachedWorldMatrix = Matrix4.CreateTranslation(new Vector3(0,0,0));
 
-            shaderSource_Vert = Path.Combine(game.GAME__DIRECTORY__SHADERS, "shader.vert");
-            shaderSource_Frag = Path.Combine(game.GAME__DIRECTORY__SHADERS, "shader.frag");
+            shaderSource_Vert = Path.Combine(game.Game__DIRECTORY__SHADERS, "shader.vert");
+            shaderSource_Frag = Path.Combine(game.Game__DIRECTORY__SHADERS, "shader.frag");
 
             beginDraw_DefaultShader = new Shader(shaderSource_Vert, shaderSource_Frag);
         }
@@ -42,8 +42,8 @@ namespace Xerxes_Engine.Systems.Graphics
             {
                 Log.Internal_Write__Verbose__Log(Log.VERBOSE__RENDER_SERVICE__LOAD_SHADER_1, this, 0, shaders[i]);
 
-                shaderSource_Vert = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", shaders[i], EXTENSION_VERT));
-                shaderSource_Frag = Path.Combine(Game.GAME__DIRECTORY__SHADERS, string.Format("{0}{1}", shaders[i], EXTENSION_FRAG));
+                shaderSource_Vert = Path.Combine(Game.Game__DIRECTORY__SHADERS, string.Format("{0}{1}", shaders[i], EXTENSION_VERT));
+                shaderSource_Frag = Path.Combine(Game.Game__DIRECTORY__SHADERS, string.Format("{0}{1}", shaders[i], EXTENSION_FRAG));
 
                 Shaders[i] = new Shader(shaderSource_Vert, shaderSource_Frag);
             }
@@ -88,7 +88,7 @@ namespace Xerxes_Engine.Systems.Graphics
             GL.MatrixMode(MatrixMode.Modelview);
         }
 
-        internal void RenderScene(Scene scene, Frame_Argument e)
+        internal void RenderScene(Scene scene, Event_Argument_Frame e)
         {
             scene.Internal_Render__Scene(this, e);
         }

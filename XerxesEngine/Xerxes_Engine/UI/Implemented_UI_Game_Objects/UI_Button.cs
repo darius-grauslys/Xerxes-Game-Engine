@@ -2,7 +2,7 @@
 using System.Linq;
 using Xerxes_Engine.UI.Implemented_UI_Components;
 using Xerxes_Engine.UI.Implemented_UI_Containers;
-using Xerxes_Engine.UI.UI_Frame_Arguments;
+using Xerxes_Engine.UI.UI_Event_Argument_Frames;
 using OpenTK;
 
 namespace Xerxes_Engine.UI.Implemented_UI_Game_Objects

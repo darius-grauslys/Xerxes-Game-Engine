@@ -17,7 +17,7 @@ namespace Xerxes_Engine
         public Vector3 Position { get => position; set => position = value; }
         public Game_Object FocusObject { get => focusObject; set => focusObject = value; }
 
-        public Vector3 TargetPosition => (focusObject != null) ? focusObject.Position : position;
+        public Vector3 TargetPosition => (focusObject != null) ? focusObject.Game_Object__Render_Unit_Position__Internal : position;
 
         public float Zoom { get => zoom; set => zoom = value; }
 
@@ -31,7 +31,7 @@ namespace Xerxes_Engine
         
         public void Pan_Linear(float deltaT)
         {
-            Vector3 pos = (focusObject != null) ? focusObject.Position : Vector3.Zero;
+            Vector3 pos = (focusObject != null) ? focusObject.Game_Object__Render_Unit_Position__Internal : Vector3.Zero;
             Vector3 distanceVector = pos - position;
 
             position += (distanceVector * velocity) * deltaT;

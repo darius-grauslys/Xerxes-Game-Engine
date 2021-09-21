@@ -54,7 +54,7 @@
         //TODO: Make Xerxes_Object, which has functionality to hook onto scene Update/Render/etc.
         //      Just so developers cannot call Update__State_Machine and similar functions
         //      multiple times per loop.
-        public State_Update_Response Update__State_Machine(Frame_Argument e)
+        public State_Update_Response Update__State_Machine(Event_Argument_Frame e)
         {
             State_Update_Response response =
                 _State_Machine__Current_State_Flow

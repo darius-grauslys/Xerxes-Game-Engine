@@ -1,4 +1,4 @@
-﻿namespace Xerxes_Engine.Events.Event_Arguments
+﻿namespace Xerxes_Engine
 {
     public class Event_Argument
     {

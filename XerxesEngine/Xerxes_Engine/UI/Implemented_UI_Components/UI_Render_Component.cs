@@ -43,7 +43,10 @@ namespace Xerxes_Engine.UI.Implemented_UI_Components
 
         private void Event_Handle__UI_Element__Repositioned(UI_Element element)
         {
-            Component__Attached_Game_Object.Position = element.Get__Position_In_GameSpace__UI_Element();
+            UI_Game_Object ui_Game_Object = Protected_Get__Attached_Object__Game_Object_Component() as UI_Game_Object;
+            
+            ui_Game_Object.Game_Object__Render_Unit_Position__Internal = 
+                    element.Get__Position_In_GameSpace__UI_Element();
         }
 
         private void Event_Handle__UI_Element__Rescaled(UI_Element element)
@@ -53,7 +56,7 @@ namespace Xerxes_Engine.UI.Implemented_UI_Components
 
         protected override void Handle_Attach_To__Game_Object__Component()
         {
-            UI_Render__Sprite_Library = Component__Attached_Game_Object.Game_Object__Scene_Layer
+            UI_Render__Sprite_Library = Protected_Get__Attached_Object__Game_Object_Component().Game_Object__Scene_Layer
                 .Scene_Layer__Game
                 .Game__Sprite_Library;
             
@@ -61,13 +64,13 @@ namespace Xerxes_Engine.UI.Implemented_UI_Components
             
             UI_Render__Element.Internal_Set__Associated_UI_Game_Object__UI_Element
             (
-                Component__Attached_Game_Object as UI_Game_Object
+                Protected_Get__Attached_Object__Game_Object_Component() as UI_Game_Object
             );
         }
 
         private void Private_Bind__Game_Object__UI_Render()
         {
-            if (Component__Attached_Game_Object == null || UI_Render__Element == null)
+            if (Protected_Get__Attached_Object__Game_Object_Component() == null || UI_Render__Element == null)
                 return;
 
             UI_Render__Element.Event__Repositioned__UI_Element += Event_Handle__UI_Element__Repositioned;
@@ -82,7 +85,7 @@ namespace Xerxes_Engine.UI.Implemented_UI_Components
                 .Extract__Render_Unit__Sprite_Library
             (
                 UI_Render__Sprite_Alias, 
-                out Component__Attached_Game_Object.renderUnit
+                out Protected_Get__Attached_Object__Game_Object_Component()._game_Object__Render_Unit
             );
 
             if (UI_Render__Element == null)

@@ -3,106 +3,110 @@
     /// <summary>
     /// Attributes are added to Game_Objects to give additional functionalities. Such as hitboxes, physics, and more.
     /// </summary>
-    public class Game_Object_Component
+    public class Game_Object_Component : Xerxes_Engine_Object
     {
-        private bool Component__Enabled__Private { get; set; }
-        protected bool Component__Hardlocked { get; private set; }
-        
-        /// <summary>
-        /// If set true, component is disabled and cannot be enabled externally.
-        /// </summary>
-        protected void Set__Hardlocked_Status__Component(bool state)
+        protected Game_Object Protected_Get__Attached_Object__Game_Object_Component()
+            => Internal_Get__Parent_As__Xerxes_Engine_Object<Game_Object>();
+        protected bool Protected_Check_If__Associated__Game_Object_Component()
+            => Xerxes_Engine_Object__Parent__Internal != null;
+        protected bool Protected_Check_If__Rooted__Game_Object_Component()
+            => Internal_Check_If__Rooted__Xerxes_Engine_Object();
+
+        protected bool Game_Object_Component__Is_Disabled__Protected
         {
-            Component__Hardlocked = state;
-            
-            Component__Enabled__Private = !Component__Hardlocked;
+            get => Xerxes_Engine_Object__Is_Disabled__Internal;
+            set => Xerxes_Engine_Object__Is_Disabled__Internal = value;
         }
-        
-        public bool Component__Enabled 
-        { 
-            get => Component__Enabled__Private;
-            set
-            {
-                if (Component__Hardlocked)
-                    return;
-                Component__Enabled__Private = value;
-            } 
-        }
-        public bool Component__Attached => Component__Attached_Game_Object != null;
 
-        public bool Component__Has_Been_Attached_Once { get; private set; }
+        protected void Game_Object_Component__Seal__Protected()
+            => Internal_Seal__Xerxes_Engine_Object();
 
-        public Game_Object Component__Attached_Game_Object { get; private set; }
-
-        internal void Attach_To__Game_Object__Component(Game_Object obj)
-        {
-            if (!Component__Has_Been_Attached_Once)
-                Component__Has_Been_Attached_Once = true;
-            Component__Attached_Game_Object = obj;
-            Handle_Attach_To__Game_Object__Component();
-        }
-        
         public Game_Object_Component()
+        : base
+        (
+            Xerxes_Engine_Object_Association_Type.GAME__COMPONENT
+        )
         {
-            Component__Enabled = true;
+            Xerxes_Engine_Object__Is_Disabled__Internal = true;
         }
 
-        protected virtual void Handle_Attach_To__Game_Object__Component()
+        internal override void Internal_Associate__To_Game__Xerxes_Engine_Object(Event_Argument_Associate_Game e)
         {
-            if (Component__Attached_Game_Object == null)
+            Xerxes_Engine_Object__Is_Disabled__Internal = false;
+
+            base.Internal_Associate__To_Game__Xerxes_Engine_Object(e);
+        }
+
+        internal override bool Internal_Handle_Associate__As_Ancestor__Xerxes_Engine_Object
+        (
+            Xerxes_Engine_Object association
+        )
+        {
+            if (association is Game_Object)
             {
-                Component__Enabled = false;
-
-                Log.Internal_Write__Warning__Log
-                (
-                    Log.WARNING__COMPONENT__PARENT_IS_NULL,
-                    this
-                );
+                return base.Internal_Handle_Associate__As_Ancestor__Xerxes_Engine_Object(association);
             }
-            else if (!Component__Enabled)
-            {
-                Component__Enabled = true;
 
-                Log.Internal_Write__Info__Log
-                (
-                    Log.INFO__COMPONENT__ENABLED_ON_PARENT_BIND,
-                    this
-                );
-            }
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__GAME_OBJECT_COMPONENT__FAILED_TO_ASSOCIATE_1,
+                this,
+                association
+            );
+
+            return false;
         }
 
-        /// <summary>
-        /// Logical update frame.
-        /// </summary>
-        internal void Update(Frame_Argument args)
-        {
-            if (Component__Enabled)
-            {
-                Handle__Update__Component(args);
-            }
-        }
-
-        protected virtual void Handle__Update__Component(Frame_Argument args)
-        {
-
-        }
-
-        public void Toggle__Component()
-        {
-            Component__Enabled = !Component__Enabled;
-        }
-
-        public void Toggle__Component(bool b)
-        {
-            Component__Enabled = b;
-        }
-
-        public virtual Game_Object_Component Clone__Component()
+        public virtual Game_Object_Component Clone__Game_Object_Component()
         {
             Game_Object_Component newComp = new Game_Object_Component();
-            newComp.Component__Enabled = Component__Enabled;
 
             return newComp;
+        }
+
+        internal static void Internal_Log_Warning__Used_When_Disabled
+        (
+            Game_Object_Component component, 
+            string contextualMessage
+        )
+        {
+            Log.Internal_Write__Warning__Log
+            (
+                Log.WARNING__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C,
+                component,
+                contextualMessage
+            );
+        }
+
+        internal static void Internal_Log_Error__Used_When_Disabled
+        (
+            Game_Object_Component component,
+            string contextualMessage
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C,
+                component,
+                contextualMessage
+            );
+        }
+
+        internal static void Internal_Log_Error__Used_When_Not_Associated_To_Root
+        (
+            Game_Object_Component component,
+            string contextualMessage
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__GAME_OBJECT_COMPONENT__NOT_ASSOCIATED_TO_ROOT_1C,
+                component,
+                contextualMessage
+            );
         }
     }
 }

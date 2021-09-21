@@ -3,7 +3,6 @@ using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Xerxes_Engine.Events;
 using Xerxes_Engine.Systems.Graphics;
 using OpenTK.Graphics;
 using Xerxes_Engine.Systems.Input;
@@ -14,16 +13,18 @@ using Xerxes_Engine.Systems.Scenes;
 
 namespace Xerxes_Engine
 {
-    public class Game : GameWindow
+    public class Game : Xerxes_Engine_Object
     {
+        internal GameWindow Game__GAME_WINDOW__Internal { get; }
+
         //PATHS
-        public string GAME__DIRECTORY__BASE { get; }
-        public string GAME__DIRECTORY__ASSETS { get; }
-        public string GAME__DIRECTORY__SHADERS { get; }
+        public string Game__DIRECTORY__BASE { get; }
+        public string Game__DIRECTORY__ASSETS { get; }
+        public string Game__DIRECTORY__SHADERS { get; }
         
         #region Systems
 
-        private List<Game_System> GAME__SYSTEMS { get; }
+        private List<Game_System> Game__SYSTEMS { get; }
         
         /// <summary>
         /// Responsible for loading and unloading textures.
@@ -38,8 +39,6 @@ namespace Xerxes_Engine
         public Input_System Game__Input_System { get; private set; }
         public Sprite_Animation_Library Game__Animation_Schematic_Library { get; private set; }
         public Scene_Manager Game__Scene_Management_Service { get; private set; }
-        
-        public Event_Scheduler Game__Event_Scheduler { get; private set; }
         #endregion
 
         #region Time
@@ -47,52 +46,60 @@ namespace Xerxes_Engine
         public double Game__Update_Time { get; private set; }
         #endregion
 
+        public int Game__Window_Width => Game__GAME_WINDOW__Internal.Width;
+        public int Game__Window_Height => Game__GAME_WINDOW__Internal.Height;
         public Vector2 Get__Window_Size__Game()
-            => new Vector2(Width, Height);
+            => new Vector2(Game__Window_Width, Game__Window_Height);
 
         public float Get__Window_Hypotenuse__Game()
-            => Math_Helper.Get__Hypotenuse(Width, Height);
+            => Math_Helper.Get__Hypotenuse(Game__Window_Width, Game__Window_Height);
         
-        private Scene scene;
+        private Scene Game__Current_Scene { get; set; }
 
         public Game
         (
             Game_Arguments gameArguments
         )
-        : base
-            (
-            (int)
-            (
-                gameArguments?.Game_Arguments__WINDOW_WIDTH 
-                ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_WIDTH
-            ),
-            (int)
-            (
-                gameArguments?.Game_Arguments__WINDOW_HEIGHT
-                ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_HEIGHT
-            ),
-
-            GraphicsMode.Default, 
-            
-            gameArguments?.Game_Arguments__WINDOW_TITLE
-            ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_TITLE
-            )
+        : base 
+        (
+            Xerxes_Engine_Object_Association_Type.GAME
+        )
         {
-            GAME__SYSTEMS = new List<Game_System>();
+            Game__GAME_WINDOW__Internal = 
+                new GameWindow
+                (
+                    (int)
+                    (
+                        gameArguments?.Game_Arguments__WINDOW_WIDTH 
+                        ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_WIDTH
+                    ),
+                    (int)
+                    (
+                        gameArguments?.Game_Arguments__WINDOW_HEIGHT
+                        ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_HEIGHT
+                    ),
+
+                    GraphicsMode.Default, 
+                    
+                    gameArguments?.Game_Arguments__WINDOW_TITLE
+                    ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_TITLE
+                );
+
+            Game__SYSTEMS = new List<Game_System>();
             
             Log.Initalize__Log
             (
                 gameArguments
             );
 
-            GAME__DIRECTORY__BASE = AppDomain.CurrentDomain.BaseDirectory; 
-            GAME__DIRECTORY__ASSETS = 
+            Game__DIRECTORY__BASE = AppDomain.CurrentDomain.BaseDirectory; 
+            Game__DIRECTORY__ASSETS = 
                 Private_Validate__Directory__Game
                 (
                     gameArguments.Game_Arguments__ASSET_DIRECTORY,
                     Game_Arguments.Game_Arguments__DEFAULT_ASSET_DIRECTORY
                 );
-            GAME__DIRECTORY__SHADERS = 
+            Game__DIRECTORY__SHADERS = 
                 Private_Validate__Directory__Game
                 (
                     gameArguments.Game_Arguments__SHADER_DIRECTORY,
@@ -103,9 +110,6 @@ namespace Xerxes_Engine
             Private_Establish__Custom_Systems__Game();
             Private_Load__Systems__Game();
             
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__BASE_EVENT_SCHEDULER__LOADING, this);
-            Game__Event_Scheduler = new Event_Scheduler();
-            
             Game__Render_Service.Internal_Load__Shaders__Render_Service(Get__Shaders__Game());
 
             //END SERVICES
@@ -113,6 +117,18 @@ namespace Xerxes_Engine
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADING, this);
             Handle_Load__Content__Game();
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADED, this);
+        }
+
+        private void Private_Hook__To_Game_Window__Game()
+        {
+            Game__GAME_WINDOW__Internal.Resize += Private_Handle__Resize_Window__Game;
+            Game__GAME_WINDOW__Internal.Closed += Private_Handle__Closed_Window__Game;
+
+            Game__GAME_WINDOW__Internal.UpdateFrame += Private_Handle__Update_Window__Game;
+            Game__GAME_WINDOW__Internal.RenderFrame += Private_Handle__Render_Window__Game;
+
+            Game__GAME_WINDOW__Internal.Load += Private_Handle__Load_Window__Game;
+            Game__GAME_WINDOW__Internal.Unload += Private_Handle__Unload_Window__Game;
         }
 
         private string Private_Validate__Directory__Game
@@ -141,7 +157,7 @@ namespace Xerxes_Engine
 
                 Log.Internal_Panic__Log(Log.ERROR__GAME__RECOVERY_DIRECTORY_NOT_FOUND_1, this, recoveryDirectory);
 
-                Close();
+                Game__GAME_WINDOW__Internal.Close();
             }
 
             return baseDirectory;
@@ -165,54 +181,72 @@ namespace Xerxes_Engine
             return defaultDirectory;
         }
 
-        protected override void OnResize(EventArgs e)
+        private void Private_Handle__Resize_Window__Game(object sender, EventArgs e)
         {
-            GL.Viewport(ClientRectangle);
-            Game__Render_Service.AdjustProjection(Width, Height);
-            scene.Internal_Rescale__Scene();
+            GL.Viewport(Game__GAME_WINDOW__Internal.ClientRectangle);
+            Game__Render_Service.AdjustProjection(Game__GAME_WINDOW__Internal.Width, Game__GAME_WINDOW__Internal.Height);
+            Event_Argument_Resize_2D resize_2D_Argument = 
+                new Event_Argument_Resize_2D
+                (
+                   Game__Window_Width,
+                   Game__Window_Height
+                );
+
+            base.Internal_Resize__2D__Xerxes_Engine_Object(resize_2D_Argument);
         }
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        private void Private_Handle__Closed_Window__Game(object sender, EventArgs e)
         {
-
+            
         }
 
-        protected override void OnUpdateFrame(FrameEventArgs e)
+        private void Private_Handle__Update_Window__Game(object sender, FrameEventArgs e)
         {
             Game__Update_Time += e.Time;
-            Game__Event_Scheduler.Internal_Progress__Events__Event_Scheduler(e.Time);
-            scene.Internal_Update__Scene(new Frame_Argument(Game__Update_Time, e.Time));
+            Event_Argument_Frame frame_Argument = new Event_Argument_Frame(Game__Update_Time, e.Time);
+
+            base.Internal_Update__Xerxes_Engine_Object(frame_Argument);
         }
 
-        protected override void OnRenderFrame(FrameEventArgs e)
+        private void Private_Handle__Render_Window__Game(object sender, FrameEventArgs e)
         {
             Game__Render_Time += e.Time;
+            Event_Argument_Frame frame_Argument = new Event_Argument_Frame(Game__Render_Time, e.Time);
 
-            scene.Internal_Begin__Render__Scene(Game__Render_Service);
             Game__Render_Service.BeginRender();
 
-            Game__Render_Service.RenderScene(scene, new Frame_Argument(Game__Render_Time, e.Time));
+            Internal_Render__Xerxes_Engine_Object(frame_Argument);
 
             Game__Render_Service.EndRender();
-            
-            SwapBuffers();
+            Game__GAME_WINDOW__Internal.SwapBuffers();
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void Private_Handle__Load_Window__Game(object sender, EventArgs e)
+        {
+            Protected_Handle__Load__Game();
+        }
+
+        protected virtual void Protected_Handle__Load__Game()
         {
 
         }
 
-        protected override void OnUnload(EventArgs e)
+        private void Private_Handle__Unload_Window__Game(object sender, EventArgs e)
         {
             Private_Unload__Systems__Game();
+            Protected_Handle__Unload__Game();
+        }
+
+        protected virtual void Protected_Handle__Unload__Game()
+        {
+
         }
 
         private void Private_Unload__Systems__Game()
         {
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__UNLOADING, this);
 
-            foreach (Game_System gamesys in GAME__SYSTEMS)
+            foreach (Game_System gamesys in Game__SYSTEMS)
             {   
                 gamesys.Internal_Unload__Game_System();
                 Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEM__UNLOADED_1, gamesys);
@@ -223,7 +257,7 @@ namespace Xerxes_Engine
 
         public T Get_System__Game<T>() where T : Game_System
         {
-            foreach (Game_System system in GAME__SYSTEMS)
+            foreach (Game_System system in Game__SYSTEMS)
                 if (system is T && system.Accessable)
                     return system as T;
 
@@ -238,7 +272,7 @@ namespace Xerxes_Engine
 
         protected bool Register__System__Game<T>(T gameService) where T : Game_System
         {
-            if (GAME__SYSTEMS.Exists((s) => s is T))
+            if (Game__SYSTEMS.Exists((s) => s is T))
             {
                 Log.Internal_Write__Warning__Log
                 (
@@ -252,7 +286,7 @@ namespace Xerxes_Engine
             
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEM__LOADED_1, this, gameService?.ToString());
             
-            GAME__SYSTEMS.Add(gameService);
+            Game__SYSTEMS.Add(gameService);
 
             return true;
         }
@@ -274,7 +308,7 @@ namespace Xerxes_Engine
             
             Game__Asset_Provider = new Asset_Pipe(this);
             Game__Sprite_Library = new Sprite_Library(this);
-            Game__Render_Service = new Render_Service(this, Width, Height);
+            Game__Render_Service = new Render_Service(this, Game__GAME_WINDOW__Internal.Width, Game__GAME_WINDOW__Internal.Height);
             Game__Text_Displayer = new Text_Displayer(this);
             Game__Input_System = new Input_System(this);
             Game__Animation_Schematic_Library = new Sprite_Animation_Library(this);
@@ -311,7 +345,7 @@ namespace Xerxes_Engine
         {
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__LOADING, this);
 
-            foreach (Game_System system in GAME__SYSTEMS)
+            foreach (Game_System system in Game__SYSTEMS)
                 system.Internal_Load__Game_System();
 
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__ALL_SYSTEMS__LOADED, this);
@@ -322,7 +356,7 @@ namespace Xerxes_Engine
 
         internal void Internal_Set__Scene__Game(Scene scene)
         {
-            this.scene = scene;
+            this.Game__Current_Scene = scene;
         }
         
         protected void Protected_Load__Sprite__Game
@@ -337,7 +371,7 @@ namespace Xerxes_Engine
         {
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SPRITE_LOAD_1, this, spriteName);
             string path = Path.Combine(
-                GAME__DIRECTORY__ASSETS,
+                Game__DIRECTORY__ASSETS,
                 spriteName + ".png"
             );
             if (throwIf_NotExists && !File.Exists(path))

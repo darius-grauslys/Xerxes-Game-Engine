@@ -48,7 +48,7 @@ namespace Xerxes_Engine.UI
                     .ToArray()
                 )
         {
-            Internal_UI_Game_Object__UI_RENDER = Get__Component__Game_Object<UI_Render_Component>();
+            Internal_UI_Game_Object__UI_RENDER = Protected_Get__Component__Game_Object<UI_Render_Component>();
         }
 
         public override string ToString()

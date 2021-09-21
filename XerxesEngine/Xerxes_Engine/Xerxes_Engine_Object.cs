@@ -16,17 +16,77 @@ namespace Xerxes_Engine
         /// Games cannot associate to anything. They are the thing
         /// which objects associate to.
         /// </summary>
-        internal const int Xerxes_Engine_Object__ASSOCIATION_PRIORITY__GAME = 0;
+        private const int Xerxes_Engine_Object__ASSOCIATION_PRIORITY__GAME = 0;
 
         internal bool Xerxes_Engine_Object__Is_Disabled__Internal { get; set; }
         internal bool Xerxes_Engine_Object__Is_Sealed__Internal { get; set; }
 
         internal int Xerxes_Engine_Object__ASSOCIATION_PRIORITY__Internal { get; }
 
-        internal Xerxes_Engine_Object Xerxes_Engine_Object__PARENT__Internal { get; }
-        internal event Action<Frame_Argument> Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal;
-        internal event Action<Frame_Argument> Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal;
+        internal Game Xerxes_Engine_Object__Root__Internal { get; set; }
+        internal bool Internal_Check_If__Rooted__Xerxes_Engine_Object()
+            => Xerxes_Engine_Object__Root__Internal != null;
+        protected Game Protected_Get__Root__Xerxes_Engine_Object()
+        {
+            if (Xerxes_Engine_Object__Root__Internal == null)
+            {
+                Private_Log_Error__Is_Not_Associate_To_Root(this);
+                return null;
+            }
+            return Xerxes_Engine_Object__Root__Internal;
+        }
+        internal Xerxes_Engine_Object Xerxes_Engine_Object__Parent__Internal { get; set; }
+        internal T Internal_Get__Parent_As__Xerxes_Engine_Object<T>() where T : Xerxes_Engine_Object
+        {
+            if (Xerxes_Engine_Object__Parent__Internal == null)
+            {
+                Private_Log_Error__Is_Not_Associated(this);
+                return null;
+            }
 
+            return Xerxes_Engine_Object__Parent__Internal as T;
+        }
+        /// <summary>
+        /// This is invoked when the entire association chain is
+        /// connected to a Game instance.
+        /// </summary>
+        internal event Action<Event_Argument_Associate_Game> Xerxes_Engine_Object__ASSOCIATE_GAME_SUBSCRIPTION__Internal;
+        internal event Action<Event_Argument_Frame>          Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal;
+        internal event Action<Event_Argument_Frame>          Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal;
+        internal event Action<Event_Argument_Resize_2D>      Xerxes_Engine_Object__RESIZE_2D_SUBSCRIPTION__Internal;
+
+        private void Private_Evaluate__Subscription__Xerxes_Engine_Object<T>
+        (
+            Action<T> internal_Handler,
+            Action<T> subscription,
+            T e
+        ) where T : Event_Argument
+        {
+            internal_Handler.Invoke(e);
+
+            subscription?.Invoke(e);
+        }
+        private void Private_Evaluate__Enabled_Subscription__Xerxes_Engine_Object<T>
+        (
+            Action<T> internal_Handler,
+            Action<T> subscription,
+            T e
+        ) where T : Event_Argument
+        {
+            if(Xerxes_Engine_Object__Is_Disabled__Internal)
+                return;
+
+            Private_Evaluate__Subscription__Xerxes_Engine_Object
+            (
+                internal_Handler,
+                subscription,
+                e
+            );
+        }
+
+        internal Xerxes_Engine_Object(Xerxes_Engine_Object_Association_Type hierarchyType)
+            : this((int)hierarchyType)
+        { }
         internal Xerxes_Engine_Object(int associationPriority)
         {
             associationPriority = 
@@ -38,32 +98,62 @@ namespace Xerxes_Engine
             Xerxes_Engine_Object__ASSOCIATION_PRIORITY__Internal = associationPriority;
         }
 
-        internal virtual void Internal_Update__Xerxes_Engine_Object(Frame_Argument e)
+
+#region Subscriptions
+        internal virtual void Internal_Associate__To_Game__Xerxes_Engine_Object(Event_Argument_Associate_Game e)
         {
-            if(Xerxes_Engine_Object__Is_Disabled__Internal)
-                return;
+            Xerxes_Engine_Object__Root__Internal = e.Event_Argument_Associate_Game__GAME;
 
-            Handle_Update__Xerxes_Engine_Object(e);
-
-            Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal?
-                .Invoke(e);
+            Private_Evaluate__Subscription__Xerxes_Engine_Object
+            (
+                Handle_Associate__To_Game__Xerxes_Engine_Object,
+                Xerxes_Engine_Object__ASSOCIATE_GAME_SUBSCRIPTION__Internal,
+                e
+            );
         }
+        protected virtual void Handle_Associate__To_Game__Xerxes_Engine_Object(Event_Argument_Associate_Game e) { }
 
-        protected virtual void Handle_Update__Xerxes_Engine_Object(Frame_Argument e)
-        { }
 
-        internal virtual void Internal_Render__Xerxes_Engine_Object(Frame_Argument e)
+
+        internal virtual void Internal_Update__Xerxes_Engine_Object(Event_Argument_Frame e)
         {
-            if(Xerxes_Engine_Object__Is_Disabled__Internal)
-                return;
-
-            Handle_Render__Xerxes_Engine_Object(e);
-
-            Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal?
-                .Invoke(e);
+            Private_Evaluate__Enabled_Subscription__Xerxes_Engine_Object
+            (
+                Handle_Update__Xerxes_Engine_Object,
+                Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal,
+                e
+            );
         }
-        protected virtual void Handle_Render__Xerxes_Engine_Object(Frame_Argument e)
-        { }
+        protected virtual void Handle_Update__Xerxes_Engine_Object(Event_Argument_Frame e) { }
+
+
+
+        internal virtual void Internal_Render__Xerxes_Engine_Object(Event_Argument_Frame e)
+        {
+            Private_Evaluate__Enabled_Subscription__Xerxes_Engine_Object
+            (
+                Handle_Render__Xerxes_Engine_Object,
+                Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal,
+                e
+            );
+        }
+        protected virtual void Handle_Render__Xerxes_Engine_Object(Event_Argument_Frame e) { }
+
+
+
+        internal virtual void Internal_Resize__2D__Xerxes_Engine_Object(Event_Argument_Resize_2D e)
+        {
+            Private_Evaluate__Enabled_Subscription__Xerxes_Engine_Object
+            (
+                Handle_Resize__2D__Xerxes_Engine_Object,
+                Xerxes_Engine_Object__RESIZE_2D_SUBSCRIPTION__Internal,
+                e
+            );
+        }
+        protected virtual void Handle_Resize__2D__Xerxes_Engine_Object(Event_Argument_Resize_2D e) {}
+#endregion
+
+
 
         internal virtual bool Internal_Seal__Xerxes_Engine_Object()
         {
@@ -81,9 +171,12 @@ namespace Xerxes_Engine
             return true;
         }
 
-        internal bool Internal_Handle_Associate__As_Ancestor__Xerxes_Engine_Object
+        /// <summary>
+        /// This is invoked when THIS object is being treated as an ancestor.
+        /// </summary>
+        internal virtual bool Internal_Handle_Associate__As_Ancestor__Xerxes_Engine_Object
         (
-            Xerxes_Engine_Object association
+            Xerxes_Engine_Object descendantAssociation
         )
             => Handle_Associate__As_Ancestor__Xerxes_Engine_Object();
 
@@ -96,9 +189,12 @@ namespace Xerxes_Engine
         protected virtual bool Handle_Associate__As_Ancestor__Xerxes_Engine_Object()
             => true;
 
-        internal bool Internal_Handle_Associate__As_Descendant__Xerxes_Engine_Object
+        /// <summary>
+        /// This is invoked when THIS object is being treated as a descedent.
+        /// </summary>
+        internal virtual bool Internal_Handle_Associate__As_Descendant__Xerxes_Engine_Object
         (
-            Xerxes_Engine_Object objectThatAssociated
+            Xerxes_Engine_Object ancestorAssociation
         )
             => Handle_Associate__As_Descendant__Xerxes_Engine_Object();
 
@@ -110,7 +206,10 @@ namespace Xerxes_Engine
         protected virtual bool Handle_Associate__As_Descendant__Xerxes_Engine_Object()
             => true;
 
-        internal static void Internal_Associate
+        /// <summary>
+        /// Returns true if the association is formed, otherwise returns false.
+        /// </summary>
+        internal static bool Internal_Associate
         (
             Xerxes_Engine_Object thisObject,
             Xerxes_Engine_Object toThisObject
@@ -134,32 +233,32 @@ namespace Xerxes_Engine
                     thisObject.Xerxes_Engine_Object__ASSOCIATION_PRIORITY__Internal
                 );
 
-                return;
+                return false;
             }
 
             if (thisObject.Xerxes_Engine_Object__Is_Sealed__Internal)
             {
                 Private_Log_Error__Is_Sealed(thisObject);
-                return;
+                return false;
             }
             if (toThisObject.Xerxes_Engine_Object__Is_Sealed__Internal)
             {
                 Private_Log_Error__Is_Sealed(toThisObject);
-                return;
+                return false;
             }
 
             bool accepts_Association_As_Ancestor
-                = thisObject
+                = toThisObject
                 .Internal_Handle_Associate__As_Ancestor__Xerxes_Engine_Object
                 (
-                    toThisObject
+                    thisObject
                 );
 
             bool accepts_Association_As_Descendant
-                = toThisObject
+                = thisObject
                 .Internal_Handle_Associate__As_Descendant__Xerxes_Engine_Object
                 (
-                    thisObject
+                    toThisObject
                 );
 
             if
@@ -169,13 +268,21 @@ namespace Xerxes_Engine
                 accepts_Association_As_Descendant
             )
             {
+                thisObject.Xerxes_Engine_Object__Parent__Internal
+                    = toThisObject;
+                toThisObject
+                    .Xerxes_Engine_Object__ASSOCIATE_GAME_SUBSCRIPTION__Internal
+                    += thisObject.Internal_Associate__To_Game__Xerxes_Engine_Object;
                 toThisObject
                     .Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal
                     += thisObject.Internal_Update__Xerxes_Engine_Object;
                 toThisObject
                     .Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal
                     += thisObject.Internal_Render__Xerxes_Engine_Object;
-                return;
+                toThisObject
+                    .Xerxes_Engine_Object__RESIZE_2D_SUBSCRIPTION__Internal
+                    += thisObject.Internal_Resize__2D__Xerxes_Engine_Object;
+                return true;
             }
 
             Log.Internal_Write__Log
@@ -186,6 +293,8 @@ namespace Xerxes_Engine
                 thisObject,
                 toThisObject
             );
+            
+            return false;
         }
 
         private static void Private_Log_Error__Is_Sealed(Xerxes_Engine_Object obj)
@@ -193,8 +302,27 @@ namespace Xerxes_Engine
             Log.Internal_Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
-                Log.ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION_1,
-                null,
+                Log.ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION,
+                obj
+            );
+        }
+
+        private static void Private_Log_Error__Is_Not_Associate_To_Root(Xerxes_Engine_Object obj)
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED_TO_ROOT,
+                obj
+            );
+        }
+
+        private static void Private_Log_Error__Is_Not_Associated(Xerxes_Engine_Object obj)
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED,
                 obj
             );
         }

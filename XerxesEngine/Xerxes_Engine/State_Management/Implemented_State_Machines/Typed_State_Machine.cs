@@ -33,7 +33,7 @@ namespace Xerxes_Engine.State_Management.Implemented_State_Machines
                 Log.Internal_Write__Log
                 (
                     Log_Message_Type.Error__Engine_Object,
-                    Log.ERROR__STATE_MACHINE__FAILED_TO_REQUEST_STATE_1,
+                    Log.ERROR__STATE_MACHINE__FAILED_TO_REQUEST_STATE_1C,
                     this,
                     String.Format
                     (

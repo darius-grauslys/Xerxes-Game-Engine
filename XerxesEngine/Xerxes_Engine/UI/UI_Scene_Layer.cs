@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Xerxes_Engine.Systems.Input;
-using Xerxes_Engine.UI.UI_Frame_Arguments;
+using Xerxes_Engine.UI.UI_Event_Argument_Frames;
 using OpenTK;
 using OpenTK.Input;
 
@@ -17,11 +17,10 @@ namespace Xerxes_Engine.UI
         
         public UI_Scene_Layer
         (
-            Scene sceneLayerParentScene, 
             UI_Inclusive_Container container = null, 
             int sceneLayerLayerLevel = 0
         ) 
-            : base(sceneLayerParentScene, sceneLayerLayerLevel)
+            : base(sceneLayerLayerLevel)
         {
             container?.Internal_Set__Local_Origin_Position_Type__UI_Element(UI_Anchor_Position_Type.Bottom_Left);
             container?.Internal_Resize__UI_Element(SceneLayer__Window_Size__Game);
@@ -57,7 +56,7 @@ namespace Xerxes_Engine.UI
             UI_Scene_Layer__InputHandler__Internal.DeclarePulse(keyPulse.ToString());
         }
 
-        protected void Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(Frame_Argument args, MouseButton mouseButton)
+        protected void Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(Event_Argument_Frame args, MouseButton mouseButton)
         {
             //See if a pulse is ready to be evaluated.
             if 
@@ -86,7 +85,7 @@ namespace Xerxes_Engine.UI
             }
         }
 
-        protected void Handle_Update_Evaluate__Keyboard_Button__UI_Scene_Layer(Frame_Argument args, Key keyButton)
+        protected void Handle_Update_Evaluate__Keyboard_Button__UI_Scene_Layer(Event_Argument_Frame args, Key keyButton)
         {
             if
             (
@@ -166,7 +165,7 @@ namespace Xerxes_Engine.UI
                 Private_Check__For_Special_Conditions_Of_Child__UI_Scene_Layer(element);
             }
         }
-        
+
         protected override void Handle_Rescaled__Scene_Layer()
         {
             UI_Scene_Layer__Strict_Panel?.Internal_Resize__UI_Element(Scene_Layer__Game.Get__Window_Size__Game());

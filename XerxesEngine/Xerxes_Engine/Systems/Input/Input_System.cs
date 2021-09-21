@@ -20,14 +20,14 @@ namespace Xerxes_Engine.Systems.Input
         internal Input_System(Game game) 
             : base(game)
         {
-            game.KeyDown += GameWindow_KeyDown;
-            game.KeyPress += GameWindow_KeyPress;
-            game.KeyUp += GameWindow_KeyUp;
+            game.Game__GAME_WINDOW__Internal.KeyDown += Private_Handle__Key_Down__Input_System;
+            game.Game__GAME_WINDOW__Internal.KeyPress += Private_Handle__Key_Press__Input_System;
+            game.Game__GAME_WINDOW__Internal.KeyUp += Private_Handle__Key_Up__Input_System;
 
-            game.MouseDown += GameWindow_MouseDown;
-            game.MouseUp += GameWindow_MouseUp;
-            game.MouseWheel += GameWindow_MouseWheel;
-            game.MouseMove += GameWindow_MouseMove;
+            game.Game__GAME_WINDOW__Internal.MouseDown += Private_Handle__Mouse_Down__Input_System;
+            game.Game__GAME_WINDOW__Internal.MouseUp += Private_Handle__Mouse_Up__Input_System;
+            game.Game__GAME_WINDOW__Internal.MouseWheel += Private_Handle__Mouse_Wheel__Input_System;
+            game.Game__GAME_WINDOW__Internal.MouseMove += Private_Handle__Mouse_Move__Input_System;
         }
 
         public Input_Handler RegisterHandler(InputType inputType, bool enabled = true, int handlerID = -1)
@@ -49,49 +49,49 @@ namespace Xerxes_Engine.Systems.Input
             return handler;
         }
 
-        private void GameWindow_MouseMove(object sender, MouseMoveEventArgs e)
+        private void Private_Handle__Mouse_Move__Input_System(object sender, MouseMoveEventArgs e)
         {
             foreach (Input_Handler handle in inputDirectory[InputType.Mouse_Move])
                 if (handle.Enabled)
                     handle.Handle_Mouse_Move(sender, e);
         }
 
-        private void GameWindow_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void Private_Handle__Mouse_Wheel__Input_System(object sender, MouseWheelEventArgs e)
         {
             foreach (Input_Handler handle in inputDirectory[InputType.Mouse_Wheel])
                 if (handle.Enabled)
                     handle.Handle_Mouse_Wheel(sender, e);
         }
 
-        private void GameWindow_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Private_Handle__Mouse_Up__Input_System(object sender, MouseButtonEventArgs e)
         {
             foreach (Input_Handler handle in inputDirectory[InputType.Mouse_Button])
                 if (handle.Enabled)
                     handle.Handle_Mouse_Button(sender, e);
         }
 
-        private void GameWindow_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Private_Handle__Mouse_Down__Input_System(object sender, MouseButtonEventArgs e)
         {
             foreach (Input_Handler handle in inputDirectory[InputType.Mouse_Button])
                 if (handle.Enabled)
                     handle.Handle_Mouse_Button(sender, e);
         }
 
-        private void GameWindow_KeyUp(object sender, KeyboardKeyEventArgs e)
+        private void Private_Handle__Key_Up__Input_System(object sender, KeyboardKeyEventArgs e)
         {
             foreach (Input_Handler handle in inputDirectory[InputType.Keyboard_UpDown])
                 if (handle.Enabled)
                     handle.Handle_Keyboard_UpDown(sender, e);
         }
 
-        private void GameWindow_KeyPress(object sender, KeyPressEventArgs e)
+        private void Private_Handle__Key_Press__Input_System(object sender, KeyPressEventArgs e)
         {
             foreach (Input_Handler handle in inputDirectory[InputType.Keyboard_Press])
                 if (handle.Enabled)
                     handle.Handle_Keyboard_Press(sender, e);
         }
 
-        private void GameWindow_KeyDown(object sender, KeyboardKeyEventArgs e)
+        private void Private_Handle__Key_Down__Input_System(object sender, KeyboardKeyEventArgs e)
         {
             foreach (Input_Handler handle in inputDirectory[InputType.Keyboard_UpDown])
                 if (handle.Enabled)
