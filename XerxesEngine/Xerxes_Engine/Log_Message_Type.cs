@@ -24,6 +24,10 @@ namespace Xerxes_Engine
         Error__Engine_Object = -7,
         Error__System = -9,
 
-        Error__Animation = -11
+        /// <summary>
+        /// For errors which involve setting up rendering objects
+        /// such as Sprites, Meshes, etc.
+        /// </summary>
+        Error__Rendering_Setup = -11
     }
 }

@@ -2,7 +2,7 @@
 using System.Drawing;
 using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
 
-namespace Xerxes_Engine.Systems.Graphics
+namespace Xerxes_Engine
 {
     public struct Vertex
     {
@@ -38,5 +38,26 @@ namespace Xerxes_Engine.Systems.Graphics
             this.textcoord = textcoord;
             this.color = new Vector4(r,g,b,a);
         }
+
+        public static Vertex Create
+        (
+            float vector_X,
+            float vector_Y,
+
+            float textCoord_X,
+            float textCoord_Y,
+
+            float r = 0,
+            float g = 0,
+            float b = 0,
+            float a = 0
+        )
+            => 
+            new Vertex
+            (
+                new Vector2(vector_X, vector_Y), 
+                new Vector2(textCoord_X, textCoord_Y),
+                r, g, b, a
+            );
     }
 }

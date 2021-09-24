@@ -13,7 +13,7 @@ using Xerxes_Engine.Systems.Scenes;
 
 namespace Xerxes_Engine
 {
-    public class Game : Xerxes_Engine_Object
+    public class Game : Xerxes_Engine_Container
     {
         internal GameWindow Game__GAME_WINDOW__Internal { get; }
 
@@ -192,7 +192,7 @@ namespace Xerxes_Engine
                    Game__Window_Height
                 );
 
-            base.Internal_Resize__2D__Xerxes_Engine_Object(resize_2D_Argument);
+            base.Internal_Resize__2D__Xerxes_Engine_Container(resize_2D_Argument);
         }
 
         private void Private_Handle__Closed_Window__Game(object sender, EventArgs e)

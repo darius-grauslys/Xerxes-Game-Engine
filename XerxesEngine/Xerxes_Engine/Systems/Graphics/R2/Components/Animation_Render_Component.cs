@@ -60,7 +60,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
                 Log.Internal_Write__Log
                 (
 
-                    Log_Message_Type.Error__Animation,
+                    Log_Message_Type.Error__Rendering_Setup,
                     Log.ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2,
                     this,
                     nodeIndex,

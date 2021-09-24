@@ -44,6 +44,8 @@ namespace Xerxes_Engine
         VERBOSE__GAME__CONTENT_LOADED                               = "FINISHED LOADING CONTENT.",
 
         VERBOSE__SCENE_MANAGER__LOUSY_LOOKUP_1                      = "Lousy scene lookup:\"{0}\". Not loop friendly. Consider using Distinct_Handle over string?",
+
+        VERBOSE__SPRITE_SHEET__USING_COUNT_CONSTRAINT_2             = "Utilizing count constraint:{0}. Available sprite count:{1}.",
 #endregion
 #region CONST INTERNAL WARNING MESSAGES
         WARNING__RECOVERY__ASSET_DIRECTORY_NOT_FOUND                = "Asset Directory not found, attempting to use default directory.",
@@ -59,6 +61,12 @@ namespace Xerxes_Engine
         WARNING__SCENE_MANAGER__ADDING_SCENE_UNDER_NULL_ALIAS_1     = "Adding scene:\"{0}\" under a null alias! Is this intentional? Use String.Empty instead.",
 
         WARNING__SPRITE_LIBRARY__RECOVERING_TO_DEFAULT              = "Sprite Library resorted to returning the sprite at index 0.",
+
+        WARNING__SPRITE_SHEET__SUB_DIMENSION_DOES_NOT_DIVIDE_3      = "The given sub-dimension:{0} for parameter {1} does not nicely divide {2}.",
+        WARNING__SPRITE_SHEET__COUNT_CONSTRAINT_INVALID_2           = "The given sprite-count constraint of:{0} exceeds that which is available:{1}.",
+
+        WARNING__SPRITE_BATCH__ATYPICAL_INDEXING_2                  = "Modifying sprite batch with an atypical index. This might cause unexpected behavior."
+                                                                    + "Given index for modifcation:{0}, typical generator in index set:{1}.",
 
         WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING            = "This engine object has already been sealed. Ignoring sealing invokation.",
         
@@ -106,6 +114,9 @@ namespace Xerxes_Engine
 
         ERROR__TYPED_STATE_MACHINE__REPETATIVE_KEY_1                = "Another state of an equivalent type has already been registered! Tried to register:{0}!",
         ERROR__TYPED_STATE_MACHINE__TYPE_NOT_PRESENT_1              = "The given type:{0} is not present!",
+
+        ERROR__SPRITE_BATCH__MODIFICATION_OUT_OF_BOUNDS_3           = "Modification of Sprite Batch is out of bounds! The given modication index:{0} "
+                                                                    + "plus the length of the modification:{1} exceeds the current size:{2}!",
 
         ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2          = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"!",
 

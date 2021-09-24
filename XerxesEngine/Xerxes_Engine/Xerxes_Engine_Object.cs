@@ -53,7 +53,6 @@ namespace Xerxes_Engine
         internal event Action<Event_Argument_Associate_Game> Xerxes_Engine_Object__ASSOCIATE_GAME_SUBSCRIPTION__Internal;
         internal event Action<Event_Argument_Frame>          Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal;
         internal event Action<Event_Argument_Frame>          Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal;
-        internal event Action<Event_Argument_Resize_2D>      Xerxes_Engine_Object__RESIZE_2D_SUBSCRIPTION__Internal;
 
         private void Private_Evaluate__Subscription__Xerxes_Engine_Object<T>
         (
@@ -138,19 +137,6 @@ namespace Xerxes_Engine
             );
         }
         protected virtual void Handle_Render__Xerxes_Engine_Object(Event_Argument_Frame e) { }
-
-
-
-        internal virtual void Internal_Resize__2D__Xerxes_Engine_Object(Event_Argument_Resize_2D e)
-        {
-            Private_Evaluate__Enabled_Subscription__Xerxes_Engine_Object
-            (
-                Handle_Resize__2D__Xerxes_Engine_Object,
-                Xerxes_Engine_Object__RESIZE_2D_SUBSCRIPTION__Internal,
-                e
-            );
-        }
-        protected virtual void Handle_Resize__2D__Xerxes_Engine_Object(Event_Argument_Resize_2D e) {}
 #endregion
 
 
@@ -209,11 +195,12 @@ namespace Xerxes_Engine
         /// <summary>
         /// Returns true if the association is formed, otherwise returns false.
         /// </summary>
-        internal static bool Internal_Associate
+        internal static bool Internal_Associate__Objects<T,Y>
         (
-            Xerxes_Engine_Object thisObject,
-            Xerxes_Engine_Object toThisObject
-        )
+            T thisObject,
+            Y toThisObject,
+            Action<T,Y> additionalAssociation = null
+        ) where T : Xerxes_Engine_Object where Y : Xerxes_Engine_Object
         {
             int associationTypeDifference =
                 toThisObject.Xerxes_Engine_Object__ASSOCIATION_PRIORITY__Internal
@@ -268,20 +255,8 @@ namespace Xerxes_Engine
                 accepts_Association_As_Descendant
             )
             {
-                thisObject.Xerxes_Engine_Object__Parent__Internal
-                    = toThisObject;
-                toThisObject
-                    .Xerxes_Engine_Object__ASSOCIATE_GAME_SUBSCRIPTION__Internal
-                    += thisObject.Internal_Associate__To_Game__Xerxes_Engine_Object;
-                toThisObject
-                    .Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal
-                    += thisObject.Internal_Update__Xerxes_Engine_Object;
-                toThisObject
-                    .Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal
-                    += thisObject.Internal_Render__Xerxes_Engine_Object;
-                toThisObject
-                    .Xerxes_Engine_Object__RESIZE_2D_SUBSCRIPTION__Internal
-                    += thisObject.Internal_Resize__2D__Xerxes_Engine_Object;
+                Private_Associate__Objects(thisObject, toThisObject);
+                additionalAssociation?.Invoke(thisObject, toThisObject);
                 return true;
             }
 
@@ -295,6 +270,25 @@ namespace Xerxes_Engine
             );
             
             return false;
+        }
+
+        private static void Private_Associate__Objects
+        (
+            Xerxes_Engine_Object thisObject,
+            Xerxes_Engine_Object toThisObject
+        )
+        {
+            thisObject.Xerxes_Engine_Object__Parent__Internal
+                = toThisObject;
+            toThisObject
+                .Xerxes_Engine_Object__ASSOCIATE_GAME_SUBSCRIPTION__Internal
+                += thisObject.Internal_Associate__To_Game__Xerxes_Engine_Object;
+            toThisObject
+                .Xerxes_Engine_Object__UPDATE_SUBSCRIPTION__Internal
+                += thisObject.Internal_Update__Xerxes_Engine_Object;
+            toThisObject
+                .Xerxes_Engine_Object__RENDER_SUBSCRIPTION__Internal
+                += thisObject.Internal_Render__Xerxes_Engine_Object;
         }
 
         private static void Private_Log_Error__Is_Sealed(Xerxes_Engine_Object obj)

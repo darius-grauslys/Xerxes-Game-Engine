@@ -279,6 +279,18 @@ namespace Xerxes_Engine.Tools
             return diff >= -FLOAT__MINIMUM__PERCISION;
         }
         
+        /// <summary>
+        /// Same as Divides, but returns true if the remainder is
+        /// below the minimum percision.
+        /// </summary>
+        public static bool Tolerable__Divides(float a, float b)
+            => (Math.Abs(b) % Math.Abs(a)) <= FLOAT__MINIMUM__PERCISION;
+        /// <summary>
+        /// Checks to see if a divides b - no remainder.
+        /// </summary>
+        public static bool Divides(float a, float b)
+            => (Math.Abs(b) % Math.Abs(a)) == 0;
+
         public static bool CheckIf__Obeys_IClamp(int val, int min, int max)
             => (val >= min) && (val <= max);
 
