@@ -12,7 +12,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
             Sprite_Render_Component__ACTION__SPRITE_GET = "Get__Sprite__Sprite_Render_Component";
 
 
-        private Sprite_Library Game__Sprite_Library__REFERENCE { get; set; } 
+        private Vertex_Object_Library Game__Sprite_Library__REFERENCE { get; set; } 
 
         public Sprite Get__Sprite__Sprite_Render_Component()
         {
@@ -40,7 +40,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         {
         }
 
-        protected override void Handle_Associate__To_Game__Xerxes_Engine_Object(Event_Argument_Associate_Game e)
+        protected override void Handle_Associate__To_Game__Xerxes_Engine_Object(Streamline_Argument_Associate_Game e)
         {
             Game__Sprite_Library__REFERENCE = 
                 Protected_Get__Root__Xerxes_Engine_Object()?

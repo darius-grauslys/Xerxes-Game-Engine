@@ -30,7 +30,7 @@
             Xerxes_Engine_Object__Is_Disabled__Internal = true;
         }
 
-        internal override void Internal_Associate__To_Game__Xerxes_Engine_Object(Event_Argument_Associate_Game e)
+        internal override void Internal_Associate__To_Game__Xerxes_Engine_Object(Streamline_Argument_Associate_Game e)
         {
             Xerxes_Engine_Object__Is_Disabled__Internal = false;
 

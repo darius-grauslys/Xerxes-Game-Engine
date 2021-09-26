@@ -11,7 +11,7 @@ namespace Xerxes_Engine.UI.Implemented_UI_Components
     /// </summary>
     public class UI_Render_Component : Game_Object_Component
     {
-        private Sprite_Library UI_Render__Sprite_Library { get; set; }
+        private Vertex_Object_Library UI_Render__Sprite_Library { get; set; }
         
         private string _ui_render__Sprite_Alias;
         public string UI_Render__Sprite_Alias { get => _ui_render__Sprite_Alias; set => Private_Set__Sprite_Alias__UI_Render(value);}

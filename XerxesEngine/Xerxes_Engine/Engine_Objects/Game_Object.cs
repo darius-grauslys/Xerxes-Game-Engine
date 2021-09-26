@@ -30,6 +30,11 @@ namespace Xerxes_Engine.Engine_Objects
                 Xerxes_Engine_Object_Association_Type.GAME__OBJECT
             )
         {
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Update>();
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Render>();
+
             Game_Object__Render_Unit_Position__Internal = position;
     
             _Game_Object__COMPONENTS = new List<Game_Object_Component>();

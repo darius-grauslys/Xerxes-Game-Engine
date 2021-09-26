@@ -76,11 +76,11 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         public void Unpause__Animation_Render_Component() 
             => _Animation_Render_Component__Schematic.Unpause__Animation_Node();
 
-        protected override void Handle_Update__Xerxes_Engine_Object(Event_Argument_Frame e)
+        protected override void Handle_Update__Xerxes_Engine_Object(Streamline_Argument_Frame e)
         {
             int vbo_index = 
                 (int)_Animation_Render_Component__Schematic
-                    .Get__VBO_Index__Animation_Node(e.Event_Argument_Frame__DELTA_TIME);
+                    .Get__VBO_Index__Animation_Node(e.Streamline_Argument_Frame__DELTA_TIME);
 
             Game_Object_Component__Attached_Object__Protected
                 ._game_Object__Render_Unit.vaoIndex = vbo_index; 

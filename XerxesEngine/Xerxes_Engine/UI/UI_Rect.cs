@@ -193,7 +193,7 @@ namespace Xerxes_Engine.UI
         public float UI_Rect__Max_Hypotenuse { get; private set; }
         internal void Set__Max_Hypotenuse__UI_Rect(float newMaxHypotenuse)
         {
-            newMaxHypotenuse = Math_Helper.Clamp__UFloat(newMaxHypotenuse);
+            newMaxHypotenuse = Math_Helper.Clamp__Positive_Float(newMaxHypotenuse);
             
             UI_Rect__Max_Hypotenuse = 
                 (UI_Rect__Min_Hypotenuse > newMaxHypotenuse) 
@@ -209,7 +209,7 @@ namespace Xerxes_Engine.UI
         public float UI_Rect__Min_Hypotenuse { get; private set; }
         internal void Set__Min_Hypotenuse__UI_Rect(float newMinHypotenuse)
         {
-            newMinHypotenuse = Math_Helper.Clamp__UFloat(newMinHypotenuse);
+            newMinHypotenuse = Math_Helper.Clamp__Positive_Float(newMinHypotenuse);
             
             UI_Rect__Min_Hypotenuse = 
                 (UI_Rect__Max_Hypotenuse < newMinHypotenuse)

@@ -1,4 +1,4 @@
-﻿using Xerxes_Engine.Events.Event_Arguments;
+﻿using Xerxes_Engine.Events.Streamline_Arguments;
 
 namespace Xerxes_Engine.Events
 {

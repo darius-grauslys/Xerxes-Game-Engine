@@ -6,7 +6,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
     {
         public const string Text_Displayer__CHARS = ",gjpqyABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhiklmnorstuvwxz1234567890.?!/-+@#$%^&*()_=[]\\{}|:;\"'<>`~";
 
-        private Sprite_Library _Game__Sprite_Library__REFERENCE;
+        private Vertex_Object_Library _Game__Sprite_Library__REFERENCE;
 
         private Dictionary<string, int> _Text_Displayer__FONTS { get; }
 
@@ -18,7 +18,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
 
         protected override void Handle_Load__Game_System()
         {
-            _Game__Sprite_Library__REFERENCE = Game.Get_System__Game<Sprite_Library>();
+            _Game__Sprite_Library__REFERENCE = Game.Get_System__Game<Vertex_Object_Library>();
         }
 
         public void Load__Font__Text_Displayer(string fontName, int fontSpriteId)
@@ -55,7 +55,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
 
                 yOffset = (index == 0) ? commaDescent : (index < 6) ? descentCharacter : 0;
 
-                renderService.DrawSprite(font, xWrite, yWrite + yOffset, index);
+                renderService.Draw__Sprite__Render_Service(font, xWrite, yWrite + yOffset, index);
                 xWrite += fontWidth;
             }
         }

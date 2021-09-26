@@ -36,7 +36,7 @@ namespace Xerxes_Engine.UI
             => _UI_Container__CHILD_ELEMENTS.ToArray();
         
         protected bool Check_If__Index_Within_Bounds__UI_Container(int index)
-            => Math_Helper.CheckIf__Obeys_IClamp(index, 0, UI_Container__UI_Element_Count);
+            => Math_Helper.Check_If__Obeys_Clamp__Integer(index, 0, UI_Container__UI_Element_Count);
         #endregion
         
         #region Add-Elements

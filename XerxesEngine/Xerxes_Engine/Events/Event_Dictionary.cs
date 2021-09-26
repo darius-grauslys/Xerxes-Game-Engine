@@ -1,6 +1,6 @@
 namespace Xerxes_Engine.Events
 {
-    internal sealed class Event_Dictionary : Distinct_Dictionary<Event_Handle, Event>
+    internal sealed class Event_Dictionary : Distinct_Handle_Dictionary<Event_Handle, Event>
     {
         public Event_Dictionary(string format = null) 
             : base(format)
@@ -12,14 +12,14 @@ namespace Xerxes_Engine.Events
             string internalHandle,
             Event @event
         )
-            => Protected_Declare__Element__Distinct_Dictionary(internalHandle, @event);
+            => Protected_Declare__Element__Distinct_Handle_Dictionary(internalHandle, @event);
 
-        protected override Event_Handle Handle_Get__New_Handle__Distinct_Dictionary(string internalStringHandle)
+        protected override Event_Handle Handle_Get__New_Handle__Distinct_Handle_Dictionary(string internalStringHandle)
         {
             return new Event_Handle(internalStringHandle, this);
         }
 
         public Event this[Event_Handle eventHandle]
-            => Protected_Get__Element__Distinct_Dictionary(eventHandle);
+            => Protected_Get__Element__Distinct_Handle_Dictionary(eventHandle);
     }
 }

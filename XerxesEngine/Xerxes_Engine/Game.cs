@@ -13,7 +13,7 @@ using Xerxes_Engine.Systems.Scenes;
 
 namespace Xerxes_Engine
 {
-    public class Game : Xerxes_Engine_Container
+    public class Game : Xerxes_Engine_Object 
     {
         internal GameWindow Game__GAME_WINDOW__Internal { get; }
 
@@ -33,7 +33,7 @@ namespace Xerxes_Engine
         /// <summary>
         /// Responsible for recording and recieving loaded sprites.
         /// </summary>
-        public Sprite_Library Game__Sprite_Library { get; private set; }
+        public Vertex_Object_Library Game__Sprite_Library { get; private set; }
         internal Render_Service Game__Render_Service { get; private set; }
         public Text_Displayer Game__Text_Displayer { get; private set; }
         public Input_System Game__Input_System { get; private set; }
@@ -65,6 +65,12 @@ namespace Xerxes_Engine
             Xerxes_Engine_Object_Association_Type.GAME
         )
         {
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Update>();
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Render>();
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Resize_2D>();
             Game__GAME_WINDOW__Internal = 
                 new GameWindow
                 (
@@ -184,15 +190,16 @@ namespace Xerxes_Engine
         private void Private_Handle__Resize_Window__Game(object sender, EventArgs e)
         {
             GL.Viewport(Game__GAME_WINDOW__Internal.ClientRectangle);
-            Game__Render_Service.AdjustProjection(Game__GAME_WINDOW__Internal.Width, Game__GAME_WINDOW__Internal.Height);
-            Event_Argument_Resize_2D resize_2D_Argument = 
-                new Event_Argument_Resize_2D
+            Game__Render_Service.Establish__Orthographic_Projection__Render_Service(Game__GAME_WINDOW__Internal.Width, Game__GAME_WINDOW__Internal.Height);
+            Streamline_Argument_Resize_2D resize_2D_Argument = 
+                new Streamline_Argument_Resize_2D
                 (
                    Game__Window_Width,
                    Game__Window_Height
                 );
 
-            base.Internal_Resize__2D__Xerxes_Engine_Container(resize_2D_Argument);
+            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Resize_2D>(resize_2D_Argument);
         }
 
         private void Private_Handle__Closed_Window__Game(object sender, EventArgs e)
@@ -203,21 +210,23 @@ namespace Xerxes_Engine
         private void Private_Handle__Update_Window__Game(object sender, FrameEventArgs e)
         {
             Game__Update_Time += e.Time;
-            Event_Argument_Frame frame_Argument = new Event_Argument_Frame(Game__Update_Time, e.Time);
+            Streamline_Argument_Frame_Update frame_Argument = new Streamline_Argument_Frame_Update(Game__Update_Time, e.Time);
 
-            base.Internal_Update__Xerxes_Engine_Object(frame_Argument);
+            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Update>(frame_Argument);
         }
 
         private void Private_Handle__Render_Window__Game(object sender, FrameEventArgs e)
         {
             Game__Render_Time += e.Time;
-            Event_Argument_Frame frame_Argument = new Event_Argument_Frame(Game__Render_Time, e.Time);
+            Streamline_Argument_Frame_Render frame_Argument = new Streamline_Argument_Frame_Render(Game__Render_Time, e.Time);
 
-            Game__Render_Service.BeginRender();
+            Game__Render_Service.Internal_Begin__Render_Service();
 
-            Internal_Render__Xerxes_Engine_Object(frame_Argument);
+            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Render>(frame_Argument);
 
-            Game__Render_Service.EndRender();
+            Game__Render_Service.Internal_End__Render_Service();
             Game__GAME_WINDOW__Internal.SwapBuffers();
         }
 
@@ -307,7 +316,7 @@ namespace Xerxes_Engine
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__INITALIZING, this);
             
             Game__Asset_Provider = new Asset_Pipe(this);
-            Game__Sprite_Library = new Sprite_Library(this);
+            Game__Sprite_Library = new Vertex_Object_Library(this);
             Game__Render_Service = new Render_Service(this, Game__GAME_WINDOW__Internal.Width, Game__GAME_WINDOW__Internal.Height);
             Game__Text_Displayer = new Text_Displayer(this);
             Game__Input_System = new Input_System(this);
@@ -388,7 +397,7 @@ namespace Xerxes_Engine
                 return;
             }
             Sprite s;
-            Game__Sprite_Library.Record__Sprite__Sprite_Library(
+            Game__Sprite_Library.Record__Vertex_Object__Sprite_Library(
                 s = Game__Asset_Provider.ExtractSpriteSheet(
                     path,
                     (savedName == null) ? spriteName : savedName,

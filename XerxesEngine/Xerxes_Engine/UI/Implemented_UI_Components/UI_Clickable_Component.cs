@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenTK;
-using Xerxes_Engine.UI.UI_Event_Argument_Frames;
+using Xerxes_Engine.UI.UI_Streamline_Argument_Frames;
 
 namespace Xerxes_Engine.UI.Implemented_UI_Components
 {

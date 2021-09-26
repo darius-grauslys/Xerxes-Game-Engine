@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Xerxes_Engine.Engine_Objects
 {
-    public class Scene_Layer : Xerxes_Engine_Container 
+    public class Scene_Layer : Xerxes_Engine_Object
     {
         protected Scene Scene_Layer__Parent_Scene__Protected { get; private set; }
 
@@ -18,6 +18,16 @@ namespace Xerxes_Engine.Engine_Objects
         public Scene_Layer(int sceneLayerLayerLevel = 0)
             : base(Xerxes_Engine_Object_Association_Type.GAME__SCENE_LAYER)
         {
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Update>();
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Frame_Render>();
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Resize_2D>
+                (
+                    Internal_Resize__2D__Xerxes_Engine_Container
+                );
+
             _Scene_Layer__SCENE_OBJECTS = new List<Game_Object>();
 
             Scene_Layer__LayerLevel = sceneLayerLayerLevel;
@@ -42,13 +52,13 @@ namespace Xerxes_Engine.Engine_Objects
                 _Scene_Layer__SCENE_OBJECTS.Add(obj);
         }
 
-        internal override void Internal_Resize__2D__Xerxes_Engine_Container(Event_Argument_Resize_2D e)
+        internal void Internal_Resize__2D__Xerxes_Engine_Container(Streamline_Argument_Resize_2D e)
         {
             Scene_Layer__Layer_Matrix = 
                 Matrix4.CreateOrthographic
                     (
-                    e.Event_Argument_Resize_2D__WIDTH, 
-                    e.Event_Argument_Resize_2D__HEIGHT, 
+                    e.Streamline_Argument_Resize_2D__WIDTH, 
+                    e.Streamline_Argument_Resize_2D__HEIGHT, 
                     0.01f, 
                     30000f
                     ) 

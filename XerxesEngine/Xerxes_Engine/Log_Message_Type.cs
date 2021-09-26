@@ -21,13 +21,14 @@ namespace Xerxes_Engine
 
         Error__IO = -5,
 
-        Error__Engine_Object = -7,
-        Error__System = -9,
+        Error__Infastructure = -7,
+        Error__Engine_Object = -9,
+        Error__System = -11,
 
         /// <summary>
         /// For errors which involve setting up rendering objects
         /// such as Sprites, Meshes, etc.
         /// </summary>
-        Error__Rendering_Setup = -11
+        Error__Rendering_Setup = -13
     }
 }

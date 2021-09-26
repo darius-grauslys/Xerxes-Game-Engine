@@ -14,23 +14,92 @@ namespace Xerxes_Engine
         public Vertex[] Vertex_Object__Vertices { get; internal set; }
         public Texture_R2 Vertex_Object__Texture_R2 { get; }
 
-        public int Vertex_Object__GL_ID { get; private set; }
+        public int Vertex_Object__GL_BUFFER_ID { get; private set; }
+        public int Vertex_Object__GL_VERTEX_ARRAY_ID { get; private set; }
 
-        internal Vertex_Object(Vertex[] vertices)
+        internal Vertex_Object(Vertex[] vertices, Texture_R2 texture_R2)
+            : this(vertices.Length, texture_R2)
         {
-            Vertex_Object__GL_ID = GL.GenBuffer();
-            Vertex_Object__Texture_R2 = default(Texture_R2);
-            this.Vertex_Object__Vertices = vertices;
+            Vertex_Object__Vertices = vertices;
+            Internal_Set__Buffer_Data__Vertex_Object();
         }
 
-        internal void Internal_Use__Vertex_Object()
-        {
-            GL.BindTexture(TextureTarget.Texture2D, Vertex_Object__Texture_R2.ID);
+        internal Vertex_Object(int count, Texture_R2 texture_R2)
+        { 
+            // Generate the buffer for vertice info on the gpu.
+            Vertex_Object__GL_BUFFER_ID = GL.GenBuffer();
+            // Generate the id for this object on the gpu.
+            Vertex_Object__GL_VERTEX_ARRAY_ID = GL.GenVertexArray();
+            Vertex_Object__Texture_R2 = texture_R2;
+            Vertex_Object__Vertices = new Vertex[count];
+
+            GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 2 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
+            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, 8 * sizeof(float), 4 * sizeof(float));
+            GL.EnableVertexAttribArray(2);
         }
 
-        public void Internal_Set__Buffer_Data__Vertex_Object()
+        internal void Internal_Modify__Vertex_Array__Vertex_Object
+        (
+            int modificationIndex,
+            Vertex[] modificaiton
+        )
         {
-            Internal_Bind__Vertex_Object();
+            bool isValidIndex;
+            int index;
+
+            index = 
+                Tools.Math_Helper
+                .Clamp__Positive_Integer
+                (
+                    modificationIndex, 
+                    out isValidIndex,
+                    Vertex_Object__Vertices.Length
+                );
+
+            if (!isValidIndex)
+            {
+                Log.Internal_Write__Log
+                (
+                    Log_Message_Type.Error__Rendering_Setup,
+                    Log.ERROR__VERTEX_OBJECT__INVALID_MODIFICATION_INDEX_2,
+                    this,
+                    index,
+                    Vertex_Object__Vertices.Length
+                );
+                return;
+            }
+
+            int modificationRange = index + modificaiton.Length;
+            bool isInvalidModificationLength = 
+                 modificationRange < Vertex_Object__Vertices.Length;
+
+            if (isInvalidModificationLength)
+            {
+                Log.Internal_Write__Log
+                (
+                    Log_Message_Type.Error__Rendering_Setup,
+                    Log.ERROR__VERTEX_OBJECT__MODIFICATION_OUT_OF_BOUNDS_3,
+                    index,
+                    modificationRange,
+                    Vertex_Object__Vertices.Length
+                );
+                return;
+            }
+
+            for(int i=index;i<modificaiton.Length;i++)
+            {
+                Vertex_Object__Vertices[i] = modificaiton[i-index];
+            }
+        }
+
+#region Internal GL Initalizations
+        internal void Internal_Set__Buffer_Data__Vertex_Object()
+        {
+            Internal_Bind__Buffer__Vertex_Object();
             GL.BufferData
             (
                 BufferTarget.ArrayBuffer, 
@@ -39,10 +108,18 @@ namespace Xerxes_Engine
                 BufferUsageHint.StaticDraw
             );
         }
+#endregion
 
-        internal void Internal_Bind__Vertex_Object()
+#region Internal GL Utilizations
+        internal void Internal_Use__Vertex_Object()
         {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, Vertex_Object__GL_ID);
+            GL.BindTexture(TextureTarget.Texture2D, Vertex_Object__Texture_R2.ID);
+            GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
+        }
+
+        internal void Internal_Bind__Buffer__Vertex_Object()
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, Vertex_Object__GL_BUFFER_ID);
         }
 
         /// <summary>
@@ -53,75 +130,12 @@ namespace Xerxes_Engine
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
+#endregion
 
         public void Dispose()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.DeleteBuffer(Vertex_Object__GL_ID);
-        }
-
-        /// <summary>
-        /// Creates a new Vertex_Object using a given texture.
-        /// It does not do any batching.
-        /// Consider moving this to Render_Service?
-        /// </summary>
-        public static Vertex_Object Create
-        (
-            Texture_R2 texture_R2
-        )
-        {
-            
-        }
-        
-        public static Vertex[] Extract__Splice
-        (
-            float width,
-            float height,
-            float subWidth,
-            float subHeight,
-            int row,
-            int col,
-            float offsetX = 0,
-            float offsetY = 0,
-            float r = 0,
-            float g = 0,
-            float b = 0,
-            float a = 0
-        )
-        {
-            float textCoord_X = subWidth / width;
-            float textCoord_Y = subHeight / height;
-
-            float textCoord_X_A = textCoord_X * col;
-            float textCoord_X_B = textCoord_X * (col + 1);
-            float textCoord_Y_A = textCoord_Y * row;
-            float textCoord_Y_B = textCoord_Y * (row + 1);
-
-            float x_a = offsetX, 
-                  y_a = offsetY;
-            float x_b = offsetX, 
-                  y_b = offsetY + subHeight;
-            float x_c = offsetX + subWidth, 
-                  y_c = y_b;
-            float x_d = x_c, 
-                  y_d = y_b;
-
-            Vertex[] vertices = new Vertex[]
-            {
-                Vertex.Create(x_a, y_a,  textCoord_X_A, textCoord_Y_B,   r,g,b,a),
-                Vertex.Create(x_b, y_b,  textCoord_X_A, textCoord_Y_A,   r,g,b,a),
-                Vertex.Create(x_c, y_c,  textCoord_X_B, textCoord_Y_A,   r,g,b,a),
-                Vertex.Create(x_d, y_d,  textCoord_X_B, textCoord_Y_B,   r,g,b,a)
-            };
-
-            return vertices;
-        }
-
-        public static Vertex_Object Batch
-        (
-        )
-        {
-
+            GL.DeleteBuffer(Vertex_Object__GL_BUFFER_ID);
         }
     }
 }

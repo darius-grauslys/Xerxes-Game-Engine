@@ -63,12 +63,16 @@ namespace Xerxes_Engine
         WARNING__SPRITE_LIBRARY__RECOVERING_TO_DEFAULT              = "Sprite Library resorted to returning the sprite at index 0.",
 
         WARNING__SPRITE_SHEET__SUB_DIMENSION_DOES_NOT_DIVIDE_3      = "The given sub-dimension:{0} for parameter {1} does not nicely divide {2}.",
-        WARNING__SPRITE_SHEET__COUNT_CONSTRAINT_INVALID_2           = "The given sprite-count constraint of:{0} exceeds that which is available:{1}.",
+        WARNING__VERTEX_OBJECT_LIBRARY__COUNT_CONSTRAINT_INVALID_2  = "The given sprite-count constraint of:{0} exceeds that which is available:{1}.",
 
-        WARNING__SPRITE_BATCH__ATYPICAL_INDEXING_2                  = "Modifying sprite batch with an atypical index. This might cause unexpected behavior."
-                                                                    + "Given index for modifcation:{0}, typical generator in index set:{1}.",
+        WARNING__VERTEX_OBJECT__ATYPICAL_INDEXING_2                 = "Modifying vertex object with an atypical index. This might cause unexpected behavior."
+                                                                    + "Was given index for modifcation:{0}, but typical generator in index set:{1}.",
+
+        WARNING__STREAMLINE__INVOKED_BUT_NOT_SOURCE_1               = "Streamline was invoked with:{0} but the point of invocation is not a source."
+                                                                    + "Invocation was ignored.",
 
         WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING            = "This engine object has already been sealed. Ignoring sealing invokation.",
+        WARNING__XERXES_ENGINE_OBJECT__UNLINKED_STREAMLINE_2        = "The streamline:{0} did not find a destination during association to:{1}.",
         
         WARNING__COMPONENT__PARENT_IS_NULL                          = "Component was disabled when attached to a null parent.",
         WARNING__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C  = "Component was not intended to be used while disabled. May cause problems. Action:\"{0}\".",
@@ -97,6 +101,7 @@ namespace Xerxes_Engine
         ERROR__XERXES_ENGINE_OBJECT__INVALID_ASSOCIATION_4          = "Engine object:{0} tried to associate to object:{1} which is lower in hierarchy!"
                                                                     + "Target object's hierarchy score:{2} - Associating object's score:{3}!",
         ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2           = "Engine objects {0} -> {1} failed to associate!",
+        ERROR__XERXES_ENGINE_OBJECT__UNLINKED_MANDATORY_STREAMLINE_2= "Mandatory streamline:{0} did not find a destination during association to:{1}!",
 
         ERROR__GAME_OBJECT__FAILED_TO_ASSOCIATE_COMPONENT_2C        = "Failed to associate component:{0}! Contextual Message:{1}!",
         ERROR__GAME_OBJECT__ASSOCIATED_ANCESTOR_IS_INVALID_1        = "Tried to associate with:{0}, but it is not a Scene Layer! Games Objects can "
@@ -115,7 +120,10 @@ namespace Xerxes_Engine
         ERROR__TYPED_STATE_MACHINE__REPETATIVE_KEY_1                = "Another state of an equivalent type has already been registered! Tried to register:{0}!",
         ERROR__TYPED_STATE_MACHINE__TYPE_NOT_PRESENT_1              = "The given type:{0} is not present!",
 
-        ERROR__SPRITE_BATCH__MODIFICATION_OUT_OF_BOUNDS_3           = "Modification of Sprite Batch is out of bounds! The given modication index:{0} "
+        ERROR__VERTEX_OBJECT__INVALID_SUB_LENGTH_2                  = "The provided sub-length:{0} has an invalid value:{1}!",
+        ERROR__VERTEX_OBJECT__INVALID_MODIFICATION_INDEX_2          = "Modification of the Vertex Object was out of bounds! The given modification index:{0}"
+                                                                    + "is less than 0 or greater than the current size:{1}!",
+        ERROR__VERTEX_OBJECT__MODIFICATION_OUT_OF_BOUNDS_3          = "Modification of this Vertex Object is out of bounds! The given modication index:{0} "
                                                                     + "plus the length of the modification:{1} exceeds the current size:{2}!",
 
         ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2          = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"!",

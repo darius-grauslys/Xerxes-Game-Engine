@@ -1,6 +1,6 @@
 namespace Xerxes_Engine.Engine_Objects
 {
-    internal sealed class Scene_Layer_Dictionary : Distinct_Dictionary<Scene_Layer_Handle, Scene_Layer>
+    internal sealed class Scene_Layer_Dictionary : Distinct_Handle_Dictionary<Scene_Layer_Handle, Scene_Layer>
     {
         public Scene_Layer_Dictionary(string format = null) 
             : base(format)
@@ -12,9 +12,9 @@ namespace Xerxes_Engine.Engine_Objects
             string stringHandle, 
             Scene_Layer layer
         )
-            => Protected_Declare__Element__Distinct_Dictionary(stringHandle, layer);
+            => Protected_Declare__Element__Distinct_Handle_Dictionary(stringHandle, layer);
 
-        protected override Scene_Layer_Handle Handle_Get__New_Handle__Distinct_Dictionary
+        protected override Scene_Layer_Handle Handle_Get__New_Handle__Distinct_Handle_Dictionary
         (
             string internalStringHandle
         )
@@ -23,6 +23,6 @@ namespace Xerxes_Engine.Engine_Objects
         }
 
         public Scene_Layer this[Scene_Layer_Handle handle]
-            => Protected_Get__Element__Distinct_Dictionary(handle);
+            => Protected_Get__Element__Distinct_Handle_Dictionary(handle);
     }
 }

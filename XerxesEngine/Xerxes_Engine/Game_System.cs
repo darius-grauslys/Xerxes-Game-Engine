@@ -12,17 +12,17 @@
         }
 
         internal void Internal_Load__Game_System()
-            => Handle_Load__Game_System();
-        protected virtual void Handle_Load__Game_System()
         {
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__SYSTEM__LOAD, this);
+            Handle_Load__Game_System();
         }
+        protected virtual void Handle_Load__Game_System() { }
 
         internal void Internal_Unload__Game_System()
-            => Handle_Unload__Game_System();
-        protected virtual void Handle_Unload__Game_System()
         {
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__SYSTEM__UNLOAD, this);
+            Handle_Unload__Game_System();
         }
+        protected virtual void Handle_Unload__Game_System() { }
     }
 }

@@ -1,6 +1,6 @@
 namespace Xerxes_Engine.State_Management
 {
-    internal class State_Dictionary : Distinct_Dictionary<State_Handle, State_Flow>
+    internal class State_Dictionary : Distinct_Handle_Dictionary<State_Handle, State_Flow>
     {
         internal State_Dictionary(string format = null) 
             : base(format)
@@ -14,7 +14,7 @@ namespace Xerxes_Engine.State_Management
         )
         {
             State_Flow stateFlow = new State_Flow(state);
-            State_Handle stateHandle = Protected_Declare__Element__Distinct_Dictionary
+            State_Handle stateHandle = Protected_Declare__Element__Distinct_Handle_Dictionary
             (
                 stringStateHandle ?? stateFlow.ToString(),
                 stateFlow
@@ -23,7 +23,7 @@ namespace Xerxes_Engine.State_Management
             return stateHandle;
         }
 
-        protected override State_Handle Handle_Get__New_Handle__Distinct_Dictionary
+        protected override State_Handle Handle_Get__New_Handle__Distinct_Handle_Dictionary
         (
             string internalStringHandle
         )
@@ -32,6 +32,6 @@ namespace Xerxes_Engine.State_Management
         }
 
         public State_Flow this[State_Handle stateHandle]
-            => Protected_Get__Element__Distinct_Dictionary(stateHandle);
+            => Protected_Get__Element__Distinct_Handle_Dictionary(stateHandle);
     }
 }

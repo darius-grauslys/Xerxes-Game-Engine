@@ -208,7 +208,9 @@ namespace Xerxes_Engine.Tools
         }
         
         public static float Calculate__Area(Vector2 vec)
-            => vec.X * vec.Y;
+            => Calculate__Product(vec.X, vec.Y);
+        public static float Calculate__Product(float x1, float y1)
+            => x1 * y1;
 
         /// <summary>
         /// Returns null if either X or Y is zero.
@@ -216,17 +218,27 @@ namespace Xerxes_Engine.Tools
         /// <param name="vec"></param>
         /// <returns></returns>
         public static float? Calculate__Safe_Area(Vector2 vec)
+            => Calculate__Safe_Product(vec.X, vec.Y);
+        public static float? Calculate__Safe_Product
+        (
+            float x1, 
+            float y1
+        )
         {
-            if (vec.X == 0 || vec.Y == 0)
+            if (x1 == 0 || y1 == 0)
                 return null;
-            return Calculate__Area(vec);
+            return Calculate__Product(x1, y1);
         }
         
         public static float Calculate__Area_Ratio(Vector2 vec1, Vector2 vec2)
-            => Calculate__Area(vec1) / Calculate__Area(vec2);
+            => Calculate__Area_Ratio(vec1.X, vec1.Y, vec2.X, vec2.Y);
+        public static float Calculate__Area_Ratio(float x1, float y1, float x2, float y2)
+            => Calculate__Product(x1, y1) / Calculate__Product(x2, y2);
 
         public static float Calculate__Safe_Area_Ratio(Vector2 vec1, Vector2 vec2)
-            => (Calculate__Area(vec1) / Calculate__Safe_Area(vec2)) ?? 0;
+            => Calculate__Safe_Area_Ratio(vec1.X, vec1.Y, vec2.X, vec2.Y);
+        public static float Calculate__Safe_Area_Ratio(float x1, float y1, float x2, float y2)
+            => (Calculate__Product(x1, y1) / Calculate__Safe_Product(x2, y2)) ?? 0;
         
         public static bool CheckIf__Greater_Area(Vector2 isBigger, Vector2 thanThis)
             => Calculate__Area(isBigger) > Calculate__Area(thanThis);
@@ -291,12 +303,37 @@ namespace Xerxes_Engine.Tools
         public static bool Divides(float a, float b)
             => (Math.Abs(b) % Math.Abs(a)) == 0;
 
-        public static bool CheckIf__Obeys_IClamp(int val, int min, int max)
+        public static bool Check_If__Obeys_Clamp__Integer(int val, int min, int max)
             => (val >= min) && (val <= max);
 
-        public static bool CheckIf__Obeys_Clamp(float val, float min, float max)
+        public static bool Check_If__Obeys_Clamp__Positive_Float(float val, float max = float.MaxValue)
+            => Check_If__Obeys_Clamp(val, 0, max);
+        public static bool Check_If__Obeys_Clamp(float val, float min, float max)
             //Not checking equality for precision errors.
             => !(val < min) && !(val > max);
+
+        public static bool Check_If__Obeys_Safe_Clamp__Positive_Integer
+        (
+            int? val,
+            int max,
+            out bool valWasNotNull_ButDidNotClamp
+        )
+            => Check_If__Obeys_Safe_Clamp__Integer(val, 0, max, out valWasNotNull_ButDidNotClamp);
+        public static bool Check_If__Obeys_Safe_Clamp__Integer
+        (
+            int? val,
+            int min,
+            int max,
+            out bool valWasNotNull_ButDidNotClamp
+        )
+        {
+            bool ret = (val >= min) && (val <= max);
+            valWasNotNull_ButDidNotClamp =
+                (val != null)
+                &&
+                !ret;
+            return ret;
+        }
 
         public static float Divide__Safely(float numerator, float denominator, float undefinedReturn = 0)
             => (denominator == 0) ? undefinedReturn : numerator / denominator;
@@ -304,18 +341,33 @@ namespace Xerxes_Engine.Tools
         public static float Clamp__Float(float val, float min, float max)
             => (val < min) ? min : ((val > max) ? max : val);
 
+        public static int Clamp__Integer
+        (
+            int val, 
+            out bool isValValid, 
+            int min=int.MinValue, 
+            int max=int.MaxValue
+        )
+        {
+            if (isValValid = val < min)
+                return min;
+            if (isValValid = val > max)
+                return max;
+            return val;
+        }
         public static int Clamp__Integer(int val, int min=int.MinValue, int max=int.MaxValue)
             => (val < min) ? min : ((val > max) ? max : val);
 
-        public static int Clamp__UInteger(int val, int max = int.MaxValue)
+        public static int Clamp__Positive_Integer(int val, out bool isValValid, int max = int.MaxValue)
+            => Clamp__Integer(val, out isValValid, 0, max);
+        public static int Clamp__Positive_Integer(int val, int max = int.MaxValue)
             => Clamp__Integer(val, 0, max);
         
-        public static uint Clamp__UInteger_As_Uint(int val, int max = int.MaxValue)
-            => (uint)Clamp__UInteger(val, max);
+        public static uint Clamp__Positive_Integer_As_Unsigned_Integer(int val, int max = int.MaxValue)
+            => (uint)Clamp__Positive_Integer(val, max);
         
-        public static float Clamp__UFloat(float val, float max = float.MaxValue)
+        public static float Clamp__Positive_Float(float val, float max = float.MaxValue)
             => Clamp__Float(val, 0, max);
-
         public static Vector2 Clamp__Vector2_UFloat(Vector2 vec, float max = float.MaxValue)
             => new Vector2(Clamp__Float(vec.X, 0, max), Clamp__Float(vec.Y, 0, max));
         

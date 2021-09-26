@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Xerxes_Engine.Systems.Input;
-using Xerxes_Engine.UI.UI_Event_Argument_Frames;
+using Xerxes_Engine.UI.UI_Streamline_Argument_Frames;
 using OpenTK;
 using OpenTK.Input;
 
@@ -56,7 +56,7 @@ namespace Xerxes_Engine.UI
             UI_Scene_Layer__InputHandler__Internal.DeclarePulse(keyPulse.ToString());
         }
 
-        protected void Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(Event_Argument_Frame args, MouseButton mouseButton)
+        protected void Handle_Update_Evaluate__Mouse_Button__UI_Scene_Layer(Streamline_Argument_Frame args, MouseButton mouseButton)
         {
             //See if a pulse is ready to be evaluated.
             if 
@@ -85,7 +85,7 @@ namespace Xerxes_Engine.UI
             }
         }
 
-        protected void Handle_Update_Evaluate__Keyboard_Button__UI_Scene_Layer(Event_Argument_Frame args, Key keyButton)
+        protected void Handle_Update_Evaluate__Keyboard_Button__UI_Scene_Layer(Streamline_Argument_Frame args, Key keyButton)
         {
             if
             (
