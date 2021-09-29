@@ -26,7 +26,7 @@ namespace Xerxes_Engine.State_Management
             return State_Transition_Response.Accepted_Transition;
         }
 
-        internal State_Update_Response Internal_Update__State(Streamline_Argument_Frame frameArgument)
+        internal State_Update_Response Internal_Update__State(Streamline_Argument_Update frameArgument)
         {
             if (State__State_Mode != State_Mode.Operating)
                 return State_Update_Response.Break;
@@ -60,7 +60,7 @@ namespace Xerxes_Engine.State_Management
         /// Control point for managing an active state.
         /// </summary>
         /// <param name="frameArgument">Frame information of the game.</param>
-        protected virtual State_Update_Response Handle_Update__State(Streamline_Argument_Frame frameArgument)
+        protected virtual State_Update_Response Handle_Update__State(Streamline_Argument_Update frameArgument)
             => State_Update_Response.Progress;
 
         /// <summary>

@@ -6,7 +6,14 @@ namespace Xerxes_Engine
 
         internal Streamline_Argument_Associate_Game
         (
+            double elapsedTime,
+            double deltaTime,
             Game game
+        )
+        : base
+        (
+            elapsedTime,
+            deltaTime
         )
         {
             Streamline_Argument_Associate_Game__GAME = game;

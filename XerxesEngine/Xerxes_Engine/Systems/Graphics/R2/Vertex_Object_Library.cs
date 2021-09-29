@@ -237,6 +237,19 @@
         { return null; } //TODO: Implement
 #endregion
 
+#region Internal Gathering
+        internal Vertex_Object[] Internal_Get__Vertex_Objects__Vertex_Object_Library
+        (
+            Vertex_Object_Handle[] vertex_Object_Handles
+        )
+            => 
+            _Vertex_Object_Library__VERTEX_OBJECT_DICTIONARY
+            .Internal_Get__Vertex_Objects__Vertex_Object_Dictionary
+            (
+                vertex_Object_Handles
+            );
+#endregion
+
 #region Static Extraction
         /// <summary>
         /// Creates an array of vertices which associate to

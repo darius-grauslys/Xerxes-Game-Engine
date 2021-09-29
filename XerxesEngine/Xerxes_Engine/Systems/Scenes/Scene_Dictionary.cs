@@ -1,7 +1,8 @@
 namespace Xerxes_Engine.Systems.Scenes
 {
-    internal class Scene_Dictionary : Distinct_Handle_Dictionary<Scene_Handle, Scene>
+    internal class Scene_Dictionary //: Distinct_Handle_Dictionary<Scene_Handle, Scene>
     {
+        /*
         internal Scene_Handle Internal_Add__Scene__Scene_Dictionary(string entry, Scene scene)
             => Protected_Declare__Element__Distinct_Handle_Dictionary(entry, scene);
 
@@ -16,5 +17,6 @@ namespace Xerxes_Engine.Systems.Scenes
             string internalStringHandle
         )
             => new Scene_Handle(internalStringHandle, this);
+    */
     }
 }

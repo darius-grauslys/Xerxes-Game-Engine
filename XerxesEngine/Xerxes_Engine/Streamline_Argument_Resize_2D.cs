@@ -7,8 +7,15 @@ namespace Xerxes_Engine
 
         internal Streamline_Argument_Resize_2D
         (
+            double elapsedTime,
+            double deltaTime,
             float width,
             float height
+        )
+        : base
+        (
+            elapsedTime,
+            deltaTime
         )
         {
             Streamline_Argument_Resize_2D__WIDTH  = width;

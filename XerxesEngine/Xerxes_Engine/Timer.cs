@@ -1,5 +1,10 @@
 ﻿namespace Xerxes_Engine
 {
+    /// <summary>
+    /// Keeps track of time. Used to fire events.
+    /// A time limit of negative value will result
+    /// in a never ending timer.
+    /// </summary>
     public class Timer
     {
         public bool Timer__Loops                { get; private set; }
@@ -32,7 +37,7 @@
         public void Progress__Timer(double deltaTime)
         {
             Timer__Delta_Time = deltaTime;
-            Timer__IsFinished = Timer__Time_Elapsed >= Timer__Time_Limit;
+            Timer__IsFinished = Timer__Time_Elapsed >= Timer__Time_Limit && Timer__Time_Limit > 0;
 
             if(Timer__IsFinished)
             {

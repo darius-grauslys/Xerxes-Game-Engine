@@ -1,4 +1,4 @@
-﻿namespace Xerxes_Engine.Systems.Graphics.R2.Animation
+﻿namespace Xerxes_Engine.Engine_Objects.R2
 {
     public class Animation_Node
     {

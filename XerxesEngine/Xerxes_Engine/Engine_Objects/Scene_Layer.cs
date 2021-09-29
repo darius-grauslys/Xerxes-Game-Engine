@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace Xerxes_Engine.Engine_Objects
 {
-    public class Scene_Layer : Xerxes_Engine_Object
+    public class Scene_Layer : Xerxes_Descendant<Scene,Scene_Layer> 
     {
-        protected Scene Scene_Layer__Parent_Scene__Protected { get; private set; }
+        public float Scene_Layer__Width  { get; private set; }
+        public float Scene_Layer__Height { get; private set; }
 
         public int Scene_Layer__LayerLevel { get; internal set; }
 
@@ -16,16 +17,27 @@ namespace Xerxes_Engine.Engine_Objects
             => _Scene_Layer__SCENE_OBJECTS.ToArray();
 
         public Scene_Layer(int sceneLayerLayerLevel = 0)
-            : base(Xerxes_Engine_Object_Association_Type.GAME__SCENE_LAYER)
         {
+            Protected_Subscribe__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Associate_Game>
+                (
+                    Private_Associate__To_Game__Scene_Layer
+                );
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Frame_Update>();
+                <Streamline_Argument_Update>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Frame_Render>();
+                <Streamline_Argument_Render>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Resize_2D>
                 (
-                    Internal_Resize__2D__Xerxes_Engine_Container
+                    Private_Resize__2D__Scene_Layer
+                );
+
+
+            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Draw>
+                (
+                    Private_Handle__Draw__Scene_Layer
                 );
 
             _Scene_Layer__SCENE_OBJECTS = new List<Game_Object>();
@@ -33,27 +45,10 @@ namespace Xerxes_Engine.Engine_Objects
             Scene_Layer__LayerLevel = sceneLayerLayerLevel;
         }
 
-        protected override bool Handle_Associate__As_Descendant__Xerxes_Engine_Object()
+        private void Private_Resize__2D__Scene_Layer(Streamline_Argument_Resize_2D e)
         {
-            Scene_Layer__Parent_Scene__Protected =
-                Xerxes_Engine_Object__Parent__Internal as Scene;
-            return true;
-        }
-
-        protected virtual void Add__Scene_Object__Scene_Layer(Game_Object obj)
-        {
-            bool success = Xerxes_Engine_Object.Internal_Associate__Objects
-            (
-                obj,
-                this
-            );
-
-            if(success)
-                _Scene_Layer__SCENE_OBJECTS.Add(obj);
-        }
-
-        internal void Internal_Resize__2D__Xerxes_Engine_Container(Streamline_Argument_Resize_2D e)
-        {
+            Scene_Layer__Width  = e.Streamline_Argument_Resize_2D__WIDTH;
+            Scene_Layer__Height = e.Streamline_Argument_Resize_2D__HEIGHT;
             Scene_Layer__Layer_Matrix = 
                 Matrix4.CreateOrthographic
                     (
@@ -63,6 +58,29 @@ namespace Xerxes_Engine.Engine_Objects
                     30000f
                     ) 
                 * Matrix4.CreateTranslation(0, 0, 1);
+        }
+
+        private void Private_Associate__To_Game__Scene_Layer(Streamline_Argument_Associate_Game e)
+        {
+            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            (
+                new Streamline_Argument_Resize_2D
+                (
+                    e.Streamline_Argument__ELAPSED_TIME,
+                    e.Streamline_Argument__DELTA_TIME,
+                    Xerxes_Descendant__Parent__Protected//Parent Scene
+                    .Scene__Width,
+                    Xerxes_Descendant__Parent__Protected//Parent Scene
+                    .Scene__Height
+                )
+            );
+        }
+
+        private void Private_Handle__Draw__Scene_Layer(Streamline_Argument_Draw e)
+        {
+            Log.Internal_Write__Verbose__Log("I recieved a draw request from down stream!", this);
+            e.Streamline_Argument_Draw__World_Matrix__Internal =
+                Scene_Layer__Layer_Matrix;  
         }
     }
 }

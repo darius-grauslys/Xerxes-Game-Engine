@@ -2,14 +2,14 @@ using System;
 
 namespace Xerxes_Engine
 {
-    public class Xerxes_Engine_Exception : Exception
+    public class Xerxes_Exception : Exception
     {
         private const string Xerxes_Engine_Exception__STRING = "Xerxes_Engine Runtime Exception: ";
 
 
         public Log_Message Exception__MESSAGE { get; }
 
-        internal Xerxes_Engine_Exception
+        internal Xerxes_Exception
         (
             Log_Message message
         )
@@ -25,9 +25,10 @@ namespace Xerxes_Engine
         {
             return String.Format
             (
-                "{0} {{ {1} }}",
+                "{0} {{ {1} }}\n{2}",
                 Xerxes_Engine_Exception__STRING,
-                Exception__MESSAGE.ToString() ?? ""
+                Exception__MESSAGE.ToString() ?? "",
+                StackTrace
             );
         }
     }

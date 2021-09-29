@@ -39,6 +39,19 @@ namespace Xerxes_Engine
             this.color = new Vector4(r,g,b,a);
         }
 
+        public Vertex
+        (
+            Vertex baseline,
+            Vector2? nullable_Position = null,
+            Vector2? nullable_Textcoord = null,
+            Vector4? nullable_Color = null
+        )
+        {
+            this.position = nullable_Position ?? baseline.position;
+            this.textcoord = nullable_Textcoord ?? baseline.position;
+            this.color = nullable_Color ?? baseline.color;
+        }
+
         public static Vertex Create
         (
             float vector_X,

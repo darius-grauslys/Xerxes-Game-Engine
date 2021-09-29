@@ -1,11 +1,13 @@
-namespace Xerxes_Engine.Systems.Graphics.R2
+namespace Xerxes_Engine
 {
     internal class Vertex_Object_Dictionary : Distinct_Handle_Dictionary<Vertex_Object_Handle, Vertex_Object>
     {
         private const string VERTEX_OBJECT_DICTIONARY__BASE_FORMAT = "Vertex_Object";
 
-        internal void Internal_Get__Vertex_Object__Vertex_Object_Dictionary(Vertex_Object_Handle internalHandle)
+        internal Vertex_Object Internal_Get__Vertex_Object__Vertex_Object_Dictionary(Vertex_Object_Handle internalHandle)
             => Protected_Get__Element__Distinct_Handle_Dictionary(internalHandle);
+        internal Vertex_Object[] Internal_Get__Vertex_Objects__Vertex_Object_Dictionary(Vertex_Object_Handle[] internalHandles)
+            => Protected_Get__Elements__Distinct_Handle_Dictionary(internalHandles);
 
         internal Vertex_Object_Dictionary() 
         { }

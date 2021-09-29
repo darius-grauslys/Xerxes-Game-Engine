@@ -4,17 +4,22 @@ namespace Xerxes_Engine.Systems.Graphics.R2
 {
     public sealed class Text_Displayer : Game_System
     {
+        /*
         public const string Text_Displayer__CHARS = ",gjpqyABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhiklmnorstuvwxz1234567890.?!/-+@#$%^&*()_=[]\\{}|:;\"'<>`~";
 
         private Vertex_Object_Library _Game__Sprite_Library__REFERENCE;
 
         private Dictionary<string, int> _Text_Displayer__FONTS { get; }
+        
+        */
 
         internal Text_Displayer(Game game) 
             : base(game)
         {
-            _Text_Displayer__FONTS = new Dictionary<string, int>();
+            //_Text_Displayer__FONTS = new Dictionary<string, int>();
         }
+
+        /*
 
         protected override void Handle_Load__Game_System()
         {
@@ -59,5 +64,6 @@ namespace Xerxes_Engine.Systems.Graphics.R2
                 xWrite += fontWidth;
             }
         }
+        */
     }
 }

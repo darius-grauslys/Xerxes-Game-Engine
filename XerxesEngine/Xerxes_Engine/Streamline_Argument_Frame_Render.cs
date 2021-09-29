@@ -1,9 +1,9 @@
 namespace Xerxes_Engine
 {
-    public class Streamline_Argument_Frame_Render
-        : Streamline_Argument_Frame
+    public class Streamline_Argument_Render
+        : Streamline_Argument
     {
-        internal Streamline_Argument_Frame_Render
+        internal Streamline_Argument_Render
         (
             double deltaTime, 
             double senderTime

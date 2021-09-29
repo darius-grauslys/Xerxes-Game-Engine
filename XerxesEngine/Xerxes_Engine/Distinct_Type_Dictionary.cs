@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Xerxes_Engine
 {
@@ -11,6 +12,9 @@ namespace Xerxes_Engine
     internal class Distinct_Type_Dictionary<T, Y> where T : class where Y : class
     {
         private Dictionary<Type,Y> _Distinct_Type_Dictionary__DICTIONARY { get; }
+
+        internal KeyValuePair<Type,Y>[] Internal_Get__Entries__Distinct_Typed_Dictionary()
+            => _Distinct_Type_Dictionary__DICTIONARY.ToArray();
 
         protected Distinct_Type_Dictionary()
         {
@@ -24,7 +28,7 @@ namespace Xerxes_Engine
         {
             Type typeH = typeof(H);
             bool isInvalidType =
-                Private_Check_If__Type_Key_Is_Not_Present__Distinct_Type_Dictionary
+                Private_Check_If__Type_Key_Is_Present__Distinct_Type_Dictionary
                 (
                     typeH
                 );
@@ -42,7 +46,7 @@ namespace Xerxes_Engine
         {
             Type typeH = typeof(H);
             bool isInvalidType =
-                Private_Check_If__Type_Key_Is_Not_Present__Distinct_Type_Dictionary
+                !Private_Check_If__Type_Key_Is_Present__Distinct_Type_Dictionary
                 (
                     typeH
                 );
@@ -60,28 +64,28 @@ namespace Xerxes_Engine
             Type typeH 
         )
         {
-            bool isNotPresent =
-                Private_Check_If__Type_Key_Is_Not_Present__Distinct_Type_Dictionary
+            bool isInvalidKey =
+                !Private_Check_If__Type_Key_Is_Present__Distinct_Type_Dictionary
                 (
                     typeH
                 );
-            if (isNotPresent)
+            if (isInvalidKey)
                 return null;
 
             dynamic elementY = _Distinct_Type_Dictionary__DICTIONARY[typeH];
             return elementY;
         }
 
-        private bool Private_Check_If__Type_Key_Is_Not_Present__Distinct_Type_Dictionary
+        private bool Private_Check_If__Type_Key_Is_Present__Distinct_Type_Dictionary
         (
             Type typeY
         )
         {
-            bool isInvalidKey =
-                !_Distinct_Type_Dictionary__DICTIONARY
+            bool isNotPresentKey =
+                 _Distinct_Type_Dictionary__DICTIONARY
                 .ContainsKey(typeY);
 
-            return isInvalidKey;
+            return isNotPresentKey;
         }
 
         /// <summary>

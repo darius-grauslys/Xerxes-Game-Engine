@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using OpenTK.Graphics.OpenGL;
 
 namespace Xerxes_Engine
@@ -11,8 +12,11 @@ namespace Xerxes_Engine
     {
         public const int VERTEX_OBJECT__BASE_VERTEX_COUNT = 4;
 
-        public Vertex[] Vertex_Object__Vertices { get; internal set; }
-        public Texture_R2 Vertex_Object__Texture_R2 { get; }
+        private Vertex[] _Vertex_Object__Base_Vertex_Array { get; set; }
+        private Vertex[] _Vertex_Object__VERTICES { get; }
+        public int Get__Vertex_Count__Vertex_Object()
+            => _Vertex_Object__VERTICES.Length;
+        public Texture_R2 Vertex_Object__TEXTURE_R2 { get; }
 
         public int Vertex_Object__GL_BUFFER_ID { get; private set; }
         public int Vertex_Object__GL_VERTEX_ARRAY_ID { get; private set; }
@@ -20,7 +24,8 @@ namespace Xerxes_Engine
         internal Vertex_Object(Vertex[] vertices, Texture_R2 texture_R2)
             : this(vertices.Length, texture_R2)
         {
-            Vertex_Object__Vertices = vertices;
+            _Vertex_Object__VERTICES = vertices;
+            _Vertex_Object__Base_Vertex_Array = vertices.ToArray(); 
             Internal_Set__Buffer_Data__Vertex_Object();
         }
 
@@ -30,8 +35,8 @@ namespace Xerxes_Engine
             Vertex_Object__GL_BUFFER_ID = GL.GenBuffer();
             // Generate the id for this object on the gpu.
             Vertex_Object__GL_VERTEX_ARRAY_ID = GL.GenVertexArray();
-            Vertex_Object__Texture_R2 = texture_R2;
-            Vertex_Object__Vertices = new Vertex[count];
+            Vertex_Object__TEXTURE_R2 = texture_R2;
+            _Vertex_Object__VERTICES = new Vertex[count];
 
             GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
@@ -42,58 +47,171 @@ namespace Xerxes_Engine
             GL.EnableVertexAttribArray(2);
         }
 
+        internal void Internal_Set__Base_Array()
+        {
+            if (_Vertex_Object__Base_Vertex_Array != null)
+                return;
+
+            _Vertex_Object__Base_Vertex_Array =
+                _Vertex_Object__VERTICES.ToArray();
+        }
+
+        private void Private_Modify__Vertex_Array__Vertex_Object
+        (
+            Vertex[] referenceArray,
+            int modificationIndex,
+            int modificationRange,
+            Func<Vertex[], int, Vertex> vertexModification
+        )
+        {
+            bool isValidIndex, isValidRange, isValidMethod;
+
+            isValidIndex = 
+                Private_Check_For__Valid_Modification_Index__Vertex_Object
+                (
+                    referenceArray,
+                    modificationIndex
+                );
+            isValidRange =
+                Private_Check_For__Valid_Modification_Range__Vertex_Object
+                (
+                    referenceArray,
+                    modificationIndex,
+                    modificationRange
+                );
+            isValidMethod =
+                Private_Check_For__Valid_Modification_Method__Vertex_Object
+                (
+                    vertexModification
+                );
+
+            if (!isValidIndex || !isValidRange || !isValidMethod)
+                return;
+
+            for(int i=modificationIndex;i<modificationRange;i++)
+            {
+                _Vertex_Object__VERTICES[i] = vertexModification.Invoke(referenceArray, i);
+            }
+        }
+
         internal void Internal_Modify__Vertex_Array__Vertex_Object
         (
             int modificationIndex,
             Vertex[] modificaiton
         )
         {
-            bool isValidIndex;
-            int index;
+            Private_Modify__Vertex_Array__Vertex_Object
+            (
+                _Vertex_Object__VERTICES,
+                modificationIndex,
+                modificaiton.Length,
+                (va, i) => modificaiton[i - modificationIndex]
+            );
+        }
 
-            index = 
-                Tools.Math_Helper
-                .Clamp__Positive_Integer
+        /// <summary>
+        /// <paramref name="pullFromCurrent_OpposedToBase">
+        /// If true, will feed the current array as vertex reference
+        /// otherwise the base array. For scaling it is good to set
+        /// this to false.
+        /// </paramref>
+        /// </summary>
+        internal void Internal_Modify__Vertex_Array__Vertex_Object
+        (
+            int modificationIndex,
+            int modificationRange,
+            Func<Vertex[], int, Vertex> modificationMethod,
+            bool pullFromCurrent_OpposedToBase = true
+        )
+        {
+            Vertex[] referenceArray = 
+                (pullFromCurrent_OpposedToBase)
+                ? _Vertex_Object__VERTICES
+                : _Vertex_Object__Base_Vertex_Array
+                ;
+
+            Private_Modify__Vertex_Array__Vertex_Object
+            (
+                referenceArray,
+                modificationIndex,
+                modificationRange,
+                modificationMethod
+            );
+        }
+    
+        private bool Private_Check_For__Valid_Modification_Method__Vertex_Object
+        (
+            Func<Vertex[], int, Vertex> method
+        )
+        {
+            if (method != null)
+                return true;
+
+            Private_Log_Error__Invalid_Modification_Method
+            (
+                this,
+                method
+            );
+
+            return false;
+        }
+
+        private bool Private_Check_For__Valid_Modification_Index__Vertex_Object
+        (
+            Vertex[] referenceArray,
+            int modificationIndex
+        )
+        {
+            bool isValid =
+                Tools
+                .Math_Helper
+                .Check_If__Obeys_Range_Clamp__Positive_Integer
                 (
-                    modificationIndex, 
-                    out isValidIndex,
-                    Vertex_Object__Vertices.Length
+                    modificationIndex,
+                    referenceArray.Length
                 );
 
-            if (!isValidIndex)
-            {
-                Log.Internal_Write__Log
+            if (isValid)
+                return true;
+
+            Private_Log_Error__Invalid_Modification_Index
+            (
+                this,
+                modificationIndex,
+                referenceArray.Length
+            );
+
+            return false;
+        }
+
+        private bool Private_Check_For__Valid_Modification_Range__Vertex_Object
+        (
+            Vertex[] referenceArray,
+            int modificationIndex,
+            int modificationRange
+        )
+        {
+            bool isValidRange =
+                Tools
+                .Math_Helper
+                .Check_If__Obeys_Range_Clamp__Positive_Integer
                 (
-                    Log_Message_Type.Error__Rendering_Setup,
-                    Log.ERROR__VERTEX_OBJECT__INVALID_MODIFICATION_INDEX_2,
-                    this,
-                    index,
-                    Vertex_Object__Vertices.Length
+                    modificationIndex + modificationRange,
+                    referenceArray.Length
                 );
-                return;
-            }
+            
+            if (isValidRange)
+                return true;
 
-            int modificationRange = index + modificaiton.Length;
-            bool isInvalidModificationLength = 
-                 modificationRange < Vertex_Object__Vertices.Length;
+            Private_Log_Error__Invalid_Modification_Range
+            (
+                this,
+                modificationIndex,
+                modificationRange,
+                referenceArray.Length
+            );
 
-            if (isInvalidModificationLength)
-            {
-                Log.Internal_Write__Log
-                (
-                    Log_Message_Type.Error__Rendering_Setup,
-                    Log.ERROR__VERTEX_OBJECT__MODIFICATION_OUT_OF_BOUNDS_3,
-                    index,
-                    modificationRange,
-                    Vertex_Object__Vertices.Length
-                );
-                return;
-            }
-
-            for(int i=index;i<modificaiton.Length;i++)
-            {
-                Vertex_Object__Vertices[i] = modificaiton[i-index];
-            }
+            return false;
         }
 
 #region Internal GL Initalizations
@@ -103,8 +221,8 @@ namespace Xerxes_Engine
             GL.BufferData
             (
                 BufferTarget.ArrayBuffer, 
-                Vertex_Object__Vertices.Length * Vertex.SizeInBytes, 
-                Vertex_Object__Vertices, 
+                _Vertex_Object__VERTICES.Length * Vertex.SizeInBytes, 
+                _Vertex_Object__VERTICES, 
                 BufferUsageHint.StaticDraw
             );
         }
@@ -113,7 +231,7 @@ namespace Xerxes_Engine
 #region Internal GL Utilizations
         internal void Internal_Use__Vertex_Object()
         {
-            GL.BindTexture(TextureTarget.Texture2D, Vertex_Object__Texture_R2.ID);
+            GL.BindTexture(TextureTarget.Texture2D, Vertex_Object__TEXTURE_R2.ID);
             GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
         }
 
@@ -136,6 +254,57 @@ namespace Xerxes_Engine
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.DeleteBuffer(Vertex_Object__GL_BUFFER_ID);
+        }
+
+        private static void Private_Log_Error__Invalid_Modification_Index
+        (
+            Vertex_Object source,
+            int index,
+            int length
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Rendering_Setup,
+                Log.ERROR__VERTEX_OBJECT__INVALID_MODIFICATION_INDEX_2,
+                source,
+                index,
+                length
+            );
+        }
+
+        private static void Private_Log_Error__Invalid_Modification_Range
+        (
+            Vertex_Object source,
+            int index,
+            int range,
+            int length
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Rendering_Setup,
+                Log.ERROR__VERTEX_OBJECT__MODIFICATION_OUT_OF_BOUNDS_3,
+                source,
+                index,
+                range,
+                length
+            );
+        }
+
+        private static void Private_Log_Error__Invalid_Modification_Method
+        (
+            Vertex_Object source,
+            Func<Vertex[], int, Vertex> method
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Rendering_Setup,
+                Log.ERROR__VERTEX_OBJECT__MODIFICATION_METHOD_IS_INVALID_1,
+                source,
+                method
+            );
         }
     }
 }

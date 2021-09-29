@@ -34,6 +34,13 @@ namespace Xerxes_Engine.Tools
 
             return vec.Normalized();
         }
+
+        public static Vector2 Get__Stepped(Vector2 vec)
+        {
+            float x = vec.X == 0 ? 0 : 1;
+            float y = vec.Y == 0 ? 0 : 1;
+            return new Vector2(x,y);
+        }
         
         public static Vector3 Get__Hadamard_Product(Vector3 vec1, Vector3 vec2)
             => new Vector3(vec1.X * vec2.X, vec1.Y * vec2.Y, vec1.Z * vec2.Z);
@@ -303,8 +310,31 @@ namespace Xerxes_Engine.Tools
         public static bool Divides(float a, float b)
             => (Math.Abs(b) % Math.Abs(a)) == 0;
 
-        public static bool Check_If__Obeys_Clamp__Integer(int val, int min, int max)
+        /// <summary>
+        /// Returns true if the value is between min and max inclusively on both arguments.
+        /// </summary>
+        public static bool Check_If__Obeys_Inclusive_Clamp__Integer(int val, int min, int max)
             => (val >= min) && (val <= max);
+        /// <summary>
+        /// Returns true if the value is between min and max exclusively on both arguments.
+        /// </summary>
+        public static bool Check_If__Obeys_Exclusive_Clamp__Integer(int val, int min, int max)
+            => (val > min) && (val < max);
+        /// <summary>
+        /// Returns true if the value is between min-inclusively and max-exclusively.
+        /// </summary>
+        public static bool Check_If__Obeys_Range_Clamp__Integer(int val, int min, int max)
+            => (val >= min) && (val < max);
+        /// <summary>
+        /// Equvialent to Inclusive_Clamp, but assumes min is zero.
+        /// </summary>
+        public static bool Check_If__Obeys_Inclusive_Clamp__Positive_Integer(int val, int max = int.MaxValue)
+            => (val >= 0) && (val <= max);
+        /// <summary>
+        /// Equvialent to Range_Clamp, but assumes min is zero.
+        /// </summary>
+        public static bool Check_If__Obeys_Range_Clamp__Positive_Integer(int val, int max)
+            => (val >= 0) && (val < max);
 
         public static bool Check_If__Obeys_Clamp__Positive_Float(float val, float max = float.MaxValue)
             => Check_If__Obeys_Clamp(val, 0, max);

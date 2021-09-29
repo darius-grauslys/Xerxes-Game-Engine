@@ -1,6 +1,6 @@
 ﻿namespace Xerxes_Engine.Events.Streamline_Arguments
 {
-    public sealed class Event_Progression_Argument : Streamline_Argument
+    public sealed class Event_Progression_Argument : Event_Argument 
     {
         public double Event_Progression_Argument__DELTA_TIME { get; }
         

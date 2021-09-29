@@ -54,7 +54,7 @@
         //TODO: Make Xerxes_Object, which has functionality to hook onto scene Update/Render/etc.
         //      Just so developers cannot call Update__State_Machine and similar functions
         //      multiple times per loop.
-        public State_Update_Response Update__State_Machine(Streamline_Argument_Frame e)
+        public State_Update_Response Update__State_Machine(Streamline_Argument_Update e)
         {
             State_Update_Response response =
                 _State_Machine__Current_State_Flow
@@ -253,7 +253,7 @@
             Log.Internal_Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
-                Log.ERROR__STATE_MACHINE__FAILED_TO_DEFINE_FLOW_1,
+                Log.ERROR__STATE_MACHINE__FAILED_TO_DEFINE_FLOW_1C,
                 this,
                 contextualMessage
             );

@@ -2,11 +2,18 @@ namespace Xerxes_Engine
 {
     public abstract class Streamline_Base
     {
-        public bool Streamline_Base__IS_SOURCE { get; }
         public bool Streamline_Base__IS_MANDATORY { get; }
         public bool Streamline_Base__Is_Disabled { get; protected set; }
 
         internal Streamline_Base() { }
+
+        public override string ToString()
+        {
+            string str = base.ToString();
+            int index = str.LastIndexOf('.')+1;
+            str = str.Substring(index, str.Length - index - 1);
+            return str;
+        }
 
         internal abstract bool Internal_Link__Streamline_Base
         (
@@ -19,6 +26,7 @@ namespace Xerxes_Engine
             Streamline_Base streamline_Base_2
         )
         {
+            Log.Internal_Write__Verbose__Log("linking:{0} and {1}","STATIC-Streamline_Base", streamline_Base_1, streamline_Base_2);
             streamline_Base_1
                 .Internal_Link__Streamline_Base
                 (

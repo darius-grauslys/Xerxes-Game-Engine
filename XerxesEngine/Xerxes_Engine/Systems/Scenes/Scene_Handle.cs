@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes_Engine.Systems.Scenes
 {
     public class Scene_Handle : Distinct_Handle
     {

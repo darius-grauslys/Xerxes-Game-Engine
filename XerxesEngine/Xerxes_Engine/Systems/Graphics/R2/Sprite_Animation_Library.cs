@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Xerxes_Engine.Systems.Graphics.R2.Animation;
 
 namespace Xerxes_Engine.Systems.Graphics.R2
 {
+/*
     public sealed class Sprite_Animation_Library : Game_System
     {
         private Dictionary<string, Animation_Schematic> animationSchematics = new Dictionary<string, Animation_Schematic>();
@@ -57,4 +57,5 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         public Animation_Schematic GetSchematic(string name) => animationSchematics[name];
         public Animation_Schematic GetSchematic(int id) => animationSchematics.Values.ElementAt(id);
     }
+    */
 }

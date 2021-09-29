@@ -30,6 +30,13 @@ namespace Xerxes_Engine
             => _Distinct_Handle_Dictionary__DICTIONARY.Keys.ToArray();
         protected T[] Protected_Get__Elements__Distinct_Handle_Dictionary()
             => _Distinct_Handle_Dictionary__DICTIONARY.Values.ToArray();
+        protected T[] Protected_Get__Elements__Distinct_Handle_Dictionary(H[] internal_Handles)
+        {
+            List<T> elements = new List<T>();
+            foreach(H internal_Handle in internal_Handles)
+                elements.Add(Protected_Get__Element__Distinct_Handle_Dictionary(internal_Handle));
+            return elements.ToArray();
+        }
 
         protected T Protected_Get__Element__Distinct_Handle_Dictionary(H distinctHandle)
             => _Distinct_Handle_Dictionary__DICTIONARY[distinctHandle];

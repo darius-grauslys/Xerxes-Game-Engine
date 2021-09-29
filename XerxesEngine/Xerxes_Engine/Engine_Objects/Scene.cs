@@ -1,66 +1,41 @@
 ﻿namespace Xerxes_Engine.Engine_Objects
 {
-    public class Scene : Xerxes_Engine_Object 
+    public class Scene : Xerxes_Descendant<Game,Scene>
     {
         public Game Game__REFERENCE { get; private set; }
+        public float Scene__Width   { get; private set; }
+        public float Scene__Height  { get; private set; }
         
         private Scene_Layer_Dictionary _Scene__LAYER_DICTIONARY { get; }
 
         public Scene()
-            : base (Xerxes_Engine_Object_Association_Type.GAME__SCENE)
         {
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Frame_Update>();
+                <Streamline_Argument_Update>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Frame_Render>();
+                <Streamline_Argument_Render>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Resize_2D>();
+                <Streamline_Argument_Resize_2D>
+                (
+                    Private_Handle__2D_Resize__Scene
+                );
+
+
+            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Draw>
+                (
+                    (s)
+                    =>
+                    Log.Internal_Write__Verbose__Log("I got a draw call from downstream!", this)
+                );
+
             _Scene__LAYER_DICTIONARY = new Scene_Layer_Dictionary();
         }
 
-        protected Scene_Layer_Handle Protected_Associate_Descendant__Layer__Scene
-        (
-            Scene_Layer layer, 
-            string layerAlias = null
-        ) 
-        { 
-            bool associated = 
-                Xerxes_Engine_Object
-                .Internal_Associate__Objects
-                (
-                    layer,
-                    this
-                );
-
-            if (!associated)
-                return null; //Need to return default.
-
-            Scene_Layer_Handle layerHandle = 
-                _Scene__LAYER_DICTIONARY.Internal_Declare__Layer__Scene_Layer_Dictionary
-            (
-                layerAlias ?? layer.ToString(),
-                layer
-            );
-
-            Streamline_Argument_Resize_2D resize_2D_Argument =
-                new Streamline_Argument_Resize_2D
-                (
-                    Game__REFERENCE.Game__Window_Width,
-                    Game__REFERENCE.Game__Window_Height
-                );
-
-            layer.Internal_Resize__2D__Xerxes_Engine_Container
-            (
-                resize_2D_Argument
-            );
-
-            return layerHandle;
-        }
-
-        protected void Protected_Add__Layers__Scene(params Scene_Layer[] layers) 
-        { 
-            foreach (Scene_Layer layer in layers) 
-                Protected_Associate_Descendant__Layer__Scene(layer); 
+        private void Private_Handle__2D_Resize__Scene(Streamline_Argument_Resize_2D e)
+        {
+            Scene__Width  = e.Streamline_Argument_Resize_2D__WIDTH;
+            Scene__Height = e.Streamline_Argument_Resize_2D__HEIGHT;
         }
     }
 }

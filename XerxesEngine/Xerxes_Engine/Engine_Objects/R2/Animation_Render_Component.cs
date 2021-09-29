@@ -1,14 +1,17 @@
-﻿using Xerxes_Engine.Systems.Graphics.R2.Animation;
-
-namespace Xerxes_Engine.Systems.Graphics.R2
+﻿namespace Xerxes_Engine.Engine_Objects.R2
 {
-    public class Animation_Render_Component : Game_Object_Component
+    public class Animation_Render_Component : Sprite_Render_Component 
     {
         private Animation_Schematic _Animation_Render_Component__Schematic { get; set; }
 
         public Animation_Render_Component(Animation_Schematic schematic = null) 
-            : base()
         {
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Update>
+                (
+                    Private_Handle__Update__Animation_Render_Component
+                );
+
             this._Animation_Render_Component__Schematic = schematic;
         }
 
@@ -57,18 +60,20 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         {
             if(nodeIndex > _Animation_Render_Component__Schematic.Animation_Schematic__Node_Count)
             {
-                Log.Internal_Write__Log
+                Private_Log_Error__Node_Definition_Out_Of_Bounds
                 (
-
-                    Log_Message_Type.Error__Rendering_Setup,
-                    Log.ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2,
                     this,
                     nodeIndex,
-                    _Animation_Render_Component__Schematic.Animation_Schematic__Node_Count
+                    node.Animation_Node__VBO_Indices.Length
                 );
                 return;
             }
             _Animation_Render_Component__Schematic.Define__Node__Animation_Schematic(nodeIndex, node);
+        }
+
+        public void Play__Animation_Render_Component(uint node)
+        {
+            _Animation_Render_Component__Schematic.Play__Animation_Node(node);
         }
 
         public void Pause__Animation_Render_Component(double time) 
@@ -76,19 +81,34 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         public void Unpause__Animation_Render_Component() 
             => _Animation_Render_Component__Schematic.Unpause__Animation_Node();
 
-        protected override void Handle_Update__Xerxes_Engine_Object(Streamline_Argument_Frame e)
+        private void Private_Handle__Update__Animation_Render_Component(Streamline_Argument_Update e)
         {
             int vbo_index = 
                 (int)_Animation_Render_Component__Schematic
-                    .Get__VBO_Index__Animation_Node(e.Streamline_Argument_Frame__DELTA_TIME);
+                    .Get__VBO_Index__Animation_Node(e.Streamline_Argument__DELTA_TIME);
 
-            Game_Object_Component__Attached_Object__Protected
-                ._game_Object__Render_Unit.vaoIndex = vbo_index; 
+            Sprite_Render_Component__Sprite__Protected
+                .Internal_Set__Active_Vertex_Object__Sprite(vbo_index);
         }
 
-        public void Play__Animation_Render_Component(uint node)
+#region Static Logging
+        private static void Private_Log_Error__Node_Definition_Out_Of_Bounds
+        (
+            Animation_Render_Component source,
+            uint index,
+            int count
+        )
         {
-            _Animation_Render_Component__Schematic.Play__Animation_Node(node);
+            Log.Internal_Write__Log
+            (
+
+                Log_Message_Type.Error__Rendering_Setup,
+                Log.ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2,
+                source,
+                index,
+                count
+            );
         }
+#endregion
     }
 }

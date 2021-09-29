@@ -1,4 +1,4 @@
-namespace Xerxes_Engine.Systems.Graphics.R2
+namespace Xerxes_Engine
 {
     public class Vertex_Object_Handle : Distinct_Handle
     {

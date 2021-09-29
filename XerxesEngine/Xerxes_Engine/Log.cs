@@ -10,6 +10,8 @@ namespace Xerxes_Engine
         internal const string 
         INFO__LOG_INITALIZE_4                                       = "XERXES-ENGINE LOGGER INITALIZED - {0}, {1}, {2}, {3}",
 
+        INFO__GAME__RUN_INVOKED                                     = "The game has begun running.",
+
         INFO__EVENT_HANDLER__RECURRING_NAME_2                       = "An event handle by the name of:\"{0}\" already exists. Using:\"{1}\" instead.",
 
         INFO__COMPONENT__ENABLED_ON_PARENT_BIND                     = "Component was enabled when bounded to a non-null parent.",
@@ -85,7 +87,7 @@ namespace Xerxes_Engine
 
         ERROR__SYSTEM__NOT_FOUND_1                                  = "The System:\"{0}\" is not loaded!",
 
-        ERROR__GAME__CONTENT_SPRITE_NOT_FOUND_2                     = "The Sprite:\"{0}\" was not found under path:\"{1}\"!",
+        ERROR__ASSET_PIPE__FILE_NOT_FOUND_1                         = "The file:\"{0}\" was not found!",
 
         ERROR__SCENE_MANAGER__SWITCHED_TO_NULL_SCENE_1              = "Attemped to switch to null scene under lousy alias:\"{0}\". Not switching scenes!",
         ERROR__SCENE_MANAGER__CANNOT_ADD_NULL_SCENE_1               = "Attempted to add a null scene under alias:\"{0}\". Returning error scene handle!",
@@ -96,6 +98,7 @@ namespace Xerxes_Engine
         ERROR__XERXES_ENGINE_OBJECT__INVALID_PARENT_ASSOCIATION_2   = "This engine object already has a parental association!" 
                                                                     + "Tried to associate to:{0} - is already associated to {1}!",
         ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION             = "Cannot be associated to! I am sealed!",
+        ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_1 = "Failed to declare streamline:{0}!",
         ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED_TO_ROOT      = "Tried to access root object prior to being rooted!",
         ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED              = "Tried to access associated parent, but is not associated!",
         ERROR__XERXES_ENGINE_OBJECT__INVALID_ASSOCIATION_4          = "Engine object:{0} tried to associate to object:{1} which is lower in hierarchy!"
@@ -107,7 +110,7 @@ namespace Xerxes_Engine
         ERROR__GAME_OBJECT__ASSOCIATED_ANCESTOR_IS_INVALID_1        = "Tried to associate with:{0}, but it is not a Scene Layer! Games Objects can "
                                                                     + "only associate with Scene Layers!",
         
-        ERROR__GAME_OBJECT_COMPONENT__FAILED_TO_ASSOCIATE_1         = "Failed to associate to engine object:{0}! Components can only associate to Game Objects!",
+        ERROR__GAME_COMPONENT__FAILED_TO_ASSOCIATE_1         = "Failed to associate to engine object:{0}! Components can only associate to Game Objects!",
         ERROR__GAME_OBJECT_COMPONENT__NOT_ASSOCIATED_TO_ROOT_1C     = "This component was utilized while not rooted, and depends on a rooted enviroment!"
                                                                     + "Contextual Message:{0}!",
         ERROR__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C    = "This component was utilized while disabled, and only functions while enabled!"
@@ -125,6 +128,7 @@ namespace Xerxes_Engine
                                                                     + "is less than 0 or greater than the current size:{1}!",
         ERROR__VERTEX_OBJECT__MODIFICATION_OUT_OF_BOUNDS_3          = "Modification of this Vertex Object is out of bounds! The given modication index:{0} "
                                                                     + "plus the length of the modification:{1} exceeds the current size:{2}!",
+        ERROR__VERTEX_OBJECT__MODIFICATION_METHOD_IS_INVALID_1      = "The given modification method for vertex modification - {0} is invalid!",
 
         ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2          = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"!",
 
@@ -288,7 +292,7 @@ namespace Xerxes_Engine
         internal static void Internal_Panic__Log(Log_Message panicMessage)
         {
             Private_Write__Panic__Log();
-            throw new Xerxes_Engine_Exception(panicMessage);
+            throw new Xerxes_Exception(panicMessage);
         }
 
         private static void Private_Write__Panic__Log()

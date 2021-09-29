@@ -1,6 +1,6 @@
 ﻿namespace Xerxes_Engine.Events.Streamline_Arguments
 {
-    public class Event_Reset_Argument : Streamline_Argument
+    public class Event_Reset_Argument : Event_Argument 
     {
         public double Event_Reset_Argument__NEW_TIME_LIMIT { get; }
 

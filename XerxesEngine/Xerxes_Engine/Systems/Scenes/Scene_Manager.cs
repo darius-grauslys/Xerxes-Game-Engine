@@ -2,6 +2,7 @@
 {
     public sealed class Scene_Manager : Game_System
     {
+        /*
         private const string _Scene_Manager__ERROR_SCENE_NAME = "error";
 
 
@@ -10,9 +11,12 @@
 
         public Scene_Handle Scene_Manager__ERROR_SCENE_HANDLE { get; }
 
+        */
+
         internal Scene_Manager(Game game) 
             : base(game)
         {
+            /*
             _Scene_Manager__SCENE_DICTIONARY = new Scene_Dictionary();
             _Scene_Manager__ERROR_SCENE = new Scene(game);
 
@@ -27,7 +31,10 @@
             Scene_Manager__ERROR_SCENE_HANDLE = errorHandle;
 
             Game.Internal_Set__Scene__Game(_Scene_Manager__ERROR_SCENE);
+            */
         }
+
+        /*
 
         public Scene_Handle Add__Scene__Scene_Manager(Scene scene, string name=null) 
         {
@@ -116,5 +123,7 @@
 
             Game.Internal_Set__Scene__Game(scene);
         }
+    
+        */
     }
 }
