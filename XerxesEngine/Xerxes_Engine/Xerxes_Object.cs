@@ -148,15 +148,16 @@ namespace Xerxes_Engine
         ) where T : Streamline_Argument
         {
             Streamline<T> streamline =
-                Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal
+                streamline_Dictionary
                 .Internal_Get__Streamline__Streamline_Dictionary<T>();
 
             if (streamline == null)
             {
                 Log.Internal_Write__Verbose__Log
                 (
-                    streamline_Dictionary.ToString(),
-                    this
+                    "Streamline {0} was not found in:\n{1}",
+                    this,
+                    streamline_Dictionary.ToString()
                 );
                 return;
             }
@@ -371,7 +372,6 @@ namespace Xerxes_Engine
             thisObject.Xerxes_Engine_Object__Parent__Internal = toThisObject;
 
             // Link downstreams.
-            Log.Internal_Write__Verbose__Log("Linking downstreams for {0} -> {1}", null, toThisObject, thisObject);
             Private_Link__Streamlines
             (
                 thisObject.Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal,
@@ -385,7 +385,6 @@ namespace Xerxes_Engine
                 )
             );
             // Link upstreams.
-            Log.Internal_Write__Verbose__Log("Linking upstreams", null);
             Private_Link__Streamlines
             (
                 toThisObject.Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal,
@@ -444,18 +443,6 @@ namespace Xerxes_Engine
             Action<Streamline_Base> fail_To_Link
         )
         {
-            /*
-            Log.Internal_Write__Verbose__Log
-            (
-                source.ToString(),
-                null
-            );
-            Log.Internal_Write__Verbose__Log
-            (
-                mouth.ToString(),
-                null
-            );
-            */
             Distinct_Type_Dictionary<Streamline_Argument, Streamline_Base>
                 .Internal_On_All__Matching_Keys
                 (

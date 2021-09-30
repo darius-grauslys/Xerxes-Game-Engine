@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using System;
 using System.Drawing;
 using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
 
@@ -24,6 +25,17 @@ namespace Xerxes_Engine
         }
 
         public static int SizeInBytes => Vector2.SizeInBytes * 2 + Vector4.SizeInBytes;
+
+        public override string ToString()
+        {
+            return String.Format
+                (
+                    "p:{0},t:{1},c:{2}",
+                    position,
+                    textcoord,
+                    color
+                );
+        }
 
         public Vertex(Vector2 position, Vector2 textcoord, Vector4 color)
         {

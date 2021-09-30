@@ -25,7 +25,7 @@ namespace Xerxes_Engine
             : this(vertices.Length, texture_R2)
         {
             _Vertex_Object__VERTICES = vertices;
-            _Vertex_Object__Base_Vertex_Array = vertices.ToArray(); 
+            Internal_Set__Base_Array();
             Internal_Set__Buffer_Data__Vertex_Object();
         }
 
@@ -39,12 +39,14 @@ namespace Xerxes_Engine
             _Vertex_Object__VERTICES = new Vertex[count];
 
             GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
+            Internal_Bind__Buffer__Vertex_Object();
             GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 2 * sizeof(float));
             GL.EnableVertexAttribArray(1);
             GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, 8 * sizeof(float), 4 * sizeof(float));
             GL.EnableVertexAttribArray(2);
+            GL.BindVertexArray(0);
         }
 
         internal void Internal_Set__Base_Array()
@@ -217,6 +219,8 @@ namespace Xerxes_Engine
 #region Internal GL Initalizations
         internal void Internal_Set__Buffer_Data__Vertex_Object()
         {
+            Log.Write__Verbose__Log("size:" + (_Vertex_Object__VERTICES.Length * Vertex.SizeInBytes), this);
+            GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
             Internal_Bind__Buffer__Vertex_Object();
             GL.BufferData
             (
@@ -225,6 +229,7 @@ namespace Xerxes_Engine
                 _Vertex_Object__VERTICES, 
                 BufferUsageHint.StaticDraw
             );
+            GL.BindVertexArray(0);
         }
 #endregion
 
@@ -250,12 +255,25 @@ namespace Xerxes_Engine
         }
 #endregion
 
+#region Native Overloads
         public void Dispose()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.DeleteBuffer(Vertex_Object__GL_BUFFER_ID);
         }
 
+        public override string ToString()
+        {
+            string str = "";
+            foreach (Vertex vertex in _Vertex_Object__VERTICES)
+            {
+                str += vertex.ToString();
+            }
+            return str;
+        }
+#endregion
+
+#region Static Logging
         private static void Private_Log_Error__Invalid_Modification_Index
         (
             Vertex_Object source,
@@ -306,5 +324,6 @@ namespace Xerxes_Engine
                 method
             );
         }
+#endregion
     }
 }

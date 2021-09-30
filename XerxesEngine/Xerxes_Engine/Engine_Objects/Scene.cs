@@ -23,11 +23,7 @@
 
             Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Draw>
-                (
-                    (s)
-                    =>
-                    Log.Internal_Write__Verbose__Log("I got a draw call from downstream!", this)
-                );
+                ();
 
             _Scene__LAYER_DICTIONARY = new Scene_Layer_Dictionary();
         }

@@ -78,7 +78,6 @@ namespace Xerxes_Engine.Engine_Objects
 
         private void Private_Handle__Draw__Scene_Layer(Streamline_Argument_Draw e)
         {
-            Log.Internal_Write__Verbose__Log("I recieved a draw request from down stream!", this);
             e.Streamline_Argument_Draw__World_Matrix__Internal =
                 Scene_Layer__Layer_Matrix;  
         }

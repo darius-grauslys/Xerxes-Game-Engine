@@ -26,7 +26,6 @@ namespace Xerxes_Engine
             Streamline_Base streamline_Base_2
         )
         {
-            Log.Internal_Write__Verbose__Log("linking:{0} and {1}","STATIC-Streamline_Base", streamline_Base_1, streamline_Base_2);
             streamline_Base_1
                 .Internal_Link__Streamline_Base
                 (

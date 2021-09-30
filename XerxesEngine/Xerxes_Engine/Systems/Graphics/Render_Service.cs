@@ -77,6 +77,8 @@ namespace Xerxes_Engine.Systems.Graphics
 
                 _Render_Service__Shaders[i] = new Shader(_Render_Service__Shader_Source_Vertex, Render_Service__Shader_Source_Fragment);
             }
+
+            Set__Shader__Render_Service(0);
         }
 
         protected override void Handle_Load__Game_System()
@@ -134,7 +136,6 @@ namespace Xerxes_Engine.Systems.Graphics
 
         internal void Draw__Render_Service(Streamline_Argument_Draw e)
         {
-            Log.Internal_Write__Verbose__Log("Drawing!", this);
             Vector3 position = e.Streamline_Argument_Draw__Position__Internal;
             Vertex_Object vertex_Object = e.Streamline_Argument_Draw__VERTEX_OBJECT__Internal;
             Matrix4 world_Matrix = e.Streamline_Argument_Draw__World_Matrix__Internal;

@@ -289,7 +289,7 @@
             float x_c = offsetX + subWidth, 
                   y_c = y_b;
             float x_d = x_c, 
-                  y_d = y_b;
+                  y_d = y_a;
 
             Vertex[] vertices = new Vertex[]
             {
