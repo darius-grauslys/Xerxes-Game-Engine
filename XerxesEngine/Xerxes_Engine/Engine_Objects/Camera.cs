@@ -2,7 +2,7 @@
 
 namespace Xerxes_Engine.Engine_Objects
 {
-    public class Camera : Xerxes_Descendant<Scene,Camera>
+    public class Camera : Xerxes_Descendant<Scene, Camera>
     {
         private float zNear = 0.01f, zFar = 10f;
         private float zoom = 0.2f;

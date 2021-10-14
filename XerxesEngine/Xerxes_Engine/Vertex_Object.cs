@@ -12,6 +12,8 @@ namespace Xerxes_Engine
     {
         public const int VERTEX_OBJECT__BASE_VERTEX_COUNT = 4;
 
+        public Vertex_Object_Handle Vertex_Object__HANDLE { get; internal set; }
+
         private Vertex[] _Vertex_Object__Base_Vertex_Array { get; set; }
         private Vertex[] _Vertex_Object__VERTICES { get; }
         public int Get__Vertex_Count__Vertex_Object()

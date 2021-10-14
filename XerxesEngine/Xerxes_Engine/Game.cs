@@ -18,7 +18,7 @@ namespace Xerxes_Engine
     /// and downstreams. It takes a Streamline_Argument_Draw upstream.
     /// This object is parentless - Xerxes_Childless
     /// </summary>
-    public class Game : Xerxes_Descendant<Xerxes_Childless<Game>,Game> 
+    public class Game : Xerxes_Descendant<Xerxes_Childless, Game> 
     {
         internal GameWindow Game__GAME_WINDOW__Internal { get; }
 
@@ -65,10 +65,11 @@ namespace Xerxes_Engine
         public float Get__Window_Hypotenuse__Game()
             => Math_Helper.Get__Hypotenuse(Game__Window_Width, Game__Window_Height);
         
-        public Game
-        (
-            Game_Arguments gameArguments
-        )
+        public Game()
+            : this (Game_Arguments.Get__Default__Game_Arguments())
+        {}
+
+        public Game(Game_Arguments game_Argument)
         {
             _Game__UPDATE_TIMER = new Timer(-1);
             _Game__RENDER_TIMER = new Timer(-1);
@@ -93,18 +94,18 @@ namespace Xerxes_Engine
                 (
                     (int)
                     (
-                        gameArguments?.Game_Arguments__WINDOW_WIDTH 
+                        game_Argument?.Game_Arguments__WINDOW_WIDTH 
                         ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_WIDTH
                     ),
                     (int)
                     (
-                        gameArguments?.Game_Arguments__WINDOW_HEIGHT
+                        game_Argument?.Game_Arguments__WINDOW_HEIGHT
                         ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_HEIGHT
                     ),
 
                     GraphicsMode.Default, 
                     
-                    gameArguments?.Game_Arguments__WINDOW_TITLE
+                    game_Argument?.Game_Arguments__WINDOW_TITLE
                     ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_TITLE
                 );
 
@@ -112,20 +113,20 @@ namespace Xerxes_Engine
             
             Log.Initalize__Log
             (
-                gameArguments
+                game_Argument
             );
 
             Game__DIRECTORY__BASE = AppDomain.CurrentDomain.BaseDirectory; 
             Game__DIRECTORY__ASSETS = 
                 Private_Validate__Directory__Game
                 (
-                    gameArguments.Game_Arguments__ASSET_DIRECTORY,
+                    game_Argument.Game_Arguments__ASSET_DIRECTORY,
                     Game_Arguments.Game_Arguments__DEFAULT_ASSET_DIRECTORY
                 );
             Game__DIRECTORY__SHADERS = 
                 Private_Validate__Directory__Game
                 (
-                    gameArguments.Game_Arguments__SHADER_DIRECTORY,
+                    game_Argument.Game_Arguments__SHADER_DIRECTORY,
                     Game_Arguments.Game_Arguments__DEFAULT_SHADER_DIRECTORY
                 );
             

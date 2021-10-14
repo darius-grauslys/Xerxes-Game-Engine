@@ -16,12 +16,17 @@ namespace Xerxes_Engine
         (
             Vertex_Object vertex_Object    
         )
-            => 
-            Protected_Declare__Element__Distinct_Handle_Dictionary
-            (
-                VERTEX_OBJECT_DICTIONARY__BASE_FORMAT,
-                vertex_Object
-            );
+        {
+            Vertex_Object_Handle vertex_Object_Handle =
+                Protected_Declare__Element__Distinct_Handle_Dictionary
+                (
+                    VERTEX_OBJECT_DICTIONARY__BASE_FORMAT,
+                    vertex_Object
+                );
+            vertex_Object.Vertex_Object__HANDLE = vertex_Object_Handle;
+
+            return vertex_Object_Handle; 
+        }
         internal Vertex_Object_Handle[] Internal_Declare__Vertex_Objects__Vertex_Object_Dictionary
         (
             Vertex_Object[] vertex_Objects
@@ -30,9 +35,8 @@ namespace Xerxes_Engine
             Vertex_Object_Handle[] vertex_Object_Handles = new Vertex_Object_Handle[vertex_Objects.Length];
             for(int i=0;i<vertex_Objects.Length;i++)
                 vertex_Object_Handles[i] =
-                    Protected_Declare__Element__Distinct_Handle_Dictionary
+                    Internal_Declare__Vertex_Object__Vertex_Object_Dictionary
                     (
-                        VERTEX_OBJECT_DICTIONARY__BASE_FORMAT,
                         vertex_Objects[i]
                     );
             return vertex_Object_Handles;

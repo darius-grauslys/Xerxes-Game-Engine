@@ -1,10 +1,10 @@
 namespace Xerxes_Engine
 {
-    public class Xerxes_Descendant<T, Y> : Xerxes_Object where T : Xerxes_Object where Y : Xerxes_Descendant<T,Y>
+    public class Xerxes_Descendant<T,Y> : Xerxes_Object where T : Xerxes_Object, new() where Y : Xerxes_Descendant<T,Y>, new() 
     {
         protected T Xerxes_Descendant__Parent__Protected { get; private set; }
 
-        internal Xerxes_Descendant() 
+        public Xerxes_Descendant() 
         {
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Associate_Game>
@@ -41,7 +41,7 @@ namespace Xerxes_Engine
         public virtual bool Associate__Xerxes_Descendant<H>
         (
             H descendant
-        ) where H : Xerxes_Descendant<Y,H>
+        ) where H : Xerxes_Descendant<Y,H>, new()
         {
             return Xerxes_Object
                 .Internal_Associate__Objects

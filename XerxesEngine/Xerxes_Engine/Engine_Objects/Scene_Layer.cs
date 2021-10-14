@@ -3,12 +3,10 @@ using System.Collections.Generic;
 
 namespace Xerxes_Engine.Engine_Objects
 {
-    public class Scene_Layer : Xerxes_Descendant<Scene,Scene_Layer> 
+    public class Scene_Layer : Xerxes_Descendant<Scene, Scene_Layer> 
     {
         public float Scene_Layer__Width  { get; private set; }
         public float Scene_Layer__Height { get; private set; }
-
-        public int Scene_Layer__LayerLevel { get; internal set; }
 
         public Matrix4 Scene_Layer__Layer_Matrix { get; protected set; }
 
@@ -16,7 +14,7 @@ namespace Xerxes_Engine.Engine_Objects
         public Game_Object[] Scene_Layer__Scene_Objects
             => _Scene_Layer__SCENE_OBJECTS.ToArray();
 
-        public Scene_Layer(int sceneLayerLayerLevel = 0)
+        public Scene_Layer()
         {
             Protected_Subscribe__Descending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Associate_Game>
@@ -41,8 +39,6 @@ namespace Xerxes_Engine.Engine_Objects
                 );
 
             _Scene_Layer__SCENE_OBJECTS = new List<Game_Object>();
-
-            Scene_Layer__LayerLevel = sceneLayerLayerLevel;
         }
 
         private void Private_Resize__2D__Scene_Layer(Streamline_Argument_Resize_2D e)

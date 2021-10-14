@@ -75,6 +75,8 @@ namespace Xerxes_Engine
 
         WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING            = "This engine object has already been sealed. Ignoring sealing invokation.",
         WARNING__XERXES_ENGINE_OBJECT__UNLINKED_STREAMLINE_2        = "The streamline:{0} did not find a destination during association to:{1}.",
+
+        WARNING__XERXES_CHILDLESS__REDUNDANT_CONSTRUCTION           = "This Xerxes_Childless object was constructed. There is no need to construct them.",
         
         WARNING__COMPONENT__PARENT_IS_NULL                          = "Component was disabled when attached to a null parent.",
         WARNING__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C  = "Component was not intended to be used while disabled. May cause problems. Action:\"{0}\".",

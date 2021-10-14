@@ -1,9 +1,15 @@
 namespace Xerxes_Engine
 {
-    public sealed class Xerxes_Childless<T> 
-        : Xerxes_Descendant<T, Xerxes_Childless<T>>
-          where T : Xerxes_Object
+    public sealed class Xerxes_Childless
+        : Xerxes_Object    
     {
-        private Xerxes_Childless(){}
+        public Xerxes_Childless()
+        {
+            Log.Internal_Write__Verbose__Log
+            (
+                Log.WARNING__XERXES_CHILDLESS__REDUNDANT_CONSTRUCTION,
+                this
+            );
+        }
     }
 }

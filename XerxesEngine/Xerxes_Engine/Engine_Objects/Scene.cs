@@ -1,6 +1,6 @@
 ﻿namespace Xerxes_Engine.Engine_Objects
 {
-    public class Scene : Xerxes_Descendant<Game,Scene>
+    public class Scene : Xerxes_Descendant<Game, Scene>
     {
         public Game Game__REFERENCE { get; private set; }
         public float Scene__Width   { get; private set; }

@@ -137,7 +137,8 @@ namespace Xerxes_Engine.Systems.Graphics
         internal void Draw__Render_Service(Streamline_Argument_Draw e)
         {
             Vector3 position = e.Streamline_Argument_Draw__Position__Internal;
-            Vertex_Object vertex_Object = e.Streamline_Argument_Draw__VERTEX_OBJECT__Internal;
+            Vertex_Object_Handle vertex_Object_Handle = e.Streamline_Argument_Draw__VERTEX_OBJECT_HANDLE__Internal;
+            Vertex_Object vertex_Object = vertex_Object_Handle.Internal_Get__Vertex_Object__Vertex_Object_Handle();
             Matrix4 world_Matrix = e.Streamline_Argument_Draw__World_Matrix__Internal;
 
             vertex_Object.Internal_Use__Vertex_Object();
