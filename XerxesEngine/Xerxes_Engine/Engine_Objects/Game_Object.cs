@@ -4,20 +4,28 @@
     /// Mediates Update and Draw streamlines to descending
     /// assocations. Inherit this for further streamline mediations.
     /// </summary>
-    public class Game_Object : Xerxes_Descendant<Scene_Layer, Game_Object>
+    public class Game_Object :
+        Xerxes_Object<Game_Object>,
+        IXerxes_Descendant_Of<Scene_Layer>,
+        IXerxes_Ancestor_Of<Game_Object_Component>
     {
         public Game_Object
         ()
         {
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Associate_Game>();
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Update>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Render>(Private__Handle_Render__Game_Object);
+                <Streamline_Argument_Render>
+                (
+                    Private__Handle_Render__Game_Object
+                );
 
             // Declare draw mediator channel between associated components.
-            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
                 <Streamline_Argument_Draw>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Upstream_Source__Xerxes_Engine_Object
                 <Streamline_Argument_Draw>();
         }
 

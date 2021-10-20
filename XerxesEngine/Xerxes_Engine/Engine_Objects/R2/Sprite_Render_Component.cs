@@ -3,7 +3,7 @@
     /// <summary>
     /// Gives public exposure to the attached Game_Object's RenderUnit.
     /// </summary>
-    public class Sprite_Render_Component : Xerxes_Descendant<Game_Object, Sprite_Render_Component> 
+    public class Sprite_Render_Component : Game_Object_Component 
     {
         private Sprite_Dictionary _Sprite_Render_Component__Sprite_Library_Dictionary__REFERENCE { get; set; }
 
@@ -13,13 +13,12 @@
         public Sprite_Render_Component() 
             : base()
         {
-            Protected_Subscribe__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Associate_Game>
                 (
                     Private_Handle__Associate_To_Game
                 );
-
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Catch__Xerxes_Engine_Object
                 <Streamline_Argument_Draw>
                 (
                     Private_Handle__Draw__Sprite_Render_Component
@@ -28,6 +27,8 @@
 
         private void Private_Handle__Associate_To_Game(Streamline_Argument_Associate_Game e)
         {
+            //TODO: Figure out a way for good rooting.
+            Xerxes_Engine_Object__Root__Internal = e.Streamline_Argument_Associate_Game__GAME;
             Game game = Protected_Get__Root__Xerxes_Engine_Object();
 
             _Sprite_Render_Component__Sprite_Library_Dictionary__REFERENCE =

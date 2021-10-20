@@ -7,17 +7,14 @@ namespace Xerxes_Engine
     /// Update/Render control flow. All internalized logging messages
     /// are related to such objects - or systems.
     ///
+    /// Xerxes_Object requires a self reference to T. Any other type
+    /// will cause a critical error.
+    ///
     /// Calls to Update and Render are internalized. Exposure to
     /// handling these calls are given via protected virtual definitions.
     /// </summary>
-    public class Xerxes_Object
+    public class Xerxes_Object<T> where T : Xerxes_Object<T>
     {
-        /// <summary>
-        /// Games cannot associate to anything. They are the thing
-        /// which objects associate to.
-        /// </summary>
-        private const int Xerxes_Engine_Object__ASSOCIATION_PRIORITY__GAME = 0;
-
         public bool Xerxes_Engine_Object__Is_Disabled { get; protected set; }
         public bool Xerxes_Engine_Object__Is_Sealed { get; private set; }
 
@@ -33,26 +30,26 @@ namespace Xerxes_Engine
             }
             return Xerxes_Engine_Object__Root__Internal;
         }
-        internal Xerxes_Object Xerxes_Engine_Object__Parent__Internal { get; set; }
-        internal T Internal_Get__Parent_As__Xerxes_Engine_Object<T>() where T : Xerxes_Object
-        {
-            if (Xerxes_Engine_Object__Parent__Internal == null)
-            {
-                Private_Log_Error__Is_Not_Associated(this);
-                return null;
-            }
 
-            return Xerxes_Engine_Object__Parent__Internal as T;
-        }
-        internal Streamline_Dictionary
-            Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal { get; }
-        internal Streamline_Dictionary 
-            Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal { get; }
+        private Stream _Xerxes_Engine_Object__UPSTREAM { get; }
+        private Stream _Xerxes_Engine_Object__DOWNSTREAM { get; }
 
         internal Xerxes_Object() 
         {
-            Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal = new Streamline_Dictionary();
-            Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal = new Streamline_Dictionary();
+            if (!(this is T))
+            {
+                Log.Internal_Write__Log
+                (
+                    Log_Message_Type.Error__Critical,
+                    Log.CRITICAL__XERXES_ENGINE_OBJECT__ILLEGAL_DEFINITION_1,
+                    this,
+                    typeof(T)
+                );
+                return;
+            }
+
+            _Xerxes_Engine_Object__UPSTREAM = new Stream();
+            _Xerxes_Engine_Object__DOWNSTREAM = new Stream();
         }
 
         public override string ToString()
@@ -64,164 +61,260 @@ namespace Xerxes_Engine
 
 #region Streamline Management
         /// <summary>
+        /// Declares a descending streamline that
+        /// is invokable under the generic type.
+        /// </summary>
+        protected bool Protected_Declare__Downstream_Source__Xerxes_Engine_Object<S>
+        (
+            bool isReceiving = false
+        ) where S : Streamline_Argument
+        {
+            bool success = 
+                Private_Declare__Streamline__Xerxes_Engine_Object<S>
+                (
+                    _Xerxes_Engine_Object__DOWNSTREAM,
+                    Log.Context__Stream.Downstream,
+                    isReceiving: isReceiving,
+                    isExtending: true,
+                    isSourcing: true
+                );
+
+            return success;
+        }
+
+        protected bool Protected_Declare__Downstream_Catch__Xerxes_Engine_Object<S>
+        (
+            Action<S> listener
+        ) where S : Streamline_Argument
+        {
+            bool success =
+                Private_Declare__Streamline__Xerxes_Engine_Object
+                (
+                    _Xerxes_Engine_Object__DOWNSTREAM,
+                    Log.Context__Stream.Downstream,
+                    listener,
+                    isReceiving: true,
+                    isExtending: false
+                );
+
+            return true;
+        }
+
+        /// <summary>
         /// Declares a streamline that flows down the
         /// hierarchy.
         /// </summary>
-        protected void Protected_Declare__Descending_Streamline__Xerxes_Engine_Object<T>
+        protected bool Protected_Declare__Descending_Streamline__Xerxes_Engine_Object<S>
         ( 
-            Action<T> listener = null
-        ) where T : Streamline_Argument 
+            Action<S> listener = null,
+            bool isReceiving = true,
+            bool isExtending = true,
+            bool isSourcing = false
+        ) where S : Streamline_Argument 
         {
-            Private_Declare__Streamline__Xerxes_Engine_Object
+            bool success =
+                Private_Declare__Streamline__Xerxes_Engine_Object
                 (
-                    Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal,
-                    listener
+                    _Xerxes_Engine_Object__DOWNSTREAM,
+                    Log.Context__Stream.Downstream,
+                    listener,
+                    isReceiving,
+                    isExtending,
+                    isSourcing
                 );
+
+            return success;
+        }
+
+        /// <summary>
+        /// Declares a descending streamline that
+        /// is invokable under the generic type.
+        /// </summary>
+        protected bool Protected_Declare__Upstream_Source__Xerxes_Engine_Object<S>
+        (
+            bool isReceiving = false
+        ) where S : Streamline_Argument
+        {
+            bool success = 
+                Private_Declare__Streamline__Xerxes_Engine_Object<S>
+                (
+                    _Xerxes_Engine_Object__UPSTREAM,
+                    Log.Context__Stream.Upstream,
+                    isReceiving: isReceiving,
+                    isExtending: true,
+                    isSourcing: true
+                );
+
+            return success;
+        }
+
+        protected bool Protected_Declare__Upstream_Catch__Xerxes_Engine_Object<S>
+        (
+            Action<S> listener
+        ) where S : Streamline_Argument
+        {
+            bool success =
+                Private_Declare__Streamline__Xerxes_Engine_Object
+                (
+                    _Xerxes_Engine_Object__UPSTREAM,
+                    Log.Context__Stream.Upstream,
+                    listener,
+                    isReceiving: true,
+                    isExtending: false
+                );
+
+            return true;
         }
 
         /// <summary>
         /// Declares a streamline that flows up the
         /// hierarchy.
         /// </summary>
-        protected void Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object<T>
+        protected bool Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object<S>
         ( 
-            Action<T> listener = null
-        ) where T : Streamline_Argument
+            Action<S> listener = null,
+            bool isReceiving = true,
+            bool isExtending = true,
+            bool isSourcing = false
+        ) where S : Streamline_Argument
         {
-            Private_Declare__Streamline__Xerxes_Engine_Object
-            (
-                Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal,
-                listener
-            );
-        }
-
-        private void Private_Declare__Streamline__Xerxes_Engine_Object<T>
-        (
-            Streamline_Dictionary streamline_Dictionary,
-            Action<T> listener = null
-        ) where T : Streamline_Argument
-        {
-            bool success = streamline_Dictionary
-                .Internal_Declare__Streamline__Streamline_Dictionary
+            bool success = 
+                Private_Declare__Streamline__Xerxes_Engine_Object
                 (
-                    new Streamline<T>(listener)
+                    _Xerxes_Engine_Object__UPSTREAM,
+                    Log.Context__Stream.Upstream,
+                    listener,
+                    isReceiving,
+                    isExtending,
+                    isSourcing
                 );
 
-            if (success)
-                return;
-
-            Private_Log_Error__Failed_To_Declare_Streamline_1
-            (
-                this,
-                typeof(T)
-            );
+            return success;
         }
 
-        protected void Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object<T>
+        private bool Private_Declare__Streamline__Xerxes_Engine_Object<S>
         (
-            T streamline_Argument
-        ) where T : Streamline_Argument
+            Stream stream,
+            Log.Context__Stream stream_context,
+            Action<S> listener = null,
+            bool isReceiving = true,
+            bool isExtending = true,
+            bool isSourcing  = false
+        ) where S : Streamline_Argument
         {
-            Private_Invoke__Streamline__Xerxes_Engine_Object
+            bool success = 
+                stream
+                .Internal_Declare__Streamline__Stream<S>
+                (
+                    listener,
+                    isReceiving,
+                    isExtending,
+                    isSourcing,
+                    (type_context) => Private_Log_Error__Failed_To_Declare_Streamline_2C
+                          (this, typeof(S), stream_context, type_context),
+                    (type_context) => Private_Log_Error__Failed_To_Declare_Streamline_2C
+                          (this, typeof(S), stream_context, type_context),
+                    (type_context) => Private_Log_Error__Failed_To_Declare_Streamline_2C
+                          (this, typeof(S), stream_context, type_context)
+                );
+
+            return success;
+        }
+
+        protected bool Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object<S>
+        (
+            S streamline_Argument
+        ) where S : Streamline_Argument
+        {
+            return Private_Invoke__Streamline__Xerxes_Engine_Object
             (
-                Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal,
+                _Xerxes_Engine_Object__DOWNSTREAM,
                 streamline_Argument
             );
         }
 
-        protected void Protected_Invoke__Ascending_Streamline__Xerxes_Engine_Object<T>
+        protected bool Protected_Invoke__Ascending_Streamline__Xerxes_Engine_Object<S>
         (
-            T streamline_Argument
-        ) where T : Streamline_Argument
+            S streamline_Argument
+        ) where S : Streamline_Argument
         {
-            Private_Invoke__Streamline__Xerxes_Engine_Object<T>
+            return Private_Invoke__Streamline__Xerxes_Engine_Object
             (
-                Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal,
+                _Xerxes_Engine_Object__UPSTREAM,
                 streamline_Argument
             );
         }
 
-        private void Private_Invoke__Streamline__Xerxes_Engine_Object<T>
+        private bool Private_Invoke__Streamline__Xerxes_Engine_Object<S>
         (
-            Streamline_Dictionary streamline_Dictionary,
-            T streamline_Argument
-        ) where T : Streamline_Argument
+            Stream stream,
+            S streamline_Argument
+        ) where S : Streamline_Argument
         {
-            Streamline<T> streamline =
-                streamline_Dictionary
-                .Internal_Get__Streamline__Streamline_Dictionary<T>();
+            bool success =
+                stream
+                .Internal_Invoke__Streamline__Stream<S>
+                (
+                    streamline_Argument
+                );
 
-            if (streamline == null)
+            //TODO: Make this better
+            if (!success)
             {
                 Log.Internal_Write__Verbose__Log
                 (
-                    "Streamline {0} was not found in:\n{1}",
+                    "Streamline {0} was not found.",
                     this,
-                    streamline_Dictionary.ToString()
+                    typeof(S).ToString()
                 );
-                return;
             }
 
-            streamline.Internal_Stream__Streamline(streamline_Argument);
-            
-            /* TODO: look at this
-            if (streamline.Streamline_Base__IS_SOURCE)
-            {
-                return;
-            }
-
-            Private_Log_Warning__Streamline_Invoked_But_Source_1
-            (
-                this,
-                streamline
-            );
-            */
+            return success;
         }
 
-        protected bool Protected_Subscribe__Descending_Streamline__Xerxes_Engine_Object<T>
+        protected bool Protected_Subscribe__Descending_Streamline__Xerxes_Engine_Object<S>
         (
-            Action<T> listener
-        ) where T : Streamline_Argument
+            Action<S> listener
+        ) where S : Streamline_Argument
         {
             return Private_Subscribe__Streamline__Xerxes_Engine_Object
                 (
-                    Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal,
+                    _Xerxes_Engine_Object__DOWNSTREAM,
                     listener
                 );
         }
 
-        protected bool Protected_Subscribe__Ascending_Streamline__Xerxes_Engine_Object<T>
+        protected bool Protected_Subscribe__Ascending_Streamline__Xerxes_Engine_Object<S>
         (
-            Action<T> listener
-        ) where T : Streamline_Argument
+            Action<S> listener
+        ) where S : Streamline_Argument
         {
-            return Private_Subscribe__Streamline__Xerxes_Engine_Object<T>
+            return Private_Subscribe__Streamline__Xerxes_Engine_Object
                 (
-                    Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal,
+                    _Xerxes_Engine_Object__UPSTREAM,
                     listener
                 );
         }
 
-        private bool Private_Subscribe__Streamline__Xerxes_Engine_Object<T>
+        private bool Private_Subscribe__Streamline__Xerxes_Engine_Object<S>
         (
-            Streamline_Dictionary streamlines,
-            Action<T> listener
-        ) where T : Streamline_Argument
+            Stream stream,
+            Action<S> listener
+        ) where S : Streamline_Argument
         {
-            Streamline<T> streamline = 
-                streamlines
-                .Internal_Get__Streamline__Streamline_Dictionary<T>();
+            bool success =
+                stream
+                .Internal_Subscribe__Streamline__Stream
+                (
+                    listener
+                );
 
-            if (streamline == null)
+            if (!success)
             {
                 //TODO: Log
-                return false;
             }
 
-            streamline.Streamline__SUBSCRIPTION__Internal +=
-                listener;
-
-            return true;
+            return success;
         }
 #endregion
 
@@ -254,52 +347,49 @@ namespace Xerxes_Engine
 #endregion
 
 #region Association
-        /// <summary>
-        /// This is invoked when THIS object is being treated as an ancestor.
-        /// </summary>
-        internal virtual bool Internal_Handle__Associate_As_Ancestor__Xerxes_Engine_Object
+        public bool Associate__Xerxes_Engine_Object<A>
         (
-            Xerxes_Object descendantAssociation
-        )
-            => true; 
+            Xerxes_Object<A> descendant
+        ) where A : Xerxes_Object<A>
+        {
+            bool success =
+                Internal_Associate__Objects
+                (
+                    this as T,
+                    descendant as A
+                );
+
+            return success;
+        }
 
         /// <summary>
         /// Internal control for after a successful association.
         /// </summary>
-        internal virtual void Internal_Handle__Associated_As_Ancestor__Xerxes_Engine_Object
+        internal virtual void Internal_Handle__Became_Ancestor__Xerxes_Engine_Object
         (
-            Xerxes_Object associatedDescendant
+            IXerxes_Descendant_Of<T> associatedDescendant
         )
         {
-            Handle__Associated_As_Ancestor__Xerxes_Engine_Object();
+            Handle_Became__Ancestor__Xerxes_Engine_Object();
         }
         /// <summary>
         /// Implementation control for responding to being
         /// associated as an ancestor.
         /// </summary>
-        protected virtual void Handle__Associated_As_Ancestor__Xerxes_Engine_Object() { } 
+        protected virtual void Handle_Became__Ancestor__Xerxes_Engine_Object() { } 
 
-        /// <summary>
-        /// This is invoked when THIS object is being treated as a descedent.
-        /// </summary>
-        internal virtual bool Internal_Handle__Associate_As_Descendant__Xerxes_Engine_Object
+        internal virtual void Internal_Handle__Became_Descendant__Xerxes_Engine_Object
         (
-            Xerxes_Object ancestorAssociation
-        )
-            => true;
-
-        internal virtual void Internal_Handle__Associated_As_Descendant__Xerxes_Engine_Object
-        (
-            Xerxes_Object ancestorAssociation
+            IXerxes_Ancestor_Of<T> ancestorAssociation
         )
         {
-            Handle_Associated__As_Descendant__Xerxes_Engine_Object();
+            Handle_Became__Descendant__Xerxes_Engine_Object();
         }
         /// <summary>
         /// Implementation control for handling a successful
         /// association as a descendant.
         /// </summary>
-        protected virtual void Handle_Associated__As_Descendant__Xerxes_Engine_Object() { }
+        protected virtual void Handle_Became__Descendant__Xerxes_Engine_Object() { }
 #endregion
 
 
@@ -309,45 +399,31 @@ namespace Xerxes_Engine
         /// <summary>
         /// Returns true if the association is formed, otherwise returns false.
         /// </summary>
-        internal static bool Internal_Associate__Objects<T,Y>
+        internal static bool Internal_Associate__Objects<A>
         (
-            T thisObject,
-            Y toThisObject
-        ) where T : Xerxes_Object where Y : Xerxes_Object
+            T ancestor,
+            A descendant
+        ) where A : Xerxes_Object<A>
         {
-            if (thisObject.Xerxes_Engine_Object__Is_Sealed)
+            if (ancestor.Xerxes_Engine_Object__Is_Sealed)
             {
-                Private_Log_Error__Is_Sealed(thisObject);
+                Private_Log_Error__Is_Sealed(ancestor);
                 return false;
             }
-            if (toThisObject.Xerxes_Engine_Object__Is_Sealed)
+            if (descendant.Xerxes_Engine_Object__Is_Sealed)
             {
-                Private_Log_Error__Is_Sealed(toThisObject);
+                Xerxes_Object<A>.Private_Log_Error__Is_Sealed(descendant);
                 return false;
             }
-
-            bool accepts_Association_As_Ancestor
-                = toThisObject
-                .Internal_Handle__Associate_As_Ancestor__Xerxes_Engine_Object
-                (
-                    thisObject
-                );
-
-            bool accepts_Association_As_Descendant
-                = thisObject
-                .Internal_Handle__Associate_As_Descendant__Xerxes_Engine_Object
-                (
-                    toThisObject
-                );
 
             if
             (
-                accepts_Association_As_Ancestor
+                ancestor is IXerxes_Ancestor_Of<A>
                 &&
-                accepts_Association_As_Descendant
+                descendant is IXerxes_Descendant_Of<T>
             )
             {
-                Private_Associate__Objects(thisObject, toThisObject);
+                Private_Associate__Objects(ancestor, descendant);
                 return true;
             }
 
@@ -356,73 +432,71 @@ namespace Xerxes_Engine
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2,
                 null,
-                thisObject,
-                toThisObject
+                ancestor,
+                descendant
             );
             
             return false;
         }
 
-        private static void Private_Associate__Objects
+        private static void Private_Associate__Objects<A>
         (
-            Xerxes_Object thisObject,
-            Xerxes_Object toThisObject
-        )
+            T ancestor,
+            A descendant
+        ) where A : Xerxes_Object<A>
         {
-            thisObject.Xerxes_Engine_Object__Parent__Internal = toThisObject;
-
             // Link downstreams.
-            Private_Link__Streamlines
+            Stream.Internal__Link
             (
-                thisObject.Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal,
-                toThisObject.Xerxes_Engine_Object__DESCENDING_STREAMLINES__Internal,
+                ancestor._Xerxes_Engine_Object__DOWNSTREAM,
+                descendant._Xerxes_Engine_Object__DOWNSTREAM,
                 (unlinked_Streamline) => 
                 Private_Handle__Streamline_Link_Failure
                 (
-                    toThisObject,
-                    thisObject,
+                    ancestor,
+                    descendant,
                     unlinked_Streamline
                 )
             );
             // Link upstreams.
-            Private_Link__Streamlines
+            Stream.Internal__Link
             (
-                toThisObject.Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal,
-                thisObject.Xerxes_Engine_Object__ASCENDING_STREAMLINES__Internal,
+                descendant._Xerxes_Engine_Object__UPSTREAM,
+                ancestor._Xerxes_Engine_Object__UPSTREAM,
                 (unlinked_Streamline) =>
                 Private_Handle__Streamline_Link_Failure
                 (
-                    thisObject,
-                    toThisObject,
+                    ancestor,
+                    descendant,
                     unlinked_Streamline
                 )
             );
 
-            toThisObject
-                .Internal_Handle__Associated_As_Ancestor__Xerxes_Engine_Object
+            descendant
+                .Internal_Handle__Became_Ancestor__Xerxes_Engine_Object
                 (
-                    thisObject
+                    ancestor as IXerxes_Descendant_Of<A>
                 );
-            thisObject
-                .Internal_Handle__Associated_As_Descendant__Xerxes_Engine_Object
+            ancestor
+                .Internal_Handle__Became_Descendant__Xerxes_Engine_Object
                 (
-                    toThisObject
+                    descendant as IXerxes_Ancestor_Of<T>
                 );
         }
 
-        private static void Private_Handle__Streamline_Link_Failure
+        private static void Private_Handle__Streamline_Link_Failure<A>
         (
-            Xerxes_Object source,
-            Xerxes_Object target,
+            Xerxes_Object<T> ancestor,
+            Xerxes_Object<A> descendant,
             Streamline_Base unlinked_Streamline
-        )
+        ) where A : Xerxes_Object<A>
         {
             if (unlinked_Streamline.Streamline_Base__IS_MANDATORY)
             {
                 Private_Log_Error__Unlinked_Mandatory_Streamline_2
                 (
-                    source,
-                    target,
+                    ancestor,
+                    descendant,
                     unlinked_Streamline
                 );
                 return;
@@ -430,32 +504,18 @@ namespace Xerxes_Engine
 
             Private_Log_Warning__Unlinked_Streamline_2
             (
-                source,
-                target,
+                ancestor,
+                descendant,
                 unlinked_Streamline
             );
-        }
-
-        private static void Private_Link__Streamlines
-        (
-            Streamline_Dictionary source,
-            Streamline_Dictionary mouth,
-            Action<Streamline_Base> fail_To_Link
-        )
-        {
-            Distinct_Type_Dictionary<Streamline_Argument, Streamline_Base>
-                .Internal_On_All__Matching_Keys
-                (
-                    source,
-                    mouth,
-                    Streamline_Base.Internal_Link__Streamline_Bases,
-                    fail_To_Link
-                );
         }
 #endregion
 
 #region Static Logging
-        private static void Private_Log_Error__Is_Sealed(Xerxes_Object obj)
+        private static void Private_Log_Error__Is_Sealed
+        (
+            Xerxes_Object<T> obj
+        ) 
         {
             Log.Internal_Write__Log
             (
@@ -465,22 +525,29 @@ namespace Xerxes_Engine
             );
         }
 
-        private static void Private_Log_Error__Failed_To_Declare_Streamline_1
+        private static void Private_Log_Error__Failed_To_Declare_Streamline_2C
         (
-            Xerxes_Object obj,
-            Type streamlineType
-        )
+            Xerxes_Object<T> obj,
+            Type streamlineType,
+            Log.Context__Stream stream_context,
+            Log.Context__Declare_Streamline type_context
+        ) 
         {
             Log.Internal_Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
-                Log.ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_1,
+                Log.ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C,
                 obj,
-                streamlineType
+                streamlineType,
+                stream_context,
+                type_context
             );
         }
 
-        private static void Private_Log_Error__Is_Not_Associate_To_Root(Xerxes_Object obj)
+        private static void Private_Log_Error__Is_Not_Associate_To_Root
+        (
+            Xerxes_Object<T> obj
+        ) 
         {
             Log.Internal_Write__Log
             (
@@ -490,7 +557,10 @@ namespace Xerxes_Engine
             );
         }
 
-        private static void Private_Log_Error__Is_Not_Associated(Xerxes_Object obj)
+        private static void Private_Log_Error__Is_Not_Associated
+        (
+            Xerxes_Object<T> obj
+        )
         {
             Log.Internal_Write__Log
             (
@@ -500,42 +570,42 @@ namespace Xerxes_Engine
             );
         }
 
-        private static void Private_Log_Warning__Unlinked_Streamline_2
+        private static void Private_Log_Warning__Unlinked_Streamline_2<A>
         (
-            Xerxes_Object source,
-            Xerxes_Object associatedObject,
+            Xerxes_Object<T> ancestor,
+            Xerxes_Object<A> descendant,
             Streamline_Base unlinkedStreamline
-        )
+        ) where A : Xerxes_Object<A>
         {
             Log.Internal_Write__Warning__Log
             (
                 Log.WARNING__XERXES_ENGINE_OBJECT__UNLINKED_STREAMLINE_2,
-                source,
+                ancestor,
                 unlinkedStreamline,
-                associatedObject
+                descendant
             );
         }
 
-        private static void Private_Log_Error__Unlinked_Mandatory_Streamline_2
+        private static void Private_Log_Error__Unlinked_Mandatory_Streamline_2<A>
         (
-            Xerxes_Object source,
-            Xerxes_Object associatedObject,
+            Xerxes_Object<T> ancestor,
+            Xerxes_Object<A> descendant,
             Streamline_Base unlinkedStreamline
-        )
+        ) where A : Xerxes_Object<A>
         {
             Log.Internal_Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_ENGINE_OBJECT__UNLINKED_MANDATORY_STREAMLINE_2,
-                source,
+                ancestor,
                 unlinkedStreamline,
-                associatedObject
+                descendant
             );
         }
 
         private static void Private_Log_Warning__Streamline_Invoked_But_Source_1
         (
-            Xerxes_Object source,
+            Xerxes_Object<T> source,
             Streamline_Base streamline
         )
         {

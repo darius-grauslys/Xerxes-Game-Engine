@@ -9,6 +9,7 @@ using Xerxes_Engine.Systems.Input;
 using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
 using Xerxes_Engine.Systems.Serialization;
 using Xerxes_Engine.Systems.Graphics.R2;
+using Xerxes_Engine.Engine_Objects;
 
 namespace Xerxes_Engine
 {
@@ -18,7 +19,9 @@ namespace Xerxes_Engine
     /// and downstreams. It takes a Streamline_Argument_Draw upstream.
     /// This object is parentless - Xerxes_Childless
     /// </summary>
-    public class Game : Xerxes_Descendant<Xerxes_Childless, Game> 
+    public class Game : 
+        Xerxes_Object<Game>, 
+        IXerxes_Ancestor_Of<Scene> 
     {
         internal GameWindow Game__GAME_WINDOW__Internal { get; }
 
@@ -74,16 +77,16 @@ namespace Xerxes_Engine
             _Game__UPDATE_TIMER = new Timer(-1);
             _Game__RENDER_TIMER = new Timer(-1);
 
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
                 <Streamline_Argument_Associate_Game>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
                 <Streamline_Argument_Update>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
                 <Streamline_Argument_Render>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
                 <Streamline_Argument_Resize_2D>();
 
-            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Upstream_Catch__Xerxes_Engine_Object
                 <Streamline_Argument_Draw>
                 (
                     Private_Handle__Draw__Game
@@ -147,8 +150,11 @@ namespace Xerxes_Engine
 
         internal override void Internal_Handle__Sealed__Xerxes_Engine_Object()
         {
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            bool success =
+                Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Associate_Game>(new Streamline_Argument_Associate_Game(-1,-1, this));
+
+            Log.Internal_Write__Verbose__Log("game seal success: {0}", this, success);
         }
 
         public void Run__Game()

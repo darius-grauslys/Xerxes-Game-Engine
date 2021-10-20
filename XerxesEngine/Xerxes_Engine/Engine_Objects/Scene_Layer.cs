@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace Xerxes_Engine.Engine_Objects
 {
-    public class Scene_Layer : Xerxes_Descendant<Scene, Scene_Layer> 
+    public class Scene_Layer : 
+        Xerxes_Object<Scene_Layer>,
+        IXerxes_Descendant_Of<Scene>,
+        IXerxes_Ancestor_Of<Game_Object>
     {
         public float Scene_Layer__Width  { get; private set; }
         public float Scene_Layer__Height { get; private set; }
@@ -16,11 +19,8 @@ namespace Xerxes_Engine.Engine_Objects
 
         public Scene_Layer()
         {
-            Protected_Subscribe__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Associate_Game>
-                (
-                    Private_Associate__To_Game__Scene_Layer
-                );
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Associate_Game>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
                 <Streamline_Argument_Update>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
@@ -54,22 +54,6 @@ namespace Xerxes_Engine.Engine_Objects
                     30000f
                     ) 
                 * Matrix4.CreateTranslation(0, 0, 1);
-        }
-
-        private void Private_Associate__To_Game__Scene_Layer(Streamline_Argument_Associate_Game e)
-        {
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
-            (
-                new Streamline_Argument_Resize_2D
-                (
-                    e.Streamline_Argument__ELAPSED_TIME,
-                    e.Streamline_Argument__DELTA_TIME,
-                    Xerxes_Descendant__Parent__Protected//Parent Scene
-                    .Scene__Width,
-                    Xerxes_Descendant__Parent__Protected//Parent Scene
-                    .Scene__Height
-                )
-            );
         }
 
         private void Private_Handle__Draw__Scene_Layer(Streamline_Argument_Draw e)

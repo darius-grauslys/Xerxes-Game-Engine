@@ -2,31 +2,49 @@
 
 namespace Xerxes_Engine.Engine_Objects
 {
-    public class Camera : Xerxes_Descendant<Scene, Camera>
+    public class Camera :
+        Xerxes_Object<Camera>,
+        IXerxes_Descendant_Of<Scene>
     {
         private float zNear = 0.01f, zFar = 10f;
         private float zoom = 0.2f;
         
         public float Zoom { get => zoom; set => zoom = value; }
 
+        private float _Camera__Focal_Width { get; set; }
+        private float _Camera__Focal_Height { get; set; }
+
         //public float Iso_X => Chunk.CartesianToIsometric_X(position.X, position.Y);
         //public float Iso_Y => Chunk.CartesianToIsometric_Y(position.X, position.Y, position.Z);
 
         public Camera()
         {
-            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Draw>
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Associate_Game>();
+            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Resize_2D>
                 (
-                    Private_Handle_Draw__Camera
+                    Private_Handle_Resize_2D__Camera
+                );
+            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
+                <Streamline_Argument_Render>
+                (
+                    Private_Handle_Render__Camera
                 );
         }
 
-        private void Private_Handle_Draw__Camera(Streamline_Argument_Draw e)
+        private void Private_Handle_Render__Camera(Streamline_Argument_Render e)
         {
             Matrix4 cameraView =
                 GetView();
 
-            e.Streamline_Argument_Draw__World_Matrix__Internal= cameraView;
+            e.Streamline_Argument_Render__World_Matrix__Internal = cameraView;
+        }
+
+        private void Private_Handle_Resize_2D__Camera(Streamline_Argument_Resize_2D e)
+        {
+            _Camera__Focal_Width = e.Streamline_Argument_Resize_2D__WIDTH;
+            _Camera__Focal_Height = e.Streamline_Argument_Resize_2D__HEIGHT;
         }
 
         public Matrix4 GetView()
@@ -41,8 +59,8 @@ namespace Xerxes_Engine.Engine_Objects
                 * Matrix4.CreateScale(zoom) 
                 * Matrix4.CreateOrthographic
                 (
-                    Xerxes_Descendant__Parent__Protected.Scene__Width, 
-                    Xerxes_Descendant__Parent__Protected.Scene__Height, 
+                    _Camera__Focal_Width, 
+                    _Camera__Focal_Height, 
                     zNear, 
                     zFar
                 );

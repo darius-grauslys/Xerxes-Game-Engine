@@ -5,7 +5,21 @@ namespace Xerxes_Engine
         public bool Streamline_Base__IS_MANDATORY { get; }
         public bool Streamline_Base__Is_Disabled { get; protected set; }
 
-        internal Streamline_Base() { }
+        public bool Streamline_Base__IS_RECEIVING { get; }
+        public bool Streamline_Base__IS_EXTENDING { get; }
+        public bool Streamline_Base__IS_SOURCING  { get; }
+
+        internal Streamline_Base
+        (
+            bool isReceiving = true,
+            bool isExtending = true,
+            bool isSourcing  = false
+        ) 
+        { 
+            Streamline_Base__IS_RECEIVING = isReceiving;
+            Streamline_Base__IS_EXTENDING = isExtending;
+            Streamline_Base__IS_SOURCING  = isSourcing;
+        }
 
         public override string ToString()
         {

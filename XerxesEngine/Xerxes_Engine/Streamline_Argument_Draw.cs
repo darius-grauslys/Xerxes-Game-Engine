@@ -14,6 +14,8 @@ namespace Xerxes_Engine
         internal Streamline_Argument_Draw(Streamline_Argument_Render e)
             : base(e)
         {
+            Streamline_Argument_Draw__World_Matrix__Internal = 
+                e.Streamline_Argument_Render__World_Matrix__Internal;
         }
     }
 }

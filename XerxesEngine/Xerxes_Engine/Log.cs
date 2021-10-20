@@ -79,6 +79,7 @@ namespace Xerxes_Engine
         WARNING__XERXES_CHILDLESS__REDUNDANT_CONSTRUCTION           = "This Xerxes_Childless object was constructed. There is no need to construct them.",
         
         WARNING__COMPONENT__PARENT_IS_NULL                          = "Component was disabled when attached to a null parent.",
+        //not used atm:
         WARNING__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C  = "Component was not intended to be used while disabled. May cause problems. Action:\"{0}\".",
 
         WARNING__ANIMATION_RENDER_COMPONENT__BAD_NEGATIVE_SPEED_1   = "An animation node speed of non-default negative value:\"{0}\" was given. Using default.",
@@ -100,7 +101,7 @@ namespace Xerxes_Engine
         ERROR__XERXES_ENGINE_OBJECT__INVALID_PARENT_ASSOCIATION_2   = "This engine object already has a parental association!" 
                                                                     + "Tried to associate to:{0} - is already associated to {1}!",
         ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION             = "Cannot be associated to! I am sealed!",
-        ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_1 = "Failed to declare streamline:{0}!",
+        ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C= "Failed to declare streamline: {0}, under context [{1}]!",
         ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED_TO_ROOT      = "Tried to access root object prior to being rooted!",
         ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED              = "Tried to access associated parent, but is not associated!",
         ERROR__XERXES_ENGINE_OBJECT__INVALID_ASSOCIATION_4          = "Engine object:{0} tried to associate to object:{1} which is lower in hierarchy!"
@@ -108,13 +109,16 @@ namespace Xerxes_Engine
         ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2           = "Engine objects {0} -> {1} failed to associate!",
         ERROR__XERXES_ENGINE_OBJECT__UNLINKED_MANDATORY_STREAMLINE_2= "Mandatory streamline:{0} did not find a destination during association to:{1}!",
 
+        //not used atm:
         ERROR__GAME_OBJECT__FAILED_TO_ASSOCIATE_COMPONENT_2C        = "Failed to associate component:{0}! Contextual Message:{1}!",
         ERROR__GAME_OBJECT__ASSOCIATED_ANCESTOR_IS_INVALID_1        = "Tried to associate with:{0}, but it is not a Scene Layer! Games Objects can "
                                                                     + "only associate with Scene Layers!",
         
-        ERROR__GAME_COMPONENT__FAILED_TO_ASSOCIATE_1         = "Failed to associate to engine object:{0}! Components can only associate to Game Objects!",
+        ERROR__GAME_COMPONENT__FAILED_TO_ASSOCIATE_1                = "Failed to associate to engine object:{0}! Components can only associate to Game Objects!",
+        //not used atm:
         ERROR__GAME_OBJECT_COMPONENT__NOT_ASSOCIATED_TO_ROOT_1C     = "This component was utilized while not rooted, and depends on a rooted enviroment!"
                                                                     + "Contextual Message:{0}!",
+        //not used atm:
         ERROR__GAME_OBJECT_COMPONENT__UTILIZED_WHILE_DISABLED_1C    = "This component was utilized while disabled, and only functions while enabled!"
                                                                     + "Contextual Message:{0}!",
 
@@ -134,7 +138,16 @@ namespace Xerxes_Engine
 
         ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2          = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"!",
 
-        ERROR__PANIC                                                = "An unrecoverable error has occured.";
+        ERROR__PANIC                                                = "An unrecoverable error has occured.",
+#endregion
+#region CONST INTERNAL CRITICAL MESSAGES
+        CRITICAL__XERXES_ENGINE_OBJECT__ILLEGAL_DEFINITION_1        = "Is illegally defined where it's reflective generic parameter is {0} and not itself!";
+#endregion
+#region CONTEXT DEFINTIONS
+        public enum Context__Declare_Streamline 
+        { Receieve, Extend, Source }
+        public enum Context__Stream
+        { Upstream, Downstream }
 #endregion
         private static readonly Queue<Log_Message> _Log__MESSAGES = new Queue<Log_Message>(); 
         private static readonly Queue<Log_Message> _Log__WARNINGS = new Queue<Log_Message>();

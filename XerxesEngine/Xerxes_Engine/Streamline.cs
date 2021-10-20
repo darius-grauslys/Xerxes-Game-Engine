@@ -13,10 +13,24 @@ namespace Xerxes_Engine
         internal event Action<T> Streamline__SUBSCRIPTION__Internal;
 
 
-        internal Streamline(Action<T> listener = null) 
+        internal Streamline
+        (
+            Action<T> listener = null,
+            bool isReceiving = true,
+            bool isExtending = true,
+            bool isSourcing = false
+        ) 
+        : base
+        (
+            isReceiving,
+            isExtending,
+            isSourcing
+        )
         {
             if (listener != null)
+            {
                 Streamline__SUBSCRIPTION__Internal += listener;
+            }
         }        
 
         
