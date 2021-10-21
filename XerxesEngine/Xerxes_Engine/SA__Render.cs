@@ -1,9 +1,13 @@
+using OpenTK;
+
 namespace Xerxes_Engine
 {
-    public class Streamline_Argument_Update 
+    public class SA__Render
         : Streamline_Argument
     {
-        internal Streamline_Argument_Update
+        internal Matrix4 SA__Render__World_Matrix__Internal { get; set; }
+
+        internal SA__Render
         (
             double deltaTime, 
             double senderTime

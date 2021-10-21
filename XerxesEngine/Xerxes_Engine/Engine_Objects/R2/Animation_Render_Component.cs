@@ -7,7 +7,7 @@
         public Animation_Render_Component(Animation_Schematic schematic = null) 
         {
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Update>
+                <SA__Update>
                 (
                     Private_Handle__Update__Animation_Render_Component
                 );
@@ -81,11 +81,11 @@
         public void Unpause__Animation_Render_Component() 
             => _Animation_Render_Component__Schematic.Unpause__Animation_Node();
 
-        private void Private_Handle__Update__Animation_Render_Component(Streamline_Argument_Update e)
+        private void Private_Handle__Update__Animation_Render_Component(SA__Update e)
         {
             int vbo_index = 
                 (int)_Animation_Render_Component__Schematic
-                    .Get__VBO_Index__Animation_Node(e.Streamline_Argument__DELTA_TIME);
+                    .Get__VBO_Index__Animation_Node(e.SA___DELTA_TIME);
 
             Sprite_Render_Component__Sprite__Protected
                 .Internal_Set__Active_Vertex_Object__Sprite(vbo_index);

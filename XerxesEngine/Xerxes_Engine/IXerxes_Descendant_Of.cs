@@ -7,6 +7,6 @@ namespace Xerxes_Engine
     /// because Scene is IXerxes_Descendant_Of[Game]
     /// and not IXerxes_Descendant_Of[Game_Object]
     /// </summary>
-    public interface IXerxes_Descendant_Of<T> where T : Xerxes_Object<T>
+    public interface IXerxes_Descendant_Of<T> where T : Xerxes_Object_Base
     {}
 }

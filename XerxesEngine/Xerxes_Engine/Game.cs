@@ -10,13 +10,15 @@ using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
 using Xerxes_Engine.Systems.Serialization;
 using Xerxes_Engine.Systems.Graphics.R2;
 using Xerxes_Engine.Engine_Objects;
+using Xerxes_Engine.Systems.OpenTK_Input;
+using OpenTK.Input;
 
 namespace Xerxes_Engine
 {
     /// <summary>
     /// Contains a Game Window object, and hooks events to it.
     /// It downstreams these events using the generic Streamline_Arguments
-    /// and downstreams. It takes a Streamline_Argument_Draw upstream.
+    /// and downstreams. It takes a SA__Draw upstream.
     /// This object is parentless - Xerxes_Childless
     /// </summary>
     public class Game : 
@@ -78,16 +80,21 @@ namespace Xerxes_Engine
             _Game__RENDER_TIMER = new Timer(-1);
 
             Protected_Declare__Downstream_Source__Xerxes_Engine_Object
-                <Streamline_Argument_Associate_Game>();
+                <SA__Associate_Game>();
             Protected_Declare__Downstream_Source__Xerxes_Engine_Object
-                <Streamline_Argument_Update>();
+                <SA__Update>();
             Protected_Declare__Downstream_Source__Xerxes_Engine_Object
-                <Streamline_Argument_Render>();
+                <SA__Render>();
             Protected_Declare__Downstream_Source__Xerxes_Engine_Object
-                <Streamline_Argument_Resize_2D>();
+                <SA__Resize_2D>();
+
+            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+                <SA__Input_Mouse_Button>();
+            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+                <SA__Input_Mouse_Move>();
 
             Protected_Declare__Upstream_Catch__Xerxes_Engine_Object
-                <Streamline_Argument_Draw>
+                <SA__Draw>
                 (
                     Private_Handle__Draw__Game
                 );
@@ -152,7 +159,7 @@ namespace Xerxes_Engine
         {
             bool success =
                 Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Associate_Game>(new Streamline_Argument_Associate_Game(-1,-1, this));
+                <SA__Associate_Game>(new SA__Associate_Game(-1,-1, this));
 
             Log.Internal_Write__Verbose__Log("game seal success: {0}", this, success);
         }
@@ -180,6 +187,10 @@ namespace Xerxes_Engine
 
             Game__GAME_WINDOW__Internal.Load += Private_Handle__Load_Window__Game;
             Game__GAME_WINDOW__Internal.Unload += Private_Handle__Unload_Window__Game;
+
+            Game__GAME_WINDOW__Internal.MouseDown += Private_Handle__Mouse_Down__Game;
+            Game__GAME_WINDOW__Internal.MouseUp   += Private_Handle__Mouse_Up__Game;
+            Game__GAME_WINDOW__Internal.MouseMove += Private_Handle__Mouse_Move__Game;
         }
 
         private string Private_Validate__Directory__Game
@@ -241,8 +252,8 @@ namespace Xerxes_Engine
                     Game__GAME_WINDOW__Internal.Width, 
                     Game__GAME_WINDOW__Internal.Height
                 );
-            Streamline_Argument_Resize_2D resize_2D_Argument = 
-                new Streamline_Argument_Resize_2D
+            SA__Resize_2D resize_2D_Argument = 
+                new SA__Resize_2D
                 (
                     Game__Elapsed_Time__Update,
                     Game__Delta_Time__Update,
@@ -251,7 +262,7 @@ namespace Xerxes_Engine
                 );
 
             Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Resize_2D>(resize_2D_Argument);
+                <SA__Resize_2D>(resize_2D_Argument);
         }
 
         private void Private_Handle__Closed_Window__Game(object sender, EventArgs e)
@@ -262,22 +273,22 @@ namespace Xerxes_Engine
         private void Private_Handle__Update_Window__Game(object sender, FrameEventArgs e)
         {
             _Game__UPDATE_TIMER.Progress__Timer(e.Time);
-            Streamline_Argument_Update frame_Argument = 
-                new Streamline_Argument_Update
+            SA__Update frame_Argument = 
+                new SA__Update
                 (
                     Game__Elapsed_Time__Update, 
                     e.Time
                 );
 
             Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Update>(frame_Argument);
+                <SA__Update>(frame_Argument);
         }
 
         private void Private_Handle__Render_Window__Game(object sender, FrameEventArgs e)
         {
             _Game__RENDER_TIMER.Progress__Timer(e.Time);
-            Streamline_Argument_Render frame_Argument = 
-                new Streamline_Argument_Render
+            SA__Render frame_Argument = 
+                new SA__Render
                 (
                     Game__Elapsed_Time__Render, 
                     e.Time
@@ -286,13 +297,13 @@ namespace Xerxes_Engine
             Game__Render_Service.Internal_Begin__Render_Service();
 
             Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Render>(frame_Argument);
+                <SA__Render>(frame_Argument);
 
             Game__Render_Service.Internal_End__Render_Service();
             Game__GAME_WINDOW__Internal.SwapBuffers();
         }
 
-        private void Private_Handle__Draw__Game(Streamline_Argument_Draw e)
+        private void Private_Handle__Draw__Game(SA__Draw e)
         {
             Game__Render_Service
                 .Draw__Render_Service
@@ -320,6 +331,60 @@ namespace Xerxes_Engine
         protected virtual void Protected_Handle__Unload__Game()
         {
 
+        }
+
+        private void Private_Handle__Mouse_Move__Game
+        (
+            object sender,
+            MouseMoveEventArgs e
+        )
+        {
+            SA__Input_Mouse_Move input_Mouse_Move = 
+                new SA__Input_Mouse_Move
+                (
+                    _Game__UPDATE_TIMER.Timer__Time_Elapsed,
+                    _Game__UPDATE_TIMER.Timer__Delta_Time,
+                    e
+                );
+
+            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            (input_Mouse_Move);
+        }
+
+        private void Private_Handle__Mouse_Down__Game
+        (
+            object sender,
+            MouseButtonEventArgs e
+        )
+        {
+            SA__Input_Mouse_Button input_Mouse_Button =
+                new SA__Input_Mouse_Button
+                (
+                    _Game__UPDATE_TIMER.Timer__Time_Elapsed,
+                    _Game__UPDATE_TIMER.Timer__Delta_Time,
+                    e
+                );
+
+            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            (input_Mouse_Button);
+        }
+
+        private void Private_Handle__Mouse_Up__Game
+        (
+            object sender,
+            MouseButtonEventArgs e
+        )
+        {
+            SA__Input_Mouse_Button input_Mouse_Button =
+                new SA__Input_Mouse_Button
+                (
+                    _Game__UPDATE_TIMER.Timer__Time_Elapsed,
+                    _Game__UPDATE_TIMER.Timer__Delta_Time,
+                    e
+                );
+
+            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            (input_Mouse_Button);
         }
 
         private void Private_Unload__Systems__Game()

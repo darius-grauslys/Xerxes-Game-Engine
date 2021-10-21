@@ -2,26 +2,26 @@
 {
     public class Streamline_Argument
     {
-        public double Streamline_Argument__ELAPSED_TIME { get; }
-        public double Streamline_Argument__DELTA_TIME   { get; }
+        public double SA___ELAPSED_TIME { get; }
+        public double SA___DELTA_TIME   { get; }
         internal Streamline_Argument
         (
             double elapsedTime,
             double deltaTime
         ) 
         {
-            Streamline_Argument__ELAPSED_TIME = elapsedTime;
-            Streamline_Argument__DELTA_TIME = deltaTime;
+            SA___ELAPSED_TIME = elapsedTime;
+            SA___DELTA_TIME = deltaTime;
         }
 
-        internal Streamline_Argument
+        public Streamline_Argument
         (
             Streamline_Argument streamline_Argument
         )
         : this
         (
-            streamline_Argument.Streamline_Argument__ELAPSED_TIME,
-            streamline_Argument.Streamline_Argument__DELTA_TIME
+            streamline_Argument.SA___ELAPSED_TIME,
+            streamline_Argument.SA___DELTA_TIME
         )
         { }
     }

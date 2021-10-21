@@ -13,7 +13,7 @@ namespace Xerxes_Engine
     /// Calls to Update and Render are internalized. Exposure to
     /// handling these calls are given via protected virtual definitions.
     /// </summary>
-    public class Xerxes_Object<T> where T : Xerxes_Object<T>
+    public class Xerxes_Object<T> : Xerxes_Object_Base where T : Xerxes_Object_Base
     {
         public bool Xerxes_Engine_Object__Is_Disabled { get; protected set; }
         public bool Xerxes_Engine_Object__Is_Sealed { get; private set; }
@@ -34,7 +34,7 @@ namespace Xerxes_Engine
         private Stream _Xerxes_Engine_Object__UPSTREAM { get; }
         private Stream _Xerxes_Engine_Object__DOWNSTREAM { get; }
 
-        internal Xerxes_Object() 
+        public Xerxes_Object() 
         {
             if (!(this is T))
             {
@@ -355,7 +355,7 @@ namespace Xerxes_Engine
             bool success =
                 Internal_Associate__Objects
                 (
-                    this as T,
+                    this as Xerxes_Object<T>,
                     descendant as A
                 );
 
@@ -401,7 +401,7 @@ namespace Xerxes_Engine
         /// </summary>
         internal static bool Internal_Associate__Objects<A>
         (
-            T ancestor,
+            Xerxes_Object<T> ancestor,
             A descendant
         ) where A : Xerxes_Object<A>
         {
@@ -441,7 +441,7 @@ namespace Xerxes_Engine
 
         private static void Private_Associate__Objects<A>
         (
-            T ancestor,
+            Xerxes_Object<T> ancestor,
             A descendant
         ) where A : Xerxes_Object<A>
         {

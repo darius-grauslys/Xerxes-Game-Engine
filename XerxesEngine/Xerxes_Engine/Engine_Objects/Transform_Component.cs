@@ -9,7 +9,7 @@ namespace Xerxes_Engine.Engine_Objects
         public Transform_Component()
         {
             Protected_Declare__Downstream_Catch__Xerxes_Engine_Object
-                <Streamline_Argument_Draw>
+                <SA__Draw>
                 (
                     Private__Handle_Draw__Transform_Component
                 );
@@ -17,9 +17,9 @@ namespace Xerxes_Engine.Engine_Objects
             Position = new Vector3();
         }
 
-        private void Private__Handle_Draw__Transform_Component(Streamline_Argument_Draw e)
+        private void Private__Handle_Draw__Transform_Component(SA__Draw e)
         {
-            e.Streamline_Argument_Draw__Position__Internal
+            e.SA__Draw__Position__Internal
                 = Position;
         }
     }

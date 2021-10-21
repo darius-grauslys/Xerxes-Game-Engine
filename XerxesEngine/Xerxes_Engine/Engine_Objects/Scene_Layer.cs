@@ -20,20 +20,20 @@ namespace Xerxes_Engine.Engine_Objects
         public Scene_Layer()
         {
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Associate_Game>();
+                <SA__Associate_Game>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Update>();
+                <SA__Update>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Render>();
+                <SA__Render>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Resize_2D>
+                <SA__Resize_2D>
                 (
                     Private_Resize__2D__Scene_Layer
                 );
 
 
             Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Draw>
+                <SA__Draw>
                 (
                     Private_Handle__Draw__Scene_Layer
                 );
@@ -41,24 +41,24 @@ namespace Xerxes_Engine.Engine_Objects
             _Scene_Layer__SCENE_OBJECTS = new List<Game_Object>();
         }
 
-        private void Private_Resize__2D__Scene_Layer(Streamline_Argument_Resize_2D e)
+        private void Private_Resize__2D__Scene_Layer(SA__Resize_2D e)
         {
-            Scene_Layer__Width  = e.Streamline_Argument_Resize_2D__WIDTH;
-            Scene_Layer__Height = e.Streamline_Argument_Resize_2D__HEIGHT;
+            Scene_Layer__Width  = e.SA__Resize_2D__WIDTH;
+            Scene_Layer__Height = e.SA__Resize_2D__HEIGHT;
             Scene_Layer__Layer_Matrix = 
                 Matrix4.CreateOrthographic
                     (
-                    e.Streamline_Argument_Resize_2D__WIDTH, 
-                    e.Streamline_Argument_Resize_2D__HEIGHT, 
+                    e.SA__Resize_2D__WIDTH, 
+                    e.SA__Resize_2D__HEIGHT, 
                     0.01f, 
                     30000f
                     ) 
                 * Matrix4.CreateTranslation(0, 0, 1);
         }
 
-        private void Private_Handle__Draw__Scene_Layer(Streamline_Argument_Draw e)
+        private void Private_Handle__Draw__Scene_Layer(SA__Draw e)
         {
-            e.Streamline_Argument_Draw__World_Matrix__Internal =
+            e.SA__Draw__World_Matrix__Internal =
                 Scene_Layer__Layer_Matrix;  
         }
     }

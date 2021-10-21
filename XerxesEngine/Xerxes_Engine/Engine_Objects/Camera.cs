@@ -20,31 +20,31 @@ namespace Xerxes_Engine.Engine_Objects
         public Camera()
         {
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Associate_Game>();
+                <SA__Associate_Game>();
             Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Resize_2D>
+                <SA__Resize_2D>
                 (
                     Private_Handle_Resize_2D__Camera
                 );
             Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
-                <Streamline_Argument_Render>
+                <SA__Render>
                 (
                     Private_Handle_Render__Camera
                 );
         }
 
-        private void Private_Handle_Render__Camera(Streamline_Argument_Render e)
+        private void Private_Handle_Render__Camera(SA__Render e)
         {
             Matrix4 cameraView =
                 GetView();
 
-            e.Streamline_Argument_Render__World_Matrix__Internal = cameraView;
+            e.SA__Render__World_Matrix__Internal = cameraView;
         }
 
-        private void Private_Handle_Resize_2D__Camera(Streamline_Argument_Resize_2D e)
+        private void Private_Handle_Resize_2D__Camera(SA__Resize_2D e)
         {
-            _Camera__Focal_Width = e.Streamline_Argument_Resize_2D__WIDTH;
-            _Camera__Focal_Height = e.Streamline_Argument_Resize_2D__HEIGHT;
+            _Camera__Focal_Width = e.SA__Resize_2D__WIDTH;
+            _Camera__Focal_Height = e.SA__Resize_2D__HEIGHT;
         }
 
         public Matrix4 GetView()
