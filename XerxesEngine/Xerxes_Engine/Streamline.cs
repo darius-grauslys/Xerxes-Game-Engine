@@ -52,9 +52,22 @@ namespace Xerxes_Engine
             return true;
         }
 
+        internal bool Internal_Subscribe__Streamline_Base
+        (
+            Action<T> listener
+        )
+        {
+            if (!Streamline_Base__IS_RECEIVING)
+                return false;
+
+            Streamline__SUBSCRIPTION__Internal +=
+                listener;
+            return true;
+        }
+
         internal void Internal_Stream__Streamline
         (
-            dynamic streamline_Argument
+            T streamline_Argument
         )
         {
             if (Streamline_Base__Is_Disabled)

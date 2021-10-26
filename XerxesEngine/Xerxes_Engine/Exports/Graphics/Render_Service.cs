@@ -5,7 +5,8 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Xerxes_Engine.Systems.Graphics
 {
-    public sealed class Render_Service : Game_System
+    public sealed class Render_Service : 
+        Xerxes_Export 
     {
         public const string RENDER_SERVICE__EXTENSION_VERTEX_SHADER = ".vert";
         public const string RENDER_SERVICE__EXTENSION_FRAGMENT_SHADER = ".frag";
@@ -26,21 +27,76 @@ namespace Xerxes_Engine.Systems.Graphics
 
         private string 
             _Render_Service__Shader_Source_Vertex, 
-            Render_Service__Shader_Source_Fragment;
+            _Render_Service__Shader_Source_Fragment;
 
-        internal Render_Service(Game game, int windowWidth, int windowHeight) 
-            : base(game, false)
+        private string
+            _Render_Service__Shader_Directory;
+
+        public Render_Service() 
         {
-            Establish__Orthographic_Projection__Render_Service(windowWidth, windowHeight);
+
             _Render_Service__Cached_World_Matrix = Matrix4.CreateTranslation(new Vector3(0,0,0));
-
-            _Render_Service__Shader_Source_Vertex = Path.Combine(game.Game__DIRECTORY__SHADERS, "shader.vert");
-            Render_Service__Shader_Source_Fragment = Path.Combine(game.Game__DIRECTORY__SHADERS, "shader.frag");
-
-            _Render_Service_Default_Shader = new Shader(_Render_Service__Shader_Source_Vertex, Render_Service__Shader_Source_Fragment);
         }
 
-        internal void Internal_Load__Shaders__Render_Service(string[] shaders)
+        protected override void Handle__Rooted__Xerxes_Export()
+        {
+            Protected_Declare__Catch__Xerxes_Export
+                <SA__Render_Begin>
+                (
+                    Private_Handle__Render__Render_Service
+                );
+            Protected_Declare__Catch__Xerxes_Export
+                <SA__Render_End>
+                (
+                    Private_Handle__End_Render__Render_Service
+                );
+            Protected_Declare__Catch__Xerxes_Export
+                <SA__Draw>
+                (
+                    Private_Draw__Render_Service
+                );
+        }
+
+        protected override void Handle__Associate_Game__Xerxes_Export 
+        (
+            SA__Associate_Game e
+        )
+        {
+            Private_Establish__Orthographic_Projection__Render_Service
+            (
+                e.SA__Associate_Game__GAME.Game__Window_Width, 
+                e.SA__Associate_Game__GAME.Game__Window_Height
+            );
+
+            _Render_Service__Shader_Directory = 
+                e
+                .SA__Associate_Game__GAME
+                .Game__DIRECTORY__SHADERS;
+            
+            string[] shaders =
+                e
+                .SA__Associate_Game__GAME
+                .Internal_Get__Shaders__Game();
+
+            Private_Load__Shaders__Render_Service
+            (
+                shaders
+            );
+        }
+
+        protected override void Handle__Dissassociate_Game__Xerxes_Export
+        (SA__Dissassociate_Game e)
+        {
+            foreach(Shader shader in _Render_Service__Shaders)
+            {
+                shader.Dispose();
+            }
+        }
+
+        private void Private_Load__Shaders__Render_Service
+        (
+            string[] shaders
+        )
         {
             Log.Internal_Write__Verbose__Log(Log.VERBOSE__RENDER_SERVICE__LOAD_SHADERS, this);
             _Render_Service__Shaders = new Shader[shaders.Length];
@@ -53,7 +109,7 @@ namespace Xerxes_Engine.Systems.Graphics
                     Path
                     .Combine
                     (
-                        Game.Game__DIRECTORY__SHADERS, 
+                        _Render_Service__Shader_Directory, 
                         string
                         .Format
                         (
@@ -62,11 +118,11 @@ namespace Xerxes_Engine.Systems.Graphics
                             RENDER_SERVICE__EXTENSION_VERTEX_SHADER
                         )
                     );
-                Render_Service__Shader_Source_Fragment = 
+                _Render_Service__Shader_Source_Fragment = 
                     Path
                     .Combine
                     (
-                        Game.Game__DIRECTORY__SHADERS, 
+                        _Render_Service__Shader_Directory, 
                         string.Format
                         (
                             "{0}{1}", 
@@ -75,30 +131,20 @@ namespace Xerxes_Engine.Systems.Graphics
                         )
                     );
 
-                _Render_Service__Shaders[i] = new Shader(_Render_Service__Shader_Source_Vertex, Render_Service__Shader_Source_Fragment);
+                _Render_Service__Shaders[i] = new Shader(_Render_Service__Shader_Source_Vertex, _Render_Service__Shader_Source_Fragment);
             }
 
             Set__Shader__Render_Service(0);
         }
 
-        protected override void Handle_Load__Game_System()
-        {
-            base.Handle_Load__Game_System();
-        }
-
-        protected override void Handle_Unload__Game_System()
-        {
-            base.Handle_Unload__Game_System();
-            _Render_Service_Default_Shader.Dispose();
-        }
-
-        public void Establish__Orthographic_Projection__Render_Service
+        private void Private_Establish__Orthographic_Projection__Render_Service
         (
             int width, 
             int height
         )
         {
-            _Render_Service__Cached_Projection = Matrix4.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+            _Render_Service__Cached_Projection = 
+                Matrix4.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
         }
 
         public void Set__Shader__Render_Service(int shader)
@@ -108,8 +154,10 @@ namespace Xerxes_Engine.Systems.Graphics
             _Render_Service_Default_Shader.Use();
         }
 
-        internal void Internal_Begin__Render_Service()
+        internal void Private_Handle__Render__Render_Service(SA__Render_Begin e)
         {
+            Private_Cache__Matrix__Render_Service(e.Render_Begin__SCENE_MATRIX__Internal);
+
             GL.ClearColor(Color.FromArgb(5, 5, 25));
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
@@ -123,23 +171,23 @@ namespace Xerxes_Engine.Systems.Graphics
             GL.MatrixMode(MatrixMode.Modelview);
         }
 
-        internal void Internal_Cache__Matrix__Render_Service(Matrix4 mat)
+        private void Private_Cache__Matrix__Render_Service(Matrix4 mat)
         {
             _Render_Service__Cached_World_Matrix = mat;
         }
 
-        internal void Internal_End__Render_Service()
+        private void Private_Handle__End_Render__Render_Service(SA__Render_End e)
         {
             GL.Flush();
             _Render_Service_Default_Shader = _Render_Service__Shaders[0];
         }
 
-        internal void Draw__Render_Service(SA__Draw e)
+        private void Private_Draw__Render_Service(SA__Draw e)
         {
-            Vector3 position = e.SA__Draw__Position__Internal;
-            Vertex_Object_Handle vertex_Object_Handle = e.SA__Draw__VERTEX_OBJECT_HANDLE__Internal;
+            Vector3 position = e.Draw__Position__Internal;
+            Vertex_Object_Handle vertex_Object_Handle = e.Draw__VERTEX_OBJECT_HANDLE__Internal;
             Vertex_Object vertex_Object = vertex_Object_Handle.Internal_Get__Vertex_Object__Vertex_Object_Handle();
-            Matrix4 world_Matrix = e.SA__Draw__World_Matrix__Internal;
+            Matrix4 world_Matrix = e.Draw__Projection_Matrix__Internal;
 
             vertex_Object.Internal_Use__Vertex_Object();
 

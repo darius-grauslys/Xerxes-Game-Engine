@@ -13,6 +13,29 @@ namespace Xerxes_Engine
             return Protected_Define__Element__Distinct_Type_Dictionary<T>(streamline);
         }
 
+        internal bool Internal_Check_If__Type_Exists__Streamline_Dictionary<T>
+        () where T : Streamline_Argument
+        {
+            bool typeExists =
+                Protected_Check_If__Type_Exists__Distinct_Typed_Dictionary<T>();
+
+            return typeExists;
+        }
+
+        internal bool Internal_Check_If__Type_Exists__Streamline_Dictionary
+        (
+            Type t
+        )
+        {
+            bool typeExists =
+                Protected_Check_If__Type_Exists__Distinct_Typed_Dictionary
+                (
+                    t
+                );
+
+            return typeExists;
+        }
+
         internal Streamline<T> Internal_Get__Streamline__Streamline_Dictionary<T>
         ( ) where T : Streamline_Argument
         {

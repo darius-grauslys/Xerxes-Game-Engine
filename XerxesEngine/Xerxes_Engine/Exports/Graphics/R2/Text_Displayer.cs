@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace Xerxes_Engine.Systems.Graphics.R2
+﻿namespace Xerxes_Engine.Systems.Graphics.R2
 {
-    public sealed class Text_Displayer : Game_System
+    public sealed class Text_Displayer : Xerxes_Export 
     {
         /*
         public const string Text_Displayer__CHARS = ",gjpqyABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhiklmnorstuvwxz1234567890.?!/-+@#$%^&*()_=[]\\{}|:;\"'<>`~";
@@ -13,8 +11,7 @@ namespace Xerxes_Engine.Systems.Graphics.R2
         
         */
 
-        internal Text_Displayer(Game game) 
-            : base(game)
+        internal Text_Displayer() 
         {
             //_Text_Displayer__FONTS = new Dictionary<string, int>();
         }

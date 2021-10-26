@@ -17,6 +17,11 @@ namespace Xerxes_Engine
         INFO__COMPONENT__ENABLED_ON_PARENT_BIND                     = "Component was enabled when bounded to a non-null parent.",
 #endregion
 #region CONST INTERNAL VERBOSE MESSAGES
+        VERBOSE__XERXES_ANCESTRY__USING_GLOBAL_DECLARATION_1        = "Using global definition for ancestry of {0}.",
+        VERBOSE__XERXES_ANCESTRY__USING_ANONYMOUS_DECLARATION_1     = "Using anonymous definition for ancestry of {0}.",
+
+        VERBOSE__XERXES_LINKER__SEALING_OBJECT_1                    = "Sealing object {0}.",
+
         VERBOSE__GAME__SYSTEMS__INITALIZING                         = "INITALIZING BASE SYSTEMS.",
         VERBOSE__GAME__SYSTEMS__INITALIZED                          = "FINISHED INITALIZING BASE SYSTEMS.",
 
@@ -28,7 +33,7 @@ namespace Xerxes_Engine
 
         VERBOSE__GAME__SYSTEMS__LOADING                             = "LOADING SYSTEMS.",
         VERBOSE__SYSTEM__LOAD                                       = "Loading System.",
-        VERBOSE__GAME__SYSTEM__LOADED_1                             = "System Loaded    - {0}.",
+        VERBOSE__GAME__DECLARING_EXPORT_1                           = "Declaring Export    - {0}.",
         VERBOSE__GAME__ALL_SYSTEMS__LOADED                          = "FINISHED LOADING SYSTEMS.",
         
         VERBOSE__GAME__SYSTEMS__UNLOADING                           = "UNLOADING SYSTEMS.",
@@ -87,6 +92,7 @@ namespace Xerxes_Engine
 #region CONST INTERNAL ERROR MESSAGES
         ERROR__GAME__DIRECTORY_NOT_FOUND_1                          = "The Directory:\"{0}\" was not found!",
         ERROR__GAME__RECOVERY_DIRECTORY_NOT_FOUND_1                 = "The Recovery Directory:\"{0}\" was not found!",
+        ERROR__GAME__LACKS_ANCESTRY                                 = "Game does not possess an ancestry!",
 
         ERROR__SYSTEM__NOT_FOUND_1                                  = "The System:\"{0}\" is not loaded!",
 
@@ -102,12 +108,14 @@ namespace Xerxes_Engine
                                                                     + "Tried to associate to:{0} - is already associated to {1}!",
         ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION             = "Cannot be associated to! I am sealed!",
         ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C= "Failed to declare streamline: {0}, under context [{1}]!",
-        ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED_TO_ROOT      = "Tried to access root object prior to being rooted!",
-        ERROR__XERXES_ENGINE_OBJECT__IS_NOT_ASSOCIATED              = "Tried to access associated parent, but is not associated!",
-        ERROR__XERXES_ENGINE_OBJECT__INVALID_ASSOCIATION_4          = "Engine object:{0} tried to associate to object:{1} which is lower in hierarchy!"
-                                                                    + "Target object's hierarchy score:{2} - Associating object's score:{3}!",
         ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2           = "Engine objects {0} -> {1} failed to associate!",
         ERROR__XERXES_ENGINE_OBJECT__UNLINKED_MANDATORY_STREAMLINE_2= "Mandatory streamline:{0} did not find a destination during association to:{1}!",
+
+        ERROR__EXPORT_DICTIONARY__DUPLICATE_DECLARATION_1             = "Duplicate export declaration of {0} detected!",
+
+        ERROR__XERXES_EXPORT__DECLARED_BUT_NOT_ROOTED_1             = "Tried to declare exportline receiver of type {0} but is not rooted!",
+
+        ERROR__XERXES_LINKER_CONTEXT__UNCAUGHT_STREAMLINE_3C        = "Uncaught streamline:{1} of type {0}! Missing receiver on {2}!",
 
         //not used atm:
         ERROR__GAME_OBJECT__FAILED_TO_ASSOCIATE_COMPONENT_2C        = "Failed to associate component:{0}! Contextual Message:{1}!",
@@ -139,6 +147,12 @@ namespace Xerxes_Engine
         ERROR__ANIMATION__NODE_DEFINITION__OUT_OF_BOUNDS_2          = "Attempted to define node:\"{0}\" when total node count is:\"{0}\"!",
 
         ERROR__PANIC                                                = "An unrecoverable error has occured.",
+#endregion
+#region CONST INTERNAL BUG MESSAGES
+        //These are errors which can only occur
+        //independent of API client's code.
+        
+        BUG__XERXES_LINKER_CONTEXT__INCOHERENT_CONTEXT_POP_1        = "Linker context popped with incoherence for streamline type: {0}.",
 #endregion
 #region CONST INTERNAL CRITICAL MESSAGES
         CRITICAL__XERXES_ENGINE_OBJECT__ILLEGAL_DEFINITION_1        = "Is illegally defined where it's reflective generic parameter is {0} and not itself!";

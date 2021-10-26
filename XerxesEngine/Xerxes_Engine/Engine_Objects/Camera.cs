@@ -19,26 +19,24 @@ namespace Xerxes_Engine.Engine_Objects
 
         public Camera()
         {
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <SA__Associate_Game>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
                 <SA__Resize_2D>
                 (
                     Private_Handle_Resize_2D__Camera
                 );
-            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
-                <SA__Render>
+            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
+                <SA__Render_Begin>
                 (
                     Private_Handle_Render__Camera
                 );
         }
 
-        private void Private_Handle_Render__Camera(SA__Render e)
+        private void Private_Handle_Render__Camera(SA__Render_Begin e)
         {
             Matrix4 cameraView =
                 GetView();
 
-            e.SA__Render__World_Matrix__Internal = cameraView;
+            e.Render_Begin__SCENE_MATRIX__Internal = cameraView;
         }
 
         private void Private_Handle_Resize_2D__Camera(SA__Resize_2D e)

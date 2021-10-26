@@ -1,6 +1,4 @@
-﻿using Xerxes_Engine.Systems.OpenTK_Input;
-
-namespace Xerxes_Engine.Engine_Objects
+﻿namespace Xerxes_Engine.Engine_Objects
 {
     public class Scene : 
         Xerxes_Object<Scene>,
@@ -16,24 +14,11 @@ namespace Xerxes_Engine.Engine_Objects
 
         public Scene()
         {
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <SA__Associate_Game>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <SA__Update>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <SA__Render>();
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
                 <SA__Resize_2D>
                 (
                     Private_Handle__2D_Resize__Scene
                 );
-
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <SA__Input_Mouse_Button>();
-
-            Protected_Declare__Ascending_Streamline__Xerxes_Engine_Object
-                <SA__Draw>
-                ();
 
             _Scene__LAYER_DICTIONARY = new Scene_Layer_Dictionary();
         }

@@ -1,6 +1,6 @@
 ﻿namespace Xerxes_Engine.Systems.Scenes
 {
-    public sealed class Scene_Manager : Game_System
+    public sealed class Scene_Manager : Xerxes_Export 
     {
         /*
         private const string _Scene_Manager__ERROR_SCENE_NAME = "error";
@@ -14,7 +14,6 @@
         */
 
         internal Scene_Manager(Game game) 
-            : base(game)
         {
             /*
             _Scene_Manager__SCENE_DICTIONARY = new Scene_Dictionary();

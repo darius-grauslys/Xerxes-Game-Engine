@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace Xerxes_Engine.Systems.Graphics.R2
+﻿namespace Xerxes_Engine.Systems.Graphics.R2
 {
 /*
     public sealed class Sprite_Animation_Library : Game_System

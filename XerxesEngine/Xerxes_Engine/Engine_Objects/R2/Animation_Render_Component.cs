@@ -6,7 +6,7 @@
 
         public Animation_Render_Component(Animation_Schematic schematic = null) 
         {
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
                 <SA__Update>
                 (
                     Private_Handle__Update__Animation_Render_Component

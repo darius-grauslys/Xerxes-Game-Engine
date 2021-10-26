@@ -4,18 +4,51 @@ namespace Xerxes_Engine
 {
     internal sealed class Stream
     {
-        private Streamline_Dictionary _Stream__RECEIVING_STREAMLINES { get; }
-        private Streamline_Dictionary _Stream__EXTENDING_STREAMLINES { get; }
-        private Streamline_Dictionary _Stream__SOURCING_STREAMLINES  { get; }
+        internal Streamline_Dictionary Stream__RECEIVING_STREAMLINES__Internal { get; }
+        internal Streamline_Dictionary Stream__EXTENDING_STREAMLINES__Internal { get; }
 
         internal Stream()
         {
-            _Stream__RECEIVING_STREAMLINES =
+            Stream__RECEIVING_STREAMLINES__Internal =
                 new Streamline_Dictionary();
-            _Stream__EXTENDING_STREAMLINES =
+            Stream__EXTENDING_STREAMLINES__Internal =
                 new Streamline_Dictionary();
-            _Stream__SOURCING_STREAMLINES  =
-                new Streamline_Dictionary();
+        }
+
+        internal Streamline_Base Internal_Get__Receiving_Streamline_Base__Stream<T>
+        () where T : Streamline_Argument
+        {
+            Streamline_Base streamline_Base =
+                Private_Get__Streamline_Base__Stream<T>
+                (
+                    Stream__RECEIVING_STREAMLINES__Internal
+                );
+
+            return streamline_Base;
+        }
+
+        internal Streamline_Base Internal_Get__Extending_Streamline_Base__Stream<T>
+        () where T : Streamline_Argument
+        {
+            Streamline_Base streamline_Base =
+                Private_Get__Streamline_Base__Stream<T>
+                (
+                    Stream__EXTENDING_STREAMLINES__Internal
+                );
+
+            return streamline_Base;
+        }
+
+        private Streamline_Base Private_Get__Streamline_Base__Stream<T>
+        (
+            Streamline_Dictionary streamline_Dictionary
+        ) where T : Streamline_Argument
+        {
+            Streamline_Base streamline_Base =
+                streamline_Dictionary
+                .Internal_Get__Streamline__Streamline_Dictionary<T>();
+
+            return streamline_Base;
         }
 
         internal bool Internal_Declare__Streamline__Stream<T>
@@ -47,28 +80,19 @@ namespace Xerxes_Engine
                 Private_Declare__If__Stream
                 (
                     streamline,
-                    _Stream__RECEIVING_STREAMLINES,
+                    Stream__RECEIVING_STREAMLINES__Internal,
                     streamline.Streamline_Base__IS_RECEIVING,
                     () => declaration_Failure_Receiving
                         (Log.Context__Declare_Streamline.Receieve)
                 );
-            success = success & 
+            success = success && 
                 Private_Declare__If__Stream
                 (
                     streamline,
-                    _Stream__EXTENDING_STREAMLINES,
+                    Stream__EXTENDING_STREAMLINES__Internal,
                     streamline.Streamline_Base__IS_EXTENDING,
                     () => declaration_Failure_Extending
                         (Log.Context__Declare_Streamline.Extend)
-                );
-            success = success &
-                Private_Declare__If__Stream
-                (
-                    streamline,
-                    _Stream__SOURCING_STREAMLINES,
-                    streamline.Streamline_Base__IS_SOURCING,
-                    () => declaration_Failure_Sourcing
-                        (Log.Context__Declare_Streamline.Source)
                 );
 
             return success;
@@ -104,7 +128,7 @@ namespace Xerxes_Engine
         ) where T : Streamline_Argument
         {
             Streamline<T> streamline =
-                _Stream__SOURCING_STREAMLINES 
+                Stream__EXTENDING_STREAMLINES__Internal
                 .Internal_Get__Streamline__Streamline_Dictionary<T>();
 
             if (streamline != null)
@@ -122,7 +146,7 @@ namespace Xerxes_Engine
         ) where T : Streamline_Argument
         {
             Streamline<T> streamline =
-                _Stream__RECEIVING_STREAMLINES
+                Stream__RECEIVING_STREAMLINES__Internal
                 .Internal_Get__Streamline__Streamline_Dictionary<T>();
 
             if (streamline == null)
@@ -143,8 +167,8 @@ namespace Xerxes_Engine
         {
             Streamline_Dictionary.Internal_On_All__Matching_Keys
             (
-                receiver._Stream__RECEIVING_STREAMLINES,
-                extender._Stream__EXTENDING_STREAMLINES,
+                receiver.Stream__RECEIVING_STREAMLINES__Internal,
+                extender.Stream__EXTENDING_STREAMLINES__Internal,
                 Streamline_Base.Internal_Link__Streamline_Bases,
                 fail_Find_Extending_Endpoint
             );

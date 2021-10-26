@@ -13,10 +13,39 @@ namespace Xerxes_Engine
     {
         private Dictionary<Type,Y> _Distinct_Type_Dictionary__DICTIONARY { get; }
 
-        internal KeyValuePair<Type,Y>[] Internal_Get__Entries__Distinct_Typed_Dictionary()
+        protected bool Protected_Check_If__Type_Exists__Distinct_Typed_Dictionary<H>
+        () where H : T
+        {
+            Type t = typeof(H);
+
+            bool typeExists =
+                Protected_Check_If__Type_Exists__Distinct_Typed_Dictionary
+                (
+                    t
+                );
+
+            return typeExists;
+        }
+
+        protected bool Protected_Check_If__Type_Exists__Distinct_Typed_Dictionary
+        (
+            Type t
+        )
+        {
+            bool typeExists = 
+                _Distinct_Type_Dictionary__DICTIONARY
+                .ContainsKey(t);
+
+            return typeExists;
+        }
+
+        internal IEnumerable<KeyValuePair<Type,Y>> Internal_Get__Entries__Distinct_Typed_Dictionary()
             => _Distinct_Type_Dictionary__DICTIONARY.ToArray();
 
-        protected Distinct_Type_Dictionary()
+        internal IEnumerable<Type> Internal_Get__Types__Distinct_Typed_Dictionary()
+            => _Distinct_Type_Dictionary__DICTIONARY.Keys.ToArray();
+
+        internal Distinct_Type_Dictionary()
         {
             _Distinct_Type_Dictionary__DICTIONARY = new Dictionary<Type,Y>();
         }

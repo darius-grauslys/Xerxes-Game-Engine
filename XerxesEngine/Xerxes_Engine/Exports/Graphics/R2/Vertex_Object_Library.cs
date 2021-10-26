@@ -4,7 +4,8 @@
     /// Creates and records Vertex_Objects. From here,
     /// sprites are able to bind to them. Eventually meshes too.
     /// </summary>
-    public sealed class Vertex_Object_Library : Game_System
+    public sealed class Vertex_Object_Library : 
+        Xerxes_Export 
     {
         private const string VERTEX_OBJECT_LIBRARY__SUB_LENGTH_STRING__WIDTH  = "Sub-Width" ;
         private const string VERTEX_OBJECT_LIBRARY__SUB_LENGTH_STRING__HEIGHT = "Sub-Height";
@@ -13,16 +14,38 @@
 
         private Vertex_Object_Dictionary _Vertex_Object_Library__VERTEX_OBJECT_DICTIONARY { get; }
 
-        internal Vertex_Object_Library(Game gameRef) 
-            : base(gameRef)
+        public Vertex_Object_Library() 
         {
             _Vertex_Object_Library__VERTEX_OBJECT_DICTIONARY = new Vertex_Object_Dictionary();
         }
 
-        protected override void Handle_Unload__Game_System()
+        protected override void Handle__Rooted__Xerxes_Export()
+        {
+            Protected_Declare__Catch__Xerxes_Export
+                <SA__Declare_Vertex_Object>
+                (
+                    Private_Catch_Declare__Vertex_Object__Vertex_Object_Library
+                );
+        }
+
+        protected override void Handle__Dissassociate_Game__Xerxes_Export
+        (SA__Dissassociate_Game e)
         {
             _Vertex_Object_Library__VERTEX_OBJECT_DICTIONARY
                 .Internal_Dispose__Vertex_Objects__Vertex_Object_Dictionary();
+        }
+
+        private void Private_Catch_Declare__Vertex_Object__Vertex_Object_Library
+        (SA__Declare_Vertex_Object e)
+        {
+            Vertex_Object_Handle voh =
+                Private_Declare__Vertex_Object__Vertex_Object_Library
+                (
+                    e.Declare_Vertex_Object__TEXTURE_R2__Internal
+                );
+
+            e.Declare_Vertex_Object__Vertex_Object_Handles__Internal =
+                new Vertex_Object_Handle[] {voh};
         }
 
         /// <summary>
@@ -30,7 +53,7 @@
         /// It uses the entire texture size.
         /// This is good for non-animated sprites.
         /// </summary>
-        public Vertex_Object_Handle Create__Vertex_Object__Vertex_Object_Library
+        private Vertex_Object_Handle Private_Declare__Vertex_Object__Vertex_Object_Library
         (
             Texture_R2 texture_R2
         )

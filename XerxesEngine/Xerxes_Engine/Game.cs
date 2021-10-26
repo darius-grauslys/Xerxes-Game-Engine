@@ -1,14 +1,9 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Xerxes_Engine.Systems.Graphics;
 using OpenTK.Graphics;
-using Xerxes_Engine.Systems.Input;
 using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
-using Xerxes_Engine.Systems.Serialization;
-using Xerxes_Engine.Systems.Graphics.R2;
 using Xerxes_Engine.Engine_Objects;
 using Xerxes_Engine.Systems.OpenTK_Input;
 using OpenTK.Input;
@@ -34,22 +29,8 @@ namespace Xerxes_Engine
         
         #region Systems
 
-        private List<Game_System> Game__SYSTEMS { get; }
-        
-        /// <summary>
-        /// Responsible for loading and unloading textures.
-        /// </summary>
-        public Asset_Pipe Game__Asset_Provider { get; private set; }
-        /// <summary>
-        /// Responsible for recording and recieving loaded sprites.
-        /// </summary>
-        public Vertex_Object_Library Game__Vertex_Object_Library { get; private set; }
-        public Sprite_Library Game__Sprite_Library { get; private set; }
-        internal Render_Service Game__Render_Service { get; private set; }
-        //public Text_Displayer Game__Text_Displayer { get; private set; }
-        public Input_System Game__Input_System { get; private set; }
-        //public Sprite_Animation_Library Game__Animation_Schematic_Library { get; private set; }
-        //public Scene_Manager Game__Scene_Management_Service { get; private set; }
+        private Export_Dictionary _Game__EXPORTS { get; }
+
         #endregion
 
         #region Time
@@ -79,25 +60,30 @@ namespace Xerxes_Engine
             _Game__UPDATE_TIMER = new Timer(-1);
             _Game__RENDER_TIMER = new Timer(-1);
 
-            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+            _Game__EXPORTS =
+                new Export_Dictionary();
+
+            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
                 <SA__Associate_Game>();
-            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
+                <SA__Associate_Game>();
+            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
                 <SA__Update>();
-            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
+                <SA__Render_Begin>();
+            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
+                <SA__Render_Begin>();
+            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
                 <SA__Render>();
-            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
+                <SA__Render_End>();
+            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
                 <SA__Resize_2D>();
 
-            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
                 <SA__Input_Mouse_Button>();
-            Protected_Declare__Downstream_Source__Xerxes_Engine_Object
+            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
                 <SA__Input_Mouse_Move>();
-
-            Protected_Declare__Upstream_Catch__Xerxes_Engine_Object
-                <SA__Draw>
-                (
-                    Private_Handle__Draw__Game
-                );
 
             Game__GAME_WINDOW__Internal = 
                 new GameWindow
@@ -119,8 +105,6 @@ namespace Xerxes_Engine
                     ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_TITLE
                 );
 
-            Game__SYSTEMS = new List<Game_System>();
-            
             Log.Initalize__Log
             (
                 game_Argument
@@ -139,40 +123,66 @@ namespace Xerxes_Engine
                     game_Argument.Game_Arguments__SHADER_DIRECTORY,
                     Game_Arguments.Game_Arguments__DEFAULT_SHADER_DIRECTORY
                 );
-            
-            Private_Establish__Base_Systems__Game();
-            Private_Establish__Custom_Systems__Game();
-            Private_Load__Systems__Game();
-            
-            Game__Render_Service.Internal_Load__Shaders__Render_Service(Get__Shaders__Game());
 
             Private_Hook__To_Game_Window__Game();
-
-            //END SERVICES
-
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADING, this);
-            Handle_Load__Content__Game();
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADED, this);
         }
 
         internal override void Internal_Handle__Sealed__Xerxes_Engine_Object()
         {
             bool success =
-                Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+                Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
                 <SA__Associate_Game>(new SA__Associate_Game(-1,-1, this));
 
             Log.Internal_Write__Verbose__Log("game seal success: {0}", this, success);
         }
 
+        public void Declare__Export__Game<T>
+        (
+            T export
+        ) where T : Xerxes_Export
+        {
+            Log.Internal_Write__Verbose__Log
+            (
+                Log.VERBOSE__GAME__DECLARING_EXPORT_1,
+                this,
+                export
+            );
+            _Game__EXPORTS
+                .Internal_Declare__Export__Export_Dictionary
+                (
+                    export
+                );
+        }
+        
         public void Run__Game()
         {
+            bool gameHasAncestry = 
+                Xerxes_Linker
+                .Internal_Seal__Game(this, _Game__EXPORTS);
+
+            if (!gameHasAncestry)
+            {
+                Private_Log_Error__Game_Lacks_Ancestry
+                (
+                    this
+                );
+                return;
+            }
+
+            Private_Invoke__Global__Game
+            (
+                new SA__Associate_Game(0,0,this)
+            );
+
             Log.Internal_Write__Info__Log
             (
                 Log.INFO__GAME__RUN_INVOKED,
                 this
             );
 
-            Internal_Seal__Xerxes_Engine_Object();
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADING, this);
+            Handle_Load__Content__Game();
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADED, this);
 
             Game__GAME_WINDOW__Internal.Run();
         }
@@ -246,12 +256,7 @@ namespace Xerxes_Engine
         private void Private_Handle__Resize_Window__Game(object sender, EventArgs e)
         {
             GL.Viewport(Game__GAME_WINDOW__Internal.ClientRectangle);
-            Game__Render_Service
-                .Establish__Orthographic_Projection__Render_Service
-                (
-                    Game__GAME_WINDOW__Internal.Width, 
-                    Game__GAME_WINDOW__Internal.Height
-                );
+
             SA__Resize_2D resize_2D_Argument = 
                 new SA__Resize_2D
                 (
@@ -261,8 +266,8 @@ namespace Xerxes_Engine
                     Game__Window_Height
                 );
 
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
-                <SA__Resize_2D>(resize_2D_Argument);
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+                (resize_2D_Argument);
         }
 
         private void Private_Handle__Closed_Window__Game(object sender, EventArgs e)
@@ -280,7 +285,7 @@ namespace Xerxes_Engine
                     e.Time
                 );
 
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
                 <SA__Update>(frame_Argument);
         }
 
@@ -293,23 +298,19 @@ namespace Xerxes_Engine
                     Game__Elapsed_Time__Render, 
                     e.Time
                 );
+            SA__Render_Begin render_Begin =
+                new SA__Render_Begin(frame_Argument);
 
-            Game__Render_Service.Internal_Begin__Render_Service();
-
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
-                <SA__Render>(frame_Argument);
-
-            Game__Render_Service.Internal_End__Render_Service();
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+                (render_Begin);
+            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+                (render_Begin);
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+                (frame_Argument);
+            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+                (new SA__Render_End(frame_Argument));
+            
             Game__GAME_WINDOW__Internal.SwapBuffers();
-        }
-
-        private void Private_Handle__Draw__Game(SA__Draw e)
-        {
-            Game__Render_Service
-                .Draw__Render_Service
-                (
-                    e
-                );
         }
 
         private void Private_Handle__Load_Window__Game(object sender, EventArgs e)
@@ -324,8 +325,17 @@ namespace Xerxes_Engine
 
         private void Private_Handle__Unload_Window__Game(object sender, EventArgs e)
         {
-            Private_Unload__Systems__Game();
-            Protected_Handle__Unload__Game();
+            SA__Dissassociate_Game dissassociate_Game =
+                new SA__Dissassociate_Game
+                (
+                    _Game__UPDATE_TIMER.Timer__Time_Elapsed,
+                    _Game__UPDATE_TIMER.Timer__Delta_Time
+                );
+
+            Private_Invoke__Global__Game
+            (
+                dissassociate_Game
+            );
         }
 
         protected virtual void Protected_Handle__Unload__Game()
@@ -347,7 +357,7 @@ namespace Xerxes_Engine
                     e
                 );
 
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
             (input_Mouse_Move);
         }
 
@@ -365,7 +375,7 @@ namespace Xerxes_Engine
                     e
                 );
 
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
             (input_Mouse_Button);
         }
 
@@ -383,122 +393,47 @@ namespace Xerxes_Engine
                     e
                 );
 
-            Protected_Invoke__Descending_Streamline__Xerxes_Engine_Object
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
             (input_Mouse_Button);
         }
 
-        private void Private_Unload__Systems__Game()
+        private void Private_Invoke__Global__Game<T>
+        (
+            T streamline_Argument
+        ) where T : Streamline_Argument
         {
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__UNLOADING, this);
-
-            foreach (Game_System gamesys in Game__SYSTEMS)
-            {   
-                gamesys.Internal_Unload__Game_System();
-                Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEM__UNLOADED_1, this, gamesys);
-            }
-
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__UNLOADED, this);
+            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+                (streamline_Argument);
+            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+                (streamline_Argument);
         }
 
-        public T Get_System__Game<T>() where T : Game_System
+        internal string[] Internal_Get__Shaders__Game()
         {
-            foreach (Game_System system in Game__SYSTEMS)
-                if (system is T && system.Accessable)
-                    return system as T;
-
-            Log.Internal_Write__Log
-            (
-                Log_Message_Type.Error__System, 
-                Log.ERROR__SYSTEM__NOT_FOUND_1, 
-                this, 0, typeof(T).ToString()
-            );
-            return null;
+            return Handle_Get__Shaders__Game();
         }
 
-        protected bool Register__System__Game<T>(T gameService) where T : Game_System
-        {
-            if (Game__SYSTEMS.Exists((s) => s is T))
-            {
-                Log.Internal_Write__Warning__Log
-                (
-                    Log.WARNING__GAME__SYSTEM__ALREADY_LOADED_1,
-                    this,
-                    0,
-                    gameService?.ToString()
-                );
-                return false;
-            }
-            
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEM__LOADED_1, this, gameService?.ToString());
-            
-            Game__SYSTEMS.Add(gameService);
-
-            return true;
-        }
-
-        protected virtual string[] Get__Shaders__Game()
+        protected virtual string[] Handle_Get__Shaders__Game()
         {
             return new string[] { "shader" };
         }
 
-        private void Private_Establish__Base_Systems__Game()
-        {
-            Private_Initalize__Base_Systems__Game();
-            Private_Register__Base_Systems__Game();
-        }
-
-        private void Private_Initalize__Base_Systems__Game()
-        {
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__INITALIZING, this);
-            
-            Game__Asset_Provider = new Asset_Pipe(this);
-            Game__Vertex_Object_Library = new Vertex_Object_Library(this);
-            Game__Sprite_Library = new Sprite_Library(this);
-            Game__Render_Service = new Render_Service(this, Game__GAME_WINDOW__Internal.Width, Game__GAME_WINDOW__Internal.Height);
-            //Game__Text_Displayer = new Text_Displayer(this);
-            Game__Input_System = new Input_System(this);
-            //Game__Animation_Schematic_Library = new Sprite_Animation_Library(this);
-            //Game__Scene_Management_Service = new Scene_Manager(this);
-
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__INITALIZED, this);
-        }
-
-        private void Private_Register__Base_Systems__Game()
-        {
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__REGISTERING, this);
-            
-            Register__System__Game(Game__Asset_Provider);
-            Register__System__Game(Game__Vertex_Object_Library);
-            Register__System__Game(Game__Sprite_Library);
-            Register__System__Game(Game__Render_Service);
-            //Register__System__Game(Game__Text_Displayer);
-            Register__System__Game(Game__Input_System);
-            //Register__System__Game(Game__Animation_Schematic_Library);
-            //Register__System__Game(Game__Scene_Management_Service);
-
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__REGISTERED, this);
-        }
-
-        private void Private_Establish__Custom_Systems__Game()
-        {
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS_CUSTOM__REGISTERING, this);
-
-            Handle_Register__Custom_Systems__Game();
-    
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS_CUSTOM__REGISTERED, this);
-        }
-
-        private void Private_Load__Systems__Game()
-        {
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__SYSTEMS__LOADING, this);
-
-            foreach (Game_System system in Game__SYSTEMS)
-                system.Internal_Load__Game_System();
-
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__ALL_SYSTEMS__LOADED, this);
-        }
-
         protected virtual void Handle_Register__Custom_Systems__Game() { }
         protected virtual void Handle_Load__Content__Game() { }
+
+#region Static Logging
+        private static void Private_Log_Error__Game_Lacks_Ancestry
+        (
+            Game game
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__GAME__LACKS_ANCESTRY,
+                game
+            );
+        }
+#endregion
     }
 }
