@@ -4,33 +4,28 @@ namespace Xerxes_Engine
 {
     public class Xerxes_Object_Base
     {
-        private Stream _Xerxes_Engine_Object__UPSTREAM { get; }
+        internal Stream Xerxes_Object_Base__UPSTREAM__Internal { get; }
         internal Streamline_Dictionary 
             Xerxes_Object_Base__ASCENDING_RECEIVING_STREAMLINES__Internal
-            => _Xerxes_Engine_Object__UPSTREAM.Stream__RECEIVING_STREAMLINES__Internal;
+            => Xerxes_Object_Base__UPSTREAM__Internal.Stream__RECEIVING_STREAMLINES__Internal;
         internal Streamline_Dictionary 
             Xerxes_Object_Base__ASCENDING_EXTENDING_STREAMLINES__Internal
-            => _Xerxes_Engine_Object__UPSTREAM.Stream__EXTENDING_STREAMLINES__Internal;
+            => Xerxes_Object_Base__UPSTREAM__Internal.Stream__EXTENDING_STREAMLINES__Internal;
         
-        private Stream _Xerxes_Engine_Object__DOWNSTREAM { get; }
+        internal Stream Xerxes_Object_Base__DOWNSTREAM__Internal { get; }
         internal Streamline_Dictionary 
             Xerxes_Object_Base__DESCENDING_RECEIVING_STREAMLINES__Internal
-            => _Xerxes_Engine_Object__DOWNSTREAM.Stream__RECEIVING_STREAMLINES__Internal;
+            => Xerxes_Object_Base__DOWNSTREAM__Internal.Stream__RECEIVING_STREAMLINES__Internal;
         internal Streamline_Dictionary 
             Xerxes_Object_Base__DESCENDING_EXTENDING_STREAMLINES__Internal
-            => _Xerxes_Engine_Object__DOWNSTREAM.Stream__EXTENDING_STREAMLINES__Internal;
+            => Xerxes_Object_Base__DOWNSTREAM__Internal.Stream__EXTENDING_STREAMLINES__Internal;
 
-        public bool Xerxes_Engine_Object__Is_Disabled { get; protected set; }
-        public bool Xerxes_Engine_Object__Is_Sealed { get; private set; }
-
-        internal Game Xerxes_Engine_Object__Root__Internal { get; set; }
-        protected bool Protected_Check_If__Rooted__Xerxes_Engine_Object()
-            => Xerxes_Engine_Object__Root__Internal != null;
+        protected bool Xerxes_Object_Base__Is_Rooted__Protected { get; private set; }
 
         internal Xerxes_Object_Base()
         {
-            _Xerxes_Engine_Object__UPSTREAM = new Stream();
-            _Xerxes_Engine_Object__DOWNSTREAM = new Stream();
+            Xerxes_Object_Base__UPSTREAM__Internal = new Stream();
+            Xerxes_Object_Base__DOWNSTREAM__Internal = new Stream();
         }
 
         public override string ToString()
@@ -41,135 +36,29 @@ namespace Xerxes_Engine
         }
 
 #region Streamline Management
-        /// <summary>
-        /// Declares a descending streamline that
-        /// is invokable under the generic type.
-        /// </summary>
-        protected bool Protected_Declare__Downstream_Extender__Xerxes_Engine_Object<S>
-        (
-            bool isReceiving = false
-        ) where S : Streamline_Argument
-        {
-            bool success = 
-                Private_Declare__Streamline__Xerxes_Engine_Object<S>
-                (
-                    _Xerxes_Engine_Object__DOWNSTREAM,
-                    Log.Context__Stream.Downstream,
-                    isReceiving: isReceiving,
-                    isExtending: true,
-                    isSourcing: true
-                );
+        protected Xerxes_Stream_Context Declare__Streams()
+            => new Xerxes_Stream_Context(this);
 
-            return success;
-        }
-
-        protected bool Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object<S>
-        (
-            Action<S> listener
-        ) where S : Streamline_Argument
-        {
-            bool success =
-                Private_Declare__Streamline__Xerxes_Engine_Object
-                (
-                    _Xerxes_Engine_Object__DOWNSTREAM,
-                    Log.Context__Stream.Downstream,
-                    listener,
-                    isReceiving: true,
-                    isExtending: false
-                );
-
-            return true;
-        }
-
-        /// <summary>
-        /// Declares a descending streamline that
-        /// is invokable under the generic type.
-        /// </summary>
-        protected bool Protected_Declare__Upstream_Extender__Xerxes_Engine_Object<S>
-        (
-            bool isReceiving = false
-        ) where S : Streamline_Argument
-        {
-            bool success = 
-                Private_Declare__Streamline__Xerxes_Engine_Object<S>
-                (
-                    _Xerxes_Engine_Object__UPSTREAM,
-                    Log.Context__Stream.Upstream,
-                    isReceiving: isReceiving,
-                    isExtending: true,
-                    isSourcing: true
-                );
-
-            return success;
-        }
-
-        protected bool Protected_Declare__Upstream_Receiver__Xerxes_Engine_Object<S>
-        (
-            Action<S> listener
-        ) where S : Streamline_Argument
-        {
-            bool success =
-                Private_Declare__Streamline__Xerxes_Engine_Object
-                (
-                    _Xerxes_Engine_Object__UPSTREAM,
-                    Log.Context__Stream.Upstream,
-                    listener,
-                    isReceiving: true,
-                    isExtending: false
-                );
-
-            return true;
-        }
-
-        private bool Private_Declare__Streamline__Xerxes_Engine_Object<S>
-        (
-            Stream stream,
-            Log.Context__Stream stream_context,
-            Action<S> listener = null,
-            bool isReceiving = true,
-            bool isExtending = true,
-            bool isSourcing  = false
-        ) where S : Streamline_Argument
-        {
-            bool success = 
-                stream
-                .Internal_Declare__Streamline__Stream<S>
-                (
-                    listener,
-                    isReceiving,
-                    isExtending,
-                    isSourcing,
-                    (type_context) => Private_Log_Error__Failed_To_Declare_Streamline_2C
-                          (this, typeof(S), stream_context, type_context),
-                    (type_context) => Private_Log_Error__Failed_To_Declare_Streamline_2C
-                          (this, typeof(S), stream_context, type_context),
-                    (type_context) => Private_Log_Error__Failed_To_Declare_Streamline_2C
-                          (this, typeof(S), stream_context, type_context)
-                );
-
-            return success;
-        }
-
-        protected bool Protected_Invoke__Descending_Extender__Xerxes_Engine_Object<S>
+        protected bool Invoke__Descending<S>
         (
             S streamline_Argument
         ) where S : Streamline_Argument
         {
             return Private_Invoke__Streamline__Xerxes_Engine_Object
             (
-                _Xerxes_Engine_Object__DOWNSTREAM,
+                Xerxes_Object_Base__DOWNSTREAM__Internal,
                 streamline_Argument
             );
         }
 
-        protected bool Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object<S>
+        protected bool Invoke__Ascending<S>
         (
             S streamline_Argument
         ) where S : Streamline_Argument
         {
             return Private_Invoke__Streamline__Xerxes_Engine_Object
             (
-                _Xerxes_Engine_Object__UPSTREAM,
+                Xerxes_Object_Base__UPSTREAM__Internal,
                 streamline_Argument
             );
         }
@@ -201,34 +90,37 @@ namespace Xerxes_Engine
             return success;
         }
 
-        protected bool Protected_Subscribe__Descending_Receiver__Xerxes_Engine_Object<S>
+        protected bool Subscribe__Descending<S>
         (
             Action<S> listener
         ) where S : Streamline_Argument
         {
             return Private_Subscribe__Streamline__Xerxes_Engine_Object
                 (
-                    _Xerxes_Engine_Object__DOWNSTREAM,
-                    listener
+                    Xerxes_Object_Base__DOWNSTREAM__Internal,
+                    listener,
+                    Log.Context__Stream.Downstream
                 );
         }
 
-        protected bool Protected_Subscribe__Ascending_Receiver__Xerxes_Engine_Object<S>
+        protected bool Subscribe__Ascending<S>
         (
             Action<S> listener
         ) where S : Streamline_Argument
         {
             return Private_Subscribe__Streamline__Xerxes_Engine_Object
                 (
-                    _Xerxes_Engine_Object__UPSTREAM,
-                    listener
+                    Xerxes_Object_Base__UPSTREAM__Internal,
+                    listener,
+                    Log.Context__Stream.Upstream
                 );
         }
 
         private bool Private_Subscribe__Streamline__Xerxes_Engine_Object<S>
         (
             Stream stream,
-            Action<S> listener
+            Action<S> listener,
+            Log.Context__Stream context
         ) where S : Streamline_Argument
         {
             bool success =
@@ -240,7 +132,12 @@ namespace Xerxes_Engine
 
             if (!success)
             {
-                //TODO: Log
+                Private_Log_Error__Failed_To_Subscribe
+                (
+                    this,
+                    typeof(S),
+                    context
+                );
             }
 
             return success;
@@ -248,28 +145,19 @@ namespace Xerxes_Engine
 #endregion
 
 #region Sealing
-        internal bool Internal_Seal__Xerxes_Engine_Object()
+        internal void Internal_Root__Xerxes_Engine_Object()
         {
-            if (Xerxes_Engine_Object__Is_Sealed)
+            if (Xerxes_Object_Base__Is_Rooted__Protected)
             {
                 Log.Internal_Write__Warning__Log
                 (
                     Log.WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING,
                     this
                 );
-                return true;
             }
 
-            Xerxes_Engine_Object__Is_Sealed = true;
-            Internal_Handle__Sealed__Xerxes_Engine_Object();
-            return true;
+            Xerxes_Object_Base__Is_Rooted__Protected = true;
         }
-
-        internal virtual void Internal_Handle__Sealed__Xerxes_Engine_Object()
-        {
-            
-        }
-        protected virtual void Handle__Sealed__Xerxes_Engine_Object() { }
 #endregion
 
 #region Static Logging
@@ -302,6 +190,23 @@ namespace Xerxes_Engine
                 streamlineType,
                 stream_context,
                 type_context
+            );
+        }
+
+        private static void Private_Log_Error__Failed_To_Subscribe
+        (
+            Xerxes_Object_Base obj,
+            Type streamlineType,
+            Log.Context__Stream context
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__XERXES_OBJECT_BASE__FAILED_TO_SUBSCRIBE_STREAMLINE_2C,
+                obj,
+                streamlineType,
+                context
             );
         }
 #endregion

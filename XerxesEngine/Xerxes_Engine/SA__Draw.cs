@@ -11,7 +11,7 @@ namespace Xerxes_Engine
         public Vector3 Draw__Position__Internal { get; set; }
         public Vector3 Draw__Scale__Internal { get; set; }
 
-        public SA__Draw(SA__Render e)
+        public SA__Draw(Streamline_Argument e)
             : base(e)
         {
         }

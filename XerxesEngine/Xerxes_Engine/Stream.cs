@@ -57,12 +57,10 @@ namespace Xerxes_Engine
             bool isReceiving = true,
             bool isExtending = true,
             bool isSourcing  = false,
-            Action<Log.Context__Declare_Streamline> 
+            Action<Streamline_Base, Log.Context__Declare_Streamline> 
                 declaration_Failure_Receiving = null,
-            Action<Log.Context__Declare_Streamline> 
-                declaration_Failure_Extending = null,
-            Action<Log.Context__Declare_Streamline> 
-                declaration_Failure_Sourcing  = null
+            Action<Streamline_Base, Log.Context__Declare_Streamline> 
+                declaration_Failure_Extending = null
         ) where T : Streamline_Argument
         {
             Streamline<T> streamline = 
@@ -83,7 +81,7 @@ namespace Xerxes_Engine
                     Stream__RECEIVING_STREAMLINES__Internal,
                     streamline.Streamline_Base__IS_RECEIVING,
                     () => declaration_Failure_Receiving
-                        (Log.Context__Declare_Streamline.Receieve)
+                        (streamline, Log.Context__Declare_Streamline.Receieve)
                 );
             success = success && 
                 Private_Declare__If__Stream
@@ -92,7 +90,7 @@ namespace Xerxes_Engine
                     Stream__EXTENDING_STREAMLINES__Internal,
                     streamline.Streamline_Base__IS_EXTENDING,
                     () => declaration_Failure_Extending
-                        (Log.Context__Declare_Streamline.Extend)
+                        (streamline, Log.Context__Declare_Streamline.Extend)
                 );
 
             return success;

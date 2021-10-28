@@ -19,13 +19,12 @@ namespace Xerxes_Engine.Engine_Objects
 
         public Camera()
         {
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Resize_2D>
+            Declare__Streams()
+                .Downstream.Receiving<SA__Resize_2D>
                 (
                     Private_Handle_Resize_2D__Camera
-                );
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Render_Begin>
+                )
+                .Downstream.Receiving<SA__Render_Begin>
                 (
                     Private_Handle_Render__Camera
                 );

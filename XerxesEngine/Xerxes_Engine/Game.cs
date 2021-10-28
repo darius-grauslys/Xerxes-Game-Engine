@@ -5,7 +5,7 @@ using System.IO;
 using OpenTK.Graphics;
 using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
 using Xerxes_Engine.Engine_Objects;
-using Xerxes_Engine.Systems.OpenTK_Input;
+using Xerxes_Engine.Exports.Input;
 using OpenTK.Input;
 
 namespace Xerxes_Engine
@@ -63,27 +63,21 @@ namespace Xerxes_Engine
             _Game__EXPORTS =
                 new Export_Dictionary();
 
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Associate_Game>();
-            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
-                <SA__Associate_Game>();
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Update>();
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Render_Begin>();
-            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
-                <SA__Render_Begin>();
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Render>();
-            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
-                <SA__Render_End>();
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Resize_2D>();
+            Declare__Streams()
+                .Downstream.Extending<SA__Associate_Root>()
+                .Upstream  .Extending<SA__Associate_Root>()
+                .Downstream.Extending<SA__Update>()
+                .Downstream.Extending<SA__Render_Begin>()
+                .Upstream  .Extending<SA__Render_Begin>()
+                .Downstream.Extending<SA__Render>()
+                .Upstream  .Extending<SA__Render_End>()
+                .Downstream.Extending<SA__Resize_2D>()
 
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Input_Mouse_Button>();
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Input_Mouse_Move>();
+                .Downstream.Extending<SA__Input_Mouse_Button>()
+                .Downstream.Extending<SA__Input_Mouse_Move>()
+
+                .Downstream.Extending<SA__Input_Key_Down>()
+                .Downstream.Extending<SA__Input_Key_Up>();
 
             Game__GAME_WINDOW__Internal = 
                 new GameWindow
@@ -127,15 +121,6 @@ namespace Xerxes_Engine
             Private_Hook__To_Game_Window__Game();
         }
 
-        internal override void Internal_Handle__Sealed__Xerxes_Engine_Object()
-        {
-            bool success =
-                Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
-                <SA__Associate_Game>(new SA__Associate_Game(-1,-1, this));
-
-            Log.Internal_Write__Verbose__Log("game seal success: {0}", this, success);
-        }
-
         public void Declare__Export__Game<T>
         (
             T export
@@ -169,20 +154,35 @@ namespace Xerxes_Engine
                 return;
             }
 
-            Private_Invoke__Global__Game
-            (
-                new SA__Associate_Game(0,0,this)
-            );
+            SA__Associate_Root e = 
+                new SA__Associate_Root
+                (
+                    -1,-1,
+                    Game__DIRECTORY__BASE,
+                    Game__DIRECTORY__ASSETS,
+                    Game__DIRECTORY__SHADERS,
+
+                    Game__Window_Width,
+                    Game__Window_Height,
+
+                    Internal_Get__Shaders__Game()
+                );
+
+            Invoke__Ascending
+                (e);
+
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADING, this);
+            Handle_Load__Content__Game();
+            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADED, this);
+
+            Invoke__Descending
+                (e);
 
             Log.Internal_Write__Info__Log
             (
                 Log.INFO__GAME__RUN_INVOKED,
                 this
             );
-
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADING, this);
-            Handle_Load__Content__Game();
-            Log.Internal_Write__Verbose__Log(Log.VERBOSE__GAME__CONTENT_LOADED, this);
 
             Game__GAME_WINDOW__Internal.Run();
         }
@@ -201,6 +201,9 @@ namespace Xerxes_Engine
             Game__GAME_WINDOW__Internal.MouseDown += Private_Handle__Mouse_Down__Game;
             Game__GAME_WINDOW__Internal.MouseUp   += Private_Handle__Mouse_Up__Game;
             Game__GAME_WINDOW__Internal.MouseMove += Private_Handle__Mouse_Move__Game;
+
+            Game__GAME_WINDOW__Internal.KeyDown += Private_Handle__Key_Down__Game;
+            Game__GAME_WINDOW__Internal.KeyUp += Private_Handle__Key_Up__Game;
         }
 
         private string Private_Validate__Directory__Game
@@ -266,7 +269,7 @@ namespace Xerxes_Engine
                     Game__Window_Height
                 );
 
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
                 (resize_2D_Argument);
         }
 
@@ -285,7 +288,7 @@ namespace Xerxes_Engine
                     e.Time
                 );
 
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
                 <SA__Update>(frame_Argument);
         }
 
@@ -301,13 +304,13 @@ namespace Xerxes_Engine
             SA__Render_Begin render_Begin =
                 new SA__Render_Begin(frame_Argument);
 
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
                 (render_Begin);
-            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+            Invoke__Ascending
                 (render_Begin);
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
                 (frame_Argument);
-            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+            Invoke__Ascending
                 (new SA__Render_End(frame_Argument));
             
             Game__GAME_WINDOW__Internal.SwapBuffers();
@@ -315,10 +318,10 @@ namespace Xerxes_Engine
 
         private void Private_Handle__Load_Window__Game(object sender, EventArgs e)
         {
-            Protected_Handle__Load__Game();
+            Handle__Load__Game();
         }
 
-        protected virtual void Protected_Handle__Load__Game()
+        protected virtual void Handle__Load__Game()
         {
 
         }
@@ -338,7 +341,7 @@ namespace Xerxes_Engine
             );
         }
 
-        protected virtual void Protected_Handle__Unload__Game()
+        protected virtual void Handle__Unload__Game()
         {
 
         }
@@ -357,7 +360,7 @@ namespace Xerxes_Engine
                     e
                 );
 
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
             (input_Mouse_Move);
         }
 
@@ -375,7 +378,7 @@ namespace Xerxes_Engine
                     e
                 );
 
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
             (input_Mouse_Button);
         }
 
@@ -393,8 +396,44 @@ namespace Xerxes_Engine
                     e
                 );
 
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
             (input_Mouse_Button);
+        }
+
+        private void Private_Handle__Key_Down__Game
+        (
+            object sender,
+            KeyboardKeyEventArgs e
+        )
+        {
+            SA__Input_Key_Down input_Key_Down =
+                new SA__Input_Key_Down
+                (
+                    _Game__UPDATE_TIMER.Timer__Time_Elapsed,
+                    _Game__UPDATE_TIMER.Timer__Delta_Time,
+                    e
+                );
+
+            Invoke__Descending
+            (input_Key_Down);
+        }
+
+        private void Private_Handle__Key_Up__Game
+        (
+            object sender,
+            KeyboardKeyEventArgs e
+        )
+        {
+            SA__Input_Key_Up input_Key_Up =
+                new SA__Input_Key_Up
+                (
+                    _Game__UPDATE_TIMER.Timer__Time_Elapsed,
+                    _Game__UPDATE_TIMER.Timer__Delta_Time,
+                    e
+                );
+
+            Invoke__Descending
+            (input_Key_Up);
         }
 
         private void Private_Invoke__Global__Game<T>
@@ -402,9 +441,9 @@ namespace Xerxes_Engine
             T streamline_Argument
         ) where T : Streamline_Argument
         {
-            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+            Invoke__Ascending
                 (streamline_Argument);
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
                 (streamline_Argument);
         }
 

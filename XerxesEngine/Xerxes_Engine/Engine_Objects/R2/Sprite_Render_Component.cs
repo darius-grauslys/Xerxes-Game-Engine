@@ -11,18 +11,21 @@
         public Sprite_Render_Component() 
             : base()
         {
-            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
-                <SA__Get_Sprite>
-                ();
-
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Draw>
+            Declare__Streams()
+                .Upstream  .Extending<SA__Get_Sprite>()
+                .Downstream.Receiving<SA__Draw>
                 (
-                    Private_Handle__Draw__Sprite_Render_Component
-                );
+                    Private_Draw__Sprite_Render_Component
+                )
+                .Downstream.Receiving<SA__Set_Sprite>
+                (
+                    Private_Set__Sprite__Sprite_Render_Component
+                )
+                ;
         }
 
-        private void Private_Handle__Draw__Sprite_Render_Component(SA__Draw e)
+        private void Private_Draw__Sprite_Render_Component
+        (SA__Draw e)
         {
             Vertex_Object_Handle vertex_Object_Handle =
                 Sprite_Render_Component__Sprite__Protected
@@ -31,12 +34,14 @@
                 = vertex_Object_Handle;
         }
 
-        public void Set__Sprite__Sprite_Render_Component(Sprite_Handle sprite_Handle)
+        private void Private_Set__Sprite__Sprite_Render_Component
+        (SA__Set_Sprite e)
         {
-            Sprite_Render_Component__Active_Sprite = sprite_Handle;
+            Sprite_Render_Component__Active_Sprite = 
+                e.SA__Set_Sprite__Sprite_Handle;
 
-            //TODO: resolve sealing.
-            Private_Set__Sprite__Sprite_Render_Component();
+            if (Xerxes_Object_Base__Is_Rooted__Protected)
+                Private_Set__Sprite__Sprite_Render_Component();
         }
 
         private void Private_Set__Sprite__Sprite_Render_Component()
@@ -44,7 +49,7 @@
             SA__Get_Sprite e = new
                 SA__Get_Sprite(Sprite_Render_Component__Active_Sprite);
 
-            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+            Invoke__Ascending
                 (e);
 
             Sprite_Render_Component__Sprite__Protected =

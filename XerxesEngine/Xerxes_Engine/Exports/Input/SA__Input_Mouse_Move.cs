@@ -1,6 +1,6 @@
 using OpenTK.Input;
 
-namespace Xerxes_Engine.Systems.OpenTK_Input
+namespace Xerxes_Engine.Exports.Input
 {
     public sealed class SA__Input_Mouse_Move :
         SA__Input_Mouse

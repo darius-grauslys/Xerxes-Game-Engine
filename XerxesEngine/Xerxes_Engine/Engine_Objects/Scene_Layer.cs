@@ -19,19 +19,16 @@ namespace Xerxes_Engine.Engine_Objects
 
         public Scene_Layer()
         {
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Resize_2D>
+            Declare__Streams()
+                .Downstream.Receiving<SA__Resize_2D>
                 (
                     Private_Handle__Resize_2D__Scene_Layer
-                );
-
-            Protected_Declare__Upstream_Receiver__Xerxes_Engine_Object
-                <SA__Draw>
+                )
+                .Upstream  .Receiving<SA__Draw>
                 (
                     Private_Handle__Draw_Child__Scene_Layer
-                );
-            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
-                <SA__Draw>();
+                )
+                .Upstream  .Extending<SA__Draw>();
 
             _Scene_Layer__SCENE_OBJECTS = new List<Game_Object>();
         }
@@ -55,7 +52,7 @@ namespace Xerxes_Engine.Engine_Objects
         {
             e.Draw__Projection_Matrix__Internal =
                 _Scene_Layer__Layer_Matrix;
-            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+            Invoke__Ascending
                 (e);
         }
     }

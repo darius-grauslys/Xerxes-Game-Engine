@@ -1,23 +1,29 @@
 using Xerxes_Engine;
 using Xerxes_Engine.Engine_Objects;
-using Xerxes_Engine.Engine_Objects.R2;
 
 namespace Xerxes_UI
 {
     public class UI_Game_Object :
         Game_Object,
-        IXerxes_Descendant_Of<UI_Game_Object>,
-        IXerxes_Descendant_Of<Scene_Layer>,
         IXerxes_Ancestor_Of<UI_Game_Object>,
-        IXerxes_Ancestor_Of<Game_Object_Component>
+        IXerxes_Descendant_Of<UI_Game_Object>
     {
+        private UI_Anchor _UI_Game_Object__ANCHOR { get; }
+        private UI_Rect   _UI_Game_Object__RECT   { get; }
+
         public UI_Game_Object()
         {
-            Protected_Declare__Descending_Streamline__Xerxes_Engine_Object
-                <SA__UI_Transformed>();
+            Declare__Streams()
+                .Downstream.Receiving<SA__Resize_2D>
+                (
+                    Private_Translate__Resized_2D
+                )
+                .Downstream.Extending<SA__Resize_2D>();
+        }
 
-            Associate__Xerxes_Engine_Object(new Sprite_Render_Component());
-            Associate__Xerxes_Engine_Object(new UI_Transform_Component());
+        private void Private_Translate__Resized_2D
+        (SA__Resize_2D e)
+        {
         }
     }
 }

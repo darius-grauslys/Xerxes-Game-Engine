@@ -3,7 +3,7 @@ using System.IO;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Xerxes_Engine.Systems.Graphics
+namespace Xerxes_Engine.Exports.Graphics
 {
     public sealed class Render_Service : 
         Xerxes_Export 
@@ -59,24 +59,22 @@ namespace Xerxes_Engine.Systems.Graphics
 
         protected override void Handle__Associate_Game__Xerxes_Export 
         (
-            SA__Associate_Game e
+            SA__Associate_Root e
         )
         {
             Private_Establish__Orthographic_Projection__Render_Service
             (
-                e.SA__Associate_Game__GAME.Game__Window_Width, 
-                e.SA__Associate_Game__GAME.Game__Window_Height
+                e.Associate_Root__WIDTH,
+                e.Associate_Root__HEIGHT
             );
 
             _Render_Service__Shader_Directory = 
                 e
-                .SA__Associate_Game__GAME
-                .Game__DIRECTORY__SHADERS;
+                .Associate_Root__SHADER_DIRECTORY;
             
             string[] shaders =
                 e
-                .SA__Associate_Game__GAME
-                .Internal_Get__Shaders__Game();
+                .Associate_Root__SHADERS__Internal;
 
             Private_Load__Shaders__Render_Service
             (

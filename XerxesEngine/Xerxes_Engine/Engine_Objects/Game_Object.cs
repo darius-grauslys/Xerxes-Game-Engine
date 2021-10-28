@@ -12,17 +12,14 @@
         public Game_Object
         ()
         {
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Render>
+            Declare__Streams()
+                .Downstream.Receiving<SA__Render>
                 (
-                    Private__Handle_Render__Game_Object
-                );
+                    Private_Mediate__Draw__Game_Object
+                )
+                .Downstream.Extending<SA__Draw>()
+                .Upstream  .Extending<SA__Draw>();
 
-            // Declare draw mediator channel between associated components.
-            Protected_Declare__Downstream_Extender__Xerxes_Engine_Object
-                <SA__Draw>();
-            Protected_Declare__Upstream_Extender__Xerxes_Engine_Object
-                <SA__Draw>();
         }
 
         /// <summary>
@@ -31,15 +28,15 @@
         /// Afterwards, sends the mediated argument upstream
         /// towards Render_Service.
         /// </summary>
-        private void Private__Handle_Render__Game_Object(SA__Render e)
+        private void Private_Mediate__Draw__Game_Object(SA__Render e)
         {
             SA__Draw streamline_Argument_Draw =
                 new SA__Draw(e);
 
             // Perform draw mediation, and send upstream to Render_Service.
-            Protected_Invoke__Descending_Extender__Xerxes_Engine_Object
+            Invoke__Descending
                 (streamline_Argument_Draw);
-            Protected_Invoke__Ascending_Extender__Xerxes_Engine_Object
+            Invoke__Ascending
                 (streamline_Argument_Draw);
         }
     }

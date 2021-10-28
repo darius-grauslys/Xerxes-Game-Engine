@@ -1,4 +1,6 @@
-﻿namespace Xerxes_Engine.Systems.Graphics.R2
+﻿using OpenTK;
+
+namespace Xerxes_Engine.Exports.Graphics.R2
 {
     /// <summary>
     /// Creates and records Vertex_Objects. From here,
@@ -41,11 +43,10 @@
             Vertex_Object_Handle voh =
                 Private_Declare__Vertex_Object__Vertex_Object_Library
                 (
-                    e.Declare_Vertex_Object__TEXTURE_R2__Internal
+                    e
                 );
 
-            e.Declare_Vertex_Object__Vertex_Object_Handles__Internal =
-                new Vertex_Object_Handle[] {voh};
+            e.Declare_Vertex_Object__Vertex_Object_Handle__Internal = voh;
         }
 
         /// <summary>
@@ -55,20 +56,50 @@
         /// </summary>
         private Vertex_Object_Handle Private_Declare__Vertex_Object__Vertex_Object_Library
         (
-            Texture_R2 texture_R2
+            SA__Declare_Vertex_Object e
         )
         {
-            Vertex[] vertices = 
-                Private_Extract__Splice
-                (
-                    texture_R2.Width,
-                    texture_R2.Height,
-                    texture_R2.Width,
-                    texture_R2.Height,
-                    0, 0
-                );
+            Texture_R2 texture_R2 =
+                e.Declare_Vertex_Object__TEXTURE_R2__Internal;
 
-            Vertex_Object vertex_Object = new Vertex_Object(vertices, texture_R2);
+            Integer_Vector_2[] batchIndices = 
+                e
+                .Declare_Vertex_Object__BATCH_INDEX__Internal 
+                ?? 
+                new Integer_Vector_2[] { new Integer_Vector_2() };
+            Integer_Vector_2[] batchPositions = 
+                e
+                .Declare_Vertex_Object__BATCH_POSITIONS__Internal
+                ??
+                new Integer_Vector_2[] { new Integer_Vector_2() };
+
+            float subWidth = e.Declare_Vertex_Object__SPLICE_WIDTH__Internal;
+            float subHeight = e.Delcare_Vertex_Object__SPLICE_HEIGHT__Internal;
+
+            Vertex[] batch = new Vertex[VERTEX_OBJECT_LIBRARY__BASE_VERTEX_COUNT * batchIndices.Length];
+
+            for(int i=0;i<batchIndices.Length;i++)
+            {
+                Integer_Vector_2 ivec = batchIndices[i];
+                Vector2 ipos = new Vector2(subWidth * batchPositions[i].X, subHeight * batchPositions[i].Y);
+                Vertex[] vertices = 
+                    Private_Extract__Splice
+                    (
+                        texture_R2.Width,
+                        texture_R2.Height,
+                        subWidth,
+                        subHeight,
+                        ivec.Y, ivec.X,
+                        ipos.X, ipos.Y
+                    );
+                for(int j=0;j<vertices.Length;j++)
+                {
+                    batch[i*VERTEX_OBJECT_LIBRARY__BASE_VERTEX_COUNT + j]
+                        = vertices[j];
+                }
+            }
+
+            Vertex_Object vertex_Object = new Vertex_Object(batch, texture_R2);
 
             Vertex_Object_Handle vertex_Object_Handle =
                 _Vertex_Object_Library__VERTEX_OBJECT_DICTIONARY
@@ -79,199 +110,6 @@
 
             return vertex_Object_Handle;
         }
-
-#region Sprite Sheeting
-        public Vertex_Object_Handle[] Splice__Into_New_Vertex_Objects__Vertext_Object_Library
-        (
-            Texture_R2 texture_R2,
-            float subWidth,
-            float subHeight,
-            int? nullabledCountConstraint = null
-        )
-        {
-            //constraint subWidth, and subHeight to not be 0.
-            bool isInvalidSubLengths =
-                Private_Check_If__Sub_Lengths_Are_Invalid__Vertex_Object_Library
-                (
-                    texture_R2.Width,
-                    texture_R2.Height,
-                    subWidth,
-                    subHeight
-                );
-
-            if (isInvalidSubLengths)
-                return null; //TODO: Return default.
-
-            int rowLength = (int)(texture_R2.Width / subWidth); 
-            int count = 
-                Private_Validate__Vertex_Count__Vertex_Object_Library
-                (
-                    texture_R2.Width,
-                    texture_R2.Height,
-                    subWidth,
-                    subHeight,
-                    nullabledCountConstraint
-                );
-
-            Vertex_Object[] vertex_Objects =
-                Private_Splice__Into_New_Vertex_Objects
-                (
-                    texture_R2,
-                    subWidth,
-                    subHeight,
-                    count,
-                    rowLength
-                );
-
-            Vertex_Object_Handle[] vertex_Object_Handles =
-                _Vertex_Object_Library__VERTEX_OBJECT_DICTIONARY
-                .Internal_Declare__Vertex_Objects__Vertex_Object_Dictionary
-                (
-                    vertex_Objects
-                );
-
-            return vertex_Object_Handles;
-        }
-
-        private bool Private_Check_If__Sub_Lengths_Are_Invalid__Vertex_Object_Library
-        (
-            float texture_R2_Width,
-            float texture_R2_Height,
-            float subWidth,
-            float subHeight
-        )
-        {
-            bool isInvalidWidth = 
-                Tools.Math_Helper
-                .Check_If__Obeys_Clamp__Positive_Float
-                (
-                    subWidth,
-                    texture_R2_Width
-                );
-            bool isInvalidHeight =
-                Tools.Math_Helper
-                .Check_If__Obeys_Clamp__Positive_Float
-                (
-                    subHeight,
-                    texture_R2_Height
-                );
-            
-            if (isInvalidWidth)
-                Private_Log_Error__Invalid_Sub_Length
-                (
-                    this, 
-                    VERTEX_OBJECT_LIBRARY__SUB_LENGTH_STRING__WIDTH, 
-                    subWidth
-                );
-            if (isInvalidHeight)
-                Private_Log_Error__Invalid_Sub_Length
-                (
-                    this,
-                    VERTEX_OBJECT_LIBRARY__SUB_LENGTH_STRING__HEIGHT,
-                    subHeight
-                );
-
-            return isInvalidWidth || isInvalidHeight;
-        }
-
-        private int Private_Validate__Vertex_Count__Vertex_Object_Library
-        (
-            float texture_R2_Width,
-            float texture_R2_Height,
-            float subWidth,
-            float subHeight,
-            int? nullabledCountConstraint
-        )
-        {
-            // Divide area of texture_R2, with area of sub-lengths. Cast to int.
-            int count = 
-                (int)Tools.Math_Helper
-                .Calculate__Safe_Area_Ratio
-                (
-                    texture_R2_Width, texture_R2_Height,
-                    subWidth, subHeight
-                );
-
-            // Is true if countConstraint was not null but still invalid.
-            bool isInvalidCountConstraint;
-            // Constrain the nullabledCountConstraint.
-            count = 
-                Tools.Math_Helper
-                .Clamp__Positive_Integer
-                (
-                    nullabledCountConstraint ?? count, 
-                    out isInvalidCountConstraint,
-                    count
-                );
-
-            if (isInvalidCountConstraint)
-            {
-                Log.Internal_Write__Warning__Log
-                (
-                    Log.WARNING__VERTEX_OBJECT_LIBRARY__COUNT_CONSTRAINT_INVALID_2,
-                    this,
-                    nullabledCountConstraint,
-                    count
-                );
-            }
-
-            return count;
-        }
-
-        private static Vertex_Object[] Private_Splice__Into_New_Vertex_Objects
-        (
-            Texture_R2 texture_R2,
-            float subWidth,
-            float subHeight,
-            int count,
-            int rowLength
-        )
-        {
-            Vertex_Object[] vertex_Objects = new Vertex_Object[count];
-
-            Vertex[] vertices;
-            int row, col;
-            for(int i=0;i<count;i++)
-            {
-                row = count / rowLength; 
-                col = count % rowLength;
-
-                vertices =
-                    Private_Extract__Splice
-                    (
-                        texture_R2.Width,
-                        texture_R2.Height,
-                        subWidth,
-                        subHeight,
-                        row, col
-                    );
-
-                vertex_Objects[i] = new Vertex_Object(vertices, texture_R2);
-            }
-
-            return vertex_Objects;
-        }
-#endregion
-
-#region Sprite Batching
-        private Vertex_Object_Handle Create__Batched_Vertex_Object__Vertext_Object_Library
-        (
-        )
-        { return null; } //TODO: Implement
-#endregion
-
-#region Internal Gathering
-        internal Vertex_Object[] Internal_Get__Vertex_Objects__Vertex_Object_Library
-        (
-            Vertex_Object_Handle[] vertex_Object_Handles
-        )
-            => 
-            _Vertex_Object_Library__VERTEX_OBJECT_DICTIONARY
-            .Internal_Get__Vertex_Objects__Vertex_Object_Dictionary
-            (
-                vertex_Object_Handles
-            );
-#endregion
 
 #region Static Extraction
         /// <summary>

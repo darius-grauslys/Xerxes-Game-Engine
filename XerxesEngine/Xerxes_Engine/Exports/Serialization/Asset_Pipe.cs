@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.IO;
 
-namespace Xerxes_Engine.Systems.Serialization
+namespace Xerxes_Engine.Exports.Serialization
 {
     public sealed class Asset_Pipe : 
         Xerxes_Export
@@ -22,12 +22,11 @@ namespace Xerxes_Engine.Systems.Serialization
         }
 
         protected override void Handle__Associate_Game__Xerxes_Export
-        (SA__Associate_Game e)
+        (SA__Associate_Root e)
         {
             _Asset_Pipe__Asset_Directory =
                 e
-                .SA__Associate_Game__GAME
-                .Game__DIRECTORY__ASSETS;
+                .Associate_Root__ASSET_DIRECTORY;
         }
 
         #region Texture2Ds

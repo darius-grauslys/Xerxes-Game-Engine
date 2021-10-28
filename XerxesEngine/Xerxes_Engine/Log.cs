@@ -108,10 +108,14 @@ namespace Xerxes_Engine
                                                                     + "Tried to associate to:{0} - is already associated to {1}!",
         ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION             = "Cannot be associated to! I am sealed!",
         ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C= "Failed to declare streamline: {0}, under context [{1}]!",
-        ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2           = "Engine objects {0} -> {1} failed to associate!",
+        ERROR__XERXES_OBJECT_BASE__FAILED_TO_SUBSCRIBE_STREAMLINE_2C= "Failed to subscribe onto streamline: {0}, under context [{1}]!",
         ERROR__XERXES_ENGINE_OBJECT__UNLINKED_MANDATORY_STREAMLINE_2= "Mandatory streamline:{0} did not find a destination during association to:{1}!",
 
-        ERROR__EXPORT_DICTIONARY__DUPLICATE_DECLARATION_1             = "Duplicate export declaration of {0} detected!",
+        ERROR__XERXES_ANCESTRY__FAILED_ASSOCIATION_2                = "Engine objects {0} -> {1} failed to associate!",
+        ERROR__XERXES_ANCESTRY__FAILED_TO_FIND_ANCESTOR_1           = "Failed to find {0} during hierarchy declaration!",
+        ERROR__XERXES_ANCESTRY__FAILED_TO_FIND_DESCENDANT_1         = "Failed to find {0} during hierarchy declaration!",
+
+        ERROR__EXPORT_DICTIONARY__DUPLICATE_DECLARATION_1           = "Duplicate export declaration of {0} detected!",
 
         ERROR__XERXES_EXPORT__DECLARED_BUT_NOT_ROOTED_1             = "Tried to declare exportline receiver of type {0} but is not rooted!",
 

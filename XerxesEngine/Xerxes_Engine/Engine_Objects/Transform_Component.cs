@@ -8,8 +8,8 @@ namespace Xerxes_Engine.Engine_Objects
 
         public Transform_Component()
         {
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Draw>
+            Declare__Streams()
+                .Downstream.Receiving<SA__Draw>
                 (
                     Private__Handle_Draw__Transform_Component
                 );

@@ -14,8 +14,8 @@
 
         public Scene()
         {
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Resize_2D>
+            Declare__Streams()
+                .Downstream.Receiving<SA__Resize_2D>
                 (
                     Private_Handle__2D_Resize__Scene
                 );

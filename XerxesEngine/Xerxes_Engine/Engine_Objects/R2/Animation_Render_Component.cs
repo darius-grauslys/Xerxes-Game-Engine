@@ -6,8 +6,8 @@
 
         public Animation_Render_Component(Animation_Schematic schematic = null) 
         {
-            Protected_Declare__Downstream_Receiver__Xerxes_Engine_Object
-                <SA__Update>
+            Declare__Streams()
+                .Downstream.Receiving<SA__Update>
                 (
                     Private_Handle__Update__Animation_Render_Component
                 );

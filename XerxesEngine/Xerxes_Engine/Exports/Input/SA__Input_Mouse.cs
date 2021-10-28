@@ -1,6 +1,6 @@
 using OpenTK.Input;
 
-namespace Xerxes_Engine.Systems.OpenTK_Input
+namespace Xerxes_Engine.Exports.Input
 {
     public class SA__Input_Mouse :
         Streamline_Argument

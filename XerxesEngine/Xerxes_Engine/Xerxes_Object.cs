@@ -27,5 +27,16 @@ namespace Xerxes_Engine
                 return;
             }
         }
+
+        protected Xerxes_Ancestry<T> Declare__Hierarchy()
+        {
+            Xerxes_Ancestry<T> hierarchy = 
+                new Xerxes_Ancestry<T>(this);
+
+            Xerxes_Linker
+                .Internal_Set__Declaration(this, hierarchy);
+
+            return hierarchy;
+        }
     }
 }

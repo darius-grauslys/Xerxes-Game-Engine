@@ -2,7 +2,7 @@ namespace Xerxes_Engine
 {
     public sealed class Xerxes_Ancestry<T> :
         Xerxes_Ancestry_Node
-        where T : Xerxes_Object<T>
+        where T : Xerxes_Object_Base 
     {
         public Xerxes_Ancestry
         (
@@ -81,7 +81,11 @@ namespace Xerxes_Engine
                     return node as Xerxes_Ancestry<A>;
             }
 
-            //TODO: Log failure to find descendant.
+            Private_Log_Error__Failure_To_Find_Descendant
+            (
+                this,
+                descendant
+            );
             return null;
         }
 
@@ -98,7 +102,11 @@ namespace Xerxes_Engine
                 ancesterNode = ancesterNode.Xerxes_Ancestry__ANCESTOR_NODE__Internal;
             }
 
-            //TODO: Log failure to find ancestor.
+            Private_Log_Error__Failure_To_Find_Ancestor
+            (
+                this,
+                ancestor
+            );
             return null;
         }
 
@@ -112,7 +120,7 @@ namespace Xerxes_Engine
             return !thisIsAncestorOfA;
         }
 
-        private Xerxes_Ancestry_Node Private_Associate__Descendant__Xerxes_Ancestry<A>
+        private Xerxes_Ancestry<A> Private_Associate__Descendant__Xerxes_Ancestry<A>
         (
             Xerxes_Object<A> descendant
         ) where A : Xerxes_Object<A>, IXerxes_Descendant_Of<T>
@@ -127,12 +135,12 @@ namespace Xerxes_Engine
                 return null;
             }
             
-            Xerxes_Ancestry_Node globalDeclaration =
+            Xerxes_Ancestry<A> globalDeclaration =
                 Xerxes_Linker
                 .Internal_Get__Global_Declaration
                 (
                     descendant
-                );
+                ) as Xerxes_Ancestry<A>;
 
             if (globalDeclaration != null)
             {
@@ -149,8 +157,8 @@ namespace Xerxes_Engine
                 this,
                 descendant
             );
-            Xerxes_Ancestry_Node node =
-                new Xerxes_Ancestry_Node(this, descendant);
+            Xerxes_Ancestry<A> node =
+                new Xerxes_Ancestry<A>(this, descendant);
 
             return node;
         }
@@ -193,10 +201,40 @@ namespace Xerxes_Engine
             Log.Internal_Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
-                Log.ERROR__XERXES_ENGINE_OBJECT__FAILED_ASSOCIATION_2,
+                Log.ERROR__XERXES_ANCESTRY__FAILED_ASSOCIATION_2,
                 ancestryNode,
                 ancestryNode.Xerxes_Ancestry_Node__TREE_MEMBER__Internal,
                 offendingDescendant
+            );
+        }
+
+        private static void Private_Log_Error__Failure_To_Find_Descendant
+        (
+            Xerxes_Ancestry<T> ancestryNode,
+            Xerxes_Object_Base missingDescendant
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__XERXES_ANCESTRY__FAILED_TO_FIND_DESCENDANT_1,
+                ancestryNode,
+                missingDescendant
+            );
+        }
+
+        private static void Private_Log_Error__Failure_To_Find_Ancestor
+        (
+            Xerxes_Ancestry<T> ancestryNode,
+            Xerxes_Object_Base missingAncestor
+        )
+        {
+            Log.Internal_Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__XERXES_ANCESTRY__FAILED_TO_FIND_ANCESTOR_1,
+                ancestryNode,
+                missingAncestor
             );
         }
 #endregion

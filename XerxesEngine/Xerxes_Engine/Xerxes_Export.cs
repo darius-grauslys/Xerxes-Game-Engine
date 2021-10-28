@@ -29,7 +29,7 @@ namespace Xerxes_Engine
                 exportline_Dictionary;
 
             Protected_Declare__Catch__Xerxes_Export
-                <SA__Associate_Game>
+                <SA__Associate_Root>
                 (
                     Handle__Associate_Game__Xerxes_Export
                 );
@@ -50,7 +50,7 @@ namespace Xerxes_Engine
 
         protected virtual void Handle__Associate_Game__Xerxes_Export
         (
-            SA__Associate_Game e
+            SA__Associate_Root e
         )
         {
             
