@@ -9,7 +9,7 @@ namespace Xerxes_Engine
     /// Handles repeating type-keys by logging them
     /// as errors. T: Type-Key, V: Value
     /// </summary>
-    internal class Distinct_Type_Dictionary<T, Y> where T : class where Y : class
+    public class Distinct_Type_Dictionary<T, Y> where T : class where Y : class
     {
         private Dictionary<Type,Y> _Distinct_Type_Dictionary__DICTIONARY { get; }
 
@@ -45,7 +45,7 @@ namespace Xerxes_Engine
         internal IEnumerable<Type> Internal_Get__Types__Distinct_Typed_Dictionary()
             => _Distinct_Type_Dictionary__DICTIONARY.Keys.ToArray();
 
-        internal Distinct_Type_Dictionary()
+        protected Distinct_Type_Dictionary()
         {
             _Distinct_Type_Dictionary__DICTIONARY = new Dictionary<Type,Y>();
         }

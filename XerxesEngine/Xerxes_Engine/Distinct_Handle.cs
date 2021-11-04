@@ -14,7 +14,7 @@ namespace Xerxes_Engine
         /// <summary/>
         private object _Distinct_Handle__FACTORY_SOURCE { get; }
 
-        internal Distinct_Handle(string internalStringHandle, object source)
+        protected Distinct_Handle(string internalStringHandle, object source)
         {
             _Distinct_Handle__FORMATTED_STRING_HANDLE = internalStringHandle;
             _Distinct_Handle__FACTORY_SOURCE = source;

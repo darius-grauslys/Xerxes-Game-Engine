@@ -40,24 +40,26 @@ namespace Xerxes_Engine
                 .Add(xerxes_Object_Base, hierarchy);
         }
         
-        internal static bool Internal_Seal__Game
+        internal static bool Internal_Seal__Root<A,D>
         (
-            Game game,
-            Export_Dictionary game_Exports
+            Root<A,D> root,
+            Export_Dictionary exports
         )
+        where A : SA__Associate_Root
+        where D : SA__Dissassociate_Root
         {
             bool rootDoesNotHave_DefinedDescendants =
                 !_Xerxes_Linker__GLOBAL_ANCESTRIES
-                .ContainsKey(game);
+                .ContainsKey(root);
 
             if (rootDoesNotHave_DefinedDescendants)
                 return false;
 
             Xerxes_Ancestry_Node rootNode =
-                _Xerxes_Linker__GLOBAL_ANCESTRIES[game];
+                _Xerxes_Linker__GLOBAL_ANCESTRIES[root];
 
             Xerxes_Linker_Context linker_Context =
-                new Xerxes_Linker_Context(game_Exports);
+                new Xerxes_Linker_Context(exports);
 
             Private_Seal__Recursively
             (
@@ -88,8 +90,9 @@ namespace Xerxes_Engine
                 treeMemberObject,
                 linker_Context
             );
-            
+
             treeMemberObject.Internal_Root__Xerxes_Engine_Object();
+
             if (treeMember.Xerxes_Ancestry_Node__DESCENDANTS__Internal.Count == 0)
                 return;
 
@@ -213,7 +216,7 @@ namespace Xerxes_Engine
             Xerxes_Object_Base xerxes_Object_Base
         )
         {
-            Log.Internal_Write__Verbose__Log
+            Log.Write__Verbose__Log
             (
                 Log.VERBOSE__XERXES_LINKER__SEALING_OBJECT_1,
                 xerxes_Object_Base,

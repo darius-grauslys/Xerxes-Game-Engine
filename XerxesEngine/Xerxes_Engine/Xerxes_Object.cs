@@ -11,32 +11,46 @@ namespace Xerxes_Engine
     /// Calls to Update and Render are internalized. Exposure to
     /// handling these calls are given via protected virtual definitions.
     /// </summary>
-    public class Xerxes_Object<T> : Xerxes_Object_Base where T : Xerxes_Object_Base
+    public class Xerxes_Object<TThis> : Xerxes_Object_Base where TThis : Xerxes_Object_Base, new()
     {
         public Xerxes_Object() 
         {
-            if (!(this is T))
+            if (!(this is TThis))
             {
-                Log.Internal_Write__Log
+                Log.Write__Log
                 (
                     Log_Message_Type.Error__Critical,
                     Log.CRITICAL__XERXES_ENGINE_OBJECT__ILLEGAL_DEFINITION_1,
                     this,
-                    typeof(T)
+                    typeof(TThis)
                 );
                 return;
             }
         }
 
-        protected Xerxes_Ancestry<T> Declare__Hierarchy()
+        protected Xerxes_Ancestry<TThis> Declare__Hierarchy()
         {
-            Xerxes_Ancestry<T> hierarchy = 
-                new Xerxes_Ancestry<T>(this);
+            Xerxes_Ancestry<TThis> hierarchy = 
+                new Xerxes_Ancestry<TThis>(this);
 
             Xerxes_Linker
                 .Internal_Set__Declaration(this, hierarchy);
 
             return hierarchy;
+        }
+
+        protected void Declare__Ancestor<Xerxes_Ancestor>()
+        where Xerxes_Ancestor : Xerxes_Object_Base
+        {
+            Xerxes_Association_Rule_Dictionary
+                .Internal_Declare__Ruling(this, new Xerxes_Ancestry_Rule<Xerxes_Ancestor,TThis>());
+        }
+
+        protected void Declare__Descendant<Xerxes_Descendant>()
+        where Xerxes_Descendant : Xerxes_Object_Base
+        {
+            Xerxes_Association_Rule_Dictionary
+                .Internal_Declare__Ruling(this, new Xerxes_Ancestry_Rule<TThis,Xerxes_Descendant>());
         }
     }
 }

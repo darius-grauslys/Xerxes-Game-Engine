@@ -103,7 +103,7 @@ namespace Xerxes_Engine
             Log.Context__Declare_Streamline c
         )
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C,

@@ -11,46 +11,32 @@ namespace Xerxes_Engine
     /// Xerxes_Objects. They are used for interfacing to
     /// 3rd party libraries such as OpenTK.
     /// </summary>
-    public class Xerxes_Export
+    public class Xerxes_Export<A,D> :
+    Xerxes_Export_Base
+    where A : SA__Associate_Root
+    where D : SA__Dissassociate_Root
     {
-        private Streamline_Dictionary 
-            _Xerxes_Export__Game_Exportline_Dictionary__REFERENCE { get; set; } 
-
         protected Xerxes_Export()
         {
         }
 
-        internal void Internal_Root__Exportline_Dictionary__Xerxes_Export
-        (
-            Streamline_Dictionary exportline_Dictionary
-        )
+        internal override void Internal_Handle_Root__Exportline_Dictionary__Xerxes_Export_Base()
         {
-            _Xerxes_Export__Game_Exportline_Dictionary__REFERENCE =
-                exportline_Dictionary;
-
             Protected_Declare__Catch__Xerxes_Export
-                <SA__Associate_Root>
+                <A>
                 (
                     Handle__Associate_Game__Xerxes_Export
                 );
             Protected_Declare__Catch__Xerxes_Export
-                <SA__Dissassociate_Game>
+                <D>
                 (
                     Handle__Dissassociate_Game__Xerxes_Export
                 );
-
-            Handle__Rooted__Xerxes_Export();
-        }
-
-        protected virtual void Handle__Rooted__Xerxes_Export
-        ()
-        {
-
         }
 
         protected virtual void Handle__Associate_Game__Xerxes_Export
         (
-            SA__Associate_Root e
+            A e
         )
         {
             
@@ -58,7 +44,7 @@ namespace Xerxes_Engine
 
         protected virtual void Handle__Dissassociate_Game__Xerxes_Export
         (
-            SA__Dissassociate_Game e
+            D e
         )
         {
             
@@ -88,7 +74,7 @@ namespace Xerxes_Engine
         private Streamline<T> Private_Ensure__Exportline__Xerxes_Export<T>
         () where T : Streamline_Argument
         {
-            if (_Xerxes_Export__Game_Exportline_Dictionary__REFERENCE == null)
+            if (Xerxes_Export__Game_Exportline_Dictionary__Internal_REFERENCE == null)
             {
                 Private_Log_Error__Declaring_But_Not_Rooted
                 (
@@ -101,13 +87,13 @@ namespace Xerxes_Engine
             Streamline<T> exportline;
 
             bool hasExportline =
-                _Xerxes_Export__Game_Exportline_Dictionary__REFERENCE
+                Xerxes_Export__Game_Exportline_Dictionary__Internal_REFERENCE
                 .Internal_Check_If__Type_Exists__Streamline_Dictionary<T>();
 
             if (hasExportline)
             {
                 exportline =
-                    _Xerxes_Export__Game_Exportline_Dictionary__REFERENCE
+                    Xerxes_Export__Game_Exportline_Dictionary__Internal_REFERENCE
                     .Internal_Get__Streamline__Streamline_Dictionary<T>();
 
                 return exportline;
@@ -115,7 +101,7 @@ namespace Xerxes_Engine
 
             exportline = new Streamline<T>();
 
-            _Xerxes_Export__Game_Exportline_Dictionary__REFERENCE
+            Xerxes_Export__Game_Exportline_Dictionary__Internal_REFERENCE
                 .Internal_Declare__Streamline__Streamline_Dictionary
                 (exportline);
 
@@ -125,11 +111,11 @@ namespace Xerxes_Engine
 #region Static Logging
         private static void Private_Log_Error__Declaring_But_Not_Rooted
         (
-            Xerxes_Export export,
+            Xerxes_Export<A,D> export,
             Type exportlineType
         )
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_EXPORT__DECLARED_BUT_NOT_ROOTED_1,

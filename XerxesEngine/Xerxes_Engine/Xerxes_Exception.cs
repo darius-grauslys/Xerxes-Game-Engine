@@ -27,8 +27,7 @@ namespace Xerxes_Engine
             (
                 "{0} {{ {1} }}\n{2}",
                 Xerxes_Engine_Exception__STRING,
-                Exception__MESSAGE.ToString() ?? "",
-                StackTrace
+                Exception__MESSAGE.ToString() ?? ""
             );
         }
     }

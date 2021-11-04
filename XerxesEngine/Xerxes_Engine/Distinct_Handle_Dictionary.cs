@@ -10,7 +10,7 @@ namespace Xerxes_Engine
     /// in a dictionary. This keeps each handle unique.
     /// by keeping track of the number of equivalent handles.
     /// </summary>
-    internal abstract class Distinct_Handle_Dictionary<H,T> where H : Distinct_Handle
+    public abstract class Distinct_Handle_Dictionary<H,T> where H : Distinct_Handle
     {
         private const string _DISTINCT_HANDLE_DICTIONARY__DEFAULT_HANDLE_FORMAT = "{0}_{1}";
 
@@ -61,7 +61,7 @@ namespace Xerxes_Engine
             _Distinct_Handle_Dictionary__DICTIONARY.Remove(handle);
         }
             
-        public Distinct_Handle_Dictionary(string format=null)
+        protected Distinct_Handle_Dictionary(string format=null)
         {
             _Distinct_Handle_Dictionary__HANDLE_FORMAT = Private_Validate__Handle_Format__Distinct_Handle_Dictionary(format);
 

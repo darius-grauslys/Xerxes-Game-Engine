@@ -1,7 +1,7 @@
 namespace Xerxes_Engine
 {
     internal sealed class Export_Dictionary :
-        Distinct_Type_Dictionary<Xerxes_Export,Xerxes_Export>
+        Distinct_Type_Dictionary<Xerxes_Export_Base, Xerxes_Export_Base>
     {
         internal Streamline_Dictionary
             Export_Dictionary__EXPORTLINES__Internal { get; }
@@ -15,7 +15,7 @@ namespace Xerxes_Engine
         internal bool Internal_Declare__Export__Export_Dictionary<T>
         (
             T export
-        ) where T : Xerxes_Export
+        ) where T : Xerxes_Export_Base 
         {
             bool success =
                 Protected_Define__Element__Distinct_Type_Dictionary<T>
@@ -46,10 +46,10 @@ namespace Xerxes_Engine
         private static void Private_Log_Error__Duplicate_Export_Declared
         (
             Export_Dictionary dictionary,
-            Xerxes_Export export
+            Xerxes_Export_Base export
         )
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__EXPORT_DICTIONARY__DUPLICATE_DECLARATION_1,

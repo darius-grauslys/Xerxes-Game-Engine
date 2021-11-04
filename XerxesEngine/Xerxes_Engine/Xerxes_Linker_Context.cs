@@ -257,7 +257,7 @@ namespace Xerxes_Engine
             string context
         )
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_LINKER_CONTEXT__UNCAUGHT_STREAMLINE_3C,
@@ -274,7 +274,7 @@ namespace Xerxes_Engine
             Type t
         )
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Infastructure,
                 Log.BUG__XERXES_LINKER_CONTEXT__INCOHERENT_CONTEXT_POP_1,

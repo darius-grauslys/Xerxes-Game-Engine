@@ -40,6 +40,12 @@ namespace Xerxes_Engine
             => new Xerxes_Stream_Context(this);
 
         protected bool Invoke__Descending<S>
+        () where S : Streamline_Argument, new()
+        {
+            return Invoke__Descending(new S());
+        }
+
+        protected bool Invoke__Descending<S>
         (
             S streamline_Argument
         ) where S : Streamline_Argument
@@ -49,6 +55,12 @@ namespace Xerxes_Engine
                 Xerxes_Object_Base__DOWNSTREAM__Internal,
                 streamline_Argument
             );
+        }
+
+        protected bool Invoke__Ascending<S>
+        () where S : Streamline_Argument, new()
+        {
+            return Invoke__Ascending(new S());
         }
 
         protected bool Invoke__Ascending<S>
@@ -76,12 +88,12 @@ namespace Xerxes_Engine
                     streamline_Argument
                 );
 
-            //TODO: Make this better
             if (!success)
             {
-                Log.Internal_Write__Verbose__Log
+                Log.Write__Log
                 (
-                    "Streamline {0} was not found.",
+                    Log_Message_Type.Error__Engine_Object,
+                    Log.ERROR__XERXES_ENGINE_OBJECT__STREAMLINE_NOT_FOUND_1,
                     this,
                     typeof(S).ToString()
                 );
@@ -149,7 +161,7 @@ namespace Xerxes_Engine
         {
             if (Xerxes_Object_Base__Is_Rooted__Protected)
             {
-                Log.Internal_Write__Warning__Log
+                Log.Write__Warning__Log
                 (
                     Log.WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING,
                     this
@@ -166,7 +178,7 @@ namespace Xerxes_Engine
             Xerxes_Object_Base obj
         ) 
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION,
@@ -182,7 +194,7 @@ namespace Xerxes_Engine
             Log.Context__Declare_Streamline type_context
         ) 
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C,
@@ -200,7 +212,7 @@ namespace Xerxes_Engine
             Log.Context__Stream context
         )
         {
-            Log.Internal_Write__Log
+            Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_OBJECT_BASE__FAILED_TO_SUBSCRIBE_STREAMLINE_2C,

@@ -11,10 +11,6 @@ namespace Xerxes_Engine
         (
             S streamline_Argument
         ) 
-        : base
-        (
-            streamline_Argument
-        )
         {
             Streamline_Argument_Mediated__ARGUMENT =
                 streamline_Argument;
