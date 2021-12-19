@@ -28,7 +28,7 @@ namespace Xerxes_Engine
             }
         }
 
-        protected Xerxes_Ancestry<TThis> Declare__Hierarchy()
+        protected internal Xerxes_Ancestry<TThis> Declare__Hierarchy()
         {
             Xerxes_Ancestry<TThis> hierarchy = 
                 new Xerxes_Ancestry<TThis>(this);
@@ -39,14 +39,14 @@ namespace Xerxes_Engine
             return hierarchy;
         }
 
-        protected void Declare__Ancestor<Xerxes_Ancestor>()
+        protected internal void Declare__Ancestor<Xerxes_Ancestor>()
         where Xerxes_Ancestor : Xerxes_Object_Base
         {
             Xerxes_Association_Rule_Dictionary
                 .Internal_Declare__Ruling(this, new Xerxes_Ancestry_Rule<Xerxes_Ancestor,TThis>());
         }
 
-        protected void Declare__Descendant<Xerxes_Descendant>()
+        protected internal void Declare__Descendant<Xerxes_Descendant>()
         where Xerxes_Descendant : Xerxes_Object_Base
         {
             Xerxes_Association_Rule_Dictionary

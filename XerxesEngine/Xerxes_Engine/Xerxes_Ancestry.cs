@@ -38,7 +38,7 @@ namespace Xerxes_Engine
 
             identifier = descendant.Xerxes_Object_Base__IDENTIFIER;
 
-            Private_Associate__Descendant__Xerxes_Ancestry<Descendant>
+            Internal_Associate__Descendant__Xerxes_Ancestry<Descendant>
             (
                 descendant
             );
@@ -51,7 +51,7 @@ namespace Xerxes_Engine
         {
             Descendant descendant = new Descendant();
 
-            Private_Associate__Descendant__Xerxes_Ancestry<Descendant>
+            Internal_Associate__Descendant__Xerxes_Ancestry<Descendant>
             (
                 descendant
             );
@@ -65,7 +65,7 @@ namespace Xerxes_Engine
             Descendant descendantAndNewFocus = new Descendant();
 
             Xerxes_Ancestry<Descendant> newFocus =
-                Private_Associate__Descendant__Xerxes_Ancestry<Descendant>
+                Internal_Associate__Descendant__Xerxes_Ancestry<Descendant>
                 (
                     descendantAndNewFocus
                 );
@@ -139,7 +139,7 @@ namespace Xerxes_Engine
             return !isValid ?? true;
         }
 
-        private Xerxes_Ancestry<A> Private_Associate__Descendant__Xerxes_Ancestry<A>
+        internal Xerxes_Ancestry<A> Internal_Associate__Descendant__Xerxes_Ancestry<A>
         (
             Xerxes_Object_Base descendant
         ) where A : Xerxes_Object_Base

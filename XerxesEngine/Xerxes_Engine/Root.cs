@@ -1,17 +1,18 @@
 namespace Xerxes_Engine
 {
-    internal interface IRoot {}
-    public class Root<A,D> :
-        Xerxes_Object<Root<A,D>>,
-        IRoot
+    //internal interface IRoot {}
+    public abstract class Root<Args,A,D> :
+        Xerxes_Object<Root<Args,A,D>>//,
+        //IRoot
+        where Args : SA__Configure_Root 
         where A : SA__Associate_Root
         where D : SA__Dissassociate_Root
     {
-        private Export_Dictionary _ROOT__EXPORTS { get; }
+        internal Export_Dictionary Internal_ROOT__EXPORTS { get; }
 
-        public Root()
+        protected Root()
         {
-            _ROOT__EXPORTS = new Export_Dictionary();
+            Internal_ROOT__EXPORTS = new Export_Dictionary();
 
             Declare__Streams()
                 .Downstream.Extending<A>()
@@ -20,20 +21,9 @@ namespace Xerxes_Engine
                 .Upstream  .Extending<D>();
         }
 
-        protected bool Seal(A e)
-        {
-            bool isSealed =
-                Xerxes_Linker
-                .Internal_Seal__Root(this, _ROOT__EXPORTS);
+        protected internal abstract A Configure(Args configuration_args);
 
-            if (!isSealed)
-                return false;
-
-            Invoke__Ascending
-                (e);
-
-            return true;
-        }
+        protected internal abstract void Execute();
 
         protected bool Declare__Export<E>()
         where E : Xerxes_Export_Base, new()
@@ -46,7 +36,7 @@ namespace Xerxes_Engine
                 export
             );
             bool success =
-                _ROOT__EXPORTS
+                Internal_ROOT__EXPORTS
                 .Internal_Declare__Export__Export_Dictionary(export);
 
             return success;

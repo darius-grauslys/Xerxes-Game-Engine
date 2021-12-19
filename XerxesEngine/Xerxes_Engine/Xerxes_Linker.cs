@@ -40,30 +40,28 @@ namespace Xerxes_Engine
                 .Add(xerxes_Object_Base, hierarchy);
         }
         
-        internal static bool Internal_Seal__Root<A,D>
+        internal static bool Internal_Seal
         (
-            Root<A,D> root,
-            Export_Dictionary exports
+            Xerxes_Object_Base xobj,
+            Export_Dictionary exports = null
         )
-        where A : SA__Associate_Root
-        where D : SA__Dissassociate_Root
         {
-            bool rootDoesNotHave_DefinedDescendants =
+            bool is_Not_Posessing_Defined_Descendants =
                 !_Xerxes_Linker__GLOBAL_ANCESTRIES
-                .ContainsKey(root);
+                .ContainsKey(xobj);
 
-            if (rootDoesNotHave_DefinedDescendants)
+            if (is_Not_Posessing_Defined_Descendants)
                 return false;
 
-            Xerxes_Ancestry_Node rootNode =
-                _Xerxes_Linker__GLOBAL_ANCESTRIES[root];
+            Xerxes_Ancestry_Node xobj_Node =
+                _Xerxes_Linker__GLOBAL_ANCESTRIES[xobj];
 
             Xerxes_Linker_Context linker_Context =
                 new Xerxes_Linker_Context(exports);
 
             Private_Seal__Recursively
             (
-                rootNode,
+                xobj_Node,
                 linker_Context
             );
 

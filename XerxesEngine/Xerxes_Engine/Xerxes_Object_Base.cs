@@ -40,16 +40,16 @@ namespace Xerxes_Engine
         }
 
 #region Streamline Management
-        protected Xerxes_Stream_Context Declare__Streams()
+        protected internal Xerxes_Stream_Context Declare__Streams()
             => new Xerxes_Stream_Context(this);
 
-        protected bool Invoke__Descending<S>
+        protected internal bool Invoke__Descending<S>
         () where S : Streamline_Argument, new()
         {
             return Invoke__Descending(new S());
         }
 
-        protected bool Invoke__Descending<S>
+        protected internal bool Invoke__Descending<S>
         (
             S streamline_Argument
         ) where S : Streamline_Argument
@@ -61,13 +61,13 @@ namespace Xerxes_Engine
             );
         }
 
-        protected bool Invoke__Ascending<S>
+        protected internal bool Invoke__Ascending<S>
         () where S : Streamline_Argument, new()
         {
             return Invoke__Ascending(new S());
         }
 
-        protected bool Invoke__Ascending<S>
+        protected internal bool Invoke__Ascending<S>
         (
             S streamline_Argument
         ) where S : Streamline_Argument

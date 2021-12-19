@@ -10,7 +10,7 @@ namespace Xerxes_Engine
 
         internal Xerxes_Linker_Context
         (
-            Export_Dictionary game_Exports
+            Export_Dictionary exports
         )
         {
             _Xerxes_Linker_Context__UPSTREAM_RECEIVING_STACK =
@@ -18,9 +18,12 @@ namespace Xerxes_Engine
             _Xerxes_Linker_Context__DOWNSTREAM_EXTENDING_STACK =
                 new Dictionary<Type, Stack<Streamline_Base>>();
 
+            if(exports == null)
+                return;
+
             // The export stream only has upstream catchers.
             IEnumerable<KeyValuePair<Type, Streamline_Base>> exportline_Table =
-                game_Exports
+                exports
                 .Export_Dictionary__EXPORTLINES__Internal
                 .Internal_Get__Entries__Distinct_Typed_Dictionary();
 
