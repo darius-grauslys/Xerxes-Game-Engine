@@ -4,6 +4,8 @@ namespace Xerxes_Engine
 {
     public class Xerxes_Object_Base
     {
+        public object Xerxes_Object_Base__IDENTIFIER { get; }
+
         internal Stream Xerxes_Object_Base__UPSTREAM__Internal { get; }
         internal Streamline_Dictionary 
             Xerxes_Object_Base__ASCENDING_RECEIVING_STREAMLINES__Internal
@@ -24,6 +26,8 @@ namespace Xerxes_Engine
 
         internal Xerxes_Object_Base()
         {
+            Xerxes_Object_Base__IDENTIFIER = new object();
+
             Xerxes_Object_Base__UPSTREAM__Internal = new Stream();
             Xerxes_Object_Base__DOWNSTREAM__Internal = new Stream();
         }
@@ -81,6 +85,20 @@ namespace Xerxes_Engine
             S streamline_Argument
         ) where S : Streamline_Argument
         {
+            if (streamline_Argument.Streamline_Argument__Consumed)
+            {
+                Private_Log_Error__Argument_Consumed_2
+                (
+                    this,
+                    typeof(S)
+                );
+                return false;
+            }
+
+            if (streamline_Argument.Streamline_Argument__Origin_Identifier == null)
+                streamline_Argument.Streamline_Argument__Origin_Identifier =
+                    Xerxes_Object_Base__IDENTIFIER;
+
             bool success =
                 stream
                 .Internal_Invoke__Streamline__Stream<S>
@@ -219,6 +237,21 @@ namespace Xerxes_Engine
                 obj,
                 streamlineType,
                 context
+            );
+        }
+
+        private static void Private_Log_Error__Argument_Consumed_2
+        (
+            Xerxes_Object_Base obj,
+            Type streamlineType
+        )
+        {
+            Log.Write__Log
+            (
+                Log_Message_Type.Error__Engine_Object,
+                Log.ERROR__XERXES_OBJECT_BASE__ARGUMENT_CONSUMED_2C,
+                obj,
+                streamlineType
             );
         }
 #endregion

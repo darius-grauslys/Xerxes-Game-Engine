@@ -27,6 +27,8 @@ namespace Xerxes_Engine
         WARNING__XERXES_ENGINE_OBJECT__REDUNDANT_SEALING            = "This engine object has already been sealed. Ignoring sealing invokation.",
         WARNING__XERXES_ENGINE_OBJECT__UNLINKED_STREAMLINE_2        = "The streamline:{0} did not find a destination during association to:{1}.",
 
+        WARNING__XERXES_LINKER_CONTEXT__UNCAUGHT_STREAMLINE_3C      = "Uncaught streamline:{1} of type {0}! Missing receiver on {2}!",
+
         WARNING__XERXES_CHILDLESS__REDUNDANT_CONSTRUCTION           = "This Xerxes_Childless object was constructed. There is no need to construct them.",
         
 #endregion
@@ -38,6 +40,7 @@ namespace Xerxes_Engine
         ERROR__XERXES_ENGINE_OBJECT__SEALED_ASSOCIATION             = "Cannot be associated to! I am sealed!",
         ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C= "Failed to declare streamline: {0}, under context [{1}]!",
         ERROR__XERXES_OBJECT_BASE__FAILED_TO_SUBSCRIBE_STREAMLINE_2C= "Failed to subscribe onto streamline: {0}, under context [{1}]!",
+        ERROR__XERXES_OBJECT_BASE__ARGUMENT_CONSUMED_2C             = "Streamline Argument {0} was invoked but is consumed!",
         ERROR__XERXES_ENGINE_OBJECT__UNLINKED_MANDATORY_STREAMLINE_2= "Mandatory streamline:{0} did not find a destination during association to:{1}!",
         ERROR__XERXES_ENGINE_OBJECT__STREAMLINE_NOT_FOUND_1         = "Streamline: {0} is not defined!",
 
@@ -48,8 +51,6 @@ namespace Xerxes_Engine
         ERROR__EXPORT_DICTIONARY__DUPLICATE_DECLARATION_1           = "Duplicate export declaration of {0} detected!",
 
         ERROR__XERXES_EXPORT__DECLARED_BUT_NOT_ROOTED_1             = "Tried to declare exportline receiver of type {0} but is not rooted!",
-
-        ERROR__XERXES_LINKER_CONTEXT__UNCAUGHT_STREAMLINE_3C        = "Uncaught streamline:{1} of type {0}! Missing receiver on {2}!",
 
         ERROR__PANIC                                                = "An unrecoverable error has occured.",
 #endregion

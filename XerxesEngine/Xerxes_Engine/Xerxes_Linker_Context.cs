@@ -53,7 +53,7 @@ namespace Xerxes_Engine
             
             if (!hasDeclaration)
             {
-                Private_Log_Error__Uncaught_Streamline
+                Private_Log_Warning__Uncaught_Streamline
                 (
                     this,
                     t,
@@ -92,7 +92,7 @@ namespace Xerxes_Engine
 
             if (!hasDeclaration)
             {
-                Private_Log_Error__Uncaught_Streamline
+                Private_Log_Warning__Uncaught_Streamline
                 (
                     this,
                     t,
@@ -249,7 +249,7 @@ namespace Xerxes_Engine
         }
 
 #region Static Logging
-        private static void Private_Log_Error__Uncaught_Streamline
+        private static void Private_Log_Warning__Uncaught_Streamline
         (
             Xerxes_Linker_Context source,
             Type t,
@@ -259,8 +259,8 @@ namespace Xerxes_Engine
         {
             Log.Write__Log
             (
-                Log_Message_Type.Error__Engine_Object,
-                Log.ERROR__XERXES_LINKER_CONTEXT__UNCAUGHT_STREAMLINE_3C,
+                Log_Message_Type.Warning__Alert,
+                Log.WARNING__XERXES_LINKER_CONTEXT__UNCAUGHT_STREAMLINE_3C,
                 source,
                 t,
                 streamline_Base,

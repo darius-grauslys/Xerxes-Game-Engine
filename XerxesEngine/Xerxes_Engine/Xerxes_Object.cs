@@ -11,7 +11,7 @@ namespace Xerxes_Engine
     /// Calls to Update and Render are internalized. Exposure to
     /// handling these calls are given via protected virtual definitions.
     /// </summary>
-    public class Xerxes_Object<TThis> : Xerxes_Object_Base where TThis : Xerxes_Object_Base, new()
+    public class Xerxes_Object<TThis> : Xerxes_Object_Base where TThis : Xerxes_Object_Base
     {
         public Xerxes_Object() 
         {

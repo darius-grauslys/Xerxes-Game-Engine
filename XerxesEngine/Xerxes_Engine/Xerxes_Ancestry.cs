@@ -32,19 +32,28 @@ namespace Xerxes_Engine
         }
 
         public Xerxes_Ancestry<T> Associate<Descendant>
+        (ref object identifier) where Descendant : Xerxes_Object_Base, new()
+        {
+            Descendant descendant = new Descendant();
+
+            identifier = descendant.Xerxes_Object_Base__IDENTIFIER;
+
+            Private_Associate__Descendant__Xerxes_Ancestry<Descendant>
+            (
+                descendant
+            );
+
+            return this;
+        }
+
+        public Xerxes_Ancestry<T> Associate<Descendant>
         () where Descendant : Xerxes_Object_Base, new()
         {
             Descendant descendant = new Descendant();
 
-            Xerxes_Ancestry_Node node = 
-                Private_Associate__Descendant__Xerxes_Ancestry<Descendant>
-                (
-                    descendant
-                );
-
-            Protected_Associate__Descendant__Xerxes_Ancestry_Node
+            Private_Associate__Descendant__Xerxes_Ancestry<Descendant>
             (
-                node
+                descendant
             );
 
             return this;
@@ -55,18 +64,10 @@ namespace Xerxes_Engine
         {
             Descendant descendantAndNewFocus = new Descendant();
 
-            Xerxes_Ancestry_Node node =
+            Xerxes_Ancestry<Descendant> newFocus =
                 Private_Associate__Descendant__Xerxes_Ancestry<Descendant>
                 (
                     descendantAndNewFocus
-                );
-
-            Xerxes_Ancestry<Descendant> newFocus =
-                new Xerxes_Ancestry<Descendant>
-                (
-                    this, 
-                    node
-                    .Xerxes_Ancestry_Node__TREE_MEMBER__Internal
                 );
 
             return newFocus;
@@ -126,16 +127,7 @@ namespace Xerxes_Engine
                     out invalidDescendant
                 );
 
-            if (isValid == null)
-            {
-                //TODO: improve logging.
-                if (invalidAncestor != null)
-                    Log.Write__Log(Log_Message_Type.Error__Engine_Object, "Ancestor is invalid.", this);
-                if (invalidDescendant != null)
-                    Log.Write__Log(Log_Message_Type.Error__Engine_Object, "Descendant is invalid.", this);
-            }
-
-            if (!((bool)isValid))
+            if (!isValid ?? true)
             {
                 //TODO: improve logging.
                 if (invalidAncestor != null)
@@ -157,30 +149,37 @@ namespace Xerxes_Engine
                 return null;
             }
             
-            Xerxes_Ancestry<A> globalDeclaration =
+            Xerxes_Ancestry<A> node =
                 Xerxes_Linker
                 .Internal_Get__Global_Declaration
                 (
                     descendant
                 ) as Xerxes_Ancestry<A>;
 
-            if (globalDeclaration != null)
+            if (node != null)
             {
                 Private_Log_Verbose__Associated_With_Global_Declaration
                 (
                     this,
                     descendant
                 );
-                return globalDeclaration;
+            }
+            else
+            {
+                Private_Log_Verbose__Associated_With_Anonymous_Declaration
+                (
+                    this,
+                    descendant
+                );
             }
 
-            Private_Log_Verbose__Associated_With_Anonymous_Declaration
+            if (node == null)
+                node = new Xerxes_Ancestry<A>(this, descendant);
+
+            Protected_Associate__Descendant__Xerxes_Ancestry_Node
             (
-                this,
-                descendant
+                node
             );
-            Xerxes_Ancestry<A> node =
-                new Xerxes_Ancestry<A>(this, descendant);
 
             return node;
         }
