@@ -15,6 +15,8 @@ namespace Xerxes_Engine
             Internal_ROOT__EXPORTS = new Export_Dictionary();
 
             Declare__Streams()
+                .Upstream  .Extending<Args>()
+                .Downstream.Extending<Args>()
                 .Downstream.Extending<A>()
                 .Downstream.Extending<D>()
                 .Upstream  .Extending<A>()

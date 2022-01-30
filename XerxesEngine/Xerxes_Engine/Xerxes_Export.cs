@@ -11,10 +11,11 @@ namespace Xerxes_Engine
     /// Xerxes_Objects. They are used for interfacing to
     /// 3rd party libraries such as OpenTK.
     /// </summary>
-    public class Xerxes_Export<A,D> :
+    public class Xerxes_Export<SA__Configure, SA__Associate, SA__Dissassociate> :
     Xerxes_Export_Base
-    where A : SA__Associate_Root
-    where D : SA__Dissassociate_Root
+    where SA__Configure : SA__Configure_Root 
+    where SA__Associate : SA__Associate_Root
+    where SA__Dissassociate : SA__Dissassociate_Root
     {
         protected Xerxes_Export()
         {
@@ -22,35 +23,48 @@ namespace Xerxes_Engine
 
         internal override void Internal_Handle_Root__Exportline_Dictionary__Xerxes_Export_Base()
         {
-            Protected_Declare__Catch__Xerxes_Export
-                <A>
+            Declare__Receiving
+                <SA__Configure>
                 (
-                    Handle__Associate_Game__Xerxes_Export
+                    Handle__Configure_Root__Xerxes_Export
                 );
-            Protected_Declare__Catch__Xerxes_Export
-                <D>
+            Declare__Receiving
+                <SA__Associate>
                 (
-                    Handle__Dissassociate_Game__Xerxes_Export
+                    Handle__Associate_Root__Xerxes_Export
+                );
+            Declare__Receiving
+                <SA__Dissassociate>
+                (
+                    Handle__Dissassociate_Root__Xerxes_Export
                 );
         }
 
-        protected virtual void Handle__Associate_Game__Xerxes_Export
+        protected virtual void Handle__Configure_Root__Xerxes_Export
         (
-            A e
+            SA__Configure_Root e
+        )
+        {
+
+        }
+
+        protected virtual void Handle__Associate_Root__Xerxes_Export
+        (
+            SA__Associate e
         )
         {
             
         }
 
-        protected virtual void Handle__Dissassociate_Game__Xerxes_Export
+        protected virtual void Handle__Dissassociate_Root__Xerxes_Export
         (
-            D e
+            SA__Dissassociate e
         )
         {
             
         }
 
-        protected bool Protected_Declare__Catch__Xerxes_Export<T>
+        protected bool Declare__Receiving<T>
         (
             Action<T> listener
         ) where T : Streamline_Argument
@@ -111,7 +125,7 @@ namespace Xerxes_Engine
 #region Static Logging
         private static void Private_Log_Error__Declaring_But_Not_Rooted
         (
-            Xerxes_Export<A,D> export,
+            object export,
             Type exportlineType
         )
         {

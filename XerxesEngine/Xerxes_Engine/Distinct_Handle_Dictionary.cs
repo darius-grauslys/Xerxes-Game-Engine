@@ -175,5 +175,16 @@ namespace Xerxes_Engine
         (
             string internalStringHandle
         );
+
+        public T this[H handle]
+        {
+            get 
+            {
+                if (handle == null)
+                    return default(T);
+
+                return Protected_Get__Element__Distinct_Handle_Dictionary(handle);
+            }
+        }
     }
 }

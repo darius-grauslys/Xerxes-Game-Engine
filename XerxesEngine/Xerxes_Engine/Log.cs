@@ -195,6 +195,28 @@ namespace Xerxes_Engine
             );
         }
 
+        public static void Write__Error__Log
+        (
+            string format,
+            object source,
+            Log_Message_Type error_type = Log_Message_Type.Error__System,
+            params object[] args
+        )
+        {
+            int error_code = (int)error_type;
+            if (error_code % 2 != 0)
+                error_type = Log_Message_Type.Error__System;
+            Private_Write__Log
+            (
+                new Log_Message
+                (
+                    error_type,
+                    source,
+                    String.Format(format, args)
+                )
+            );
+        }
+
         public static void Panic__Log
         (
             string format, 

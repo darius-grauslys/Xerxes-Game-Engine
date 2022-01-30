@@ -111,44 +111,11 @@ namespace Xerxes_Engine
             return null;
         }
 
-        private bool Private_Check_If__Is_Not_Valid_Association__Xerxes_Ancestry<A>
-        (
-            A descendant
-        ) where A : Xerxes_Object_Base
-        {
-            Xerxes_Object_Base invalidAncestor, invalidDescendant;
-            bool? isValid =
-                Xerxes_Association_Rule_Dictionary
-                .Internal_Check_If__Is_Valid_Association
-                (
-                    Xerxes_Ancestry_Node__TREE_MEMBER__Internal,
-                    descendant,
-                    out invalidAncestor,
-                    out invalidDescendant
-                );
-
-            if (!isValid ?? true)
-            {
-                //TODO: improve logging.
-                if (invalidAncestor != null)
-                    Log.Write__Log(Log_Message_Type.Error__Engine_Object, $"{invalidAncestor} does not have an association ruling for {descendant}!", this);
-                if (invalidDescendant != null)
-                    Log.Write__Log(Log_Message_Type.Error__Engine_Object, $"{descendant} does not have an association ruling for {typeof(T)}!");
-            }
-
-            return !isValid ?? true;
-        }
-
         internal Xerxes_Ancestry<A> Internal_Associate__Descendant__Xerxes_Ancestry<A>
         (
             Xerxes_Object_Base descendant
         ) where A : Xerxes_Object_Base
         {
-            if (Private_Check_If__Is_Not_Valid_Association__Xerxes_Ancestry(descendant))
-            {
-                return null;
-            }
-            
             Xerxes_Ancestry<A> node =
                 Xerxes_Linker
                 .Internal_Get__Global_Declaration

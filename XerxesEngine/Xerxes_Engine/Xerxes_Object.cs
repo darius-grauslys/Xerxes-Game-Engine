@@ -1,3 +1,5 @@
+using System;
+
 namespace Xerxes_Engine
 {
     /// <summary>
@@ -39,18 +41,86 @@ namespace Xerxes_Engine
             return hierarchy;
         }
 
-        protected internal void Declare__Ancestor<Xerxes_Ancestor>()
-        where Xerxes_Ancestor : Xerxes_Object_Base
+        protected void Declare__Field<TType>
+        (
+            Func<TType> getter, 
+            Func<TType,TType> setter = null
+        )
         {
-            Xerxes_Association_Rule_Dictionary
-                .Internal_Declare__Ruling(this, new Xerxes_Ancestry_Rule<Xerxes_Ancestor,TThis>());
+            //TODO: Log
+            if (getter == null)
+                return;
+
+            Declare__Streams()
+                .Downstream.Receiving
+                <SA__Field_Get<TThis, TType>>
+                ((e) => e.Field_Get__Returning_Value = getter());
+
+            if (setter == null)
+                return;
+
+            Declare__Streams()
+                .Downstream.Receiving
+                <SA__Field_Set<TThis, TType>>
+                ((e) => e.Field_Get__Returning_Value = setter(e.Field__SET_VALUE));
         }
 
-        protected internal void Declare__Descendant<Xerxes_Descendant>()
-        where Xerxes_Descendant : Xerxes_Object_Base
+        protected TType Get__Descendent_Field<Target, TType>()
+            where Target : Xerxes_Object_Base
         {
-            Xerxes_Association_Rule_Dictionary
-                .Internal_Declare__Ruling(this, new Xerxes_Ancestry_Rule<TThis,Xerxes_Descendant>());
+            SA__Field_Get<Target, TType> getter = 
+                new SA__Field_Get<Target, TType>();
+
+            Invoke__Descending(getter);
+
+            return getter.Field_Get__Returning_Value;
         }
+
+        protected TType Set__Descendent_Field<Target, TType>
+        (
+            TType value
+        )
+        where Target : Xerxes_Object_Base
+        {
+            SA__Field_Set<Target, TType> setter =
+                new SA__Field_Set<Target, TType>(value);
+
+            Invoke__Descending(setter);
+
+            return setter.Field_Get__Returning_Value;
+        }
+
+        protected TType Get__Ancestor_Field<Target, TType>()
+            where Target : Xerxes_Object_Base
+        {
+            SA__Field_Get<Target, TType> getter = 
+                new SA__Field_Get<Target, TType>();
+
+            Invoke__Ascending(getter);
+
+            return getter.Field_Get__Returning_Value;
+        }
+
+        protected TType Set__Ancestor_Field<Target, TType>
+        (
+            TType value
+        )
+        where Target : Xerxes_Object_Base
+        {
+            SA__Field_Set<Target, TType> setter =
+                new SA__Field_Set<Target, TType>(value);
+
+            Invoke__Ascending(setter);
+
+            return setter.Field_Get__Returning_Value;
+        }
+
+        protected void Extend__Getter<Target, TType>()
+            where Target : Xerxes_Object_Base
+            => Declare__Streams().Downstream.Extending<SA__Field_Get<Target, TType>>();
+
+        protected void Extend__Setter<Target, TType>()
+            where Target : Xerxes_Object_Base
+            => Declare__Streams().Downstream.Extending<SA__Field_Set<Target, TType>>();
     }
 }

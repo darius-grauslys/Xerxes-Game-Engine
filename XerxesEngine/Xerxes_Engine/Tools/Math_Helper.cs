@@ -100,6 +100,20 @@ namespace Xerxes_Engine.Tools
         public static float Get__Safe_Inverse(float value, float safeReturn = 0)
             => (value == 0) ? safeReturn : 1 / value;
 
+        public static void Compare__Magnitude(int a, int b, out int smaller, out int larger)
+        {
+            if (a <= b)
+            {
+                smaller = a;
+                larger = b;
+                return;
+            }
+
+            smaller = b;
+            larger = a;
+            return;
+        }
+
         public static int Map__Even(int n)
         {
             return 2 * n;
@@ -263,39 +277,39 @@ namespace Xerxes_Engine.Tools
         public static Vector4 Convert__Color_To_Vec4(Color color)
             => new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
 
-        public static bool Tolerable__Equality__Float(float f1, float f2)
+        public static bool Tolerable__Equality__Float(float f1, float f2, float tolerance=FLOAT__MINIMUM__PERCISION)
         {
             float diff = f1 - f2;
 
-            return diff <= FLOAT__MINIMUM__PERCISION && diff >= -FLOAT__MINIMUM__PERCISION;
+            return diff <= tolerance && diff >= -tolerance;
         }
 
-        public static bool Tolerable__LessThan__Float(float f1, float f2)
+        public static bool Tolerable__LessThan__Float(float f1, float f2, float tolerance=FLOAT__MINIMUM__PERCISION)
         {
             float diff = f1 - f2;
 
-            return diff <= -FLOAT__MINIMUM__PERCISION;
+            return diff <= -tolerance;
         }
 
-        public static bool Tolerable__GreaterThan__Float(float f1, float f2)
+        public static bool Tolerable__GreaterThan__Float(float f1, float f2, float tolerance=FLOAT__MINIMUM__PERCISION)
         {
             float diff = f1 - f2;
 
-            return diff >= FLOAT__MINIMUM__PERCISION;
+            return diff >= tolerance;
         }
 
-        public static bool Tolerable__LessThanEqual__Float(float f1, float f2)
+        public static bool Tolerable__LessThanEqual__Float(float f1, float f2, float tolerance=FLOAT__MINIMUM__PERCISION)
         {
             float diff = f1 - f2;
 
-            return diff <= FLOAT__MINIMUM__PERCISION;
+            return diff <= tolerance;
         }
 
-        public static bool Tolerable__GreaterThanEqual__Float(float f1, float f2)
+        public static bool Tolerable__GreaterThanEqual__Float(float f1, float f2, float tolerance=FLOAT__MINIMUM__PERCISION)
         {
             float diff = f1 - f2;
 
-            return diff >= -FLOAT__MINIMUM__PERCISION;
+            return diff >= -tolerance;
         }
         
         /// <summary>

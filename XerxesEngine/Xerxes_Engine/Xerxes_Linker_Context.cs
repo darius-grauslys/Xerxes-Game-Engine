@@ -215,6 +215,8 @@ namespace Xerxes_Engine
             Stack<Streamline_Base> stack = table[t];
 
             stack.Push(streamline_Base);
+
+            Log.Write__Verbose__Log($"Pushed onto streamline stack: {streamline_Base.GetType()}", this);
         }
 
         private void Private_Pop__Xerxes_Linker_Context
