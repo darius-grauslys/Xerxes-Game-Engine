@@ -3,7 +3,8 @@ using System.IO;
 
 namespace Xerxes_Engine.Export_OpenTK
 {
-    public class Game_Arguments
+    public class SA__Configure_OpenTK_Game :
+        SA__Configure_Root
     {
         public const string Game_Arguments__DEFAULT_ASSET_DIRECTORY_NAME = "Assets";
         public const string Game_Arguments__DEFAULT_SHADER_DIRECTORY_NAME = "Shaders";
@@ -36,14 +37,16 @@ namespace Xerxes_Engine.Export_OpenTK
         public uint Game_Arguments__Window_Width             { get; private set; }
         public uint Game_Arguments__Window_Height            { get; private set; }
 
-        public Game_Arguments
+        public SA__Configure_OpenTK_Game
         (
             string assetDirectory = null,
             string shaderDirectory = null,
             string windowTitle = null,
             uint? windowWidth = null,
-            uint? windowHeight = null
+            uint? windowHeight = null,
+            params string[] arguments
         )
+        : base(arguments)
         {
             Set__Window_Arguments__Game_Arguments
             (
@@ -55,7 +58,7 @@ namespace Xerxes_Engine.Export_OpenTK
             );
         }
 
-        public Game_Arguments Set__Window_Arguments__Game_Arguments
+        public SA__Configure_OpenTK_Game Set__Window_Arguments__Game_Arguments
         (
             string assetDirectory = null,
             string shaderDirectory = null,
@@ -90,7 +93,7 @@ namespace Xerxes_Engine.Export_OpenTK
             return this;
         }
 
-        public static Game_Arguments Create()
-            => new Game_Arguments();
+        public static SA__Configure_OpenTK_Game Create()
+            => new SA__Configure_OpenTK_Game();
     }
 }

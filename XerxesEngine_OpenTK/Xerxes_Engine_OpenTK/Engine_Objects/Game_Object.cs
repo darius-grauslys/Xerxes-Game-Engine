@@ -10,9 +10,6 @@
         public Game_Object
         ()
         {
-            Declare__Ancestor<Scene_Layer>();
-            Declare__Descendant<Game_Object_Component>();
-
             Declare__Streams()
                 .Downstream.Receiving<SA__Render>
                 (
@@ -20,7 +17,6 @@
                 )
                 .Downstream.Extending<SA__Draw>()
                 .Upstream  .Extending<SA__Draw>();
-
         }
 
         /// <summary>

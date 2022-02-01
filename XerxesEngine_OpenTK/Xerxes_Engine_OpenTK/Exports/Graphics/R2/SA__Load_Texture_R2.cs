@@ -5,12 +5,11 @@ namespace Xerxes_Engine.Export_OpenTK
     {
         public string Load_Texture_R2__FILE_PATH            { get; }
         public bool Load_Texture_R2__IS_PIXELATED           { get; }
-        internal Texture_R2 Load_Texture_R2__Texture_Alias  { get; private set; }
+        public Texture_R2 Load_Texture_R2__Texture          { get; private set; }
         private bool _Load_Texture_R2__Is_Internally_Set    { get; set; }
 
         public SA__Load_Texture_R2
         (
-            SA__Sealed_Under_Game e,
             string filePath,
             bool pixelated = false
         )
@@ -25,14 +24,7 @@ namespace Xerxes_Engine.Export_OpenTK
         (Texture_R2 texture_R2)
         {
             _Load_Texture_R2__Is_Internally_Set = true;
-            Load_Texture_R2__Texture_Alias = texture_R2;
-        }
-
-        public Texture_R2? Get__Loaded_Texture_R2__Load_Texture_R2()
-        {
-            if(_Load_Texture_R2__Is_Internally_Set)
-                return Load_Texture_R2__Texture_Alias;
-            return null;
+            Load_Texture_R2__Texture = texture_R2;
         }
     }
 }

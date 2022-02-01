@@ -6,7 +6,8 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Input
         SA__Chronical
     {
         private KeyboardKeyEventArgs _SA__Input_Keyboard__EVENT_ARGS { get; }
-        public Key Input_Keyboard__KEY => _SA__Input_Keyboard__EVENT_ARGS.Key;
+        public Key Input_Key__KEY => _SA__Input_Keyboard__EVENT_ARGS.Key;
+        public KeyboardState Input_Key__KEYBOARD => _SA__Input_Keyboard__EVENT_ARGS.Keyboard;
 
         internal SA__Input_Key
         (

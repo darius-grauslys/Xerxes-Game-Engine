@@ -7,82 +7,68 @@ namespace Xerxes_Engine.Export_OpenTK
 {
     public struct Vertex
     {
-        private Vector2 position;
-        private Vector2 textcoord;
-        private Vector4 color;
-
-        public Vector2 Position { get => position; set => position = value; }
-        public Vector2 TextCoord => textcoord;
-        public Vector4 ColorVector { get => color; set => color = value; }
+        public Vector3 Vertex__Position { get; set; }
+        public Vector2 Vertex__Texture_Coordinate { get; set; } 
+        public Vector4 Vertex__Color_Vector { get; set; }
 
         public Color Color
         {
-            get => Color.FromArgb((int)(color.W * 255), (int)(color.X * 255), (int)(color.Y * 255), (int)(color.Z * 255));
+            get => 
+                Color
+                .FromArgb
+                (
+                    (int)(Vertex__Color_Vector.W * 255), 
+                    (int)(Vertex__Color_Vector.X * 255), 
+                    (int)(Vertex__Color_Vector.Y * 255), 
+                    (int)(Vertex__Color_Vector.Z * 255)
+                );
             set
             {
-                color = Math_Helper.Convert__Color_To_Vec4(value);
+                Vertex__Color_Vector = Math_Helper.Convert__Color_To_Vec4(value);
             }
         }
 
-        public static int SizeInBytes => Vector2.SizeInBytes * 2 + Vector4.SizeInBytes;
+        public static int SizeInBytes => Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes;
 
         public override string ToString()
         {
             return String.Format
                 (
                     "p:{0},t:{1},c:{2}",
-                    position,
-                    textcoord,
-                    color
+                    Vertex__Position,
+                    Vertex__Texture_Coordinate,
+                    Vertex__Color_Vector 
                 );
         }
 
-        public Vertex(Vector2 position, Vector2 textcoord, Vector4 color)
+        public Vertex(Vector3 position, Vector2 textcoord, Vector4 color)
         {
-            this.position = position;
-            this.textcoord = textcoord;
-            this.color = color;
+            Vertex__Position = position;
+            Vertex__Texture_Coordinate = textcoord;
+            Vertex__Color_Vector = color;
         }
 
-        public Vertex(Vector2 position, Vector2 textcoord, float r=0, float g=0, float b=0, float a=1)
-        {
-            this.position = position;
-            this.textcoord = textcoord;
-            this.color = new Vector4(r,g,b,a);
-        }
+        public Vertex(Vector2 position, Vector2 textcoord, Vector4 color)
+        : this
+        (
+            new Vector3(position),
+            textcoord,
+            color
+        )
+        {}
 
         public Vertex
         (
-            Vertex baseline,
-            Vector2? nullable_Position = null,
-            Vector2? nullable_Textcoord = null,
-            Vector4? nullable_Color = null
+            float x, float y, float z, 
+            float tx, float ty,
+            float r, float g, float b, float a
         )
-        {
-            this.position = nullable_Position ?? baseline.position;
-            this.textcoord = nullable_Textcoord ?? baseline.position;
-            this.color = nullable_Color ?? baseline.color;
-        }
-
-        public static Vertex Create
+        : this
         (
-            float vector_X,
-            float vector_Y,
-
-            float textCoord_X,
-            float textCoord_Y,
-
-            float r = 0,
-            float g = 0,
-            float b = 0,
-            float a = 0
+            new Vector3(x,y,z),
+            new Vector2(tx, ty),
+            new Vector4(r,g,b,a)
         )
-            => 
-            new Vertex
-            (
-                new Vector2(vector_X, vector_Y), 
-                new Vector2(textCoord_X, textCoord_Y),
-                r, g, b, a
-            );
+        {}
     }
 }

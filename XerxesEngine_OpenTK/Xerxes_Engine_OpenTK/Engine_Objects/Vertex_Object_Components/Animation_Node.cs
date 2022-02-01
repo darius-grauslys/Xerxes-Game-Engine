@@ -1,4 +1,4 @@
-﻿namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.R2
+﻿namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Vertex_Object_Components
 {
     public class Animation_Node
     {

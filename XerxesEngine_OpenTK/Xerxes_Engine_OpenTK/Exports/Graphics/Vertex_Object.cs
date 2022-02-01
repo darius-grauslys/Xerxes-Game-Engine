@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using Xerxes_Engine.Tools;
 
 namespace Xerxes_Engine.Export_OpenTK
 {
@@ -8,11 +10,9 @@ namespace Xerxes_Engine.Export_OpenTK
     /// Represents a collection of verticies with the intent
     /// of representing something during render.
     /// </summary>
-    public class Vertex_Object : IDisposable
+    public struct Vertex_Object : IDisposable
     {
         public const int VERTEX_OBJECT__BASE_VERTEX_COUNT = 4;
-
-        public Vertex_Object_Handle Vertex_Object__HANDLE { get; internal set; }
 
         private Vertex[] _Vertex_Object__Base_Vertex_Array { get; set; }
         private Vertex[] _Vertex_Object__VERTICES { get; }
@@ -39,14 +39,15 @@ namespace Xerxes_Engine.Export_OpenTK
             Vertex_Object__GL_VERTEX_ARRAY_ID = GL.GenVertexArray();
             Vertex_Object__TEXTURE_R2 = texture_R2;
             _Vertex_Object__VERTICES = new Vertex[count];
+            _Vertex_Object__Base_Vertex_Array = null;
 
             GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
             Internal_Bind__Buffer__Vertex_Object();
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 0);
             GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 2 * sizeof(float));
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, 8 * sizeof(float), 4 * sizeof(float));
+            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 5 * sizeof(float));
             GL.EnableVertexAttribArray(2);
             GL.BindVertexArray(0);
         }
@@ -167,8 +168,7 @@ namespace Xerxes_Engine.Export_OpenTK
         )
         {
             bool isValid =
-                Tools
-                .Math_Helper
+                Math_Helper
                 .Check_If__Obeys_Range_Clamp__Positive_Integer
                 (
                     modificationIndex,
@@ -196,8 +196,7 @@ namespace Xerxes_Engine.Export_OpenTK
         )
         {
             bool isValidRange =
-                Tools
-                .Math_Helper
+                Math_Helper
                 .Check_If__Obeys_Range_Clamp__Positive_Integer
                 (
                     modificationIndex + modificationRange,
@@ -237,7 +236,7 @@ namespace Xerxes_Engine.Export_OpenTK
 #region Internal GL Utilizations
         internal void Internal_Use__Vertex_Object()
         {
-            GL.BindTexture(TextureTarget.Texture2D, Vertex_Object__TEXTURE_R2.ID);
+            GL.BindTexture(TextureTarget.Texture2D, Vertex_Object__TEXTURE_R2.Texture_R2__ID);
             GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
         }
 
@@ -274,6 +273,144 @@ namespace Xerxes_Engine.Export_OpenTK
         }
 #endregion
 
+#region Static Utility 
+        /// <summary>
+        /// Creates the vertex data for a 2D texture.
+        /// It uses the entire texture size.
+        /// This is good for non-animated sprites.
+        /// </summary>
+        public static Vertex_Object Create
+        (
+            Texture_R2 texture,
+            float vo_width = 1,
+            float vo_height = 1,
+            float? nullable_sub_width = null,
+            float? nullable_sub_height = null,
+            Integer_Vector_2[] nullable_indicies = null,
+            Vector2[] nullable_offsets  = null
+        )
+        {
+
+            Integer_Vector_2[] batchIndices = 
+                nullable_indicies
+                ?? 
+                new Integer_Vector_2[] { new Integer_Vector_2() };
+
+            Vector2[] batchPositions = 
+                nullable_offsets
+                ??
+                new Vector2[] { new Vector2() };
+
+            float sub_width = 
+                nullable_sub_width
+                ??
+                texture.Texture_R2__Width;
+            float sub_height =
+                nullable_sub_height
+                ??
+                texture.Texture_R2__Height;
+
+            Vertex[] batch = new Vertex[VERTEX_OBJECT__BASE_VERTEX_COUNT * batchIndices.Length];
+
+            for(int i=0;i<batchIndices.Length;i++)
+            {
+                Integer_Vector_2 ivec = batchIndices[i];
+                Vector2 position = new Vector2(vo_width * batchPositions[i].X, vo_height * batchPositions[i].Y);
+                Vertex[] vertices = 
+                    Private_Extract__Splice
+                    (
+                        texture.Texture_R2__Width,
+                        texture.Texture_R2__Height,
+                        vo_width,
+                        vo_height,
+                        sub_width,
+                        sub_height,
+                        ivec.Y, ivec.X,
+                        position.X, position.Y
+                    );
+                for(int j=0;j<vertices.Length;j++)
+                {
+                    batch[i*VERTEX_OBJECT__BASE_VERTEX_COUNT + j]
+                        = vertices[j];
+                }
+            }
+
+            Vertex_Object vertex_object = new Vertex_Object(batch, texture);
+
+            return vertex_object;
+        }
+
+        /// <summary>
+        /// Creates an array of vertices which associate to
+        /// a (offsetX,offsetY) + (0|subWidth,0|subHeight) position
+        /// and associated texture coord.
+        /// The associated texture coord is determined by
+        /// (subWidth,subHeight) and the row/col indices.
+        /// </summary>
+        private static Vertex[] Private_Extract__Splice
+        (
+            float texture_R2_Width,
+            float texture_R2_Height,
+            float vo_width,
+            float vo_height,
+            float subWidth,
+            float subHeight,
+            int row,
+            int col,
+            float offsetX = 0,
+            float offsetY = 0,
+            float r = 0,
+            float g = 0,
+            float b = 0,
+            float a = 0
+        )
+        {
+            float textCoord_X = subWidth / texture_R2_Width;
+            float textCoord_Y = subHeight / texture_R2_Height;
+
+            float textCoord_X_A = textCoord_X * col;
+            float textCoord_X_B = textCoord_X * (col + 1);
+            float textCoord_Y_A = textCoord_Y * row;
+            float textCoord_Y_B = textCoord_Y * (row + 1);
+
+            float x_a = -offsetX, 
+                  y_a = offsetY;
+            float x_b = -offsetX, 
+                  y_b = offsetY + vo_height;
+            float x_c = -offsetX + vo_width, 
+                  y_c = y_b;
+            float x_d = x_c, 
+                  y_d = y_a;
+
+            Vertex[] vertices = new Vertex[]
+            {
+                new Vertex(x_d, y_d, 0,  textCoord_X_A, textCoord_Y_B,   r,g,b,a),
+                new Vertex(x_c, y_c, 0,  textCoord_X_A, textCoord_Y_A,   r,g,b,a),
+                new Vertex(x_b, y_b, 0,  textCoord_X_B, textCoord_Y_A,   r,g,b,a),
+                new Vertex(x_a, y_a, 0,  textCoord_X_B, textCoord_Y_B,   r,g,b,a)
+            };
+
+            return vertices;
+        }
+#endregion
+
+#region Logging
+        private static void Private_Log_Error_Error__Invalid_Sub_Length
+        (
+            string subLengthString,
+            float invalidSubLength
+        )
+        {
+            Log.Write__Log
+            (
+                Log_Message_Type.Error__Rendering_Setup,
+                Log_Messages__OpenTK.ERROR__VERTEX_OBJECT__INVALID_SUB_LENGTH_2,
+                typeof(Vertex_Object),
+                subLengthString,
+                invalidSubLength
+            );
+        }
+#endregion
 #region Static Logging
         private static void Private_Log_Error_Error__Invalid_Modification_Index
         (

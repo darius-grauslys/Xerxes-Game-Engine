@@ -6,7 +6,6 @@ using OpenTK.Graphics;
 using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
 using Xerxes_Engine.Export_OpenTK.Exports.Input;
 using OpenTK.Input;
-using Xerxes_Engine.Export_OpenTK.Engine_Objects;
 
 namespace Xerxes_Engine.Export_OpenTK
 {
@@ -17,7 +16,7 @@ namespace Xerxes_Engine.Export_OpenTK
     /// This object is parentless - Xerxes_Childless
     /// </summary>
     public class Game : 
-        Root<SA__Associate_Game_OpenTK, SA__Dissassociate_Game_OpenTK>
+        Root<SA__Configure_OpenTK_Game, SA__Associate_Game_OpenTK, SA__Dissassociate_Game_OpenTK>
     {
         internal GameWindow Game__Game_Window__Internal { get; private set; }
 
@@ -49,8 +48,6 @@ namespace Xerxes_Engine.Export_OpenTK
             _Game__UPDATE_TIMER = new Timer(-1);
             _Game__RENDER_TIMER = new Timer(-1);
 
-            Declare__Descendant<Scene>();
-
             Declare__Streams()
                 .Downstream.Extending<SA__Sealed_Under_Game>()
 
@@ -69,27 +66,27 @@ namespace Xerxes_Engine.Export_OpenTK
                 .Upstream  .Extending<SA__Render_Begin>()
                 .Upstream  .Extending<SA__Render_End>();
         }
-        
-        public void Run__Game(Game_Arguments game_Arguments)
+
+        protected override SA__Associate_Game_OpenTK Configure(SA__Configure_OpenTK_Game e)
         {
             Game__Game_Window__Internal = 
                 new GameWindow
                 (
                     (int)
                     (
-                        game_Arguments?.Game_Arguments__Window_Width 
-                        ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_WIDTH
+                        e?.Game_Arguments__Window_Width 
+                        ?? SA__Configure_OpenTK_Game.Game_Arguments__DEFAULT_WINDOW_WIDTH
                     ),
                     (int)
                     (
-                        game_Arguments?.Game_Arguments__Window_Height
-                        ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_HEIGHT
+                        e?.Game_Arguments__Window_Height
+                        ?? SA__Configure_OpenTK_Game.Game_Arguments__DEFAULT_WINDOW_HEIGHT
                     ),
 
                     GraphicsMode.Default, 
                     
-                    game_Arguments?.Game_Arguments__Window_Title
-                    ?? Game_Arguments.Game_Arguments__DEFAULT_WINDOW_TITLE
+                    e?.Game_Arguments__Window_Title
+                    ?? SA__Configure_OpenTK_Game.Game_Arguments__DEFAULT_WINDOW_TITLE
                 );
 
             Private_Hook__To_Game_Window__Game();
@@ -98,17 +95,17 @@ namespace Xerxes_Engine.Export_OpenTK
             Game__Directory_Assets = 
                 Private_Validate__Directory__Game
                 (
-                    game_Arguments.Game_Arguments__Asset_Directory,
-                    Game_Arguments.Game_Arguments__DEFAULT_ASSET_DIRECTORY
+                    e.Game_Arguments__Asset_Directory,
+                    SA__Configure_OpenTK_Game.Game_Arguments__DEFAULT_ASSET_DIRECTORY
                 );
             Game__Directory_Shaders = 
                 Private_Validate__Directory__Game
                 (
-                    game_Arguments.Game_Arguments__Shader_Directory,
-                    Game_Arguments.Game_Arguments__DEFAULT_SHADER_DIRECTORY
+                    e.Game_Arguments__Shader_Directory,
+                    SA__Configure_OpenTK_Game.Game_Arguments__DEFAULT_SHADER_DIRECTORY
                 );
 
-            SA__Associate_Game_OpenTK e = 
+            SA__Associate_Game_OpenTK e_associate = 
                 new SA__Associate_Game_OpenTK
                 (
                     -1,-1,
@@ -122,8 +119,11 @@ namespace Xerxes_Engine.Export_OpenTK
                     Internal_Get__Shaders__Game()
                 );
 
-            bool gameIsSealed = 
-                Seal(e);
+            return e_associate;
+        }
+
+        protected override void Execute()
+        {
 
             Log.Write__Verbose__Log(Log_Messages__OpenTK.VERBOSE__GAME__CONTENT_LOADING, this);
             Handle_Load__Content__Game();

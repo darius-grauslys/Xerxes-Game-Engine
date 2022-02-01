@@ -1,6 +1,7 @@
-﻿namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.R2
+﻿namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Vertex_Object_Components
 {
-    public class Animation_Render_Component : Sprite_Render_Component 
+    public class Animation_Render_Component : 
+        Sprite_Render_Component 
     {
         private Animation_Schematic _Animation_Render_Component__Schematic { get; set; }
 
@@ -87,8 +88,8 @@
                 (int)_Animation_Render_Component__Schematic
                     .Get__VBO_Index__Animation_Node(e.Chronical__DELTA_TIME);
 
-            Sprite_Render_Component__Sprite__Protected
-                .Internal_Set__Active_Vertex_Object__Sprite(vbo_index);
+            sprite_render_component__sprite
+                .Set__Active_Vertex_Object__Sprite(vbo_index);
         }
 
 #region Static Logging
