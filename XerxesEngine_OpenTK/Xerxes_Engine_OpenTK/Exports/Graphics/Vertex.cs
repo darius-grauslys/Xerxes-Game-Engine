@@ -1,15 +1,15 @@
 ﻿using OpenTK;
 using System;
 using System.Drawing;
-using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
+using Math_Helper = Xerxes.Tools.Math_Helper;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Vertex
     {
-        public Vector3 Vertex__Position { get; set; }
-        public Vector2 Vertex__Texture_Coordinate { get; set; } 
-        public Vector4 Vertex__Color_Vector { get; set; }
+        public Vector3 Position { get; set; }
+        public Vector2 Texture_Coordinate { get; set; } 
+        public Vector4 Color_Vector { get; set; }
 
         public Color Color
         {
@@ -17,35 +17,35 @@ namespace Xerxes_Engine.Export_OpenTK
                 Color
                 .FromArgb
                 (
-                    (int)(Vertex__Color_Vector.W * 255), 
-                    (int)(Vertex__Color_Vector.X * 255), 
-                    (int)(Vertex__Color_Vector.Y * 255), 
-                    (int)(Vertex__Color_Vector.Z * 255)
+                    (int)(Color_Vector.W * 255), 
+                    (int)(Color_Vector.X * 255), 
+                    (int)(Color_Vector.Y * 255), 
+                    (int)(Color_Vector.Z * 255)
                 );
             set
             {
-                Vertex__Color_Vector = Math_Helper.Convert__Color_To_Vec4(value);
+                Color_Vector = Math_Helper.Convert__Color_To_Vec4(value);
             }
         }
 
-        public static int SizeInBytes => Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes;
+        public static int Size_In_Bytes => Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes;
 
         public override string ToString()
         {
             return String.Format
                 (
                     "p:{0},t:{1},c:{2}",
-                    Vertex__Position,
-                    Vertex__Texture_Coordinate,
-                    Vertex__Color_Vector 
+                    Position,
+                    Texture_Coordinate,
+                    Color_Vector 
                 );
         }
 
         public Vertex(Vector3 position, Vector2 textcoord, Vector4 color)
         {
-            Vertex__Position = position;
-            Vertex__Texture_Coordinate = textcoord;
-            Vertex__Color_Vector = color;
+            Position = position;
+            Texture_Coordinate = textcoord;
+            Color_Vector = color;
         }
 
         public Vertex(Vector2 position, Vector2 textcoord, Vector4 color)

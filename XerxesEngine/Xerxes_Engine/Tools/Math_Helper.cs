@@ -2,7 +2,7 @@
 using System.Drawing;
 using OpenTK;
 
-namespace Xerxes_Engine.Tools
+namespace Xerxes.Tools
 {
     public class Math_Helper
     {

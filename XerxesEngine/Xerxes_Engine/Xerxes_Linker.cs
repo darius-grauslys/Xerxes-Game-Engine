@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// Performs the sealing process of Xerxes_Objects

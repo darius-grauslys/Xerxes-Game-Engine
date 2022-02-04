@@ -1,4 +1,4 @@
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public class SA__Render :
         SA__Chronical
@@ -8,8 +8,7 @@ namespace Xerxes_Engine.Export_OpenTK
             double deltaTime, 
             double senderTime
         ) 
-        : 
-        base
+        : base 
         (
             deltaTime, 
             senderTime

@@ -1,5 +1,5 @@
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public static class Xerxes
     {

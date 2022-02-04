@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects
 {
     public class Transform_Component : Game_Object_Component 
     {

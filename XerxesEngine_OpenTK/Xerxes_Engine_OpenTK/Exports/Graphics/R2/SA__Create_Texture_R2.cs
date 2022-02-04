@@ -1,7 +1,7 @@
 
 using System.Linq;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public class SA__Create_Texture_R2 :
         Streamline_Argument
@@ -32,7 +32,7 @@ namespace Xerxes_Engine.Export_OpenTK
 
         public SA__Create_Texture_R2(byte[,,] bitmap_channel_data, int width, int height, bool pixelated = true)
         {
-            byte[,,] copy = new byte[width,height,Texture_R2.CHANNEL_COUNT];
+            byte[,,] copy = new byte[height,width,Texture_R2.CHANNEL_COUNT];
 
             for(int y = 0; y < height; y++)
             {
@@ -40,7 +40,7 @@ namespace Xerxes_Engine.Export_OpenTK
                 {
                     for(int channel = 0; channel < Texture_R2.CHANNEL_COUNT; channel++)
                     {
-                        copy[x,y,channel] = bitmap_channel_data[x,y,channel];
+                        copy[y,x,channel] = bitmap_channel_data[y,x,channel];
                     }
                 }
             }

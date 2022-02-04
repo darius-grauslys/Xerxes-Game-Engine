@@ -1,5 +1,5 @@
 
-namespace Xerxes_Engine.Export_OpenTK.Tools
+namespace Xerxes.Xerxes_OpenTK.Tools
 {
     public static class Math_Helper
     {

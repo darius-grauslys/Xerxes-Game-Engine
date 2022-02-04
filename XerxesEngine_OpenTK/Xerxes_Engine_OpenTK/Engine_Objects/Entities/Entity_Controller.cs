@@ -1,6 +1,6 @@
 
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Entities
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects.Entities
 {
     public abstract class Entity_Controller<EntityType> :
     Xerxes_Object<Entity_Controller<EntityType>>

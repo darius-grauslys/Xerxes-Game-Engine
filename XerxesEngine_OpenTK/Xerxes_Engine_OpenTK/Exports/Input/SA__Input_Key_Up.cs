@@ -1,6 +1,6 @@
 using OpenTK.Input;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Input
+namespace Xerxes.Xerxes_OpenTK.Exports.Input
 {
     public sealed class SA__Input_Key_Up :
         SA__Input_Key

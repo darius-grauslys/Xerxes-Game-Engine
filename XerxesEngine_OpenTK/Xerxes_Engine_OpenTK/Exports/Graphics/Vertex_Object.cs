@@ -2,9 +2,9 @@
 using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using Xerxes_Engine.Tools;
+using Xerxes.Tools;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     /// <summary>
     /// Represents a collection of verticies with the intent
@@ -12,53 +12,56 @@ namespace Xerxes_Engine.Export_OpenTK
     /// </summary>
     public struct Vertex_Object : IDisposable
     {
-        public const int VERTEX_OBJECT__BASE_VERTEX_COUNT = 4;
+        public const int BASE_VERTEX_COUNT = 4;
 
-        private Vertex[] _Vertex_Object__Base_Vertex_Array { get; set; }
-        private Vertex[] _Vertex_Object__VERTICES { get; }
-        public int Get__Vertex_Count__Vertex_Object()
-            => _Vertex_Object__VERTICES.Length;
-        public Texture_R2 Vertex_Object__TEXTURE_R2 { get; }
+        private Vertex[] _Base_Vertex_Array { get; set; }
+        private Vertex[] _VERTICES { get; }
+        public int Get__Vertex_Count()
+            => _VERTICES.Length;
+        public Texture_R2 TEXTURE_R2 { get; }
 
-        public int Vertex_Object__GL_BUFFER_ID { get; private set; }
-        public int Vertex_Object__GL_VERTEX_ARRAY_ID { get; private set; }
+        public int GL_BUFFER_ID { get; private set; }
+        public int VERTEX_ARRAY_ID { get; private set; }
+
+        public bool IS_PROPER { get; }
 
         internal Vertex_Object(Vertex[] vertices, Texture_R2 texture_R2)
             : this(vertices.Length, texture_R2)
         {
-            _Vertex_Object__VERTICES = vertices;
+            _VERTICES = vertices;
             Internal_Set__Base_Array();
             Internal_Set__Buffer_Data__Vertex_Object();
         }
 
         internal Vertex_Object(int count, Texture_R2 texture_R2)
         { 
+            IS_PROPER = true;
             // Generate the buffer for vertice info on the gpu.
-            Vertex_Object__GL_BUFFER_ID = GL.GenBuffer();
+            GL_BUFFER_ID = GL.GenBuffer();
             // Generate the id for this object on the gpu.
-            Vertex_Object__GL_VERTEX_ARRAY_ID = GL.GenVertexArray();
-            Vertex_Object__TEXTURE_R2 = texture_R2;
-            _Vertex_Object__VERTICES = new Vertex[count];
-            _Vertex_Object__Base_Vertex_Array = null;
+            VERTEX_ARRAY_ID = GL.GenVertexArray();
+            TEXTURE_R2 = texture_R2;
+            _VERTICES = new Vertex[count];
+            _Base_Vertex_Array = null;
 
-            GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
+            GL.BindVertexArray(VERTEX_ARRAY_ID);
             Internal_Bind__Buffer__Vertex_Object();
-            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 0);
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vertex.Size_In_Bytes, 0);
             GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 3 * sizeof(float));
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Vertex.Size_In_Bytes, 3 * sizeof(float));
             GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 5 * sizeof(float));
+            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false, Vertex.Size_In_Bytes, 5 * sizeof(float));
             GL.EnableVertexAttribArray(2);
             GL.BindVertexArray(0);
         }
 
         internal void Internal_Set__Base_Array()
         {
-            if (_Vertex_Object__Base_Vertex_Array != null)
+            if (_Base_Vertex_Array != null)
                 return;
 
-            _Vertex_Object__Base_Vertex_Array =
-                _Vertex_Object__VERTICES.ToArray();
+            _Base_Vertex_Array =
+                _VERTICES.ToArray();
         }
 
         private void Private_Modify__Vertex_Array__Vertex_Object
@@ -95,7 +98,7 @@ namespace Xerxes_Engine.Export_OpenTK
 
             for(int i=modificationIndex;i<modificationRange;i++)
             {
-                _Vertex_Object__VERTICES[i] = vertexModification.Invoke(referenceArray, i);
+                _VERTICES[i] = vertexModification.Invoke(referenceArray, i);
             }
         }
 
@@ -107,7 +110,7 @@ namespace Xerxes_Engine.Export_OpenTK
         {
             Private_Modify__Vertex_Array__Vertex_Object
             (
-                _Vertex_Object__VERTICES,
+                _VERTICES,
                 modificationIndex,
                 modificaiton.Length,
                 (va, i) => modificaiton[i - modificationIndex]
@@ -131,8 +134,8 @@ namespace Xerxes_Engine.Export_OpenTK
         {
             Vertex[] referenceArray = 
                 (pullFromCurrent_OpposedToBase)
-                ? _Vertex_Object__VERTICES
-                : _Vertex_Object__Base_Vertex_Array
+                ? _VERTICES
+                : _Base_Vertex_Array
                 ;
 
             Private_Modify__Vertex_Array__Vertex_Object
@@ -220,13 +223,13 @@ namespace Xerxes_Engine.Export_OpenTK
 #region Internal GL Initalizations
         internal void Internal_Set__Buffer_Data__Vertex_Object()
         {
-            GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
+            GL.BindVertexArray(VERTEX_ARRAY_ID);
             Internal_Bind__Buffer__Vertex_Object();
             GL.BufferData
             (
                 BufferTarget.ArrayBuffer, 
-                _Vertex_Object__VERTICES.Length * Vertex.SizeInBytes, 
-                _Vertex_Object__VERTICES, 
+                _VERTICES.Length * Vertex.Size_In_Bytes, 
+                _VERTICES, 
                 BufferUsageHint.StaticDraw
             );
             GL.BindVertexArray(0);
@@ -236,13 +239,13 @@ namespace Xerxes_Engine.Export_OpenTK
 #region Internal GL Utilizations
         internal void Internal_Use__Vertex_Object()
         {
-            GL.BindTexture(TextureTarget.Texture2D, Vertex_Object__TEXTURE_R2.Texture_R2__ID);
-            GL.BindVertexArray(Vertex_Object__GL_VERTEX_ARRAY_ID);
+            GL.BindTexture(TextureTarget.Texture2D, TEXTURE_R2.ID);
+            GL.BindVertexArray(VERTEX_ARRAY_ID);
         }
 
         internal void Internal_Bind__Buffer__Vertex_Object()
         {
-            GL.BindBuffer(BufferTarget.ArrayBuffer, Vertex_Object__GL_BUFFER_ID);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, GL_BUFFER_ID);
         }
 
         /// <summary>
@@ -259,13 +262,13 @@ namespace Xerxes_Engine.Export_OpenTK
         public void Dispose()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.DeleteBuffer(Vertex_Object__GL_BUFFER_ID);
+            GL.DeleteBuffer(GL_BUFFER_ID);
         }
 
         public override string ToString()
         {
             string str = "";
-            foreach (Vertex vertex in _Vertex_Object__VERTICES)
+            foreach (Vertex vertex in _VERTICES)
             {
                 str += vertex.ToString();
             }
@@ -276,51 +279,57 @@ namespace Xerxes_Engine.Export_OpenTK
 #region Static Utility 
         /// <summary>
         /// Creates the vertex data for a 2D texture.
-        /// It uses the entire texture size.
-        /// This is good for non-animated sprites.
+        /// Use batch_indices to grab specific splices
+        /// or even batch splices together by using
+        /// multiple Batch_Indices.
         /// </summary>
         public static Vertex_Object Create
         (
             Texture_R2 texture,
-            float vo_width = 1,
-            float vo_height = 1,
-            float? nullable_sub_width = null,
-            float? nullable_sub_height = null,
-            Integer_Vector_2[] nullable_indicies = null,
-            Vector2[] nullable_offsets  = null
+            float optional_sub_width = -1,
+            float optional_sub_height = -1,
+            float optional_vo_width = -1,
+            float optional_vo_height = -1,
+            params Batch_Index[] batch_indices
         )
         {
+            if (batch_indices == null)
+                return new Vertex_Object(); //TODO: log
 
-            Integer_Vector_2[] batchIndices = 
-                nullable_indicies
-                ?? 
-                new Integer_Vector_2[] { new Integer_Vector_2() };
+            Batch_Index[] utilized_batch_indices =
+                batch_indices.Length > 0
+                ? batch_indices
+                : new Batch_Index[] { new Batch_Index() };
 
-            Vector2[] batchPositions = 
-                nullable_offsets
-                ??
-                new Vector2[] { new Vector2() };
+            float vo_width =
+                optional_vo_width >= 0
+                ? optional_vo_width
+                : 1;
+            float vo_height =
+                optional_vo_height >= 0
+                ? optional_vo_height
+                : 1;
 
             float sub_width = 
-                nullable_sub_width
-                ??
-                texture.Texture_R2__Width;
+                optional_sub_width >= 0
+                ? optional_sub_width
+                : texture.Width;
             float sub_height =
-                nullable_sub_height
-                ??
-                texture.Texture_R2__Height;
+                optional_sub_height >= 0
+                ? optional_sub_height
+                : texture.Height;
 
-            Vertex[] batch = new Vertex[VERTEX_OBJECT__BASE_VERTEX_COUNT * batchIndices.Length];
+            Vertex[] batch = new Vertex[BASE_VERTEX_COUNT * utilized_batch_indices.Length];
 
-            for(int i=0;i<batchIndices.Length;i++)
+            for(int i=0;i<utilized_batch_indices.Length;i++)
             {
-                Integer_Vector_2 ivec = batchIndices[i];
-                Vector2 position = new Vector2(vo_width * batchPositions[i].X, vo_height * batchPositions[i].Y);
+                Integer_Vector_2 ivec = utilized_batch_indices[i].Batch_Index__INDEX;
+                Vector2 position = utilized_batch_indices[i].Batch_Index__OFFSET;
                 Vertex[] vertices = 
                     Private_Extract__Splice
                     (
-                        texture.Texture_R2__Width,
-                        texture.Texture_R2__Height,
+                        texture.Width,
+                        texture.Height,
                         vo_width,
                         vo_height,
                         sub_width,
@@ -330,7 +339,7 @@ namespace Xerxes_Engine.Export_OpenTK
                     );
                 for(int j=0;j<vertices.Length;j++)
                 {
-                    batch[i*VERTEX_OBJECT__BASE_VERTEX_COUNT + j]
+                    batch[i*BASE_VERTEX_COUNT + j]
                         = vertices[j];
                 }
             }
@@ -338,6 +347,68 @@ namespace Xerxes_Engine.Export_OpenTK
             Vertex_Object vertex_object = new Vertex_Object(batch, texture);
 
             return vertex_object;
+        }
+
+        /// <summary>
+        /// Split a texture up into multple Vertex_Objects.
+        /// Each Batch_Index constitutes to one Vertex_Object.
+        /// </summary>
+        public static Vertex_Object[] Splice
+        (
+            Texture_R2 texture,
+            float sub_width,
+            float sub_height,
+            float optional_vo_width = -1,
+            float optional_vo_height = -1,
+            params Batch_Index[] batch_indices
+        )
+        {
+            //TODO: Log
+            sub_width = 
+                sub_width < 0
+                ? 1
+                : sub_width
+                ;
+            sub_height = 
+                sub_height < 0
+                ? 1
+                : sub_height 
+                ;
+
+            float vo_width = 
+                optional_vo_width < 0
+                ? 1
+                : optional_vo_width
+                ;
+            float vo_height =
+                optional_vo_height < 0
+                ? 1
+                : optional_vo_height
+                ;
+
+            Batch_Index[] utilized_batch_indices;
+
+            if (batch_indices == null || batch_indices.Length == 0)
+            {
+                int cols = (int)(texture.Width  / sub_width);
+                int rows = (int)(texture.Height / sub_height);
+
+                utilized_batch_indices = new Batch_Index[rows * cols];
+                for(int y=0;y<rows;y++)
+                    for(int x=0;x<cols;x++)
+                        utilized_batch_indices[y * rows + x] =
+                            new Batch_Index(x,y);
+            }
+            else
+                utilized_batch_indices = batch_indices;
+
+            Vertex_Object[] vo_s = new Vertex_Object[utilized_batch_indices.Length];
+
+            for(int i=0;i<utilized_batch_indices.Length;i++)
+                vo_s[i] =
+                    Create(texture, sub_width, sub_height, vo_width, vo_height, utilized_batch_indices[i]);
+
+            return vo_s;
         }
 
         /// <summary>

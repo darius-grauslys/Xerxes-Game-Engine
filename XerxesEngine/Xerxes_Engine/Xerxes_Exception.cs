@@ -1,6 +1,6 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Exception : Exception
     {

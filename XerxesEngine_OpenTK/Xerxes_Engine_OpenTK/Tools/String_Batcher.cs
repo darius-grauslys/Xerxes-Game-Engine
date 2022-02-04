@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using OpenTK;
 
-namespace Xerxes_Engine.Export_OpenTK.Tools 
+namespace Xerxes.Xerxes_OpenTK.Tools 
 {
     public static class String_Batcher
     {
@@ -18,10 +17,10 @@ namespace Xerxes_Engine.Export_OpenTK.Tools
             float char_height=1
         )
         {
-            List<Integer_Vector_2> uvs = new List<Integer_Vector_2>();
-            List<Vector2> positions = new List<Vector2>();
+            Batch_Index[] batch_indices = new Batch_Index[s.Length];
   
             int x=0, y=0;
+            int i=0;
             foreach(char c in s)
             {
                 if (c == '\n')
@@ -29,8 +28,14 @@ namespace Xerxes_Engine.Export_OpenTK.Tools
                     x=0; y++;
                     continue;
                 }
-                uvs.Add(new Integer_Vector_2(ALPHABET.IndexOf(c),0));
-                positions.Add(new Vector2(x,y));
+                Integer_Vector_2 index =
+                    new Integer_Vector_2
+                    (
+                        ALPHABET.IndexOf(c), 0
+                    );
+                Vector2 offset =
+                    new Vector2(char_width * x, char_height * y);
+                batch_indices[i++] = new Batch_Index(index, offset);
                 x++;
             }
 
@@ -39,12 +44,11 @@ namespace Xerxes_Engine.Export_OpenTK.Tools
                 .Create
                 (
                     font,
-                    char_width,
-                    char_height,
                     CHAR_PIXEL_WIDTH,
                     CHAR_PIXEL_HEIGHT,
-                    uvs.ToArray(),
-                    positions.ToArray()
+                    char_width,
+                    char_height,
+                    batch_indices
                 );
   
             return text;

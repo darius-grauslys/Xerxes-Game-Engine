@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public static class Log
     {

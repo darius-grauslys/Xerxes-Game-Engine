@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     //internal interface IRoot {}
     public abstract class Root<Args,A,D> :

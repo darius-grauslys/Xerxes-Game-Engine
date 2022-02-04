@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     internal class Streamline_Dictionary : Distinct_Type_Dictionary<Streamline_Argument, Streamline_Base>
     {

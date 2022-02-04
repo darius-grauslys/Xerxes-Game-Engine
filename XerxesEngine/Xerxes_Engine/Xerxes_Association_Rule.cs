@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Association_Rule
     {

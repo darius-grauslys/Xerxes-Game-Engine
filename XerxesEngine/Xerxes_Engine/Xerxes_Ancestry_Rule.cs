@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public sealed class Xerxes_Ancestry_Rule<XAncestor, XDescendant> :
     Xerxes_Association_Rule

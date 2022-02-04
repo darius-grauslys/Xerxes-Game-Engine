@@ -1,4 +1,4 @@
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public sealed class SA__Load_Texture_R2 :
         Streamline_Argument
@@ -11,7 +11,7 @@ namespace Xerxes_Engine.Export_OpenTK
         public SA__Load_Texture_R2
         (
             string filePath,
-            bool pixelated = false
+            bool pixelated = true 
         )
         {
             Load_Texture_R2__FILE_PATH =

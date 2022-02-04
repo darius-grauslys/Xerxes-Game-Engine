@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class SA__Configure_Root :
         Streamline_Argument

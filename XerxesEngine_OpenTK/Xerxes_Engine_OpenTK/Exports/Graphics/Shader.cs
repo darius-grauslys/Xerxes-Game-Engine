@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using OpenTK.Graphics.OpenGL;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
+namespace Xerxes.Xerxes_OpenTK.Exports.Graphics
 {
     public class Shader : IDisposable
     {

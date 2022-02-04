@@ -2,24 +2,24 @@
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Texture_R2
     {
         public const int CHANNEL_COUNT = 4;
 
-        public int Texture_R2__ID { get; }
-        public Integer_Vector_2 Texture_R2__SIZE { get; } 
-        public int Texture_R2__Width => Texture_R2__SIZE.X;
-        public int Texture_R2__Height => Texture_R2__SIZE.Y;
+        public int ID { get; }
+        public Integer_Vector_2 SIZE { get; } 
+        public int Width => SIZE.X;
+        public int Height => SIZE.Y;
 
-        public int Area => Texture_R2__Width * Texture_R2__Height;
+        public int Area => Width * Height;
 
         private Texture_R2(int width, int height)
         {
-            Texture_R2__ID = GL.GenTexture();
+            ID = GL.GenTexture();
 
-            Texture_R2__SIZE = new Integer_Vector_2(width, height);
+            SIZE = new Integer_Vector_2(width, height);
         }
 
         public Texture_R2(Bitmap bitmap, bool pixelated = true)
@@ -41,17 +41,17 @@ namespace Xerxes_Engine.Export_OpenTK
                 );
 
 
-            GL.BindTexture(TextureTarget.Texture2D, Texture_R2__ID);
+            GL.BindTexture(TextureTarget.Texture2D, ID);
 
             GL.TexImage2D
             (
                 TextureTarget.Texture2D, 
-                0, 
+                0,
                 PixelInternalFormat.Rgba, 
                 bitmap.Width, 
                 bitmap.Height, 
                 0, 
-                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, 
+                global::OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
                 PixelType.UnsignedByte, 
                 bmpd.Scan0
             );
@@ -70,17 +70,17 @@ namespace Xerxes_Engine.Export_OpenTK
         )
         : this(width, height)
         {
-            GL.BindTexture(TextureTarget.Texture2D, Texture_R2__ID);
+            GL.BindTexture(TextureTarget.Texture2D, ID);
 
             GL.TexImage2D
             (
                 TextureTarget.Texture2D, 
-                0, 
+                0,
                 PixelInternalFormat.Rgba, 
                 width,
                 height,
                 0, 
-                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, 
+                global::OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
                 PixelType.UnsignedByte, 
                 byte_array
             );
@@ -97,17 +97,17 @@ namespace Xerxes_Engine.Export_OpenTK
         )
         : this(width, height)
         {
-            GL.BindTexture(TextureTarget.Texture2D, Texture_R2__ID);
+            GL.BindTexture(TextureTarget.Texture2D, ID);
 
             GL.TexImage2D
             (
                 TextureTarget.Texture2D, 
-                0, 
+                0,
                 PixelInternalFormat.Rgba, 
                 width,
                 height,
                 0, 
-                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, 
+                global::OpenTK.Graphics.OpenGL.PixelFormat.Bgra,
                 PixelType.UnsignedByte, 
                 channel_array
             );

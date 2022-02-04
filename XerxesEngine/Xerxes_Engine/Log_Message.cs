@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public struct Log_Message
     {

@@ -1,5 +1,5 @@
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Test_Suite<Target>
     where Target : Xerxes_Object<Target>

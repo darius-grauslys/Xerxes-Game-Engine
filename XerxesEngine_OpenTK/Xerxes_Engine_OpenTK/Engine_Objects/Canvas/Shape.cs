@@ -1,5 +1,5 @@
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
+namespace Xerxes.Xerxes_OpenTK.Exports.Graphics.R2.Canvas
 {
     public enum Shape
     {

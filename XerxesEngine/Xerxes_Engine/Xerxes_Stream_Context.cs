@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public sealed class Xerxes_Stream_Context
     {

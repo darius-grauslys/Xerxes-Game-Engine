@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
-using Xerxes_Engine.Tools;
+using Xerxes.Tools;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
+namespace Xerxes.Xerxes_OpenTK.Exports.Graphics.R2.Canvas
 {
     public class Draw_Order_Factory
     {
@@ -124,6 +124,17 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
         {
             Draw(Shape.Circle, new Integer_Vector_2[] { center, point_width, point_height });
             return this;
+        }
+
+        public Draw_Order_Factory Draw__Rectangle
+        (
+            int min_x,
+            int min_y,
+            int max_x,
+            int max_y
+        )
+        {
+            return Draw__Rectangle(new Integer_Vector_2(min_x, min_y), new Integer_Vector_2(max_x, max_y));
         }
 
         public Draw_Order_Factory Draw__Rectangle

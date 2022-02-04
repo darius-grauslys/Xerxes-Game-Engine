@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// A wrapper class for a Type-key dictionary.

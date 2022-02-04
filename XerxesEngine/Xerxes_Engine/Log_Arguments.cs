@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public sealed class Log_Arguments
     {

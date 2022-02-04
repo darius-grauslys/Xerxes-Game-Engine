@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// Represents a internal handle of a Xerxes Object.

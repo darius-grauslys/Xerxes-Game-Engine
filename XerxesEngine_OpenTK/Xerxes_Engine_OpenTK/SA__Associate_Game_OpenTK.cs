@@ -1,4 +1,4 @@
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public sealed class SA__Associate_Game_OpenTK :
         SA__Associate_Root

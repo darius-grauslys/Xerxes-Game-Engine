@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Entities
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects.Entities
 {
     public class Entity_Manager<EntityType> :
         Xerxes_Object<Entity_Manager<EntityType>>

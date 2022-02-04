@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public enum Xerxes_Sealing_Context
     {

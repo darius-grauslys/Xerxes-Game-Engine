@@ -1,8 +1,8 @@
 
 using OpenTK;
-using Xerxes_Engine.Tools;
+using Xerxes.Tools;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
+namespace Xerxes.Xerxes_OpenTK.Exports.Graphics.R2.Canvas
 {
     public class Canvas
     {
@@ -24,7 +24,7 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
         public SA__Create_Texture_R2 Create__Texture__Canvas(int width, int height)
         {
             byte[,,] channel_array =
-                new byte[width, height, Texture_R2.CHANNEL_COUNT];
+                new byte[height, width, Texture_R2.CHANNEL_COUNT];
 
             Canvas_Context context = 
                 new Canvas_Context(channel_array, width, height);
@@ -231,10 +231,10 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
             context.Apply__Context_To_Point__Canvas_Context(ref x, ref y);
 
             //TODO: handle draw modes.
-            context.Canvas_Context__CHANNEL_ARRAY[x,y,0] = (byte)(color.X * 255);
-            context.Canvas_Context__CHANNEL_ARRAY[x,y,1] = (byte)(color.Y * 255);
-            context.Canvas_Context__CHANNEL_ARRAY[x,y,2] = (byte)(color.Z * 255);
-            context.Canvas_Context__CHANNEL_ARRAY[x,y,3] = (byte)(color.W * 255);
+            context.Canvas_Context__CHANNEL_ARRAY[y,x,0] = (byte)(color.X * 255);
+            context.Canvas_Context__CHANNEL_ARRAY[y,x,1] = (byte)(color.Y * 255);
+            context.Canvas_Context__CHANNEL_ARRAY[y,x,2] = (byte)(color.Z * 255);
+            context.Canvas_Context__CHANNEL_ARRAY[y,x,3] = (byte)(color.W * 255);
 
             return true;
         }

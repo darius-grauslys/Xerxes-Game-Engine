@@ -1,5 +1,7 @@
 
-namespace Xerxes_Engine.Export_OpenTK
+using OpenTK;
+
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Unsigned_Integer_Vector_3
     {
@@ -22,8 +24,8 @@ namespace Xerxes_Engine.Export_OpenTK
         public override string ToString()
             => $"({uX}, {uY}, {uZ})";
 
-        public static implicit operator OpenTK.Vector3(Unsigned_Integer_Vector_3 iv3)
-            => new OpenTK.Vector3(iv3.uX, iv3.uY, iv3.uZ);
+        public static implicit operator Vector3(Unsigned_Integer_Vector_3 iv3)
+            => new Vector3(iv3.uX, iv3.uY, iv3.uZ);
 
         public static Unsigned_Integer_Vector_3 operator +(Unsigned_Integer_Vector_3 v1, Unsigned_Integer_Vector_3 v2)
             => new Unsigned_Integer_Vector_3(v1.uX + v2.uX, v1.uY + v2.uY, v1.uZ + v2.uZ);

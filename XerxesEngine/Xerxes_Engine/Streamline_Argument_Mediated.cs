@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Streamline_Argument_Mediated<S,X> :
         Streamline_Argument

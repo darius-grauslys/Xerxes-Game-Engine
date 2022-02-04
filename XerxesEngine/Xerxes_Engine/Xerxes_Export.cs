@@ -1,6 +1,6 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// Defines a receiving endpoint for streamlines

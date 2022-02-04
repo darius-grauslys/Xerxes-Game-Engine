@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     internal sealed class Xerxes_Linker_Context
     {

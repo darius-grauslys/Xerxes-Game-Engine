@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     internal sealed class Export_Dictionary :
         Distinct_Type_Dictionary<Xerxes_Export_Base, Xerxes_Export_Base>

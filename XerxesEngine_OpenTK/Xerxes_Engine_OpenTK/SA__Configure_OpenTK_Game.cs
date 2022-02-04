@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public class SA__Configure_OpenTK_Game :
         SA__Configure_Root

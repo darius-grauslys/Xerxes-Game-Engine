@@ -1,5 +1,7 @@
 
-namespace Xerxes_Engine.Export_OpenTK
+using OpenTK;
+
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Unsigned_Integer_Vector_2
     {
@@ -23,8 +25,8 @@ namespace Xerxes_Engine.Export_OpenTK
         public static explicit operator Integer_Vector_2(Unsigned_Integer_Vector_2 iv)
             => new Integer_Vector_2((int)iv.uX, (int)iv.uY);
 
-        public static implicit operator OpenTK.Vector2(Unsigned_Integer_Vector_2 iv)
-            => new OpenTK.Vector2(iv.uX, iv.uY);
+        public static implicit operator Vector2(Unsigned_Integer_Vector_2 iv)
+            => new Vector2(iv.uX, iv.uY);
 
         public static Unsigned_Integer_Vector_2 operator +(Unsigned_Integer_Vector_2 v1, Unsigned_Integer_Vector_2 v2)
             => new Unsigned_Integer_Vector_2(v1.uX + v2.uX, v1.uY + v2.uY);

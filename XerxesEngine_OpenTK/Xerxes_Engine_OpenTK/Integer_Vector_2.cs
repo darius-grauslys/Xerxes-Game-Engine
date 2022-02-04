@@ -1,4 +1,6 @@
-namespace Xerxes_Engine.Export_OpenTK
+using OpenTK;
+
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Integer_Vector_2
     {
@@ -18,6 +20,9 @@ namespace Xerxes_Engine.Export_OpenTK
         {
             return $"({X}, {Y})";
         }
+
+        public static implicit operator Vector2(Integer_Vector_2 iv)
+            => new Vector2(iv.X, iv.Y);
 
         public static Integer_Vector_2 operator +(Integer_Vector_2 v1, Integer_Vector_2 v2)
             => new Integer_Vector_2(v1.X + v2.X, v1.Y + v2.Y);

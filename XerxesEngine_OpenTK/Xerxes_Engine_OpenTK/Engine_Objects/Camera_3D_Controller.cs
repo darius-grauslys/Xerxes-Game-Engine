@@ -2,9 +2,9 @@
 using System;
 using OpenTK;
 using OpenTK.Input;
-using Xerxes_Engine.Export_OpenTK.Exports.Input;
+using Xerxes.Xerxes_OpenTK.Exports.Input;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects
 {
     public class Camera_3D_Controller :
         Xerxes_Object<Camera_3D_Controller>

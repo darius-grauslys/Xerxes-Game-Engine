@@ -1,6 +1,6 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// Represents a type in Xerxes_Engine that depends on the
@@ -15,6 +15,8 @@ namespace Xerxes_Engine
     /// </summary>
     public class Xerxes_Object<TThis> : Xerxes_Object_Base where TThis : Xerxes_Object_Base
     {
+        internal Xerxes_Ancestry<TThis> Xerxes_Object__ANCESTRY__Internal { get; }
+
         public Xerxes_Object() 
         {
             if (!(this is TThis))
@@ -28,17 +30,17 @@ namespace Xerxes_Engine
                 );
                 return;
             }
+
+            Xerxes_Object__ANCESTRY__Internal =
+                new Xerxes_Ancestry<TThis>(this);
+
+            Xerxes_Linker
+                .Internal_Set__Declaration(this, Xerxes_Object__ANCESTRY__Internal);
         }
 
         protected internal Xerxes_Ancestry<TThis> Declare__Hierarchy()
         {
-            Xerxes_Ancestry<TThis> hierarchy = 
-                new Xerxes_Ancestry<TThis>(this);
-
-            Xerxes_Linker
-                .Internal_Set__Declaration(this, hierarchy);
-
-            return hierarchy;
+            return Xerxes_Object__ANCESTRY__Internal;
         }
 
         protected void Declare__Field<TType>

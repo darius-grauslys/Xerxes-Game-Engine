@@ -1,4 +1,4 @@
-﻿namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Vertex_Object_Components
+﻿namespace Xerxes.Xerxes_OpenTK.Engine_Objects.Vertex_Object_Components
 {
     /// <summary>
     /// A Vertex_Object_Component with SA__Field[int] to set the current vertex object.
@@ -18,8 +18,8 @@
 
             Declare__Field<Sprite.Sprite_Index>
             (
-                () => sprite_render_component__sprite.Sprite__Active_Index,
-                (sprite_index) => sprite_render_component__sprite.Sprite__Active_Index = sprite_index
+                () => sprite_render_component__sprite.Active_Index,
+                (sprite_index) => sprite_render_component__sprite.Active_Index = sprite_index
             );
         }
     }

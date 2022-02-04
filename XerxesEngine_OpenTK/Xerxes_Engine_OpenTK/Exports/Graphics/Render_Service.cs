@@ -3,7 +3,7 @@ using System.IO;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
+namespace Xerxes.Xerxes_OpenTK.Exports.Graphics
 {
     public sealed class Render_Service : 
         OpenTK_Export
@@ -185,7 +185,7 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
             GL.UniformMatrix4(view, true, ref _Render_Service__Cached_World);
             GL.UniformMatrix4(projection, true, ref _Render_Service__Cached_Projection);
 
-            GL.DrawArrays(PrimitiveType.Quads, 0, vertex_object.Get__Vertex_Count__Vertex_Object());
+            GL.DrawArrays(PrimitiveType.Quads, 0, vertex_object.Get__Vertex_Count());
         }
 
         public int Get__Uniform_Location__Render_Service(int shader, string name)

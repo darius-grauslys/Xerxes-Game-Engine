@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.IO;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Serialization
+namespace Xerxes.Xerxes_OpenTK.Exports.Serialization
 {
     public sealed class Texture_R2_Generator : 
         OpenTK_Export

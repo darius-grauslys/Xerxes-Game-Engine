@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Ancestry_Node
     {

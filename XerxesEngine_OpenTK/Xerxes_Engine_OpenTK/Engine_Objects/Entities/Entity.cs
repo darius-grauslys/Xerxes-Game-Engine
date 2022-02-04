@@ -1,6 +1,6 @@
 using OpenTK;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Entities
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects.Entities
 {
     public class Entity
     {

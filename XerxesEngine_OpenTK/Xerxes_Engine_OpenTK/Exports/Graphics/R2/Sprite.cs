@@ -1,7 +1,7 @@
 ﻿using OpenTK;
-using Xerxes_Engine.Tools;
+using Xerxes.Tools;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Sprite
     {
@@ -20,22 +20,22 @@ namespace Xerxes_Engine.Export_OpenTK
                 => new Sprite_Index(sprite_index);
         }
 
-        public Sprite_Index Sprite__Active_Index { get; set; }
-        public Vertex_Object Sprite__Active_Object 
-            => _Sprite__VERTEX_OBJECTS[Sprite__Active_Index];
-        public Vector3 Sprite__Size                { get; set; }
+        public Sprite_Index Active_Index { get; set; }
+        public Vertex_Object Active_Vertex_Object 
+            => _VERTEX_OBJECTS[Active_Index];
+        public Vector3 Size                { get; set; }
 
-        private Vertex_Object[] _Sprite__VERTEX_OBJECTS { get; }
+        private Vertex_Object[] _VERTEX_OBJECTS { get; }
 
-        internal Sprite(Vertex_Object[] vertex_Objects)
+        public Sprite(Vertex_Object[] vertex_Objects)
         {
-            _Sprite__VERTEX_OBJECTS = vertex_Objects;
-            Sprite__Active_Index = 0;
-            Sprite__Size = new Vector3();
+            _VERTEX_OBJECTS = vertex_Objects;
+            Active_Index = 0;
+            Size = new Vector3();
         }
 
         //TODO: wrap index
-        internal bool Set__Active_Vertex_Object__Sprite
+        public bool Set__Active_Vertex_Object__Sprite
         (int index)
         {
             if 
@@ -44,14 +44,14 @@ namespace Xerxes_Engine.Export_OpenTK
                 .Check_If__Obeys_Range_Clamp__Positive_Integer
                 (
                     index, 
-                    _Sprite__VERTEX_OBJECTS.Length
+                    _VERTEX_OBJECTS.Length
                 )
             )
             {
                 return false;
             }
 
-            Sprite__Active_Index = index;
+            Active_Index = index;
 
             return true;
         }

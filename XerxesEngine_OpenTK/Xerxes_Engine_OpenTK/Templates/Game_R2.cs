@@ -1,8 +1,8 @@
 
-using Xerxes_Engine.Export_OpenTK.Exports.Graphics;
-using Xerxes_Engine.Export_OpenTK.Exports.Serialization;
+using Xerxes.Xerxes_OpenTK.Exports.Graphics;
+using Xerxes.Xerxes_OpenTK.Exports.Serialization;
 
-namespace Xerxes_Engine.Export_OpenTK.Templates
+namespace Xerxes.Xerxes_OpenTK.Templates
 {
     public class Game_R2 :
         Game

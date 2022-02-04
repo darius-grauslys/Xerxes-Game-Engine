@@ -3,11 +3,11 @@ using OpenTK.Graphics.OpenGL;
 using System;
 using System.IO;
 using OpenTK.Graphics;
-using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
-using Xerxes_Engine.Export_OpenTK.Exports.Input;
+using Math_Helper = Xerxes.Tools.Math_Helper;
+using Xerxes.Xerxes_OpenTK.Exports.Input;
 using OpenTK.Input;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     /// <summary>
     /// Contains a Game Window object, and hooks events to it.

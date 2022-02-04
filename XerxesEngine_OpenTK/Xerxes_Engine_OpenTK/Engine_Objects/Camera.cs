@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects
 {
     public abstract class Camera :
         Xerxes_Object<Camera>
