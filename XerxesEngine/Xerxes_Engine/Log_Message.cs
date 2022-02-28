@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public struct Log_Message
     {
@@ -29,7 +29,7 @@ namespace Xerxes_Engine
 
         public Log_Message_Type Log_Message__TYPE           { get; }
         public bool             Log_Message__Is_INTERNAL    { get; }
-        public Type             Log_Message__SOURCE         { get; }
+        public string           Log_Message__SOURCE         { get; }
         public string           Log_Message__TIME           { get; }
         public string           Log_Message__MESSAGE        { get; }
         internal Log_Verbosity  Log_Message__VERBOSITY      { get; }
@@ -43,7 +43,7 @@ namespace Xerxes_Engine
         {
             Log_Message__TYPE = messageType;
             Log_Message__Is_INTERNAL = true;
-            Log_Message__SOURCE = source?.GetType();
+            Log_Message__SOURCE = source is string ? source as string ?? "" : source?.GetType()?.ToString();
             Log_Message__TIME = DateTime.Now.ToString("hh:mm:ss tt");
             Log_Message__MESSAGE = internal_message;
             Log_Message__VERBOSITY = Determine__Verbosity(messageType);
@@ -58,7 +58,7 @@ namespace Xerxes_Engine
         {
             Log_Message__TYPE = messageType;
             Log_Message__Is_INTERNAL = false;
-            Log_Message__SOURCE = source?.GetType();
+            Log_Message__SOURCE = source is string ? source as string ?? "" : source?.GetType()?.ToString();
             Log_Message__TIME = DateTime.Now.ToString("hh:mm:ss tt");
             Log_Message__MESSAGE = message;
             Log_Message__VERBOSITY = Determine__Verbosity(messageType);
@@ -67,7 +67,10 @@ namespace Xerxes_Engine
         public override string ToString()
         {
             string source = Log_Message__SOURCE?.ToString() ?? "";
-            int sourceCutOffIndex = source.LastIndexOf('.')+1;
+            int sourceCutOffIndex = source.LastIndexOf('`');
+            if (sourceCutOffIndex > 0)
+                source = source.Substring(0, sourceCutOffIndex);
+            sourceCutOffIndex = source.LastIndexOf('.')+1;
             source = source.Substring(sourceCutOffIndex);
 
             string metaString = Get__MetaString

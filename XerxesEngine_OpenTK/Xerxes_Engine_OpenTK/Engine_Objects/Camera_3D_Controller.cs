@@ -1,10 +1,10 @@
 
 using System;
 using OpenTK;
-using OpenTK.Input;
-using Xerxes_Engine.Export_OpenTK.Exports.Input;
+using Xerxes.Game_Engine.Input;
+using Xerxes.Game_Engine;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects
 {
     public class Camera_3D_Controller :
         Xerxes_Object<Camera_3D_Controller>
@@ -42,7 +42,7 @@ namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
         protected virtual void Handle_Input__Key_Down__Camera_3D_Controller
         (SA__Input_Key_Down e)
         {
-            switch(e.Input_Key__KEY)
+            switch(e.Input_Key__Event_Key)
             {
                 case Key.W:
                     camera_3d_controller__velocity.Z = 0.1f;
@@ -62,8 +62,8 @@ namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
         protected virtual void Handle_Input__Mouse_Move__Camera_3D_Controller
         (SA__Input_Mouse_Move e)
         {
-            float mouse_x = e.SA__Input_Mouse_Move__X;
-            float mouse_y = e.SA__Input_Mouse_Move__Y;
+            float mouse_x = e.Input_Mouse_Move__Mouse_X;
+            float mouse_y = e.Input_Mouse_Move__Mouse_Y;
 
             if (Camera_3D_Controller__Mouse__First_Move)
             {

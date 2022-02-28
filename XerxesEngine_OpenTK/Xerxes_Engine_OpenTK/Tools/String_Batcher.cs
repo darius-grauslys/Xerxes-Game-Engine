@@ -1,12 +1,16 @@
 using System.Collections.Generic;
 using OpenTK;
 
-namespace Xerxes_Engine.Export_OpenTK.Tools 
+namespace Xerxes.Xerxes_OpenTK.Tools 
 {
     public static class String_Batcher
     {
         public const int CHAR_PIXEL_WIDTH = 18;
         public const int CHAR_PIXEL_HEIGHT = 28;
+
+        public const float CHAR_WIDTH = ((float)CHAR_PIXEL_WIDTH/CHAR_PIXEL_HEIGHT);
+        public const float CHAR_HEIGHT = 1;
+
         private const string ALPHABET =
             ",gjpqyABCDEFGHIJKLMNOPQRSTUVWXYZabcdefhiklmnorstuvwxz1234567890.?!/-+@#$%^&+()_=[]\\[]|:;\"'<>`~";
   
@@ -14,8 +18,8 @@ namespace Xerxes_Engine.Export_OpenTK.Tools
         (
             string s, 
             Texture_R2 font,
-            float char_width=((float)CHAR_PIXEL_WIDTH)/CHAR_PIXEL_HEIGHT,
-            float char_height=1
+            float char_width  = CHAR_WIDTH,
+            float char_height = CHAR_HEIGHT
         )
         {
             List<Integer_Vector_2> uvs = new List<Integer_Vector_2>();

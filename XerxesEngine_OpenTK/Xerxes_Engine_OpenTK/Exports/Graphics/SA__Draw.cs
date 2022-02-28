@@ -1,9 +1,11 @@
-using OpenTK;
 
-namespace Xerxes_Engine.Export_OpenTK
+using OpenTK;
+using Xerxes.Game_Engine;
+
+namespace Xerxes.Xerxes_OpenTK
 {
     public class SA__Draw :
-        SA__Chronical
+        Streamline_Argument
     {
         public Vertex_Object Draw__Vertex_Object { get; set; }
 
@@ -11,7 +13,6 @@ namespace Xerxes_Engine.Export_OpenTK
         public Vector3 Draw__Scale { get; set; }
 
         public SA__Draw(SA__Render e)
-            : base(e)
         {}
     }
 }

@@ -1,4 +1,4 @@
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Integer_Vector_2
     {

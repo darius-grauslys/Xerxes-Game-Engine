@@ -1,6 +1,6 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// Represents a communication stream through the
@@ -10,58 +10,73 @@ namespace Xerxes_Engine
     /// </summary>
     public class Streamline<T> : Streamline_Base where T : Streamline_Argument
     {
-        internal event Action<T> Streamline__SUBSCRIPTION__Internal;
-
+        internal event Action<T> Streamline__STREAMLINE__Internal;
 
         internal Streamline
         (
-            Action<T> listener = null,
+            Action<T> listening_receiver = null,
             bool isReceiving = true,
-            bool isExtending = true,
-            bool isSourcing = false
+            bool isExtending = true
         ) 
         : base
         (
+            typeof(Streamline<T>),
             isReceiving,
-            isExtending,
-            isSourcing
+            isExtending
         )
         {
-            if (listener != null)
+            if (listening_receiver != null)
             {
-                Streamline__SUBSCRIPTION__Internal += listener;
+                Streamline__STREAMLINE__Internal += listening_receiver;
             }
         }        
 
-        
-
 #region Internal Streamline Functionality
-        internal override bool Internal_Link__Streamline_Base 
+        internal override Streamline_Base Internal_Create__Virtual__Streamline_Base()
+        {
+            Streamline<T> virtual_target =
+                new Streamline<T>
+                (
+                    null,
+                    Streamline_Base__IS_RECEIVING,
+                    Streamline_Base__IS_EXTENDING
+                );
+
+            return virtual_target;
+        }
+
+        internal override bool Internal_Link__Extend_Target__Streamline_Base
         (
             Streamline_Base target
         )
-        { 
-            Streamline<T> target_Streamline = target as Streamline<T>;
-            if (target_Streamline == null)
+        {
+            Streamline<T> target_streamline = target as Streamline<T>;
+            if (target_streamline == null)
                 return false;
 
-            target_Streamline
-                .Streamline__SUBSCRIPTION__Internal +=
-                Internal_Stream__Streamline;
+            //TODO: This tomfoolery is needed.
+            //look to fix this by linking to
+            //ancestral receiver on PUSH
+            //then linking to ancestral
+            //extender on POP.
+            Streamline__STREAMLINE__Internal +=
+                target_streamline
+                .Internal_Stream__Streamline;
 
             return true;
         }
 
         internal bool Internal_Subscribe__Streamline_Base
         (
-            Action<T> listener
+            Action<T> listening_receiver
         )
         {
             if (!Streamline_Base__IS_RECEIVING)
                 return false;
 
-            Streamline__SUBSCRIPTION__Internal +=
-                listener;
+            Streamline__STREAMLINE__Internal +=
+                listening_receiver;
+
             return true;
         }
 
@@ -70,10 +85,7 @@ namespace Xerxes_Engine
             T streamline_Argument
         )
         {
-            if (Streamline_Base__Is_Disabled)
-                return;
-
-            Streamline__SUBSCRIPTION__Internal?
+            Streamline__STREAMLINE__Internal?
                 .Invoke(streamline_Argument);
         }
 #endregion

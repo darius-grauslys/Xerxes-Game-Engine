@@ -2,7 +2,7 @@
 using System;
 using OpenTK;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects
 {
     public class Camera_3D :
         Camera

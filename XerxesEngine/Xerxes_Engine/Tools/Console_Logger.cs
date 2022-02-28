@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Xerxes_Engine.Tools
+namespace Xerxes.Tools
 {
     public class Console_Logger : TextWriter
     {

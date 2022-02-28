@@ -1,16 +1,16 @@
 
-using Xerxes_Engine.Export_OpenTK.Exports.Graphics;
-using Xerxes_Engine.Export_OpenTK.Exports.Serialization;
+using Xerxes.Xerxes_OpenTK.Exports.Graphics;
+using Xerxes.Xerxes_OpenTK.Exports.Serialization;
 
-namespace Xerxes_Engine.Export_OpenTK.Templates
+namespace Xerxes.Xerxes_OpenTK.Templates
 {
     public class Game_R2 :
-        Game
+        OpenTK_Game
     {
         public Game_R2()
         {
-            Declare__Export<Render_Service>();
-            Declare__Export<Texture_R2_Generator>();
+            Declare__Endpoint<Render_Service>();
+            Declare__Endpoint<Texture_R2_Generator>();
 
             Declare__Streams()
                 .Upstream.Extending<SA__Load_Texture_R2>();

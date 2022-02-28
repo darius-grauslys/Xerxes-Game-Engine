@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public static class Log
     {
@@ -17,6 +17,7 @@ namespace Xerxes_Engine
         VERBOSE__XERXES_LINKER__SEALING_OBJECT_1                    = "Sealing object {0}.",
 
         VERBOSE__ROOT__DECLARING_EXPORT_1                           = "Declaring Export    - {0}.",
+        VERBOSE__ROOT__DECLARING_IMPORT_1                           = "Declaring Import    - {0}.",
 #endregion
 #region CONST INTERNAL WARNING MESSAGES
         WARNING__FLAGGED_TO_THROW                                   = "Logger is flagged to throw in this state.",
@@ -48,7 +49,7 @@ namespace Xerxes_Engine
         ERROR__XERXES_ANCESTRY__FAILED_TO_FIND_ANCESTOR_1           = "Failed to find {0} during hierarchy declaration!",
         ERROR__XERXES_ANCESTRY__FAILED_TO_FIND_DESCENDANT_1         = "Failed to find {0} during hierarchy declaration!",
 
-        ERROR__EXPORT_DICTIONARY__DUPLICATE_DECLARATION_1           = "Duplicate export declaration of {0} detected!",
+        ERROR__ENDPOINT_DICTIONARY__DUPLICATE_DECLARATION_1         = "Duplicate export declaration of {0} detected!",
 
         ERROR__XERXES_EXPORT__DECLARED_BUT_NOT_ROOTED_1             = "Tried to declare exportline receiver of type {0} but is not rooted!",
 

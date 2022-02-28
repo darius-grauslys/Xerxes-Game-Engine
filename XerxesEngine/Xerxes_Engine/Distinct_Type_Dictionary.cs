@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// A wrapper class for a Type-key dictionary.
@@ -39,11 +39,14 @@ namespace Xerxes_Engine
             return typeExists;
         }
 
-        internal IEnumerable<KeyValuePair<Type,Y>> Internal_Get__Entries__Distinct_Typed_Dictionary()
+        protected internal IEnumerable<KeyValuePair<Type,Y>> Protected_Get__Entries__Distinct_Typed_Dictionary()
             => _Distinct_Type_Dictionary__DICTIONARY.ToArray();
 
-        internal IEnumerable<Type> Internal_Get__Types__Distinct_Typed_Dictionary()
+        protected internal IEnumerable<Type> Protected_Get__Types__Distinct_Typed_Dictionary()
             => _Distinct_Type_Dictionary__DICTIONARY.Keys.ToArray();
+
+        protected internal IEnumerable<Y> Protected_Get__Elements__Distinct_Typed_Dictionary()
+            => _Distinct_Type_Dictionary__DICTIONARY.Values.ToArray();
 
         protected Distinct_Type_Dictionary()
         {

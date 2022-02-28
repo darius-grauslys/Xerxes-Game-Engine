@@ -1,4 +1,4 @@
-﻿namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Vertex_Object_Components
+﻿namespace Xerxes.Xerxes_OpenTK.Engine_Objects.Vertex_Object_Components
 {
     public class Animation_Schematic
     {

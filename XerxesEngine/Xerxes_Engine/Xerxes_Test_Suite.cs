@@ -1,5 +1,5 @@
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Test_Suite<Target>
     where Target : Xerxes_Object<Target>
@@ -8,7 +8,7 @@ namespace Xerxes_Engine
         where X_Object : Target, new()
         where SA : Streamline_Argument
         {
-            Xerxes.Test<X_Object, Target, SA>(streamline_argument);
+            Xerxes_Suite.Test<X_Object, Target, SA>(streamline_argument);
         }
     }
 }

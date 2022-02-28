@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     internal sealed class Xerxes_Linker_Context
     {
@@ -10,7 +10,7 @@ namespace Xerxes_Engine
 
         internal Xerxes_Linker_Context
         (
-            Export_Dictionary exports
+            Endpoint_Dictionary exports
         )
         {
             _Xerxes_Linker_Context__UPSTREAM_RECEIVING_STACK =
@@ -21,20 +21,64 @@ namespace Xerxes_Engine
             if(exports == null)
                 return;
 
-            // The export stream only has upstream catchers.
+            // --The export stream only has upstream catchers.-- valid from forever ago to 2/4/2022
+            // "export" now called endpoint are both ancestral recievers (upstream catchers)
+            // and ancestral extenders (downstream extenders)
             IEnumerable<KeyValuePair<Type, Streamline_Base>> exportline_Table =
                 exports
-                .Export_Dictionary__EXPORTLINES__Internal
-                .Internal_Get__Entries__Distinct_Typed_Dictionary();
+                .Internal_Get__Endpoint_Streamlines__Endpoint_Dictionary();
 
             foreach(KeyValuePair<Type, Streamline_Base> pair in exportline_Table)
             {
-                Internal_Push__Upstream_Receiver__Xerxes_Linker_Context
+                if (pair.Value.Streamline_Base__IS_RECEIVING)
+                {
+                    Private_Establish__Endpoint_Streamline__Xerxes_Linker_Context
+                    (
+                        pair.Key,
+                        pair.Value,
+                        _Xerxes_Linker_Context__UPSTREAM_RECEIVING_STACK
+                    );
+                }
+                else
+                {
+                    Private_Establish__Endpoint_Streamline__Xerxes_Linker_Context
+                    (
+                        pair.Key,
+                        pair.Value,
+                        _Xerxes_Linker_Context__DOWNSTREAM_EXTENDING_STACK
+                    );
+                }
+            }
+        }
+
+        private void Private_Establish__Endpoint_Streamline__Xerxes_Linker_Context
+        (
+            Type t,
+            Streamline_Base streamline_base,
+            Dictionary<Type, Stack<Streamline_Base>> table
+        )
+        {
+            if(!table.ContainsKey(t))
+            {
+                table.Add(t, new Stack<Streamline_Base>());
+                table[t].Push
                 (
-                    pair.Key,
-                    pair.Value
+                    streamline_base.Internal_Create__Virtual__Streamline_Base()
                 );
             }
+
+            Streamline_Base virtual_streamline =
+                table[t].Peek() as Streamline_Base;
+
+            if (streamline_base.Streamline_Base__IS_RECEIVING)
+            {
+                virtual_streamline
+                    .Internal_Link__Extend_Target__Streamline_Base(streamline_base);
+                return;
+            }
+
+            streamline_base
+                .Internal_Link__Extend_Target__Streamline_Base(virtual_streamline);
         }
 
         /// <summary>
@@ -44,7 +88,7 @@ namespace Xerxes_Engine
         internal void Internal_Link__Ascending_Extender__Xerxes_Linker_Context
         (
             Type t,
-            Streamline_Base streamline_Base
+            Streamline_Base streamline_extender
         )
         {
             bool hasDeclaration =
@@ -60,30 +104,30 @@ namespace Xerxes_Engine
                 (
                     this,
                     t,
-                    streamline_Base,
+                    streamline_extender,
                     nameof(_Xerxes_Linker_Context__UPSTREAM_RECEIVING_STACK)
                 );
                 return;
             }
 
-            Streamline_Base upstreamReceiver =
+            Streamline_Base upstream_receiver =
                 Private_Peek__Xerxes_Linker_Context
                 (
                     t,
                     _Xerxes_Linker_Context__UPSTREAM_RECEIVING_STACK
                 );
 
-            upstreamReceiver
-                .Internal_Link__Streamline_Base
+            streamline_extender
+                .Internal_Link__Extend_Target__Streamline_Base
                 (
-                    streamline_Base
+                    upstream_receiver
                 );
         }
 
         internal void Internal_Link__Descending_Receiver__Xerxes_Linker_Context
         (
             Type t,
-            Streamline_Base streamline_Base
+            Streamline_Base streamline_receiver
         )
         {
             bool hasDeclaration =
@@ -99,24 +143,27 @@ namespace Xerxes_Engine
                 (
                     this,
                     t,
-                    streamline_Base,
+                    streamline_receiver,
                     nameof(_Xerxes_Linker_Context__DOWNSTREAM_EXTENDING_STACK)
                 );
                 return;
             }
 
-            Streamline_Base downstreamExtender =
+            Streamline_Base downstream_extender =
                 Private_Peek__Xerxes_Linker_Context
                 (
                     t,
                     _Xerxes_Linker_Context__DOWNSTREAM_EXTENDING_STACK
                 );
 
-            streamline_Base
-                .Internal_Link__Streamline_Base
+            bool s = downstream_extender
+                .Internal_Link__Extend_Target__Streamline_Base
                 (
-                    downstreamExtender
+                    streamline_receiver
                 );
+
+            string status = s ? "success" : "failure";
+            Log.Write__Verbose__Log($"Linking {streamline_receiver}: {status}.", this);
         }
 
         internal void Internal_Push__Upstream_Receiver__Xerxes_Linker_Context
@@ -212,11 +259,11 @@ namespace Xerxes_Engine
                         new Stack<Streamline_Base>()
                     );
 
+            Log.Write__Verbose__Log($"Pushing {t}.", this);
+
             Stack<Streamline_Base> stack = table[t];
 
             stack.Push(streamline_Base);
-
-            Log.Write__Verbose__Log($"Pushed onto streamline stack: {streamline_Base.GetType()}", this);
         }
 
         private void Private_Pop__Xerxes_Linker_Context

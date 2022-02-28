@@ -1,12 +1,14 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using Xerxes.Game_Engine;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
+namespace Xerxes.Xerxes_OpenTK.Exports.Graphics
 {
     public sealed class Render_Service : 
-        OpenTK_Export
+        Xerxes_Endpoint
     {
         public const string RENDER_SERVICE__EXTENSION_VERTEX_SHADER = ".vert";
         public const string RENDER_SERVICE__EXTENSION_FRAGMENT_SHADER = ".frag";
@@ -32,7 +34,7 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
         private string
             _Render_Service__Shader_Directory;
 
-        protected override void Handle__Rooted__Xerxes_Export()
+        public Render_Service()
         {
             Declare__Receiving
                 <SA__Render_Begin>
@@ -49,34 +51,30 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
                 (
                     Private_Draw__Render_Service
                 );
+            Declare__Receiving
+                <SA__Configure_Root>
+                (
+                    Private_Configure__Root__Render_Service
+                );
         }
 
-        protected override void Handle__Associate_Root__Xerxes_Export 
+        private void Private_Configure__Root__Render_Service 
         (
-            SA__Associate_Game_OpenTK e
+            SA__Configure_Root e
         )
         {
             _Render_Service__Shader_Directory = 
-                e
-                .Associate_Root__SHADER_DIRECTORY;
+                OpenTK_Game
+                .Game__Directory_Shaders;
             
             string[] shaders =
-                e
-                .Associate_Root__SHADERS__Internal;
+                Directory
+                .GetFiles(_Render_Service__Shader_Directory);
 
             Private_Load__Shaders__Render_Service
             (
                 shaders
             );
-        }
-
-        protected override void Handle__Dissassociate_Root__Xerxes_Export 
-        (SA__Dissassociate_Game_OpenTK e)
-        {
-            foreach(Shader shader in _Render_Service__Shaders)
-            {
-                shader.Dispose();
-            }
         }
 
         private void Private_Load__Shaders__Render_Service
@@ -85,11 +83,17 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
         )
         {
             Log.Write__Verbose__Log(Log_Messages__OpenTK.VERBOSE__RENDER_SERVICE__LOAD_SHADERS, this);
-            _Render_Service__Shaders = new Shader[shaders.Length];
+            List<Shader> found_shaders = new List<Shader>();
 
-            for(int i=0;i<shaders.Length;i++)
+            foreach(string shader_file in shaders)
             {
-                Log.Write__Verbose__Log(Log_Messages__OpenTK.VERBOSE__RENDER_SERVICE__LOAD_SHADER_1, this, 0, shaders[i]);
+                string shader_ext = Path.GetExtension(shader_file);
+                if (shader_ext != RENDER_SERVICE__EXTENSION_VERTEX_SHADER)
+                    continue;
+
+                string shader = Path.GetFileNameWithoutExtension(shader_file);
+
+                Log.Write__Verbose__Log(Log_Messages__OpenTK.VERBOSE__RENDER_SERVICE__LOAD_SHADER_1, this, 0, shader);
 
                 _Render_Service__Shader_Source_Vertex = 
                     Path
@@ -100,7 +104,7 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
                         .Format
                         (
                             "{0}{1}", 
-                            shaders[i], 
+                            shader, 
                             RENDER_SERVICE__EXTENSION_VERTEX_SHADER
                         )
                     );
@@ -112,13 +116,18 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
                         string.Format
                         (
                             "{0}{1}", 
-                            shaders[i], 
+                            shader, 
                             RENDER_SERVICE__EXTENSION_FRAGMENT_SHADER
                         )
                     );
 
-                _Render_Service__Shaders[i] = new Shader(_Render_Service__Shader_Source_Vertex, _Render_Service__Shader_Source_Fragment);
+                Shader loaded_shader = new Shader(_Render_Service__Shader_Source_Vertex, _Render_Service__Shader_Source_Fragment);
+
+                found_shaders.Add(loaded_shader);
             }
+
+            _Render_Service__Shaders =
+                found_shaders.ToArray();
 
             Set__Shader__Render_Service(0);
         }
@@ -130,8 +139,13 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
             _Render_Service_Default_Shader.Use();
         }
 
-        internal void Private_Handle__Render__Render_Service(SA__Render_Begin e)
+        internal void Private_Handle__Render__Render_Service(SA__Render_Begin e_base)
         {
+            if (!(e_base is SA__Render_Begin__OpenTK))
+                return;
+
+            SA__Render_Begin__OpenTK e = e_base as SA__Render_Begin__OpenTK;
+
             Private_Cache__Matrix__Render_Service
             (
                 e.Render_Begin__World_Matrix,
@@ -167,6 +181,8 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics
 
         private void Private_Draw__Render_Service(SA__Draw e)
         {
+            if (!e.Draw__Vertex_Object.Vertex_Object__IS_PROPER)
+                return;
             Vector3 position = e.Draw__Position;
             Vertex_Object vertex_object = e.Draw__Vertex_Object;
 

@@ -1,6 +1,7 @@
 ﻿using OpenTK;
+using Xerxes.Game_Engine;
 
-namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects
 {
     public abstract class Camera :
         Xerxes_Object<Camera>
@@ -33,8 +34,13 @@ namespace Xerxes_Engine.Export_OpenTK.Engine_Objects
                 );
         }
 
-        protected virtual void Private_Handle_Render__Camera(SA__Render_Begin e)
+        protected virtual void Private_Handle_Render__Camera(SA__Render_Begin e_base)
         {
+            if (!(e_base is SA__Render_Begin__OpenTK))
+                return;
+
+            SA__Render_Begin__OpenTK e = e_base as SA__Render_Begin__OpenTK;
+
             e.Render_Begin__Projection_Matrix = Get__Projection__Camera();
             e.Render_Begin__World_Matrix      = Get__View_Space__Camera();
         }

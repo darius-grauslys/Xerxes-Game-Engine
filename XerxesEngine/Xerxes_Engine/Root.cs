@@ -1,45 +1,42 @@
-namespace Xerxes_Engine
-{
-    //internal interface IRoot {}
-    public abstract class Root<Args,A,D> :
-        Xerxes_Object<Root<Args,A,D>>//,
-        //IRoot
-        where Args : SA__Configure_Root 
-        where A : SA__Associate_Root
-        where D : SA__Dissassociate_Root
-    {
-        internal Export_Dictionary Internal_ROOT__EXPORTS { get; }
 
+using System;
+
+namespace Xerxes
+{
+    public abstract class Root<A_Event,D_Event> :
+        Root_Base, IDisposable
+        where A_Event : Root_Association_Event, new()
+        where D_Event : Root_Dissassociation_Event, new()
+    {
         protected Root()
         {
-            Internal_ROOT__EXPORTS = new Export_Dictionary();
-
             Declare__Streams()
-                .Upstream  .Extending<Args>()
-                .Downstream.Extending<Args>()
-                .Downstream.Extending<A>()
-                .Downstream.Extending<D>()
-                .Upstream  .Extending<A>()
-                .Upstream  .Extending<D>();
+                .Upstream  .Extending<SA__Configure_Root>()
+                .Downstream.Extending<SA__Configure_Root>()
+                .Downstream.Extending<SA__Associate_Root>()
+                .Upstream  .Extending<SA__Associate_Root>()
+                .Downstream.Extending<SA__Dissassociate_Root>()
+                .Upstream  .Extending<SA__Dissassociate_Root>();
         }
 
-        protected internal abstract A Configure(Args configuration_args);
-
-        protected internal abstract void Execute();
-
-        protected bool Declare__Export<E>()
-        where E : Xerxes_Export_Base, new()
+        public virtual void Dispose()
         {
-            E export = new E();
+            Invoke__Descending(new SA__Dissassociate_Root(new D_Event()));
+        }
+
+        protected bool Declare__Endpoint<E>()
+        where E : Xerxes_Endpoint, new()
+        {
+            E import = new E();
             Log.Write__Verbose__Log
             (
-                Log.VERBOSE__ROOT__DECLARING_EXPORT_1,
+                Log.VERBOSE__ROOT__DECLARING_IMPORT_1,
                 this,
-                export
+                import
             );
             bool success =
-                Internal_ROOT__EXPORTS
-                .Internal_Declare__Export__Export_Dictionary(export);
+                Internal_ROOT__ENDPOINTS
+                .Internal_Declare__Endpoint__Endpoint_Dictionary(import);
 
             return success;
         }

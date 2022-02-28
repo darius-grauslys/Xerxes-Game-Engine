@@ -1,14 +1,29 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
-    public sealed class Xerxes_Ancestry<T> :
-        Xerxes_Ancestry_Node
-        where T : Xerxes_Object_Base 
+    public sealed class Xerxes_Ancestry
     {
+        internal Xerxes_Ancestry Xerxes_Ancestry__ANCESTOR_NODE__Internal { get; }
+        internal Xerxes_Ancestry_Node Xerxes_Ancestry__NODE__Internal  { get; }
+
+        public Xerxes_Ancestry Pop__Focus
+            => Xerxes_Ancestry__ANCESTOR_NODE__Internal;
+
         internal Xerxes_Ancestry
         (
             Xerxes_Object_Base node
+        )
+        : this
+        (
+            null,
+            new Xerxes_Ancestry_Node(node)
+        )
+        {}
+
+        internal Xerxes_Ancestry
+        (
+            Xerxes_Ancestry_Node node
         )
         : this
         (
@@ -20,18 +35,15 @@ namespace Xerxes_Engine
 
         private Xerxes_Ancestry
         (
-            Xerxes_Ancestry_Node ancestor,
-            Xerxes_Object_Base node
-        )
-        : base
-        (
-            ancestor,
-            node
+            Xerxes_Ancestry ancestor,
+            Xerxes_Ancestry_Node node
         )
         {
+            Xerxes_Ancestry__ANCESTOR_NODE__Internal = ancestor;
+            Xerxes_Ancestry__NODE__Internal = node;
         }
 
-        public Xerxes_Ancestry<T> Associate<Descendant>
+        public Xerxes_Ancestry Associate<Descendant>
         (ref object identifier) where Descendant : Xerxes_Object_Base, new()
         {
             Descendant descendant = new Descendant();
@@ -46,7 +58,7 @@ namespace Xerxes_Engine
             return this;
         }
 
-        public Xerxes_Ancestry<T> Associate<Descendant>
+        public Xerxes_Ancestry Associate<Descendant>
         () where Descendant : Xerxes_Object_Base, new()
         {
             Descendant descendant = new Descendant();
@@ -59,12 +71,12 @@ namespace Xerxes_Engine
             return this;
         }
 
-        public Xerxes_Ancestry<Descendant> Associate__And_Focus<Descendant>
+        public Xerxes_Ancestry Associate__And_Focus<Descendant>
         () where Descendant : Xerxes_Object_Base, new()
         {
             Descendant descendantAndNewFocus = new Descendant();
 
-            Xerxes_Ancestry<Descendant> newFocus =
+            Xerxes_Ancestry newFocus =
                 Internal_Associate__Descendant__Xerxes_Ancestry<Descendant>
                 (
                     descendantAndNewFocus
@@ -73,15 +85,14 @@ namespace Xerxes_Engine
             return newFocus;
         }
 
-        public Xerxes_Ancestry<Descendant> Focus__Descendant<Descendant>
-        () where Descendant : Xerxes_Object_Base, new() 
+        public Xerxes_Ancestry Focus<Descendant>()
+        where Descendant : Xerxes_Object_Base
         {
-            foreach(Xerxes_Ancestry_Node node in Xerxes_Ancestry_Node__DESCENDANTS__Internal)
-            {
-                if (!(node.Xerxes_Ancestry_Node__TREE_MEMBER__Internal is Descendant))
-                    continue;
-                return node as Xerxes_Ancestry<Descendant>;
-            }
+            Xerxes_Ancestry wrapper = 
+                Private_Focus__Xerxes_Ancestry<Descendant>(Xerxes_Ancestry__NODE__Internal);
+
+            if (wrapper != null)
+                return wrapper;
 
             Private_Log_Error__Failure_To_Find_Descendant
             (
@@ -92,36 +103,41 @@ namespace Xerxes_Engine
             return null;
         }
 
-        public Xerxes_Ancestry<Ancestor> Pop__Focus<Ancestor>
-        () where Ancestor : Xerxes_Object_Base, new()
+        private Xerxes_Ancestry Private_Focus__Xerxes_Ancestry<Descendant>
+        (Xerxes_Ancestry_Node node)
+        where Descendant : Xerxes_Object_Base
         {
-            Xerxes_Ancestry_Node ancesterNode = Xerxes_Ancestry__ANCESTOR_NODE__Internal;
-            while (ancesterNode != null)
+            foreach(Xerxes_Ancestry_Node subnode in node.Xerxes_Ancestry_Node__DESCENDANTS__Internal)
             {
-                if (ancesterNode.Xerxes_Ancestry_Node__TREE_MEMBER__Internal is Ancestor)
-                    return ancesterNode as Xerxes_Ancestry<Ancestor>;
-                ancesterNode = ancesterNode.Xerxes_Ancestry__ANCESTOR_NODE__Internal;
+                if (subnode.Xerxes_Ancestry_Node__TREE_MEMBER__Internal is Descendant)
+                {
+                    return new Xerxes_Ancestry(subnode);
+                }
             }
 
-            Private_Log_Error__Failure_To_Find_Ancestor
-            (
-                this,
-                typeof(Ancestor)
-            );
+            foreach(Xerxes_Ancestry_Node subnode in node.Xerxes_Ancestry_Node__DESCENDANTS__Internal)
+            {
+                Xerxes_Ancestry wrapper =
+                    Private_Focus__Xerxes_Ancestry<Descendant>(subnode);
+
+                if (wrapper != null)
+                    return wrapper;
+            }
+
             return null;
         }
 
-        internal Xerxes_Ancestry<A> Internal_Associate__Descendant__Xerxes_Ancestry<A>
+        internal Xerxes_Ancestry Internal_Associate__Descendant__Xerxes_Ancestry<A>
         (
             Xerxes_Object_Base descendant
         ) where A : Xerxes_Object_Base
         {
-            Xerxes_Ancestry<A> node =
+            Xerxes_Ancestry_Node node =
                 Xerxes_Linker
                 .Internal_Get__Global_Declaration
                 (
                     descendant
-                ) as Xerxes_Ancestry<A>;
+                );
 
             if (node != null)
             {
@@ -133,28 +149,29 @@ namespace Xerxes_Engine
             }
             else
             {
+                node = new Xerxes_Ancestry_Node(descendant);
                 Private_Log_Verbose__Associated_With_Anonymous_Declaration
                 (
                     this,
                     descendant
                 );
             }
+            
+            Xerxes_Ancestry wrapping = new Xerxes_Ancestry(this, node);
 
-            if (node == null)
-                node = new Xerxes_Ancestry<A>(this, descendant);
+            Xerxes_Ancestry__NODE__Internal
+                .Internal_Associate__Descendant__Xerxes_Ancestry_Node
+                (
+                    node
+                );
 
-            Protected_Associate__Descendant__Xerxes_Ancestry_Node
-            (
-                node
-            );
-
-            return node;
+            return wrapping;
         }
 
 #region Static Logging
         private static void Private_Log_Verbose__Associated_With_Global_Declaration
         (
-            Xerxes_Ancestry<T> ancestryNode,
+            Xerxes_Ancestry ancestryNode,
             Xerxes_Object_Base objectOfInterest
         )
         {
@@ -168,7 +185,7 @@ namespace Xerxes_Engine
         
         private static void Private_Log_Verbose__Associated_With_Anonymous_Declaration
         (
-            Xerxes_Ancestry<T> ancestryNode,
+            Xerxes_Ancestry ancestryNode,
             Xerxes_Object_Base objectOfInterest
         )
         {
@@ -182,7 +199,7 @@ namespace Xerxes_Engine
 
         private static void Private_Log_Error__Invalid_Association
         (
-            Xerxes_Ancestry<T> ancestryNode,
+            Xerxes_Ancestry ancestryNode,
             Xerxes_Object_Base offendingDescendant
         )
         {
@@ -191,14 +208,14 @@ namespace Xerxes_Engine
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_ANCESTRY__FAILED_ASSOCIATION_2,
                 ancestryNode,
-                ancestryNode.Xerxes_Ancestry_Node__TREE_MEMBER__Internal,
+                ancestryNode.Xerxes_Ancestry__NODE__Internal.Xerxes_Ancestry_Node__TREE_MEMBER__Internal,
                 offendingDescendant
             );
         }
 
         private static void Private_Log_Error__Failure_To_Find_Descendant
         (
-            Xerxes_Ancestry<T> ancestryNode,
+            Xerxes_Ancestry ancestryNode,
             Type missingDescendant
         )
         {
@@ -213,7 +230,7 @@ namespace Xerxes_Engine
 
         private static void Private_Log_Error__Failure_To_Find_Ancestor
         (
-            Xerxes_Ancestry<T> ancestryNode,
+            Xerxes_Ancestry ancestryNode,
             Type missingAncestor
         )
         {

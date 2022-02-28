@@ -1,24 +1,26 @@
-namespace Xerxes_Engine
+
+using System;
+
+namespace Xerxes
 {
     public abstract class Streamline_Base
     {
-        public bool Streamline_Base__IS_MANDATORY { get; }
-        public bool Streamline_Base__Is_Disabled { get; protected set; }
-
         public bool Streamline_Base__IS_RECEIVING { get; }
         public bool Streamline_Base__IS_EXTENDING { get; }
-        public bool Streamline_Base__IS_SOURCING  { get; }
+
+        internal Type Streamline_Base__IDENTIFYING_TYPE { get; }
 
         internal Streamline_Base
         (
+            Type identifying_type,
             bool isReceiving = true,
-            bool isExtending = true,
-            bool isSourcing  = false
+            bool isExtending = true
         ) 
         { 
+            Streamline_Base__IDENTIFYING_TYPE = identifying_type;
+
             Streamline_Base__IS_RECEIVING = isReceiving;
             Streamline_Base__IS_EXTENDING = isExtending;
-            Streamline_Base__IS_SOURCING  = isSourcing;
         }
 
         public override string ToString()
@@ -29,22 +31,21 @@ namespace Xerxes_Engine
             return str;
         }
 
-        internal abstract bool Internal_Link__Streamline_Base
+        internal abstract Streamline_Base Internal_Create__Virtual__Streamline_Base();
+
+        internal virtual Streamline_Base Internal_Link__Virtual_Target__Streamline_Base()
+        {
+            Streamline_Base virtual_target =
+                Internal_Create__Virtual__Streamline_Base();
+
+            Internal_Link__Extend_Target__Streamline_Base(virtual_target);
+
+            return virtual_target;
+        }
+
+        internal abstract bool Internal_Link__Extend_Target__Streamline_Base
         (
             Streamline_Base target
         );
-
-        internal static void Internal_Link__Streamline_Bases
-        (
-            Streamline_Base streamline_Base_1,
-            Streamline_Base streamline_Base_2
-        )
-        {
-            streamline_Base_1
-                .Internal_Link__Streamline_Base
-                (
-                    streamline_Base_2
-                );
-        }
     }
 }

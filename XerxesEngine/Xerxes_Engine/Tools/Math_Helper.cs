@@ -2,7 +2,7 @@
 using System.Drawing;
 using OpenTK;
 
-namespace Xerxes_Engine.Tools
+namespace Xerxes.Tools
 {
     public class Math_Helper
     {
@@ -275,7 +275,10 @@ namespace Xerxes_Engine.Tools
         }
 
         public static Vector4 Convert__Color_To_Vec4(Color color)
-            => new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
+            => new Vector4(color.B / 255f, color.G / 255f, color.R / 255f, color.A / 255f);
+
+        public static bool Tolerable__Is_Zero__Float(float f1, float tolerance=FLOAT__MINIMUM__PERCISION)
+            => Tolerable__Equality__Float(f1, 0, tolerance);
 
         public static bool Tolerable__Equality__Float(float f1, float f2, float tolerance=FLOAT__MINIMUM__PERCISION)
         {
@@ -352,6 +355,10 @@ namespace Xerxes_Engine.Tools
 
         public static bool Check_If__Obeys_Clamp__Positive_Float(float val, float max = float.MaxValue)
             => Check_If__Obeys_Clamp(val, 0, max);
+
+        public static bool Check_If__Obeys_Inclusive_Clamp(float val, float min, float max)
+            => Tolerable__GreaterThanEqual__Float(val, min) && Tolerable__GreaterThanEqual__Float(max, val);
+
         public static bool Check_If__Obeys_Clamp(float val, float min, float max)
             //Not checking equality for precision errors.
             => !(val < min) && !(val > max);

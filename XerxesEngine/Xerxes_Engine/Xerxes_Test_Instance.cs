@@ -1,5 +1,5 @@
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Test_Instance<X_Object, X_Base> :
         Xerxes_Object<Xerxes_Test_Instance<X_Object, X_Base>>

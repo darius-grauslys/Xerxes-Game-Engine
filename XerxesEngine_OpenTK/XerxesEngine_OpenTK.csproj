@@ -57,6 +57,9 @@
     <Reference Include="XerxesEngine, Version=1.0.0.0, Culture=neutral">
         <HintPath>..\XerxesEngine\bin\Debug\XerxesEngine.dll</HintPath>
     </Reference>
+    <Reference Include="XerxesEngine_Game, Version=1.0.0.0, Culture=neutral">
+        <HintPath>..\XerxesEngine_Game\bin\Debug\XerxesEngine_Game.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

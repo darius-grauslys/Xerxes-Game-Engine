@@ -2,9 +2,9 @@
 using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using Xerxes_Engine.Tools;
+using Xerxes.Tools;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     /// <summary>
     /// Represents a collection of verticies with the intent
@@ -13,6 +13,8 @@ namespace Xerxes_Engine.Export_OpenTK
     public struct Vertex_Object : IDisposable
     {
         public const int VERTEX_OBJECT__BASE_VERTEX_COUNT = 4;
+
+        public bool Vertex_Object__IS_PROPER { get; }
 
         private Vertex[] _Vertex_Object__Base_Vertex_Array { get; set; }
         private Vertex[] _Vertex_Object__VERTICES { get; }
@@ -26,6 +28,8 @@ namespace Xerxes_Engine.Export_OpenTK
         internal Vertex_Object(Vertex[] vertices, Texture_R2 texture_R2)
             : this(vertices.Length, texture_R2)
         {
+            Vertex_Object__IS_PROPER = true;
+
             _Vertex_Object__VERTICES = vertices;
             Internal_Set__Base_Array();
             Internal_Set__Buffer_Data__Vertex_Object();
@@ -33,6 +37,8 @@ namespace Xerxes_Engine.Export_OpenTK
 
         internal Vertex_Object(int count, Texture_R2 texture_R2)
         { 
+            Vertex_Object__IS_PROPER = true;
+
             // Generate the buffer for vertice info on the gpu.
             Vertex_Object__GL_BUFFER_ID = GL.GenBuffer();
             // Generate the id for this object on the gpu.

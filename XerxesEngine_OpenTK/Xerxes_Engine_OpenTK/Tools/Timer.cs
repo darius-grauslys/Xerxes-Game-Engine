@@ -1,4 +1,4 @@
-﻿namespace Xerxes_Engine.Export_OpenTK
+﻿namespace Xerxes.Xerxes_OpenTK
 {
     /// <summary>
     /// Keeps track of time. Used to fire events.

@@ -1,6 +1,6 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Object_Base
     {
@@ -49,6 +49,14 @@ namespace Xerxes_Engine
             return Invoke__Descending(new S());
         }
 
+        protected internal void Invoke__Void__Descending<S>
+        (
+            S streamline_Argument
+        ) where S : Streamline_Argument
+        {
+            Invoke__Descending(streamline_Argument);
+        }
+
         protected internal bool Invoke__Descending<S>
         (
             S streamline_Argument
@@ -65,6 +73,14 @@ namespace Xerxes_Engine
         () where S : Streamline_Argument, new()
         {
             return Invoke__Ascending(new S());
+        }
+
+        protected internal void Invoke__Void__Ascending<S>
+        (
+            S streamline_Argument
+        ) where S : Streamline_Argument
+        {
+            Invoke__Ascending(streamline_Argument);
         }
 
         protected internal bool Invoke__Ascending<S>
@@ -85,6 +101,9 @@ namespace Xerxes_Engine
             S streamline_Argument
         ) where S : Streamline_Argument
         {
+            if (streamline_Argument == null)
+                return false;
+
             if (streamline_Argument.Streamline_Argument__Consumed)
             {
                 Private_Log_Error__Argument_Consumed_2

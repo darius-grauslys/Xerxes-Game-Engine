@@ -1,7 +1,7 @@
 ﻿using OpenTK;
-using Xerxes_Engine.Tools;
+using Xerxes.Tools;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Sprite
     {

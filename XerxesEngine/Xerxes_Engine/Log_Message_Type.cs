@@ -1,4 +1,4 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public enum Log_Message_Type
     {

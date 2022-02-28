@@ -1,9 +1,9 @@
 ﻿using OpenTK;
 using System;
 using System.Drawing;
-using Math_Helper = Xerxes_Engine.Tools.Math_Helper;
+using Math_Helper = Xerxes.Tools.Math_Helper;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Vertex
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     internal sealed class Stream
     {
@@ -56,7 +56,6 @@ namespace Xerxes_Engine
             Action<T> listener = null,
             bool isReceiving = true,
             bool isExtending = true,
-            bool isSourcing  = false,
             Action<Streamline_Base, Log.Context__Declare_Streamline> 
                 declaration_Failure_Receiving = null,
             Action<Streamline_Base, Log.Context__Declare_Streamline> 
@@ -68,8 +67,7 @@ namespace Xerxes_Engine
                 (
                     listener, 
                     isReceiving, 
-                    isExtending, 
-                    isSourcing
+                    isExtending
                 );
 
             bool success = true;
@@ -131,7 +129,8 @@ namespace Xerxes_Engine
 
             if (streamline != null)
             {
-                streamline.Internal_Stream__Streamline(streamline_Argument);
+                streamline
+                    .Internal_Stream__Streamline(streamline_Argument);
                 return true;
             }
 
@@ -150,26 +149,10 @@ namespace Xerxes_Engine
             if (streamline == null)
                 return false;
 
-            streamline.Streamline__SUBSCRIPTION__Internal +=
+            streamline.Streamline__STREAMLINE__Internal +=
                 listener;
 
             return true;
-        }
-
-        internal static void Internal__Link
-        (
-            Stream extender,
-            Stream receiver,
-            Action<Streamline_Base> fail_Find_Extending_Endpoint
-        )
-        {
-            Streamline_Dictionary.Internal_On_All__Matching_Keys
-            (
-                receiver.Stream__RECEIVING_STREAMLINES__Internal,
-                extender.Stream__EXTENDING_STREAMLINES__Internal,
-                Streamline_Base.Internal_Link__Streamline_Bases,
-                fail_Find_Extending_Endpoint
-            );
         }
     }
 }

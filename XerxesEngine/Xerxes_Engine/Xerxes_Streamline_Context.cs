@@ -1,6 +1,6 @@
 using System;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public sealed class Xerxes_Streamline_Context
     {
@@ -21,10 +21,11 @@ namespace Xerxes_Engine
 
         public Xerxes_Stream_Context Receiving<S>
         (
-            Action<S> listener
+            Action<S> listener,
+            bool error_on_fail = true
         ) where S : Streamline_Argument
         {
-            Private_Declare__Receiving__Xerxes_Streamline_Context(listener);
+            Private_Declare__Receiving__Xerxes_Streamline_Context(listener, error_on_fail);
 
             return _Xerxes_Streamline_Context__STREAM_CONTEXT;
         }
@@ -32,37 +33,42 @@ namespace Xerxes_Engine
         public Xerxes_Stream_Context Receiving<S>
         (
             Action<S> listener,
-            out bool success
+            out bool success,
+            bool error_on_fail = true
         ) where S : Streamline_Argument
         {
             success =
-                Private_Declare__Receiving__Xerxes_Streamline_Context(listener);
-
-            return _Xerxes_Streamline_Context__STREAM_CONTEXT;
-        }
-
-        public Xerxes_Stream_Context Extending<S>
-        () where S : Streamline_Argument
-        {
-            Private_Declare__Extending__Xerxes_Streamline_Context<S>();
+                Private_Declare__Receiving__Xerxes_Streamline_Context(listener, error_on_fail);
 
             return _Xerxes_Streamline_Context__STREAM_CONTEXT;
         }
 
         public Xerxes_Stream_Context Extending<S>
         (
-            out bool success
+            bool error_on_fail = true
+        ) where S : Streamline_Argument
+        {
+            Private_Declare__Extending__Xerxes_Streamline_Context<S>(error_on_fail);
+
+            return _Xerxes_Streamline_Context__STREAM_CONTEXT;
+        }
+
+        public Xerxes_Stream_Context Extending<S>
+        (
+            out bool success,
+            bool error_on_fail = true 
         ) where S : Streamline_Argument
         {
             success =
-                Private_Declare__Extending__Xerxes_Streamline_Context<S>();
+                Private_Declare__Extending__Xerxes_Streamline_Context<S>(error_on_fail);
 
             return _Xerxes_Streamline_Context__STREAM_CONTEXT;
         }
 
         private bool Private_Declare__Receiving__Xerxes_Streamline_Context<S>
         (
-            Action<S> listener
+            Action<S> listener,
+            bool error_on_fail
         ) where S : Streamline_Argument
         {
             bool success = 
@@ -72,15 +78,19 @@ namespace Xerxes_Engine
                         listener,
                         isExtending: false,
                         declaration_Failure_Receiving: (s,c) => 
-                            Private_Log_Error__Fail_To_Declare_Streamline
-                            (this,s,c)
+                        {
+                            if(error_on_fail)
+                                Private_Log_Error__Fail_To_Declare_Streamline
+                                (this,s,c);
+                        }
                     );
 
             return success;
         }
 
         private bool Private_Declare__Extending__Xerxes_Streamline_Context<S>
-        () where S : Streamline_Argument
+        (bool error_on_fail)
+        where S : Streamline_Argument
         {
             bool success =
                 _Xerxes_Streamline_Context__STREAM
@@ -88,8 +98,11 @@ namespace Xerxes_Engine
                     (
                         isReceiving: false,
                         declaration_Failure_Extending: (s,c) => 
-                            Private_Log_Error__Fail_To_Declare_Streamline 
-                            (this,s,c)
+                        {
+                            if(error_on_fail)
+                                Private_Log_Error__Fail_To_Declare_Streamline 
+                                (this,s,c);
+                        }
                     );
 
             return success;
@@ -100,16 +113,18 @@ namespace Xerxes_Engine
         (
             Xerxes_Streamline_Context sc,
             Streamline_Base failedStreamline,
-            Log.Context__Declare_Streamline c
+            Log.Context__Declare_Streamline context
         )
         {
             Log.Write__Log
             (
                 Log_Message_Type.Error__Engine_Object,
                 Log.ERROR__XERXES_ENGINE_OBJECT__FAILED_TO_DECLARE_STREAMLINE_2C,
-                sc,
+                sc.
+                    _Xerxes_Streamline_Context__STREAM_CONTEXT.
+                    Xerxes_Stream_Context__TREE_MEMBER,
                 failedStreamline,
-                c
+                context
             );
         }
 #endregion

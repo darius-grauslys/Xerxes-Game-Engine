@@ -2,7 +2,7 @@
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 
-namespace Xerxes_Engine.Export_OpenTK
+namespace Xerxes.Xerxes_OpenTK
 {
     public struct Texture_R2
     {

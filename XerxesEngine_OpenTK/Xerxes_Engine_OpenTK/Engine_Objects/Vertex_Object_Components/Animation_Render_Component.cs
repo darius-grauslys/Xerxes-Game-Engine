@@ -1,4 +1,7 @@
-﻿namespace Xerxes_Engine.Export_OpenTK.Engine_Objects.Vertex_Object_Components
+﻿
+using Xerxes.Game_Engine;
+
+namespace Xerxes.Xerxes_OpenTK.Engine_Objects.Vertex_Object_Components
 {
     public class Animation_Render_Component : 
         Sprite_Render_Component 
@@ -86,7 +89,7 @@
         {
             int vbo_index = 
                 (int)_Animation_Render_Component__Schematic
-                    .Get__VBO_Index__Animation_Node(e.Chronical__DELTA_TIME);
+                    .Get__VBO_Index__Animation_Node(e.Frame__Elapsed_Time);
 
             sprite_render_component__sprite
                 .Set__Active_Vertex_Object__Sprite(vbo_index);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// Generates internal handles to function as keys

@@ -1,8 +1,8 @@
 
 using OpenTK;
-using Xerxes_Engine.Tools;
+using Xerxes.Tools;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
+namespace Xerxes.Xerxes_OpenTK.Exports.Graphics.R2.Canvas
 {
     public class Canvas
     {
@@ -31,7 +31,6 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Graphics.R2.Canvas
 
             foreach(Draw_Order draw_order in _Canvas__DRAW_ORDER_FACTORY.Draw_Order_Factory__DRAW_ORDERS__Internal)
             {
-                Log.Write__Info__Log(draw_order.Draw_Order__SHAPE.ToString(), this);
                 context.Update__Canvas_Context(draw_order);
                 switch(draw_order.Draw_Order__SHAPE)
                 {

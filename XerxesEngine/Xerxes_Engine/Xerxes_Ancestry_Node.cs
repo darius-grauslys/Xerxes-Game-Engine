@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public class Xerxes_Ancestry_Node
     {
-        internal Xerxes_Ancestry_Node Xerxes_Ancestry__ANCESTOR_NODE__Internal { get; }
-
         internal Xerxes_Object_Base 
             Xerxes_Ancestry_Node__TREE_MEMBER__Internal { get; }
 
@@ -14,13 +12,9 @@ namespace Xerxes_Engine
 
         internal Xerxes_Ancestry_Node
         (
-            Xerxes_Ancestry_Node parent,
             Xerxes_Object_Base treeMember
         )
         {
-            Xerxes_Ancestry__ANCESTOR_NODE__Internal =
-                parent;
-
             Xerxes_Ancestry_Node__TREE_MEMBER__Internal = 
                 treeMember;
 
@@ -28,7 +22,7 @@ namespace Xerxes_Engine
                 new List<Xerxes_Ancestry_Node>();
         }
 
-        protected void Protected_Associate__Descendant__Xerxes_Ancestry_Node
+        internal void Internal_Associate__Descendant__Xerxes_Ancestry_Node
         (
             Xerxes_Ancestry_Node descendant
         )

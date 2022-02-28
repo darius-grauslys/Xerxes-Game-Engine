@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XerxesEngine", "XerxesEngine\XerxesEngine.csproj", "{04229523-E6F4-4B65-BF1E-F5E3243CA58D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XerxesUI", "XerxesEngine_UI\XerxesUI.csproj", "{03229523-E6F4-4B65-BF1E-F5E3243CA58D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XerxesEngine_Game", "XerxesEngine_Game\XerxesEngine_Game.csproj", "{04229544-E6F4-4B65-BF1E-F5E3243CA58D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XerxesEngine_OpenTK", "XerxesEngine_OpenTK\XerxesEngine_OpenTK.csproj", "{04229523-E6F4-4B65-BF1E-FAA32FFCA58D}"
 EndProject

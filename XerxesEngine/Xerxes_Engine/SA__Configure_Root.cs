@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
-    public class SA__Configure_Root :
+    public sealed class SA__Configure_Root :
         Streamline_Argument
     {
         private string[] _Configure_Root__ARGUMENTS { get; }

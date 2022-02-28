@@ -1,16 +1,15 @@
 ﻿using System.Drawing;
 using System.IO;
+using Xerxes.Game_Engine;
 
-namespace Xerxes_Engine.Export_OpenTK.Exports.Serialization
+namespace Xerxes.Xerxes_OpenTK.Exports.Serialization
 {
     public sealed class Texture_R2_Generator : 
-        OpenTK_Export
+        Xerxes_Endpoint
     {
         private string _Texture_R2_Generator__Asset_Directory { get; set; }
 
-        public Texture_R2_Generator() {}
-
-        protected override void Handle__Rooted__Xerxes_Export()
+        public Texture_R2_Generator()
         {
             Declare__Receiving
                 <SA__Load_Texture_R2>
@@ -25,14 +24,17 @@ namespace Xerxes_Engine.Export_OpenTK.Exports.Serialization
             Declare__Receiving
                 <SA__Sealed_Under_Game>
                 ((e) => {});
+            Declare__Receiving
+                <SA__Configure_Root>
+                (Private_Configure__Root__Texture_R2_Generator);
         }
 
-        protected override void Handle__Associate_Root__Xerxes_Export
-        (SA__Associate_Game_OpenTK e)
+        private void Private_Configure__Root__Texture_R2_Generator
+        (SA__Configure_Root e)
         {
             _Texture_R2_Generator__Asset_Directory =
-                e
-                .Associate_Root__ASSET_DIRECTORY;
+                OpenTK_Game
+                .Game__Directory_Assets;
         }
 
         private void Private_Handle__Load_Texture_R2__Texture_R2_Generator

@@ -1,15 +1,20 @@
-namespace Xerxes_Engine
+namespace Xerxes
 {
     public sealed class Xerxes_Stream_Context
     {
         private Stream _Xerxes_Stream_Context__UP_STREAM { get; }
         private Stream _Xerxes_Stream_Context__DOWN_STREAM { get; }
 
+        internal string Xerxes_Stream_Context__TREE_MEMBER { get; }
+
         internal Xerxes_Stream_Context
         (
             Xerxes_Object_Base xerxes_Object_Base
         )
         {
+            Xerxes_Stream_Context__TREE_MEMBER =
+                xerxes_Object_Base.ToString();
+
             _Xerxes_Stream_Context__UP_STREAM =
                 xerxes_Object_Base
                 .Xerxes_Object_Base__UPSTREAM__Internal;

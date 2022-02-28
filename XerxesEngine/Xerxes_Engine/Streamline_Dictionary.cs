@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
-    internal class Streamline_Dictionary : Distinct_Type_Dictionary<Streamline_Argument, Streamline_Base>
+    internal class Streamline_Dictionary : 
+    Distinct_Type_Dictionary<Streamline_Argument, Streamline_Base>
     {
+        internal IEnumerable<KeyValuePair<Type, Streamline_Base>> Internal_Get__Entries__Streamline_Dictionary()
+            => Protected_Get__Entries__Distinct_Typed_Dictionary();
+
         internal bool Internal_Declare__Streamline__Streamline_Dictionary<T>
         (
             Streamline<T> streamline
@@ -48,7 +52,7 @@ namespace Xerxes_Engine
         public override string ToString()
         {
             string ret = "";
-            foreach(KeyValuePair<Type,Streamline_Base> pair in Internal_Get__Entries__Distinct_Typed_Dictionary())
+            foreach(KeyValuePair<Type,Streamline_Base> pair in Protected_Get__Entries__Distinct_Typed_Dictionary())
             {
                 ret += String.Format("{0}-{1}\n", pair.Key, pair.Value);
             }

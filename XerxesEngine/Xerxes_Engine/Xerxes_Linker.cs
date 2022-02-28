@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xerxes_Engine
+namespace Xerxes
 {
     /// <summary>
     /// Performs the sealing process of Xerxes_Objects
@@ -33,28 +33,28 @@ namespace Xerxes_Engine
         internal static void Internal_Set__Declaration
         (
             Xerxes_Object_Base xerxes_Object_Base,
-            Xerxes_Ancestry_Node hierarchy
+            Xerxes_Ancestry hierarchy
         )
         {
+            Log.Write__Verbose__Log("Setting genology.", xerxes_Object_Base);
             _Xerxes_Linker__GLOBAL_ANCESTRIES
-                .Add(xerxes_Object_Base, hierarchy);
+                .Add(xerxes_Object_Base, hierarchy.Xerxes_Ancestry__NODE__Internal);
         }
         
         internal static bool Internal_Seal
         (
             Xerxes_Object_Base xobj,
-            Export_Dictionary exports = null
+            Endpoint_Dictionary exports = null
         )
         {
             bool is_Not_Posessing_Defined_Descendants =
                 !_Xerxes_Linker__GLOBAL_ANCESTRIES
                 .ContainsKey(xobj);
 
-            if (is_Not_Posessing_Defined_Descendants)
-                return false;
-
             Xerxes_Ancestry_Node xobj_Node =
-                _Xerxes_Linker__GLOBAL_ANCESTRIES[xobj];
+                is_Not_Posessing_Defined_Descendants
+                    ? new Xerxes_Ancestry_Node(xobj)
+                    : _Xerxes_Linker__GLOBAL_ANCESTRIES[xobj];
 
             Xerxes_Linker_Context linker_Context =
                 new Xerxes_Linker_Context(exports);
@@ -91,8 +91,14 @@ namespace Xerxes_Engine
 
             treeMemberObject.Internal_Root__Xerxes_Engine_Object();
 
-            if (treeMember.Xerxes_Ancestry_Node__DESCENDANTS__Internal.Count == 0)
+            if 
+            (
+                treeMember.Xerxes_Ancestry_Node__DESCENDANTS__Internal.Count == 0
+            )
+            {
+                Log.Write__Verbose__Log("Has no children.", treeMemberObject);
                 return;
+            }
 
             Private_Push__Object__To_Context
             (
@@ -164,7 +170,7 @@ namespace Xerxes_Engine
             (
                 treeMemberObject
                 .Xerxes_Object_Base__ASCENDING_RECEIVING_STREAMLINES__Internal
-                .Internal_Get__Types__Distinct_Typed_Dictionary(),
+                .Protected_Get__Types__Distinct_Typed_Dictionary(),
                 linker_Context.Internal_Pop__Upstream_Receiver__Xerxes_Linker_Context
             );
 
@@ -172,7 +178,7 @@ namespace Xerxes_Engine
             (
                 treeMemberObject
                 .Xerxes_Object_Base__DESCENDING_EXTENDING_STREAMLINES__Internal
-                .Internal_Get__Types__Distinct_Typed_Dictionary(),
+                .Protected_Get__Types__Distinct_Typed_Dictionary(),
                 linker_Context.Internal_Pop__Downstream_Extender__Xerxes_Linker_Context
             );
         }
@@ -185,7 +191,7 @@ namespace Xerxes_Engine
         {
             IEnumerable<KeyValuePair<Type,Streamline_Base>> streamlines =
                 dictionary
-                .Internal_Get__Entries__Distinct_Typed_Dictionary();
+                .Protected_Get__Entries__Distinct_Typed_Dictionary();
 
             foreach(KeyValuePair<Type,Streamline_Base> pair in streamlines)
             {
