@@ -35,6 +35,7 @@ bld/
 # General Directories   -   Xerxes
 ignore/
 local_backup/
+Demos/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
