@@ -1,6 +1,19 @@
 
 namespace Xerxes
 {
+    public abstract class Root :
+    Root
+    <
+        Xerxes_Genology__Standard_Root,
+        Xerxes_Genology_Group__Standard_Endpoints<Xerxes_Genology__Standard_Root>,
+        Xerxes_Genology_Group__Standard_Associations<Xerxes_Genology__Standard_Root>,
+        Xerxes_Genology_Group__Standard_Streamlines<Xerxes_Genology__Standard_Root>,
+        Xerxes_Genology_Group__Standard_Streamline_Ancestors<Xerxes_Genology__Standard_Root>,
+        Xerxes_Genology_Group__Standard_Streamline_Descendants<Xerxes_Genology__Standard_Root>
+    >
+    {
+    }
+
     public abstract class Root
     <
         TGenology,
@@ -22,10 +35,14 @@ namespace Xerxes
         GDescending_Stream
     >, new()
     where TExports  : 
-    Xerxes_Genology_Group__Exports
+    Xerxes_Genology_Group__Endpoints
     <
         TExports, 
-        TGenology
+        TGenology,
+        GAssociations,
+        GStreamlines,
+        GAscending_Stream,
+        GDescending_Stream
     >, new()
     where GAssociations :
     Xerxes_Genology_Group__Associations

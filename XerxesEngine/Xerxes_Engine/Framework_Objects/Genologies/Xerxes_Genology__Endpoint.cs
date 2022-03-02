@@ -1,7 +1,12 @@
 
 namespace Xerxes
 {
-    public abstract class Xerxes_Genology__Endpoint<TThis, EStreamline, EDownstream> :
+    public abstract class Xerxes_Genology__Endpoint
+    <
+        TThis, 
+        EStreamline, 
+        EDownstream
+    > :
     Xerxes_Genology__Descending
     <
         TThis,

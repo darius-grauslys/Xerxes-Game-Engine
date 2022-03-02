@@ -4,7 +4,7 @@ namespace Xerxes
     public abstract class Xerxes_Genology__Root
     <
         TThis,
-        TExports,
+        TEndpoints,
         GAssociations,
         GStreamlines,
         GAscending_Stream,
@@ -22,17 +22,21 @@ namespace Xerxes
     Xerxes_Genology__Root
     <
         TThis, 
-        TExports,
+        TEndpoints,
         GAssociations,
         GStreamlines,
         GAscending_Stream,
         GDescending_Stream
     >, new()
-    where TExports :
-    Xerxes_Genology_Group__Exports
+    where TEndpoints :
+    Xerxes_Genology_Group__Endpoints
     <
-        TExports,
-        TThis
+        TEndpoints,
+        TThis,
+        GAssociations,
+        GStreamlines,
+        GAscending_Stream,
+        GDescending_Stream
     >, new()
     where GAssociations :
     Xerxes_Genology_Group__Associations
@@ -63,14 +67,17 @@ namespace Xerxes
         GStreamlines
     >, new()
     {
-        public TExports Declare__Exports { get; }
+        public TEndpoints Declare__Endpoints { get; }
+
+        internal Root_Base Genology_Root__Root__Internal
+            => Genology__Enclosing_Object__Internal as Root_Base;
 
 
 
         public Xerxes_Genology__Root()
         {
-            Declare__Exports =
-                new TExports();
+            Declare__Endpoints =
+                new TEndpoints();
         }
     }
 }

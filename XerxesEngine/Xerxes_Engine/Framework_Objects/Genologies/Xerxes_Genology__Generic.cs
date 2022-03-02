@@ -53,15 +53,11 @@ namespace Xerxes
     >, new()
     {
         public GAssociations Declare__Associations { get; }
-        public GStreamlines  Declare__Streamlines  { get; }
         
         public Xerxes_Genology__Generic()
         {
             Declare__Associations = 
                 Protected_Link__Genology_Group__Genology<TThis, GAssociations>();
-
-            Declare__Streamlines =
-                Protected_Link__Genology_Group__Genology<TThis, GStreamlines>();
         }
     }
 }
