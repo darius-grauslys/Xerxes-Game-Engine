@@ -5,12 +5,12 @@ using System.Collections.Generic;
 namespace Xerxes
 {
     internal sealed class Endpoint_Dictionary :
-        Distinct_Type_Dictionary<Xerxes_Endpoint, Xerxes_Endpoint>
+        Distinct_Type_Dictionary<Xerxes_Object_Base, Xerxes_Object_Base>
     {
         internal bool Internal_Declare__Endpoint__Endpoint_Dictionary<T>
         (
             T export
-        ) where T : Xerxes_Endpoint 
+        ) where T : Xerxes_Object_Base 
         {
             bool success =
                 Protected_Define__Element__Distinct_Type_Dictionary<T>
@@ -35,7 +35,7 @@ namespace Xerxes
         {
             foreach
             (
-                Xerxes_Endpoint endpoint 
+                Xerxes_Object_Base endpoint 
                 in 
                 Protected_Get__Elements__Distinct_Typed_Dictionary()
             )
@@ -43,7 +43,10 @@ namespace Xerxes
                 foreach
                 (
                     KeyValuePair<Type, Streamline_Base> streamline_entry 
-                    in endpoint.Internal_Get__Ancestral_Streamlines__Xerxes_Endpoint()
+                    in 
+                    endpoint
+                    .Xerxes_Object_Base__DESCENDING_EXTENDING_STREAMLINES__Internal
+                    .Internal_Get__Entries__Streamline_Dictionary()
                 )
                     yield return streamline_entry;
             }
@@ -52,7 +55,7 @@ namespace Xerxes
         private static void Private_Log_Error__Duplicate_Endpoint_Declared
         (
             Endpoint_Dictionary dictionary,
-            Xerxes_Endpoint export
+            Xerxes_Object_Base export
         )
         {
             Log.Write__Log

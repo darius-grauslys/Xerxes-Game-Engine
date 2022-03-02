@@ -54,7 +54,7 @@ namespace Xerxes
         internal bool Internal_Declare__Streamline__Stream<T>
         (
             Action<T> listener = null,
-            bool isReceiving = true,
+            bool isRecieving = true,
             bool isExtending = true,
             Action<Streamline_Base, Log.Context__Declare_Streamline> 
                 declaration_Failure_Receiving = null,
@@ -66,7 +66,7 @@ namespace Xerxes
                 new Streamline<T>
                 (
                     listener, 
-                    isReceiving, 
+                    isRecieving, 
                     isExtending
                 );
 

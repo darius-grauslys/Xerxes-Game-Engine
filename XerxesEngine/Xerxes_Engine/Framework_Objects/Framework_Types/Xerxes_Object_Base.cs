@@ -6,6 +6,8 @@ namespace Xerxes
     {
         public object Xerxes_Object_Base__IDENTIFIER { get; }
 
+        internal Xerxes_Genology Xerxes_Object_Base__Genology__Internal { get; set; }
+
         internal Stream Xerxes_Object_Base__UPSTREAM__Internal { get; }
         internal Streamline_Dictionary 
             Xerxes_Object_Base__ASCENDING_RECEIVING_STREAMLINES__Internal
@@ -40,9 +42,6 @@ namespace Xerxes
         }
 
 #region Streamline Management
-        protected internal Xerxes_Stream_Context Declare__Streams()
-            => new Xerxes_Stream_Context(this);
-
         protected internal bool Invoke__Descending<S>
         () where S : Streamline_Argument, new()
         {
