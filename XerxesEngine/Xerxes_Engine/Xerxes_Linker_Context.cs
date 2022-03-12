@@ -10,7 +10,7 @@ namespace Xerxes
 
         internal Xerxes_Linker_Context
         (
-            Endpoint_Dictionary exports
+            Endpoint_Dictionary exports = null
         )
         {
             _Xerxes_Linker_Context__UPSTREAM_RECEIVING_STACK =

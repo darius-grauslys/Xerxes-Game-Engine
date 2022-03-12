@@ -8,6 +8,8 @@ namespace Xerxes
 
         internal Xerxes_Genology Xerxes_Object_Base__Genology__Internal { get; set; }
 
+        internal Endpoint_Dictionary Xerxes_Object_Base__ENDPOINTS__Internal { get; set; }
+
         internal Stream Xerxes_Object_Base__UPSTREAM__Internal { get; }
         internal Streamline_Dictionary 
             Xerxes_Object_Base__ASCENDING_RECEIVING_STREAMLINES__Internal
@@ -29,6 +31,9 @@ namespace Xerxes
         internal Xerxes_Object_Base()
         {
             Xerxes_Object_Base__IDENTIFIER = new object();
+
+            Xerxes_Object_Base__ENDPOINTS__Internal =
+                new Endpoint_Dictionary();
 
             Xerxes_Object_Base__UPSTREAM__Internal = new Stream();
             Xerxes_Object_Base__DOWNSTREAM__Internal = new Stream();

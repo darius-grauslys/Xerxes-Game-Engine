@@ -1,7 +1,7 @@
 
 namespace Xerxes
 {
-    public class Xerxes_Genology_Group__Child<TGenology, TParent> :
+    public abstract class Xerxes_Genology_Group__Child<TGenology, TParent> :
     Xerxes_Genology_Group<TGenology>
     where TGenology : Xerxes_Genology
     where TParent   : Xerxes_Genology_Group<TGenology>

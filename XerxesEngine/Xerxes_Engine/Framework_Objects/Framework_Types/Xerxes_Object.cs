@@ -4,7 +4,6 @@ namespace Xerxes
     public class Xerxes_Object :
     Xerxes_Object<Xerxes_Genology__Standard>
     {
-
     }
 
     /// <summary>

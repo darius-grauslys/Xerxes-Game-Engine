@@ -4,96 +4,423 @@ namespace Xerxes
     public abstract class Root :
     Root
     <
-        Xerxes_Genology__Standard_Root,
-        Xerxes_Genology_Group__Standard_Endpoints<Xerxes_Genology__Standard_Root>,
-        Xerxes_Genology_Group__Standard_Associations<Xerxes_Genology__Standard_Root>,
-        Xerxes_Genology_Group__Standard_Streamlines<Xerxes_Genology__Standard_Root>,
-        Xerxes_Genology_Group__Standard_Streamline_Ancestors<Xerxes_Genology__Standard_Root>,
-        Xerxes_Genology_Group__Standard_Streamline_Descendants<Xerxes_Genology__Standard_Root>
+        Xerxes_Genology__Standard_Root
     >
     {
+
+    }
+
+    public abstract class Root
+    <
+        TGenology
+    > :
+    Root
+    <
+        TGenology,
+        Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Descending_Streams
+        <
+            TGenology,
+            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+            <
+                TGenology
+            >
+        >,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+            <
+                TGenology
+            >
+        >,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >
+    where TGenology :
+    Xerxes_Genology
+    <
+        TGenology,
+        Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Descending_Streams
+        <
+            TGenology,
+            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+            <
+                TGenology
+            >
+        >,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+            <
+                TGenology
+            >
+        >,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >, new()
+    {
+
     }
 
     public abstract class Root
     <
         TGenology,
-        TExports,
-        GAssociations,
-        GStreamlines,
-        GAscending_Stream,
-        GDescending_Stream
+        TStreamlines
     > :
-    Root_Base
-    where TGenology : 
-    Xerxes_Genology__Root
+    Root
     <
-        TGenology, 
-        TExports,
-        GAssociations,
-        GStreamlines,
-        GAscending_Stream,
-        GDescending_Stream
-    >, new()
-    where TExports  : 
-    Xerxes_Genology_Group__Endpoints
-    <
-        TExports, 
         TGenology,
-        GAssociations,
-        GStreamlines,
-        GAscending_Stream,
-        GDescending_Stream
-    >, new()
-    where GAssociations :
-    Xerxes_Genology_Group__Associations
+        TStreamlines,
+        Xerxes_Genology_Group__Standard_Descending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >
+    where TGenology :
+    Xerxes_Genology
     <
-        GAssociations,
-        TGenology
-    >, new()
-    where GStreamlines :
-    Xerxes_Genology_Group__Streamlines_Intermediate
-    <
-        GStreamlines,
         TGenology,
-        GAscending_Stream,
-        GDescending_Stream
+        TStreamlines,
+        Xerxes_Genology_Group__Standard_Descending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
     >, new()
-    where GAscending_Stream :
-    Xerxes_Genology_Group__Ascending_Streams
+    where TStreamlines :
+    Xerxes_Genology_Group__Streamlines
     <
-        GAscending_Stream,
+        TStreamlines,
         TGenology,
-        GStreamlines
-    >, new()
-    where GDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
-    <
-        GDescending_Stream,
-        TGenology,
-        GStreamlines
+        Xerxes_Genology_Group__Standard_Descending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >
     >, new()
     {
-        protected TGenology Root_Genology { get; }
 
-        protected Root()
-        {
-            Root_Genology =
-                new TGenology();
-
-            Xerxes_Object_Base__Genology__Internal =
-                Root_Genology;
-
-            //TODO: enforce ancestries onto genology?
-            //probably not, leave it up to the genology
-            //to handle SA__Configure_Root
-            
-            Root_Genology
-                .Declare__Streamlines
-                    .With__Ancestors
-                        .Extending<SA__Configure_Root>()
-                    .Finish__With_Ancestors
-                    .With__Descendants
-                        .Extending<SA__Configure_Root>();
-        }
     }
+
+    public abstract class Root
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream
+    > :
+    Root
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >
+    where TGenology :
+    Xerxes_Genology
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >, new()
+    where TStreamlines :
+    Xerxes_Genology_Group__Streamlines
+    <
+        TStreamlines,
+        TGenology,
+        TDescending_Stream,
+        Xerxes_Genology_Group__Standard_Ascending_Streams
+        <
+            TGenology,
+            TStreamlines
+        >
+    >, new()
+    where TDescending_Stream :
+    Xerxes_Genology_Group__Descending_Streams
+    <
+        TDescending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
+    {
+
+    }
+
+    public abstract class Root
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream
+    > :
+    Root
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >
+    where TGenology :
+    Xerxes_Genology
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream,
+        Xerxes_Genology_Group__Standard_Associations
+        <
+            TGenology
+        >,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >, new()
+    where TStreamlines :
+    Xerxes_Genology_Group__Streamlines
+    <
+        TStreamlines,
+        TGenology,
+        TDescending_Stream,
+        TAscending_Stream
+    >, new()
+    where TDescending_Stream :
+    Xerxes_Genology_Group__Descending_Streams
+    <
+        TDescending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
+    where TAscending_Stream :
+    Xerxes_Genology_Group__Ascending_Streams
+    <
+        TAscending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
+    {
+
+    }
+
+    public abstract class Root
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream,
+        TAssociations
+    > :
+    Root
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream,
+        TAssociations,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >
+    where TGenology :
+    Xerxes_Genology
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream,
+        TAssociations,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >, new()
+    where TStreamlines :
+    Xerxes_Genology_Group__Streamlines
+    <
+        TStreamlines,
+        TGenology,
+        TDescending_Stream,
+        TAscending_Stream
+    >, new()
+    where TDescending_Stream :
+    Xerxes_Genology_Group__Descending_Streams
+    <
+        TDescending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
+    where TAscending_Stream :
+    Xerxes_Genology_Group__Ascending_Streams
+    <
+        TAscending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
+    where TAssociations :
+    Xerxes_Genology_Group__Associations
+    <
+        TAssociations,
+        TGenology
+    >, new()
+    {
+
+    }
+
+    public abstract class Root
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream,
+        TAssociations,
+        TEndpoints
+    > :
+    Xerxes_Object
+    <
+        TGenology
+    >
+    where TGenology :
+    Xerxes_Genology
+    <
+        TGenology,
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream,
+        TAssociations,
+        TEndpoints
+    >, new()
+    where TStreamlines :
+    Xerxes_Genology_Group__Streamlines
+    <
+        TStreamlines,
+        TGenology,
+        TDescending_Stream,
+        TAscending_Stream
+    >, new()
+    where TDescending_Stream :
+    Xerxes_Genology_Group__Descending_Streams
+    <
+        TDescending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
+    where TAscending_Stream :
+    Xerxes_Genology_Group__Ascending_Streams
+    <
+        TAscending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
+    where TAssociations :
+    Xerxes_Genology_Group__Associations
+    <
+        TAssociations,
+        TGenology
+    >, new()
+    where TEndpoints :
+    Xerxes_Genology_Group__Endpoints
+    <
+        TEndpoints,
+        TGenology
+    >, new()
+    {
+        internal virtual void Internal_Configure__Root_Base(SA__Configure_Root e)
+        {
+            Handle__Configure__Root_Base(e);
+
+            Invoke__Ascending(e);
+            Invoke__Descending(e);
+        }
+
+        protected virtual void Handle__Configure__Root_Base(SA__Configure_Root e){}
+
+        protected internal abstract void Execute();
+    }
+
 }

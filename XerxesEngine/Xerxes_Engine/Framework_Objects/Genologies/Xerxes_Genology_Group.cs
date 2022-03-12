@@ -35,5 +35,7 @@ namespace Xerxes
 
             return group;
         }
+
+        protected internal abstract void Handle_Linking__Genology_Group();
     }
 }

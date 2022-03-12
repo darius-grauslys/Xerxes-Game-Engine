@@ -3,20 +3,29 @@ namespace Xerxes
 {
     public class Xerxes_Endpoint
     <
+        TGenology
+    > :
+    Xerxes_Object<TGenology>
+    where TGenology :
+    Xerxes_Genology__Standard_Endpoint, new()
+    {}
+
+    public class Xerxes_Endpoint
+    <
         TGenology,
         EStreamline,
         EDescending_Streams
     > :
     Xerxes_Object<TGenology>
     where TGenology : 
-    Xerxes_Genology__Endpoint
+    Xerxes_Genology
     <
         TGenology,
         EStreamline,
         EDescending_Streams
     >, new()
     where EStreamline :
-    Xerxes_Genology_Group__Streamlines_Descending
+    Xerxes_Genology_Group__Streamlines
     <
         EStreamline,
         TGenology,

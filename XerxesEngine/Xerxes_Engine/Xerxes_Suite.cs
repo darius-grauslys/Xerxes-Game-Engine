@@ -7,12 +7,12 @@ namespace Xerxes
         (
             SA__Configure_Root xerxes_arguments
         )
-        where Xerxes_Root : Root_Base, new()
+        where Xerxes_Root : Root, new()
         {
             Xerxes_Root instance = new Xerxes_Root();
             instance.Internal_Configure__Root_Base(xerxes_arguments);
 
-            Xerxes_Linker.Internal_Seal(instance, instance.Internal_ROOT__ENDPOINTS);
+            Xerxes_Linker.Internal_Seal(instance);
 
             instance.Invoke__Ascending(xerxes_arguments);
             instance.Invoke__Descending(xerxes_arguments);

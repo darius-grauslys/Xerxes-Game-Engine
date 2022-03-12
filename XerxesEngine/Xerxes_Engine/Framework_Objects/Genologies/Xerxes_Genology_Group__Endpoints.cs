@@ -1,14 +1,10 @@
 
 namespace Xerxes
 {
-    public class Xerxes_Genology_Group__Endpoints
+    public abstract class Xerxes_Genology_Group__Endpoints
     <
         TThis,
-        TGenology,
-        RAssociations,
-        RStreamlines,
-        RAscending_Stream,
-        RDescending_Stream
+        TGenology
     > :
     Xerxes_Genology_Group
     <
@@ -18,96 +14,50 @@ namespace Xerxes
     Xerxes_Genology_Group__Endpoints
     <
         TThis, 
-        TGenology,
-        RAssociations,
-        RStreamlines,
-        RAscending_Stream,
-        RDescending_Stream
-    >, new()
-    where TGenology :
-    Xerxes_Genology__Root
-    <
-        TGenology,
-        TThis,
-        RAssociations,
-        RStreamlines,
-        RAscending_Stream,
-        RDescending_Stream
-    >, new()
-    where RAssociations :
-    Xerxes_Genology_Group__Associations
-    <
-        RAssociations,
         TGenology
     >, new()
-    where RStreamlines :
-    Xerxes_Genology_Group__Streamlines_Intermediate
-    <
-        RStreamlines,
-        TGenology,
-        RAscending_Stream,
-        RDescending_Stream
-    >, new()
-    where RAscending_Stream :
-    Xerxes_Genology_Group__Ascending_Streams
-    <
-        RAscending_Stream,
-        TGenology,
-        RStreamlines
-    >, new()
-    where RDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
-    <
-        RDescending_Stream,
-        TGenology,
-        RStreamlines
-    >, new()
+    where TGenology :
+    Xerxes_Genology
     {
-        public TGenology Finish__With_Endpoints
-            => Genology_Group__Enclosing_Genology;
-
-
-
-        protected TThis Protected_Declare__Endpoint
+        protected TThis Protected_Declare__Endpoint__Endpoints
         <
-            TEndpoint, 
-            TGenology_Endpoint,
-            EEndpoint_Streamlines,
-            EEndpoint_Descending_Stream
+            XEndpoint,
+            XGenology,
+            XStreamlines,
+            XDescending_Streams
         >()
-        where TEndpoint : 
+        where XEndpoint :
         Xerxes_Object
         <
-            TGenology_Endpoint
+            XGenology
         >, new()
-        where TGenology_Endpoint :
-        Xerxes_Genology__Endpoint
+        where XGenology :
+        Xerxes_Genology
         <
-            TGenology_Endpoint,
-            EEndpoint_Streamlines,
-            EEndpoint_Descending_Stream
+            XGenology,
+            XStreamlines,
+            XDescending_Streams
         >, new()
-        where EEndpoint_Streamlines :
-        Xerxes_Genology_Group__Endpoint_Streamlines
+        where XStreamlines :
+        Xerxes_Genology_Group__Streamlines
         <
-            EEndpoint_Streamlines,
-            TGenology_Endpoint,
-            EEndpoint_Descending_Stream
+            XStreamlines,
+            XGenology,
+            XDescending_Streams
         >, new()
-        where EEndpoint_Descending_Stream :
+        where XDescending_Streams :
         Xerxes_Genology_Group__Descending_Streams
         <
-            EEndpoint_Descending_Stream,
-            TGenology_Endpoint,
-            EEndpoint_Streamlines
+            XDescending_Streams,
+            XGenology,
+            XStreamlines
         >, new()
         {
-            TEndpoint endpoint = new TEndpoint();
+            XEndpoint descendant = new XEndpoint();
 
             Genology_Group__Enclosing_Genology
-                .Genology_Root__Root__Internal
-                .Internal_ROOT__ENDPOINTS
-                .Internal_Declare__Endpoint__Endpoint_Dictionary(endpoint);
+                .Genology__DESCENDANT_GENOLOGIES__Internal
+                .Add(descendant.Xerxes_Object_Base__Genology__Internal);
 
             return this as TThis;
         }

@@ -14,15 +14,14 @@ namespace Xerxes
         
         internal static bool Internal_Seal
         (
-            Xerxes_Object_Base xobj,
-            Endpoint_Dictionary exports = null
+            Xerxes_Object_Base xobj
         )
         {
             Xerxes_Genology xobj_genology =
                 xobj.Xerxes_Object_Base__Genology__Internal;
 
             Xerxes_Linker_Context linker_Context =
-                new Xerxes_Linker_Context(exports);
+                new Xerxes_Linker_Context(xobj.Xerxes_Object_Base__ENDPOINTS__Internal);
 
             Private_Seal__Recursively
             (

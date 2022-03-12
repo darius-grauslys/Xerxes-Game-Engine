@@ -3,36 +3,54 @@ namespace Xerxes
 {
     public abstract class Xerxes_System
     <
-        TGenology, 
-            GStreamlines_Descending,
-            GDescending_Stream,
         TFeature, 
-        TOperation
+        TOperation,
+        TGenology, 
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream
     > :
-    Xerxes_Object<TGenology>
+    Xerxes_Object
+    <
+        TGenology
+    >
+    where TFeature : 
+    IFeature
+    where TOperation : 
+    SA__Operate_Feature
+    <
+        TFeature
+    >
     where TGenology : 
-    Xerxes_Genology__Descending
+    Xerxes_Genology
     <
         TGenology,
-        GStreamlines_Descending,
-        GDescending_Stream
+        TStreamlines,
+        TDescending_Stream,
+        TAscending_Stream
     >, new()
-    where GStreamlines_Descending :
-    Xerxes_Genology_Group__Streamlines_Descending
+    where TStreamlines :
+    Xerxes_Genology_Group__Streamlines
     <
-        GStreamlines_Descending,
+        TStreamlines,
         TGenology,
-        GDescending_Stream
+        TDescending_Stream,
+        TAscending_Stream
     >, new()
-    where GDescending_Stream :
+    where TDescending_Stream :
     Xerxes_Genology_Group__Descending_Streams
     <
-        GDescending_Stream,
+        TDescending_Stream,
         TGenology,
-        GStreamlines_Descending
+        TStreamlines
     >, new()
-    where TFeature : IFeature
-    where TOperation : SA__Operate_Feature<TFeature>
+    where TAscending_Stream :
+    Xerxes_Genology_Group__Ascending_Streams
+    <
+        TAscending_Stream,
+        TGenology,
+        TStreamlines
+    >, new()
     {
         public Xerxes_System()
         {
