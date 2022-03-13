@@ -25,9 +25,7 @@ namespace Xerxes
     Xerxes_Genology
     <
         TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream
+        TStreamlines
     >, new()
     where TStreamlines :
     Xerxes_Genology_Group__Streamlines

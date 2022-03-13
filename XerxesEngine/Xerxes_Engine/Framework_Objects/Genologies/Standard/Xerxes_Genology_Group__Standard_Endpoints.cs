@@ -7,10 +7,6 @@ namespace Xerxes
     > :
     Xerxes_Genology_Group__Endpoints
     <
-        Xerxes_Genology_Group__Standard_Endpoints
-        <
-            TGenology
-        >,
         TGenology
     >
     where TGenology :
@@ -26,7 +22,7 @@ namespace Xerxes
         >()
         where XEndpoint :
         Xerxes_Object<Xerxes_Genology__Standard_Endpoint>, new()
-            =>
+        {
             Protected_Declare__Endpoint__Endpoints
             <
                 XEndpoint,
@@ -45,6 +41,9 @@ namespace Xerxes
                 >
             >();
 
+            return this;
+        }
+
         public Xerxes_Genology_Group__Standard_Endpoints<TGenology> Endpoint
         <
             XEndpoint,
@@ -58,8 +57,7 @@ namespace Xerxes
         Xerxes_Genology
         <
             XGenology,
-            XStreamlines,
-            XDescending_Streams
+            XStreamlines
         >, new()
         where XStreamlines :
         Xerxes_Genology_Group__Streamlines
@@ -75,7 +73,7 @@ namespace Xerxes
             XGenology,
             XStreamlines
         >, new()
-            => 
+        {
             Protected_Declare__Endpoint__Endpoints
             <
                 XEndpoint,
@@ -83,6 +81,9 @@ namespace Xerxes
                 XStreamlines,
                 XDescending_Streams
             >();
+
+            return this;
+        }
 
 
 

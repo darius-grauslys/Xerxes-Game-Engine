@@ -5,16 +5,14 @@ namespace Xerxes
 {
     public abstract class Xerxes_Genology_Group__Streams
     <
-        TThis,
         TGenology,
         TParent
     >:
     Xerxes_Genology_Group__Child<TGenology, TParent>
-    where TThis : Xerxes_Genology_Group__Streams<TThis, TGenology, TParent>
     where TGenology : Xerxes_Genology
     where TParent   : Xerxes_Genology_Group<TGenology>
     {
-        protected void From_Ancestors__Extend<SA>
+        protected internal void Protected_Extend__To_Ancestors__Streams<SA>
         (
             Action<Streamline_Base, Log.Context__Declare_Streamline>
                 fail_recieving_callback = null,
@@ -28,7 +26,7 @@ namespace Xerxes
                 .Internal_Declare__Streamline__Stream<SA>(isRecieving : false);
         }
 
-        protected void From_Descendants__Extend<SA>
+        protected internal void Protected_Extend__To_Descendants__Streams<SA>
         (
             Action<Streamline_Base, Log.Context__Declare_Streamline>
                 fail_recieving_callback = null,
@@ -45,7 +43,7 @@ namespace Xerxes
 
 
 
-        protected void From_Ancestors__Recieve<SA>
+        protected internal void Protected_Recieve__From_Ancestors__Streams<SA>
         (
             Action<SA> streamline_reciever,
             Action<Streamline_Base, Log.Context__Declare_Streamline>
@@ -60,7 +58,7 @@ namespace Xerxes
                 .Internal_Declare__Streamline__Stream<SA>(streamline_reciever, isExtending : false);
         }
 
-        protected void From_Descendants__Recieve<SA>
+        protected internal void Protected_Recieve__From_Descendants__Streams<SA>
         (
             Action<SA> streamline_reciever,
             Action<Streamline_Base, Log.Context__Declare_Streamline>

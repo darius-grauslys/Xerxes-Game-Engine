@@ -34,8 +34,8 @@ namespace Xerxes
 
             test_suite
                 .Genology
-                .Declare__Streamlines
-                    .With__Descendants
+                .Genology__STREAMLINES__Protected
+                    .Streamlines__Primary_Stream__Protected
                         .Extending<SA__Configure_Root>()
                         .Extending<SA>();
 

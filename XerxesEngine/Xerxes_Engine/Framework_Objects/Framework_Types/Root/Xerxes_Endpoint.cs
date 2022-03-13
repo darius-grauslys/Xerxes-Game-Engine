@@ -21,8 +21,7 @@ namespace Xerxes
     Xerxes_Genology
     <
         TGenology,
-        EStreamline,
-        EDescending_Streams
+        EStreamline
     >, new()
     where EStreamline :
     Xerxes_Genology_Group__Streamlines

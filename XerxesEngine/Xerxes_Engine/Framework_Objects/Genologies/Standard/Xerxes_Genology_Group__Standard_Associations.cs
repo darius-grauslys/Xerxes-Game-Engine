@@ -7,10 +7,6 @@ namespace Xerxes
     > :
     Xerxes_Genology_Group__Associations
     <
-        Xerxes_Genology_Group__Standard_Associations
-        <
-            TGenology
-        >,
         TGenology
     >
     where TGenology :
@@ -23,7 +19,8 @@ namespace Xerxes
         public Xerxes_Genology_Group__Standard_Associations<TGenology> Associate<XTarget>()
         where XTarget : Xerxes_Object_Base, new()
         {
-            return Protected_Associate__Associations<XTarget>();
+            Protected_Associate__Associations<XTarget>();
+            return this;
         }
 
 

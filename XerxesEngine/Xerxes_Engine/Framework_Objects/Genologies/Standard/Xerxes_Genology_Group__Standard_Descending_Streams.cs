@@ -19,7 +19,7 @@ namespace Xerxes
     where TGenology :
     Xerxes_Genology
     where TParent :
-    Xerxes_Genology_Group
+    Xerxes_Genology_Group__Streamlines
     <
         TGenology
     >

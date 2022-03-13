@@ -11,7 +11,6 @@ namespace Xerxes
     > :
     Xerxes_Genology_Group__Streams
     <
-        TThis, 
         TGenology, 
         TParent
     >
@@ -25,7 +24,7 @@ namespace Xerxes
     where TGenology : 
     Xerxes_Genology
     where TParent : 
-    Xerxes_Genology_Group
+    Xerxes_Genology_Group__Streamlines
     <
         TGenology
     >
@@ -33,14 +32,14 @@ namespace Xerxes
         public TThis Extending<SA>()
         where SA : Streamline_Argument
         {
-            From_Ancestors__Extend<SA>();
+            Protected_Extend__To_Ancestors__Streams<SA>();
             return this as TThis;
         }
 
         public TThis Recieving<SA>(Action<SA> streamline_reciever)
         where SA : Streamline_Argument
         {
-            From_Ancestors__Recieve<SA>(streamline_reciever);
+            Protected_Recieve__From_Ancestors__Streams<SA>(streamline_reciever);
             return this as TThis;
         }
     }

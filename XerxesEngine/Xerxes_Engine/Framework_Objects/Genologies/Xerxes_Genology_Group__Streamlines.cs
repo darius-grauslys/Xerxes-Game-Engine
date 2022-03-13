@@ -5,10 +5,10 @@ namespace Xerxes
     <
         TThis,
         TGenology,
-        TDescending_Stream,
-        TAscending_Stream
+        TPrimary_Stream,
+        TSecondary_Stream
     > :
-    Xerxes_Genology_Group
+    Xerxes_Genology_Group__Streamlines
     <
         TGenology
     >
@@ -17,42 +17,40 @@ namespace Xerxes
     <
         TThis,
         TGenology,
-        TDescending_Stream,
-        TAscending_Stream
+        TPrimary_Stream,
+        TSecondary_Stream
     >
     where TGenology : 
     Xerxes_Genology
-    where TDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
+    where TPrimary_Stream :
+    Xerxes_Genology_Group__Streams
     <
-        TDescending_Stream,
         TGenology,
         TThis
     >, new()
-    where TAscending_Stream :
-    Xerxes_Genology_Group__Ascending_Streams
+    where TSecondary_Stream :
+    Xerxes_Genology_Group__Streams
     <
-        TAscending_Stream,
         TGenology,
         TThis
     >, new()
     {
-        public TDescending_Stream With__Descendants { get; private set; }
-        public TAscending_Stream With__Ancestors { get; private set; }
+        protected internal TPrimary_Stream Streamlines__Primary_Stream__Protected { get; private set; }
+        protected internal TSecondary_Stream Streamlines__Secondary_Stream__Protected { get; private set; }
 
         protected internal override void Handle_Linking__Genology_Group()
         {
-            With__Descendants =
+            Streamlines__Primary_Stream__Protected =
                 Protected_Link__Child_Group__Genology_Group
                 <
                     TThis,
-                    TDescending_Stream
+                    TPrimary_Stream
                 >();
-            With__Ancestors =
+            Streamlines__Secondary_Stream__Protected =
                 Protected_Link__Child_Group__Genology_Group
                 <
                     TThis,
-                    TAscending_Stream
+                    TSecondary_Stream
                 >();
         }
     }
@@ -61,9 +59,9 @@ namespace Xerxes
     <
         TThis,
         TGenology,
-        TDescending_Stream
+        TPrimary_Stream
     >:
-    Xerxes_Genology_Group
+    Xerxes_Genology_Group__Streamlines
     <
         TGenology
     >
@@ -72,28 +70,41 @@ namespace Xerxes
     <
         TThis,
         TGenology,
-        TDescending_Stream
+        TPrimary_Stream
     >
     where TGenology :
     Xerxes_Genology
-    where TDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
+    where TPrimary_Stream :
+    Xerxes_Genology_Group__Streams
     <
-        TDescending_Stream,
         TGenology,
         TThis
     >, new()
     {
-        public TDescending_Stream With__Descendants { get; private set; }
+        protected internal TPrimary_Stream Streamlines__Primary_Stream__Protected { get; private set; }
 
         protected internal override void Handle_Linking__Genology_Group()
         {
-            With__Descendants =
+            Streamlines__Primary_Stream__Protected =
                 Protected_Link__Child_Group__Genology_Group
                 <
                     TThis,
-                    TDescending_Stream
+                    TPrimary_Stream
                 >();
         }
+    }
+
+    public abstract class Xerxes_Genology_Group__Streamlines
+    <
+        TGenology
+    > :
+    Xerxes_Genology_Group
+    <
+        TGenology
+    >
+    where TGenology :
+    Xerxes_Genology
+    {
+
     }
 }

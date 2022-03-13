@@ -3,23 +3,16 @@ namespace Xerxes
 {
     public abstract class Xerxes_Genology_Group__Endpoints
     <
-        TThis,
         TGenology
     > :
     Xerxes_Genology_Group
     <
         TGenology
     >
-    where TThis :
-    Xerxes_Genology_Group__Endpoints
-    <
-        TThis, 
-        TGenology
-    >, new()
     where TGenology :
     Xerxes_Genology
     {
-        protected TThis Protected_Declare__Endpoint__Endpoints
+        protected void Protected_Declare__Endpoint__Endpoints
         <
             XEndpoint,
             XGenology,
@@ -35,8 +28,7 @@ namespace Xerxes
         Xerxes_Genology
         <
             XGenology,
-            XStreamlines,
-            XDescending_Streams
+            XStreamlines
         >, new()
         where XStreamlines :
         Xerxes_Genology_Group__Streamlines
@@ -58,8 +50,6 @@ namespace Xerxes
             Genology_Group__Enclosing_Genology
                 .Genology__DESCENDANT_GENOLOGIES__Internal
                 .Add(descendant.Xerxes_Object_Base__Genology__Internal);
-
-            return this as TThis;
         }
     }
 }

@@ -21,22 +21,6 @@ namespace Xerxes
         <
             TGenology
         >,
-        Xerxes_Genology_Group__Standard_Descending_Streams
-        <
-            TGenology,
-            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
-            <
-                TGenology
-            >
-        >,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
-            <
-                TGenology
-            >
-        >,
         Xerxes_Genology_Group__Standard_Associations
         <
             TGenology
@@ -54,22 +38,6 @@ namespace Xerxes
         <
             TGenology
         >,
-        Xerxes_Genology_Group__Standard_Descending_Streams
-        <
-            TGenology,
-            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
-            <
-                TGenology
-            >
-        >,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            Xerxes_Genology_Group__Standard_Streamlines_Intermediate
-            <
-                TGenology
-            >
-        >,
         Xerxes_Genology_Group__Standard_Associations
         <
             TGenology
@@ -92,16 +60,6 @@ namespace Xerxes
     <
         TGenology,
         TStreamlines,
-        Xerxes_Genology_Group__Standard_Descending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >,
         Xerxes_Genology_Group__Standard_Associations
         <
             TGenology
@@ -116,16 +74,6 @@ namespace Xerxes
     <
         TGenology,
         TStreamlines,
-        Xerxes_Genology_Group__Standard_Descending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >,
         Xerxes_Genology_Group__Standard_Associations
         <
             TGenology
@@ -138,214 +86,6 @@ namespace Xerxes
     where TStreamlines :
     Xerxes_Genology_Group__Streamlines
     <
-        TStreamlines,
-        TGenology,
-        Xerxes_Genology_Group__Standard_Descending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >
-    >, new()
-    {
-
-    }
-
-    public abstract class Root
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream
-    > :
-    Root
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >,
-        Xerxes_Genology_Group__Standard_Associations
-        <
-            TGenology
-        >,
-        Xerxes_Genology_Group__Standard_Endpoints
-        <
-            TGenology
-        >
-    >
-    where TGenology :
-    Xerxes_Genology
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >,
-        Xerxes_Genology_Group__Standard_Associations
-        <
-            TGenology
-        >,
-        Xerxes_Genology_Group__Standard_Endpoints
-        <
-            TGenology
-        >
-    >, new()
-    where TStreamlines :
-    Xerxes_Genology_Group__Streamlines
-    <
-        TStreamlines,
-        TGenology,
-        TDescending_Stream,
-        Xerxes_Genology_Group__Standard_Ascending_Streams
-        <
-            TGenology,
-            TStreamlines
-        >
-    >, new()
-    where TDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
-    <
-        TDescending_Stream,
-        TGenology,
-        TStreamlines
-    >, new()
-    {
-
-    }
-
-    public abstract class Root
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream
-    > :
-    Root
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream,
-        Xerxes_Genology_Group__Standard_Associations
-        <
-            TGenology
-        >,
-        Xerxes_Genology_Group__Standard_Endpoints
-        <
-            TGenology
-        >
-    >
-    where TGenology :
-    Xerxes_Genology
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream,
-        Xerxes_Genology_Group__Standard_Associations
-        <
-            TGenology
-        >,
-        Xerxes_Genology_Group__Standard_Endpoints
-        <
-            TGenology
-        >
-    >, new()
-    where TStreamlines :
-    Xerxes_Genology_Group__Streamlines
-    <
-        TStreamlines,
-        TGenology,
-        TDescending_Stream,
-        TAscending_Stream
-    >, new()
-    where TDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
-    <
-        TDescending_Stream,
-        TGenology,
-        TStreamlines
-    >, new()
-    where TAscending_Stream :
-    Xerxes_Genology_Group__Ascending_Streams
-    <
-        TAscending_Stream,
-        TGenology,
-        TStreamlines
-    >, new()
-    {
-
-    }
-
-    public abstract class Root
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream,
-        TAssociations
-    > :
-    Root
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream,
-        TAssociations,
-        Xerxes_Genology_Group__Standard_Endpoints
-        <
-            TGenology
-        >
-    >
-    where TGenology :
-    Xerxes_Genology
-    <
-        TGenology,
-        TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream,
-        TAssociations,
-        Xerxes_Genology_Group__Standard_Endpoints
-        <
-            TGenology
-        >
-    >, new()
-    where TStreamlines :
-    Xerxes_Genology_Group__Streamlines
-    <
-        TStreamlines,
-        TGenology,
-        TDescending_Stream,
-        TAscending_Stream
-    >, new()
-    where TDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
-    <
-        TDescending_Stream,
-        TGenology,
-        TStreamlines
-    >, new()
-    where TAscending_Stream :
-    Xerxes_Genology_Group__Ascending_Streams
-    <
-        TAscending_Stream,
-        TGenology,
-        TStreamlines
-    >, new()
-    where TAssociations :
-    Xerxes_Genology_Group__Associations
-    <
-        TAssociations,
         TGenology
     >, new()
     {
@@ -356,8 +96,47 @@ namespace Xerxes
     <
         TGenology,
         TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream,
+        TAssociations
+    > :
+    Root
+    <
+        TGenology,
+        TStreamlines,
+        TAssociations,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >
+    where TGenology :
+    Xerxes_Genology
+    <
+        TGenology,
+        TStreamlines,
+        TAssociations,
+        Xerxes_Genology_Group__Standard_Endpoints
+        <
+            TGenology
+        >
+    >, new()
+    where TStreamlines :
+    Xerxes_Genology_Group__Streamlines
+    <
+        TGenology
+    >, new()
+    where TAssociations :
+    Xerxes_Genology_Group__Associations
+    <
+        TGenology
+    >, new()
+    {
+
+    }
+
+    public abstract class Root
+    <
+        TGenology,
+        TStreamlines,
         TAssociations,
         TEndpoints
     > :
@@ -370,43 +149,22 @@ namespace Xerxes
     <
         TGenology,
         TStreamlines,
-        TDescending_Stream,
-        TAscending_Stream,
         TAssociations,
         TEndpoints
     >, new()
     where TStreamlines :
     Xerxes_Genology_Group__Streamlines
     <
-        TStreamlines,
-        TGenology,
-        TDescending_Stream,
-        TAscending_Stream
-    >, new()
-    where TDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
-    <
-        TDescending_Stream,
-        TGenology,
-        TStreamlines
-    >, new()
-    where TAscending_Stream :
-    Xerxes_Genology_Group__Ascending_Streams
-    <
-        TAscending_Stream,
-        TGenology,
-        TStreamlines
+        TGenology
     >, new()
     where TAssociations :
     Xerxes_Genology_Group__Associations
     <
-        TAssociations,
         TGenology
     >, new()
     where TEndpoints :
     Xerxes_Genology_Group__Endpoints
     <
-        TEndpoints,
         TGenology
     >, new()
     {

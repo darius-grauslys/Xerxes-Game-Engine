@@ -1,15 +1,24 @@
 
 namespace Xerxes
 {
-    public abstract class Xerxes_Genology_Group<TGenology>
-    where TGenology : Xerxes_Genology
+    public abstract class Xerxes_Genology_Group
+    <
+        TGenology
+    >
+    where TGenology : 
+    Xerxes_Genology
     {
         internal TGenology Genology_Group__Enclosing_Genology__Internal { get; set; }
         protected TGenology Genology_Group__Enclosing_Genology => Genology_Group__Enclosing_Genology__Internal;
         internal Xerxes_Object_Base Genology_Group__Enclosing_Object__Internal
-            => Genology_Group__Enclosing_Genology__Internal
+        {
+            get => 
+                Genology_Group__Enclosing_Genology__Internal
                 .Genology__Enclosing_Object__Internal;
-
+            set => 
+                Genology_Group__Enclosing_Genology__Internal
+                .Genology__Enclosing_Object__Internal = value;
+        }
 
 
 
