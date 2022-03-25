@@ -51,19 +51,19 @@ namespace Xerxes
             return streamline_Base;
         }
 
-        internal bool Internal_Declare__Streamline__Stream<T>
+        internal bool Internal_Declare__Streamline__Stream<SA>
         (
-            Action<T> listener = null,
+            Action<SA> listener = null,
             bool isRecieving = true,
             bool isExtending = true,
             Action<Streamline_Base, Log.Context__Declare_Streamline> 
                 declaration_Failure_Receiving = null,
             Action<Streamline_Base, Log.Context__Declare_Streamline> 
                 declaration_Failure_Extending = null
-        ) where T : Streamline_Argument
+        ) where SA : Streamline_Argument
         {
-            Streamline<T> streamline = 
-                new Streamline<T>
+            Streamline<SA> streamline = 
+                new Streamline<SA>
                 (
                     listener, 
                     isRecieving, 
@@ -78,7 +78,7 @@ namespace Xerxes
                     streamline,
                     Stream__RECEIVING_STREAMLINES__Internal,
                     streamline.Streamline_Base__IS_RECEIVING,
-                    () => declaration_Failure_Receiving
+                    () => declaration_Failure_Receiving?.Invoke
                         (streamline, Log.Context__Declare_Streamline.Receieve)
                 );
             success = success && 
@@ -87,7 +87,7 @@ namespace Xerxes
                     streamline,
                     Stream__EXTENDING_STREAMLINES__Internal,
                     streamline.Streamline_Base__IS_EXTENDING,
-                    () => declaration_Failure_Extending
+                    () => declaration_Failure_Extending?.Invoke
                         (streamline, Log.Context__Declare_Streamline.Extend)
                 );
 

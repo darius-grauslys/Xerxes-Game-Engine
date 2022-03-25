@@ -3,38 +3,37 @@ namespace Xerxes
 {
     public class Xerxes_Endpoint
     <
-        TGenology
+        TGenealogy
     > :
-    Xerxes_Object<TGenology>
-    where TGenology :
-    Xerxes_Genology__Standard_Endpoint, new()
+    Xerxes_Object<TGenealogy>
+    where TGenealogy :
+    Xerxes_Genealogy__Standard_Endpoint, new()
     {}
 
     public class Xerxes_Endpoint
     <
-        TGenology,
+        TGenealogy,
         EStreamline,
         EDescending_Streams
     > :
-    Xerxes_Object<TGenology>
-    where TGenology : 
-    Xerxes_Genology
+    Xerxes_Object<TGenealogy>
+    where TGenealogy : 
+    Xerxes_Genealogy
     <
-        TGenology,
+        TGenealogy,
         EStreamline
     >, new()
     where EStreamline :
-    Xerxes_Genology_Group__Streamlines
+    Xerxes_Genealogy_Group__Streamlines
     <
         EStreamline,
-        TGenology,
+        TGenealogy,
         EDescending_Streams
     >, new()
     where EDescending_Streams :
-    Xerxes_Genology_Group__Descending_Streams
+    Xerxes_Genealogy_Group__Streams
     <
-        EDescending_Streams,
-        TGenology,
+        TGenealogy,
         EStreamline
     >, new()
     {

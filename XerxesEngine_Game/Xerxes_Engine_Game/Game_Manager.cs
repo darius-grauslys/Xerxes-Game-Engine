@@ -14,13 +14,13 @@ namespace Xerxes.Game_Engine
         {
             _Game_Manager__ENTITIES = new List<TEntity>();
 
-            Log.Write__Info__Log($"{typeof(SA__Register_Entity<TEntity>)}", this);
-
-            Declare__Streams()
-                .Downstream.Receiving<SA__Update>
-                (Handle_Update__Entities__Game_Manager)
-                .Downstream.Receiving<SA__Register_Entity<TEntity>>
-                (Handle_Register__Entity__Game_Manager);
+            Genealogy
+                .With__Streamlines
+                    .With__Ancestors
+                        .Recieving<SA__Update>
+                            (Handle_Update__Entities__Game_Manager)
+                        .Recieving<SA__Register_Entity<TEntity>>
+                            (Handle_Register__Entity__Game_Manager);
         }
 
         protected void Associate__Manager<TManager, UEntity>()

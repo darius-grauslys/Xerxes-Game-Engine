@@ -17,8 +17,8 @@ namespace Xerxes
             Xerxes_Object_Base xobj
         )
         {
-            Xerxes_Genology xobj_genology =
-                xobj.Xerxes_Object_Base__Genology__Internal;
+            Xerxes_Genealogy xobj_genology =
+                xobj.Xerxes_Object_Base__Genealogy__Internal;
 
             Xerxes_Linker_Context linker_Context =
                 new Xerxes_Linker_Context(xobj.Xerxes_Object_Base__ENDPOINTS__Internal);
@@ -34,13 +34,13 @@ namespace Xerxes
 
         private static void Private_Seal__Recursively
         (
-            Xerxes_Genology genology,
+            Xerxes_Genealogy genealogy,
             Xerxes_Linker_Context linker_Context
         )
         {
             Xerxes_Object_Base treeMemberObject =
-                genology
-                .Genology__Enclosing_Object__Internal;
+                genealogy
+                .Genealogy__Enclosing_Object__Internal;
 
             Private_Log_Verbose__Sealing_Object
             (
@@ -57,7 +57,7 @@ namespace Xerxes
 
             if 
             (
-                genology.Genology__DESCENDANT_GENOLOGIES__Internal.Count == 0
+                genealogy.Genealogy__DESCENDANT_GENOLOGIES__Internal.Count == 0
             )
             {
                 Log.Write__Verbose__Log("Has no children.", treeMemberObject);
@@ -70,7 +70,7 @@ namespace Xerxes
                 linker_Context
             );
 
-            foreach(Xerxes_Genology child_genology in genology.Genology__DESCENDANT_GENOLOGIES__Internal)
+            foreach(Xerxes_Genealogy child_genology in genealogy.Genealogy__DESCENDANT_GENOLOGIES__Internal)
             {
                 Private_Seal__Recursively(child_genology, linker_Context);
             }

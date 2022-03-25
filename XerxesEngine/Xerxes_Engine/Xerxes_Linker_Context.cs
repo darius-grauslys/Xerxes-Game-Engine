@@ -161,9 +161,6 @@ namespace Xerxes
                 (
                     streamline_receiver
                 );
-
-            string status = s ? "success" : "failure";
-            Log.Write__Verbose__Log($"Linking {streamline_receiver}: {status}.", this);
         }
 
         internal void Internal_Push__Upstream_Receiver__Xerxes_Linker_Context
@@ -258,8 +255,6 @@ namespace Xerxes
                         t,
                         new Stack<Streamline_Base>()
                     );
-
-            Log.Write__Verbose__Log($"Pushing {t}.", this);
 
             Stack<Streamline_Base> stack = table[t];
 

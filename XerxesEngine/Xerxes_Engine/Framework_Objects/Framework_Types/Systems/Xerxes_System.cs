@@ -5,14 +5,14 @@ namespace Xerxes
     <
         TFeature, 
         TOperation,
-        TGenology, 
+        TGenealogy, 
         TStreamlines,
         TDescending_Stream,
         TAscending_Stream
     > :
     Xerxes_Object
     <
-        TGenology
+        TGenealogy
     >
     where TFeature : 
     IFeature
@@ -21,32 +21,30 @@ namespace Xerxes
     <
         TFeature
     >
-    where TGenology : 
-    Xerxes_Genology
+    where TGenealogy : 
+    Xerxes_Genealogy
     <
-        TGenology,
+        TGenealogy,
         TStreamlines
     >, new()
     where TStreamlines :
-    Xerxes_Genology_Group__Streamlines
+    Xerxes_Genealogy_Group__Streamlines
     <
         TStreamlines,
-        TGenology,
+        TGenealogy,
         TDescending_Stream,
         TAscending_Stream
     >, new()
     where TDescending_Stream :
-    Xerxes_Genology_Group__Descending_Streams
+    Xerxes_Genealogy_Group__Streams
     <
-        TDescending_Stream,
-        TGenology,
+        TGenealogy,
         TStreamlines
     >, new()
     where TAscending_Stream :
-    Xerxes_Genology_Group__Ascending_Streams
+    Xerxes_Genealogy_Group__Streams
     <
-        TAscending_Stream,
-        TGenology,
+        TGenealogy,
         TStreamlines
     >, new()
     {

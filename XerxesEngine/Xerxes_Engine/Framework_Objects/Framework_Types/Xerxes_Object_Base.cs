@@ -6,7 +6,20 @@ namespace Xerxes
     {
         public object Xerxes_Object_Base__IDENTIFIER { get; }
 
-        internal Xerxes_Genology Xerxes_Object_Base__Genology__Internal { get; set; }
+        internal Xerxes_Genealogy Xerxes_Object_Base__Genealogy__Internal { get; private set; }
+
+        internal void Internal_Set__Genealogy__Xerxes_Engine_Object(Xerxes_Genealogy genealogy)
+        {
+            genealogy
+                .Genealogy__Enclosing_Object__Internal =
+                this;
+
+            Xerxes_Object_Base__Genealogy__Internal =
+                genealogy;
+
+            genealogy
+                .Handle_Linking__Genealogy();
+        }
 
         internal Endpoint_Dictionary Xerxes_Object_Base__ENDPOINTS__Internal { get; set; }
 
@@ -48,20 +61,6 @@ namespace Xerxes
 
 #region Streamline Management
         protected internal bool Invoke__Descending<S>
-        () where S : Streamline_Argument, new()
-        {
-            return Invoke__Descending(new S());
-        }
-
-        protected internal void Invoke__Void__Descending<S>
-        (
-            S streamline_Argument
-        ) where S : Streamline_Argument
-        {
-            Invoke__Descending(streamline_Argument);
-        }
-
-        protected internal bool Invoke__Descending<S>
         (
             S streamline_Argument
         ) where S : Streamline_Argument
@@ -71,20 +70,6 @@ namespace Xerxes
                 Xerxes_Object_Base__DOWNSTREAM__Internal,
                 streamline_Argument
             );
-        }
-
-        protected internal bool Invoke__Ascending<S>
-        () where S : Streamline_Argument, new()
-        {
-            return Invoke__Ascending(new S());
-        }
-
-        protected internal void Invoke__Void__Ascending<S>
-        (
-            S streamline_Argument
-        ) where S : Streamline_Argument
-        {
-            Invoke__Ascending(streamline_Argument);
         }
 
         protected internal bool Invoke__Ascending<S>
@@ -107,16 +92,6 @@ namespace Xerxes
         {
             if (streamline_Argument == null)
                 return false;
-
-            if (streamline_Argument.Streamline_Argument__Consumed)
-            {
-                Private_Log_Error__Argument_Consumed_2
-                (
-                    this,
-                    typeof(S)
-                );
-                return false;
-            }
 
             if (streamline_Argument.Streamline_Argument__Origin_Identifier == null)
                 streamline_Argument.Streamline_Argument__Origin_Identifier =

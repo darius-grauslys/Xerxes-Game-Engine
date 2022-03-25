@@ -4,47 +4,56 @@ namespace Xerxes
     public abstract class Root :
     Root
     <
-        Xerxes_Genology__Standard_Root
+        Xerxes_Genealogy__Standard
     >
     {
-
+        public Root()
+        {
+            Genealogy
+                .With__Streamlines
+                    .With__Descendants
+                        .Extending<SA__Configure_Root>()
+                    .Finish__With_Descendants
+                    .With__Ancestors
+                        .Extending<SA__Configure_Root>();
+        }
     }
 
     public abstract class Root
     <
-        TGenology
+        TGenealogy
     > :
     Root
     <
-        TGenology,
-        Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+        TGenealogy,
+        Xerxes_Genealogy_Group__Standard_Streamlines_Intermediate
         <
-            TGenology
+            TGenealogy
         >,
-        Xerxes_Genology_Group__Standard_Associations
+        Xerxes_Genealogy_Group__Standard_Associations
         <
-            TGenology
+            TGenealogy
         >,
-        Xerxes_Genology_Group__Standard_Endpoints
+        Xerxes_Genealogy_Group__Standard_Endpoints
         <
-            TGenology
+            TGenealogy
         >
     >
-    where TGenology :
-    Xerxes_Genology
+    where TGenealogy :
+    Xerxes_Genealogy
     <
-        TGenology,
-        Xerxes_Genology_Group__Standard_Streamlines_Intermediate
+        TGenealogy,
+        Xerxes_Genealogy_Group__Standard_Streamlines_Intermediate
         <
-            TGenology
+            TGenealogy
         >,
-        Xerxes_Genology_Group__Standard_Associations
+        Xerxes_Genealogy_Group__Standard_Associations
         <
-            TGenology
+            TGenealogy
         >,
-        Xerxes_Genology_Group__Standard_Endpoints
+        Xerxes_Genealogy_Group__Standard_Endpoints
         <
-            TGenology
+            TGenealogy
         >
     >, new()
     {
@@ -53,40 +62,40 @@ namespace Xerxes
 
     public abstract class Root
     <
-        TGenology,
+        TGenealogy,
         TStreamlines
     > :
     Root
     <
-        TGenology,
+        TGenealogy,
         TStreamlines,
-        Xerxes_Genology_Group__Standard_Associations
+        Xerxes_Genealogy_Group__Standard_Associations
         <
-            TGenology
+            TGenealogy
         >,
-        Xerxes_Genology_Group__Standard_Endpoints
+        Xerxes_Genealogy_Group__Standard_Endpoints
         <
-            TGenology
+            TGenealogy
         >
     >
-    where TGenology :
-    Xerxes_Genology
+    where TGenealogy :
+    Xerxes_Genealogy
     <
-        TGenology,
+        TGenealogy,
         TStreamlines,
-        Xerxes_Genology_Group__Standard_Associations
+        Xerxes_Genealogy_Group__Standard_Associations
         <
-            TGenology
+            TGenealogy
         >,
-        Xerxes_Genology_Group__Standard_Endpoints
+        Xerxes_Genealogy_Group__Standard_Endpoints
         <
-            TGenology
+            TGenealogy
         >
     >, new()
     where TStreamlines :
-    Xerxes_Genology_Group__Streamlines
+    Xerxes_Genealogy_Group__Streamlines
     <
-        TGenology
+        TGenealogy
     >, new()
     {
 
@@ -94,40 +103,40 @@ namespace Xerxes
 
     public abstract class Root
     <
-        TGenology,
+        TGenealogy,
         TStreamlines,
         TAssociations
     > :
     Root
     <
-        TGenology,
+        TGenealogy,
         TStreamlines,
         TAssociations,
-        Xerxes_Genology_Group__Standard_Endpoints
+        Xerxes_Genealogy_Group__Standard_Endpoints
         <
-            TGenology
+            TGenealogy
         >
     >
-    where TGenology :
-    Xerxes_Genology
+    where TGenealogy :
+    Xerxes_Genealogy
     <
-        TGenology,
+        TGenealogy,
         TStreamlines,
         TAssociations,
-        Xerxes_Genology_Group__Standard_Endpoints
+        Xerxes_Genealogy_Group__Standard_Endpoints
         <
-            TGenology
+            TGenealogy
         >
     >, new()
     where TStreamlines :
-    Xerxes_Genology_Group__Streamlines
+    Xerxes_Genealogy_Group__Streamlines
     <
-        TGenology
+        TGenealogy
     >, new()
     where TAssociations :
-    Xerxes_Genology_Group__Associations
+    Xerxes_Genealogy_Group__Associations
     <
-        TGenology
+        TGenealogy
     >, new()
     {
 
@@ -135,37 +144,37 @@ namespace Xerxes
 
     public abstract class Root
     <
-        TGenology,
+        TGenealogy,
         TStreamlines,
         TAssociations,
         TEndpoints
     > :
     Xerxes_Object
     <
-        TGenology
+        TGenealogy
     >
-    where TGenology :
-    Xerxes_Genology
+    where TGenealogy :
+    Xerxes_Genealogy
     <
-        TGenology,
+        TGenealogy,
         TStreamlines,
         TAssociations,
         TEndpoints
     >, new()
     where TStreamlines :
-    Xerxes_Genology_Group__Streamlines
+    Xerxes_Genealogy_Group__Streamlines
     <
-        TGenology
+        TGenealogy
     >, new()
     where TAssociations :
-    Xerxes_Genology_Group__Associations
+    Xerxes_Genealogy_Group__Associations
     <
-        TGenology
+        TGenealogy
     >, new()
     where TEndpoints :
-    Xerxes_Genology_Group__Endpoints
+    Xerxes_Genealogy_Group__Endpoints
     <
-        TGenology
+        TGenealogy
     >, new()
     {
         internal virtual void Internal_Configure__Root_Base(SA__Configure_Root e)

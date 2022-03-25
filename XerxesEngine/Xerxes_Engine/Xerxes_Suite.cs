@@ -5,36 +5,48 @@ namespace Xerxes
     {
         public static void Run<Xerxes_Root>
         (
-            SA__Configure_Root xerxes_arguments
+            string[] args,
+            Log_Arguments log_args = null,
+            bool logging = true
+        )
+        where Xerxes_Root : Root, new()
+            => Run<Xerxes_Root>(new SA__Configure_Root(args), log_args, logging);
+
+        public static void Run<Xerxes_Root>
+        (
+            SA__Configure_Root xerxes_arguments,
+            Log_Arguments log_args = null,
+            bool logging = true
         )
         where Xerxes_Root : Root, new()
         {
+            if(logging)
+                Log.Initalize__Log(log_args != null ? log_args : new Log_Arguments());
+
             Xerxes_Root instance = new Xerxes_Root();
-            instance.Internal_Configure__Root_Base(xerxes_arguments);
 
             Xerxes_Linker.Internal_Seal(instance);
 
-            instance.Invoke__Ascending(xerxes_arguments);
-            instance.Invoke__Descending(xerxes_arguments);
+            instance.Internal_Configure__Root_Base(xerxes_arguments);
 
             instance.Execute();
         }
 
-        public static void Test<XObject, XBase, TGenology, SA>
+        public static void Test<XObject, XBase, TGenealogy, SA>
         (
             SA streamline_argument,
             SA__Configure_Root configure = null
         )
         where XObject : XBase, new()
-        where XBase : Xerxes_Object<TGenology>, new()
-        where TGenology : Xerxes_Genology, new()
+        where XBase : Xerxes_Object<TGenealogy>, new()
+        where TGenealogy : Xerxes_Genealogy, new()
         where SA : Streamline_Argument
         {
             Xerxes_Object test_suite = new Xerxes_Object();
 
             test_suite
-                .Genology
-                .Genology__STREAMLINES__Protected
+                .Genealogy
+                .Genealogy__Streamlines__Protected
                     .Streamlines__Primary_Stream__Protected
                         .Extending<SA__Configure_Root>()
                         .Extending<SA>();
@@ -53,7 +65,7 @@ namespace Xerxes
         where X_Object : Xerxes_Object, new()
         where SA : Streamline_Argument
         {
-            Test<X_Object, Xerxes_Object, Xerxes_Genology__Standard, SA>(streamline_argument);
+            Test<X_Object, Xerxes_Object, Xerxes_Genealogy__Standard, SA>(streamline_argument);
         }
     }
 }

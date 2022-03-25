@@ -8,19 +8,19 @@ namespace Xerxes
     /// communication fully transparent and minimize
     /// out of hierarchy side-effects.
     /// </summary>
-    public class Streamline<T> : Streamline_Base where T : Streamline_Argument
+    public class Streamline<SA> : Streamline_Base where SA : Streamline_Argument
     {
-        internal event Action<T> Streamline__STREAMLINE__Internal;
+        internal event Action<SA> Streamline__STREAMLINE__Internal;
 
         internal Streamline
         (
-            Action<T> listening_receiver = null,
+            Action<SA> listening_receiver = null,
             bool isReceiving = true,
             bool isExtending = true
         ) 
         : base
         (
-            typeof(Streamline<T>),
+            typeof(Streamline<SA>),
             isReceiving,
             isExtending
         )
@@ -34,8 +34,8 @@ namespace Xerxes
 #region Internal Streamline Functionality
         internal override Streamline_Base Internal_Create__Virtual__Streamline_Base()
         {
-            Streamline<T> virtual_target =
-                new Streamline<T>
+            Streamline<SA> virtual_target =
+                new Streamline<SA>
                 (
                     null,
                     Streamline_Base__IS_RECEIVING,
@@ -45,12 +45,16 @@ namespace Xerxes
             return virtual_target;
         }
 
+        Streamline_Base previous_target;
         internal override bool Internal_Link__Extend_Target__Streamline_Base
         (
             Streamline_Base target
         )
         {
-            Streamline<T> target_streamline = target as Streamline<T>;
+            if (target == previous_target)
+                Log.Write__Error__Log("STREAMLINES ===== DOUBLE UP!", this);
+            previous_target = target;
+            Streamline<SA> target_streamline = target as Streamline<SA>;
             if (target_streamline == null)
                 return false;
 
@@ -68,7 +72,7 @@ namespace Xerxes
 
         internal bool Internal_Subscribe__Streamline_Base
         (
-            Action<T> listening_receiver
+            Action<SA> listening_receiver
         )
         {
             if (!Streamline_Base__IS_RECEIVING)
@@ -82,7 +86,7 @@ namespace Xerxes
 
         internal void Internal_Stream__Streamline
         (
-            T streamline_Argument
+            SA streamline_Argument
         )
         {
             Streamline__STREAMLINE__Internal?

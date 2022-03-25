@@ -284,16 +284,16 @@ namespace Xerxes
         private static void Private_Write__Strict__Log(Log_Message message)
         {
             _Log__WARNINGS.Enqueue(message);
-            Private_CheckIf__Should_Throw__Log(message, Log__Throw_On_Warning);
+            Private_Check_If__Should_Throw__Log(message, Log__Throw_On_Warning);
         }
 
         private static void Private_Write__Critical__Log(Log_Message message)
         {
             _Log__ERRORS.Enqueue(message);
-            Private_CheckIf__Should_Throw__Log(message, Log__Throw_On_Error);
+            Private_Check_If__Should_Throw__Log(message, Log__Throw_On_Error);
         }
 
-        private static void Private_CheckIf__Should_Throw__Log(Log_Message message, bool flag)
+        private static void Private_Check_If__Should_Throw__Log(Log_Message message, bool flag)
         {
             if(!flag)
                 return;

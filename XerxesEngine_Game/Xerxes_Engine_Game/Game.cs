@@ -2,7 +2,7 @@
 namespace Xerxes.Game_Engine
 {
     public abstract class Game :
-    Root<Root_Association_Event, Root_Dissassociation_Event>
+    Root
     {
         private SA__Update _Game__UPDATE { get; }
         private SA__Render _Game__RENDER { get; }
@@ -10,17 +10,21 @@ namespace Xerxes.Game_Engine
 
         public Game()
         {
-            Declare__Streams()
-                .Downstream.Extending<SA__Sealed_Under_Game>()
-                .Upstream.Extending<SA__Sealed_Under_Game>()
-                .Downstream.Extending<SA__Update>()
-                .Upstream.Extending<SA__Update>()
-                .Downstream.Extending<SA__Render>()
-                .Upstream.Extending<SA__Render>()
-                .Downstream.Extending<SA__Render_Begin>()
-                .Upstream.Extending<SA__Render_Begin>()
-                .Downstream.Extending<SA__Render_End>()
-                .Upstream.Extending<SA__Render_End>();
+            Genealogy
+                .With__Streamlines
+                    .With__Ancestors
+                        .Extending<SA__Sealed_Under_Game>()
+                        .Extending<SA__Update>()
+                        .Extending<SA__Render>()
+                        .Extending<SA__Render_Begin>()
+                        .Extending<SA__Render_End>()
+                    .Finish__With_Ancestors
+                    .With__Descendants
+                        .Extending<SA__Sealed_Under_Game>()
+                        .Extending<SA__Update>()
+                        .Extending<SA__Render>()
+                        .Extending<SA__Render_Begin>()
+                        .Extending<SA__Render_End>();
 
             _Game__UPDATE = new SA__Update();
             _Game__RENDER = new SA__Render();
